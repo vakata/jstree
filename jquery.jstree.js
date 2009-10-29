@@ -239,8 +239,6 @@ $.jstree.defaults.plugin.push("data");
 
 
 
-
-
 // jsTree debug plugin begin
 $.jstree.add_plugin("debug", {
 	callbacks : {
