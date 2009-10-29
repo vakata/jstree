@@ -11,6 +11,7 @@
 // TODO: scrolling (jquery ui), drag_start, drag_end, drag events
 // TODO: cut, copy, paste
 // TODO: check YUI compressor
+// TODO: check all icons - reset positioning if custom icon is used
 
 // jsTree core begin
 (function($) {
@@ -39,6 +40,7 @@
 	};
 	$.jstree = { 
 		create : function (elem, opts) {
+			// TODO: read some options off metadata???
 			var new_index = parseInt(instances.push({})) - 1;
 			$.data(elem, "jstree-instance-id", new_index);
 			opts = $.extend(true, {}, $.jstree.defaults, opts);
@@ -154,8 +156,6 @@
 })(jQuery);
 // jsTree core end
 
-
-
 // jsTree data plugin (REQUIRED) begin
 $.jstree.datastores = {};
 $.jstree.add_plugin("data", {
@@ -163,15 +163,15 @@ $.jstree.add_plugin("data", {
 	fn : {
 		load : function (obj, is_initial, callback) {
 			var ret = { 'is_partial' : (obj && this.settings.data.async), 'is_initial' : is_initial }, _this = this, _datastore = false, opts = this.settings.data.opts, str = "";
-			obj = ret.obj = (is_partial) ? this.get_node(obj) : this.get_container();
+			obj = ret.obj = (ret.is_partial) ? this.get_node(obj) : this.get_container();
 
 			opts = this.get_data(obj);
+			_datastore = new $.jstree.datastores[this.settings.data.type](this, this.settings.data.opts, ret.is_partial);
 
 			obj.children("ul").remove();
 			if(ret.is_partial) { obj.children("a").addClass("jstree-loading"); }
 			else { obj.html("<ul class='jstree-ltr' style='direction:ltr;'><li class='jstree-last jstree-leaf'><a class='jstree-loading' href='#'><ins>&nbsp;</ins>" + (this.settings.data.loading_text || "Loading ...") + "</a></li></ul>"); }
-			
-			_datastore = new $.jstree.datastores[opts.type](this, opts.opts);
+
 			_datastore.load(opts, function (data) {
 				str = _this.parse_data(data, _datastore);
 				if(str.length) {
@@ -192,7 +192,7 @@ $.jstree.add_plugin("data", {
 			return _datastore.parse(data);
 		},
 		loaded : function(obj) {
-			this.clean_html(ret.obj);
+			this.clean_html(obj.obj);
 		},
 		clean_html : function(obj) {
 			obj = obj ? $(obj) : this.get_container();
@@ -200,44 +200,66 @@ $.jstree.add_plugin("data", {
 
 			obj.removeClass("jstree-last").filter("li:last-child").addClass("jstree-last").end().find("li:has(ul)").not(".jstree-open").addClass("jstree-closed");
 			obj.not(".jstree-open, .jstree-closed").addClass("jstree-leaf");
-		}
-
-		load_node : function (obj, callback) {
-			var obj = this.get_node(obj);
-			if(!obj.size()) return false;
-			if(this.settings.data.async) {
-				var _this = this;
-				var _datastore = new $.jstree.datastores[this.get_setting("data.type")]();
-				_datastore.load(this._callback("beforedata",[obj,this]), this, this.settings.data.opts, function (data) {
-					data = _this._callback("ondata", [data, _this]);
-					if(!data || data.length == 0) {
-						obj.removeClass("jstree-closed").removeClass("jstree-open").addClass("jstree-leaf").children("ul").remove();
-						if(callback) callback.call();
-						return;
-					}
-					_datastore.parse(data, _this, this.settings.data.opts, function (str) {
-						str = _this._callback("onparse", [str, _this]);
-						// if(obj.children('ul:eq(0)').children('li').size() > 1) obj.children("ul").find('.loaading').parent().replaceWith(str); else 
-						if(obj.children("ul:eq(0)").size())		obj.children("ul:eq(0)").replaceWith($("<ul>").html(str));
-						else									obj.append($("<ul>").html(str));
-						obj.find("li:last-child").addClass("jstree-last").end().find("li:has(ul)").not(".jstree-open").addClass("jstree-closed");
-						obj.find("li").not(".jstree-open").not(".jstree-closed").addClass("jstree-leaf");
-						if(callback) callback.call();
-					});
-				});
-			}
 		},
-		is_loaded : function (obj) { obj = this.get_node(obj); return this.settings.data.async == false || obj.hasClass("jstree-open") || obj.children("ul").children("li").size() > 0; },
-
+		is_loaded : function (obj) { obj = this.get_node(obj); return this.settings.data.async == false || obj.is(".jstree-open, .jstree-leaf") || obj.children("ul").children("li").size() > 0; }
 	},
 	callbacks : {
-		"after-init" : function () { this.refresh(false,true); }
+		"after-init" : function () { this.load(false,true); }
 	}
 });
 $.jstree.defaults.plugin.push("data");
 // jsTree data plugin end
 
+// jsTree lock plugin begin
+$.jstree.add_plugin("lock", {
+	fn : {
+		lock		: function () { this.data.locked = true; },
+		unlock		: function () { this.data.locked = false; },
+		is_locked	: function () { return this.data.locked !== undefined && this.data.locked; }
+	}
+	// TODO: before-init - maybe have the option to init the tree as locked
+	// TODO: all other functions - maybe they should be blocked?
+});
+// jsTree lock plugin end
 
+// jsTree traverse plugin begin
+$.jstree.add_plugin("traverse", {
+	fn : {
+		get_next : function (obj, strict) {
+			obj = this.get_node(obj);
+			if(!obj.length) return false;
+			if(strict) return (obj.nextAll("li").size() > 0) ? obj.nextAll("li:eq(0)") : false;
+
+			if(obj.hasClass("jstree-open")) return obj.find("li:eq(0)");
+			else if(obj.nextAll("li").size() > 0) return obj.nextAll("li:eq(0)");
+			else return obj.parents("li").next("li").eq(0);
+		},
+		get_prev : function(obj, strict) {
+			obj = this.get_node(obj);
+			if(!obj.length) return false;
+			if(strict) return (obj.prevAll("li").length > 0) ? obj.prevAll("li:eq(0)") : false;
+
+			if(obj.prev("li").length) {
+				var obj = obj.prev("li").eq(0);
+				while(obj.hasClass("jstree-open")) obj = obj.children("ul:eq(0)").children("li:last");
+				return obj;
+			}
+			else return obj.parents("li:eq(0)").length ? obj.parents("li:eq(0)") : false;
+		},
+		get_parent : function(obj) {
+			obj = this.get_node(obj);
+			if(obj == -1 || !obj.length) return false;
+			return obj.parents("li:eq(0)").length ? obj.parents("li:eq(0)") : -1;
+		},
+		get_children : function(obj) {
+			obj = this.get_node(obj);
+			if(obj === -1) return this.get_container().children("ul:eq(0)").children("li");
+			if(!obj.length) return false;
+			return obj.children("ul:eq(0)").children("li");
+		}
+	}
+});
+// jsTree traverse plugin end
 
 // jsTree debug plugin begin
 $.jstree.add_plugin("debug", {
@@ -249,6 +271,39 @@ $.jstree.add_plugin("debug", {
 $.jstree.defaults.plugin.push("debug");
 // jsTree debug plugin end
 
+// html datastore begin
+$.extend($.jstree.datastores, {
+	"html" : function (tree, opts, is_partial) {
+		var cnt = (!is_partial && !opts.url) ? tree.get_container().children("ul:eq(0)").html() : null;
+		return {
+			get		: function(obj) { return obj && $(obj).size() ? $('<div>').append(tree.get_node(obj).clone()).html() : tree.get_container().children("ul:eq(0)").html(); },
+			parse	: function(data, callback) { return data; },
+			load	: function(data, callback) {
+				if(opts.url) {
+					$.ajax({
+						'type'		: opts.method,
+						'url'		: opts.url, 
+						'data'		: data, 
+						'dataType'	: "html",
+						'success'	: function (d, textStatus) {
+							callback.call(null, d);
+						},
+						'error'		: function (xhttp, textStatus, errorThrown) { 
+							callback.call(null, false);
+							tree.error(errorThrown + " " + textStatus); 
+						}
+					});
+				}
+				else {
+					callback.call(null, opts.staticData || cnt || "");
+				}
+			}
+		};
+	}
+});
+// html datastore end
+
+
 
 (function($) {
 return;
@@ -256,56 +311,6 @@ return;
 
 // TODO: ui plugin - listen for refresh and show hide dots ...
 
-// core functions begin
-$.jstree.fn = $.jstree.instance.prototype = {
-
-};
-// core functions end
-
-// lock functions begin
-$.extend($.jstree.fn, {
-	lock		: function () { this.data.locked = true; },
-	unlock		: function () { this.data.locked = false; },
-	is_locked	: function () { return this.data.locked !== undefined && this.data.locked; }
-});
-// lock functions end
-
-// traversing functions begin
-$.extend($.jstree.fn, {
-	get_next : function (obj, strict) {
-		obj = this.get_node(obj);
-		if(!obj.length) return false;
-		if(strict) return (obj.nextAll("li").size() > 0) ? obj.nextAll("li:eq(0)") : false;
-
-		if(obj.hasClass("jstree-open")) return obj.find("li:eq(0)");
-		else if(obj.nextAll("li").size() > 0) return obj.nextAll("li:eq(0)");
-		else return obj.parents("li").next("li").eq(0);
-	},
-	get_prev : function(obj, strict) {
-		obj = this.get_node(obj);
-		if(!obj.length) return false;
-		if(strict) return (obj.prevAll("li").length > 0) ? obj.prevAll("li:eq(0)") : false;
-
-		if(obj.prev("li").length) {
-			var obj = obj.prev("li").eq(0);
-			while(obj.hasClass("jstree-open")) obj = obj.children("ul:eq(0)").children("li:last");
-			return obj;
-		}
-		else return obj.parents("li:eq(0)").length ? obj.parents("li:eq(0)") : false;
-	},
-	get_parent : function(obj) {
-		obj = this.get_node(obj);
-		if(obj == -1 || !obj.length) return false;
-		return obj.parents("li:eq(0)").length ? obj.parents("li:eq(0)") : -1;
-	},
-	get_children : function(obj) {
-		obj = this.get_node(obj);
-		if(obj === -1) return container.children("ul:eq(0)").children("li");
-		if(!obj.length) return false;
-		return obj.children("ul:eq(0)").children("li");
-	}
-});
-// traversing functions end
 
 // theme functions begin
 var themes_loaded = [];
@@ -599,41 +604,7 @@ $(function () {
 });
 // selection functions end
 
-// html datastore begin
-$.extend($.jstree.datastores, {
-	"html" : function (tree, opts) {
-		return {
-			get		: function(obj) {
-				return obj && $(obj).size() ? $('<div>').append(tree.get_node(obj).clone()).html() : tree.get_container().children("ul:eq(0)").html();
-			},
-			parse	: function(data, callback) {
-				if(callback) callback.call(null, data);
-				return data;
-			},
-			load	: function(data, callback) {
-				if(opts.url) {
-					$.ajax({
-						'type'		: opts.method,
-						'url'		: opts.url, 
-						'data'		: data, 
-						'dataType'	: "html",
-						'success'	: function (d, textStatus) {
-							callback.call(null, d);
-						},
-						'error'		: function (xhttp, textStatus, errorThrown) { 
-							callback.call(null, false);
-							tree.error(errorThrown + " " + textStatus); 
-						}
-					});
-				}
-				else {
-					callback.call(null, opts.staticData || tree.get_container().children("ul:eq(0)").html());
-				}
-			}
-		};
-	}
-});
-// html datastore end
+
 
 
 
