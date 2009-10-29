@@ -1,0 +1,31 @@
+/* LOCKED */
+.jstree-classic .jstree-locked li a { color:gray; }
+/* DOTS */
+.jstree-classic ul { background-position:6px 1px; background-repeat:repeat-y; background-image:url(data:image/gif;base64,R0lGODlhAgACAIAAAB4dGf///yH5BAEAAAEALAAAAAACAAIAAAICRF4AOw==); _background-image:url("dot_for_ie.gif"); *background-image:url("dot_for_ie.gif"); }
+.jstree-classic li { background-position:-64px -16px; background-repeat:no-repeat; background-image:url("icons.png"); }
+/* NO DOTS */
+.jstree-classic .jstree-no-dots, .jstree-classic .jstree-no-dots ul { background:transparent; }
+.jstree-classic .jstree-no-dots li.jstree-leaf { background-image:none; background-color:transparent; }
+/* OPEN or CLOSED */
+.jstree-classic li.jstree-open { background:url("icons.png") -32px -48px no-repeat; }
+.jstree-classic li.jstree-closed, #jstree-dragged.jstree-classic li li.jstree-open { background:url("icons.png") -48px -32px no-repeat; }
+#jstree-marker { background-image:url("icons.png"); }
+/* DEFAULT, HOVER, CLICKED, LOADING STATES */
+.jstree-classic li a:hover, .jstree-classic li a.jstree-hover, .jstree-classic li span { /*background: #e7f4f9; border:1px solid #d8f0fa; padding:0px 3px 0px 3px;*/ }
+.jstree-classic li a.jstree-clicked, .jstree-classic li a.jstree-clicked:hover, .jstree-classic li span.jstree-clicked { background: navy; border:1px solid navy; color:white; padding:0px 3px 0px 3px; }
+/* ICONS */
+.jstree-classic ins { background-image:url("icons.png"); background-position:0 0; background-repeat:no-repeat; }
+.jstree-classic ul li a.jstree-loading ins { background-image:url("throbber.gif") !important; background-position:0 0 !important; } /* UL is added to make selector stronger */
+.jstree-classic li.jstree-closed a ins, .jstree-classic li.jstree-leaf a ins { background-position:0 0px; } /* UL is added to make selector stronger */
+.jstree-classic ul li a.jstree-loading ins { background-image:url("throbber.gif"); background-position:0 0; } /* UL is added to make selector stronger */
+.jstree-classic li a ins.jstree-forbidden { background-position:-16px -16px; }
+.jstree-classic .jstree-locked li a ins { background-position:0 -48px; }
+.jstree-classic li span ins { background-position:-16px 0; }
+#jstree-dragged.jstree-classic ins { background:url("icons.png") -16px -32px no-repeat !important; }
+#jstree-dragged.jstree-classic ins.jstree-forbidden { background:url("icons.png") -16px -16px no-repeat !important; }
+
+/* CONTEXT MENU */
+.jstree-classic-context a ins { background-image:url("icons.png"); background-repeat:no-repeat; background-position:-64px -64px; }
+.jstree-classic-context a ins.create { background-position:0 -16px; }
+.jstree-classic-context a ins.rename { background-position:-16px 0px; }
+.jstree-classic-context a ins.remove { background-position:-32px -16px; }
