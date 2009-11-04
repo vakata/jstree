@@ -21,6 +21,8 @@ BUGS/FEATURES:
    E: whole row selection & columns
 
 WORKING COPY
+   before-load - you can now modify the URL before loading it
+   drag_drop issue on Mac was FF problem
    transparent loading icon
    contextmenu and dblclick events now with different names
    all before callbacks removed in favour of type definitions (which can be functions)
