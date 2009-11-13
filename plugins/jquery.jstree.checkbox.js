@@ -8,7 +8,7 @@
 				if(!t) t = $.tree.focused();
 				return t.container.find("a.checked").parent();
 			},
-			get_undeterminded : function (t) { 
+			get_undetermined : function (t) { 
 				if(!t) t = $.tree.focused();
 				return t.container.find("a.undetermined").parent();
 			},

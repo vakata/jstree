@@ -11,65 +11,143 @@
 // TODO: cut, copy, paste
 // TODO: check YUI compressor
 // TODO: check all icons - reset positioning if custom icon is used
+// TODO: check metadata - maybe wrap within { jstree: { } }
+// TODO: maybe let some events bubble?
+// TODO: form issue - keypress / keyup in rename function
+// TODO: remove any events bound for plugins 
+// TODO: create does not work if LI node has an empty UL inside
+// TODO: context menu option to select the node that was right clicked
+// TODO: see which functions should be _ and which __
+// TODO: test func by func (using $.each($.jstree._fn ...)
 
 // jsTree core begin
 (function($) {
-	var instances = [], focused_instance = null, undefined;
-	$.fn.jstree = function () {
-		var args = arguments;
-		return this.each(function() {
-			// if first argument is string, call that function on the instance
-			if(typeof args[0] == "string") {
-				var instance_id = $.data(this, "jstree-instance-id");
-				// but only if instance exists
-				if(instances[instance_id] && $.isFunction(instances[instance_id][args[0]])) {
-					// remove the first argument (the function name string)
-					_args = $.makeArray(args); _args.shift();
-					instances[instance_id][args[0]].apply(instances[instance_id], _args);
-				}
+	// private variables 
+	var instances = [],			// instance array (used by $.jstree.reference/create/focused)
+		focused_instance = -1,	// the index in the instance array of the currently focused instance
+		undefined;				// helper variable for quicker access to undefined
+
+	// jQuery plugin wrapper
+	$.fn.jstree = function (settings) {
+		var isMethodCall = (typeof settings == 'string'), 
+			args = Array.prototype.slice.call(arguments, 1), 
+			returnValue = this;
+
+			// extend settings and allow for multiple hashes and metadata (thanks jqueryUI)
+			if(!isMethodCall && $.meta) args.push($.metadata.get(this).jstree);
+			settings = !isMethodCall && args.length ? $.extend.apply(null, [true, settings].concat(args)) : settings;
+			// block calls to "private" methods
+			if(isMethodCall && settings.substring(0, 1) == '_') return returnValue;
+
+			if(isMethodCall) {
+				this.each(function() {
+					var instance = instances[$.data(this, "jstree-instance-id")],
+						methodValue = (instance && $.isFunction(instance[settings])) ? instance[settings].apply(instance, args) : instance;
+						if(methodValue !== undefined) { returnValue = methodValue; return false; }
+				});
 			}
-			// otherwise - build the tree
 			else {
-				// if tree already exists - destroy it first
-				var instance_id = $.data(this, "jstree-instance-id");
-				if(instance_id && instances[instance_id]) instances[instance_id].destroy();
-				$.jstree.create(this, args[0]);
+				this.each(function() {
+					var instance_id = $.data(this, "jstree-instance-id");
+					if(instance_id && instances[instance_id]) instances[instance_id]._destroy();
+					// push a new empty object to the instances array
+					instance_id = parseInt(instances.push({})) - 1;
+					// store the jstree instance id to the container element
+					$.data(this, "jstree-instance-id", instance_id);
+					// push the new object to the instances array (at the same time set the default classes to the container) and init
+					instances[instance_id] = new $.jstree._instance(instance_id, $(this).addClass("jstree jstree-" + instance_id), $.extend(true, {}, $.jstree.defaults, settings)); 
+					instances[instance_id]._init();
+					console.log(instances);
+				});
 			}
-		});
+
+		return returnValue;
 	};
-	$.jstree = { 
-		create : function (elem, opts) {
-			// TODO: read some options off metadata???
-			var new_index = parseInt(instances.push({})) - 1;
-			$.data(elem, "jstree-instance-id", new_index);
-			opts = $.extend(true, {}, $.jstree.defaults, opts);
-			instances[new_index] = new $.jstree.instance(new_index, $(elem).addClass("jstree jstree-" + new_index), opts); 
-			instances[new_index].init();
-			return instances[new_index];
-		},
-		focused : function () { 
-			return instances[focused_instance] || null; 
-		},
-		reference : function (obj) { 
-			var o = $(obj); o = o.length ? o : $("#" + obj); if(!o.length) { return null };
+	
+	// object to store exposed functions and objects
+	$.jstree			= {};
+	// defaults are exposed, so that the developer can change defaults for all future instances
+	$.jstree.defaults	= {};
+	// gets the currently focused instance (used internally)
+	$.jstree._focused	= function () { return instances[focused_instance] || null; },
+	// get an instance by node, dom id, reference id
+	$.jstree._reference	= function (needle) { 
+			// get by instance id
+			if(instances[needle]) return instances[needle];
+			// get by DOM (if still no luck - return null
+			var o = $(needle); o = o.length ? o : $("#" + obj); if(!o.length) { return null };
+			// traverse up the DOM for the tree parent
 			o = (o.is(".jstree")) ? o.get(0) : o.parents(".jstree:eq(0)").get(0);
-			o = jQuery.data(o, "jstree-instance-id");
+			o = $.data(o, "jstree-instance-id");
 			return instances[o] || null; 
 		},
-
-		instance : function (index, container, settings) {
-			this.settings		= settings;
-			this.data			= {};
-			this.get_index		= function () { return index; };
-			this.get_container	= function () { return container; };
-		},
-		defaults : { }
+	// the actual instance function (used internally)
+	$.jstree._instance	= function (index, container, settings) { 
+		// for plugins to store data in
+		this.data = {};
+		this.settings = settings;
+		this.get_index = function () { return index; };
+		this.get_container = function () { return container; };
 	};
-	$.jstree.fn = $.jstree.instance.prototype = {
-		init : function () { this.set_focus(); },
-		set_focus : function () { focused_instance = this.get_index(); },
-		is_focused : function () { return focused_instance == this.get_index(); },
-		get_node : function (obj) { var $obj = $(obj); return $obj.is(".jstree") || obj == -1 ? -1 : $obj.closest("li", this.get_container()); },
+
+	// the prototype to attach functions to (all core functions are listed here)
+	$.jstree._fn		= $.jstree._instance.prototype = {
+		// initialize and destroy
+		_init		: function () { this.set_focus(); },
+		_destroy	: function () { 
+			var n = this.get_index(), 
+				c = this.get_container();
+
+			// set focus to another instance if this one is focused
+			if(this.is_focused()) { for(var i in instances) { if(!instances.hasOwnProperty(i) || i == n) continue; instances[i].set_focus(); break; } }
+			$.removeData(c, "jstree-instance-id");
+			// remove all traces of jstree in the DOM (only the ones set by the core, plugins should clean themselves)
+			c.removeClass("jstree jstree-" + index);
+			// remove the actual data
+			instances[n] = null;
+			delete instances[n];
+		},
+
+		// deal with focus
+		set_focus	: function () { focused_instance = this.get_index(); },
+		is_focused	: function () { return focused_instance == this.get_index(); },
+
+		// traverse
+		get_node	: function (obj) { var $obj = $(obj); return $obj.is(".jstree") || obj == -1 ? -1 : $obj.closest("li", this.get_container()); },
+		get_next	: function (obj, strict) {
+			obj = this.get_node(obj);
+			if(!obj.length) return false;
+			if(strict) return (obj.nextAll("li").size() > 0) ? obj.nextAll("li:eq(0)") : false;
+
+			if(obj.hasClass("jstree-open")) return obj.find("li:eq(0)");
+			else if(obj.nextAll("li").size() > 0) return obj.nextAll("li:eq(0)");
+			else return obj.parents("li").next("li").eq(0);
+		},
+		get_prev	: function(obj, strict) {
+			obj = this.get_node(obj);
+			if(!obj.length) return false;
+			if(strict) return (obj.prevAll("li").length > 0) ? obj.prevAll("li:eq(0)") : false;
+
+			if(obj.prev("li").length) {
+				var obj = obj.prev("li").eq(0);
+				while(obj.hasClass("jstree-open")) obj = obj.children("ul:eq(0)").children("li:last");
+				return obj;
+			}
+			else return obj.parents("li:eq(0)").length ? obj.parents("li:eq(0)") : false;
+		},
+		get_parent	: function(obj) {
+			obj = this.get_node(obj);
+			if(obj == -1 || !obj.length) return false;
+			return obj.parents("li:eq(0)").length ? obj.parents("li:eq(0)") : -1;
+		},
+		get_children: function(obj) {
+			obj = this.get_node(obj);
+			if(obj === -1) return this.get_container().children("ul:eq(0)").children("li");
+			if(!obj.length) return false;
+			return obj.children("ul:eq(0)").children("li");
+		},
+
+		// values (will be overwritten by languages plugin if included)
 		get_text : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj.size()) return false;
@@ -83,79 +161,64 @@
 			obj = obj.children("a:eq(0)");
 			obj = obj.contents().filter(function() { return this.nodeType == 3; })[0];
 			return obj.nodeValue = val;
-		},
-		destroy : function () {
-			var n = this.get_index(), c = this.get_container();
-			if(this.is_focused()) {
-				for(var i in instances) {
-					if(!instances.hasOwnProperty(i) || i == n) continue;
-					instances[i].set_focus();
-					break;
-				}
-			}
-			$.removeData(c, "jstree-instance-id");
-			// remove all traces of jstree in the DOM
-			c.removeClass("jstree jstree-" + index)
-				.children("ul").removeClass("jstree-no-dots jstree-ltr jstree-locked")
-					.find("li").removeClass("jstree-leaf jstree-open jstree-closed jstree-last")
-
-			instances[n] = null;
-			delete instances[n];
 		}
 	};
 
-	// plugin functionality begin
-	$.jstree.plugin = {};
-	$.jstree.defaults.plugin = [];
-	$.jstree.add_plugin = function (plugin_name, plugin_data) {
-		if(plugin_data.fn) {
-			$.extend($.jstree.fn, plugin_data.fn);
-			$.each(plugin_data.fn, function (i, val) {
-				$.jstree.fn[i].plugin = plugin_name;
-			});
-		}
-		$.jstree.plugin[plugin_name] = plugin_data.callbacks || {};
-		$.jstree.defaults[plugin_name] = plugin_data.defaults || {};
+	// plugin functionality
+	// private list of included plugins
+	var plugin_list		= {};
+	// a setting to store all active plugins
+	$.jstree.defaults.plugin_list = [];
+	// function to add plugins by name and values
+	$.jstree.plugin		= function (pname, pdata) {
+		// the default empty plugin
+		pdata = $.extend(true, {}, {
+			_fn : { },
+			defaults : false,
+			callback : function () { }
+		}, pdata);
+		// push the plugin's name in the loaded plugins array
+		plugin_list[pname] = pdata.callback;
+		// set the origin on every function
+		$.each(pdata._fn, function (i, val) { val.plugin = pname; });
+		// extend the _instance functions by those of the plugin
+		$.extend($.jstree._fn, pdata._fn);
+		// extend the defaults
+		$.jstree.defaults[pname] = pdata.defaults;
 	};
+	// wrap functions 
+	// TODO: maybe this shouldn't be at the end, but first core, then plugin by plugin
 	$(function () {
-		$.each($.jstree.fn, function (i, val) {
+		$.each($.jstree._fn, function (i, val) {
 			if(!$.isFunction(val)) return true;
-			$.jstree.fn[i] = function () {
-				var _this = this, args = arguments, ret, tmp;
-				if(val.plugin && $.inArray(val.plugin,this.settings.plugin) == -1) return false;
-
-				$.each(this.settings.plugin, function (j, cb) { 
-					if($.jstree.plugin[cb]["before-all"]) {
-						tmp = $.jstree.plugin[cb]["before-all"].apply(_this, $.merge([i],args)); 
-						if($.isArray(tmp)) { args = tmp; }
-					}
-					if(args === false) return false; 
-					if($.jstree.plugin[cb]["before-" + i]) {
-						tmp = $.jstree.plugin[cb]["before-" + i].apply(_this, args); 
-						if($.isArray(tmp)) { args = tmp; }
-					}
-					if(args === false) return false; 
+			$.jstree._fn[i] = function () {
+				// if calling a function from a plugin that is not included
+				if(val.plugin && $.inArray(val.plugin, this.settings.plugin_list) == -1) return false;
+				var _this = this, args = arguments, returnValue, tmp;
+				// if function is final (naming convention __)
+				if(i.substring(0,2) == '__') return val.apply(this, arguments);
+				// TODO: maybe skip calling if i == j ???
+				$.each(this.settings.plugin_list, function (j, plg) {
+					tmp = plugin_list[plg].apply(_this, ["before", i, args]);
+					if(tmp != undefined) args = tmp; 
+					if(args == false) return false;
 				});
-				if(args === false) return false;
-				ret = val.apply(this, args);
-				$.each(this.settings.plugin, function (j, cb) { 
-					if($.jstree.plugin[cb]["after-" + i]) {
-						tmp = $.jstree.plugin[cb]["after-" + i].apply(_this, [ret]); 
-						if(tmp !== undefined) ret = tmp;
-					}
-					if($.jstree.plugin[cb]["after-all"]) {
-						tmp = $.jstree.plugin[cb]["after-all"].apply(_this, [i,ret]); 
-						if(tmp !== undefined) ret = tmp;
-					}
-				});
-				return ret;
+				if(args) {
+					returnValue = val.apply(this, args);
+					$.each(this.settings.plugin_list, function (j, plg) {
+						tmp = plugin_list[plg].apply(_this, ["after", i, returnValue]);
+						if(tmp != undefined) returnValue = tmp; 
+					});
+					// trigger event only if not internal function
+					if(i.substring(0,1) != '_') this.get_container().trigger("jstree-" + i, [returnValue]);
+					return returnValue;
+				}
 			};
 		});
 	});
-	// plugin functionality end
 
-	// css functions & append begin
-	$.jstree.css = {
+	// css functions - used internally
+	$.jstree._css = {
 		get_css : function(rule_name, delete_flag, sheet) {
 			rule_name = rule_name.toLowerCase();
 			var css_rules = sheet.cssRules || sheet.rules;
@@ -216,7 +279,9 @@
 			}
 		}
 	};
+	// load the css when DOM is ready
 	$(function() {
+		// code is copied form jQuery ($.browser is deprecated)
 		var u = navigator.userAgent.toLowerCase(),
 			v = (u.match( /.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/ ) || [0,'0'])[1],
 			css_string = '/* TREE LAYOUT */ .jstree ul { margin:0 0 0 5px; padding:0 0 0 0; list-style-type:none; } .jstree li { display:block; min-height:18px; line-height:18px; padding:0 0 0 15px; margin:0 0 0 0; /* Background fix */ clear:both; } .jstree li ul { display:none; } .jstree li a, .jstree li span { display:inline-block;line-height:16px;height:16px;color:black;white-space:nowrap;text-decoration:none;padding:1px 4px 1px 4px;margin:0; } .jstree li a:focus { outline: none; } .jstree li a input, .jstree li span input { margin:0;padding:0 0;display:inline-block;height:12px !important;border:1px solid white;background:white;font-size:10px;font-family:Verdana; } .jstree li a input:not([class="xxx"]), .jstree li span input:not([class="xxx"]) { padding:1px 0; } /* FOR DOTS */ .jstree .jstree-ltr li.jstree-last { float:left; } .jstree > ul li.jstree-last { overflow:visible; } /* OPEN OR CLOSE */ .jstree li.jstree-open ul { display:block; } .jstree li.jstree-closed ul { display:none !important; } /* FOR DRAGGING */ #jstree-dragged { position:absolute; top:-10px; left:-10px; margin:0; padding:0; z-index:1000; } #jstree-dragged ul ul ul { display:none; } #jstree-marker { cursor:pointer; padding:0; margin:0; line-height:5px; font-size:1px; overflow:hidden; height:5px; position:absolute; left:-45px; top:-30px; z-index:1000; background-color:transparent; background-repeat:no-repeat; display:none; } #jstree-marker.jstree-marker { width:45px; background-position:-32px top; } #jstree-marker.jstree-marker-plus { width:5px; background-position:right top; } /* BACKGROUND DOTS */ .jstree li li { overflow:hidden; } .jstree > .jstree-ltr > li { display:table; } /* ICONS */ .jstree ul ins { display:inline-block; text-decoration:none; width:16px; height:16px; } .jstree .jstree-ltr ins { margin:0 4px 0 0px; } ';
@@ -226,20 +291,18 @@
 		}
 		if(/opera/.test(u)) css_string += '.jstree > ul > li.jstree-last:after { content:"."; display: block; height:1px; clear:both; visibility:hidden; }';
 		if(/mozilla/.test(u) && !/(compatible|webkit)/.test(u) && v.indexOf("1.8") == 0) css_string += '.jstree .jstree-ltr li a { display:inline; float:left; } .jstree li ul { clear:both; }';
-		$.jstree.css.add_sheet({ str : css_string, rel : "jstree" });
+		$.jstree._css.add_sheet({ str : css_string, rel : "jstree" });
 		delete u; delete v; delete css_string;
 	});
-	// css functions & append end
 })(jQuery);
 // jsTree core end
 
-// Plugins begin
+// jsTree data plugin begin
 (function($) {
-	// jsTree data plugin (REQUIRED) begin
 	$.jstree.datastores = {};
-	$.jstree.add_plugin("data", {
+	$.jstree.plugin("data", {
 		defaults : { type : "html", async : false, opts : {} },
-		fn : {
+		_fn : {
 			load : function (obj, is_initial, callback) {
 				var ret = { 'is_partial' : (obj && this.settings.data.async), 'is_initial' : is_initial }, _this = this, _datastore = false, opts = this.settings.data.opts, str = "";
 				obj = ret.obj = (ret.is_partial) ? this.get_node(obj) : this.get_container();
@@ -252,9 +315,9 @@
 				else { obj.html("<ul class='jstree-ltr' style='direction:ltr;'><li class='jstree-last jstree-leaf'><a class='jstree-loading' href='#'><ins>&nbsp;</ins>" + (this.settings.data.loading_text || "Loading ...") + "</a></li></ul>"); }
 
 				_datastore.load(opts, function (data) {
-					str = _this.parse_data(data, _datastore);
-					// TODO: check for empty <root /> here
-					if(str.length) {
+					str = _this._parse_data(data, _datastore);
+
+					if(str.length) { // TODO: check for empty <root /> here and $.trim(data)
 						if(obj.children("ul").length == 0) obj.append("ul");
 						obj.children("a").removeClass("jstree-loading").end().children("ul").empty().append(str);
 					}
@@ -262,98 +325,52 @@
 						obj.removeClass("jstree-closed").removeClass("jstree-open").children("ul").remove();
 						if(ret.is_partial) obj.addClass("jstree-leaf");
 					}
-					_this.loaded(ret);
+					_this._loaded(ret);
 					if(callback) callback.call();
 				});
 				return ret;
 			},
 			get_data : function (obj) { return { id : obj.attr("id") || 0 }; },
-			parse_data : function (data, _datastore) {
+			_parse_data : function (data, _datastore) {
 				return _datastore.parse(data);
 			},
-			loaded : function(obj) {
-				this.clean_html(obj.obj);
+			_loaded : function(obj) {
+				this._clean_html(obj.obj);
 			},
-			clean_html : function(obj) {
+			_clean_html : function(obj) {
 				obj = obj ? $(obj) : this.get_container();
 				obj = obj.is("li") ? obj.find("li").andSelf() : obj.find("li");
 
-				obj.removeClass("jstree-last").filter("li:last-child").addClass("jstree-last").end().find("li:has(ul)").not(".jstree-open").addClass("jstree-closed");
+				obj.removeClass("jstree-last")
+					.filter("li:last-child").addClass("jstree-last").end()
+					.filter(":has(ul)")
+						.not(".jstree-open").addClass("jstree-closed");
 				obj.not(".jstree-open, .jstree-closed").addClass("jstree-leaf");
 			},
 			is_loaded : function (obj) { obj = this.get_node(obj); return this.settings.data.async == false || obj.is(".jstree-open, .jstree-leaf") || obj.children("ul").children("li").size() > 0; }
 		},
-		callbacks : {
-			"after-init" : function () { this.load(false,true); }
+		callback : function (t, f, d) {
+			var cb = t + ":" + f;
+			if(/^(after:_init)$/.test(cb)) this.load(false, true);
 		}
 	});
-	// jsTree data plugin end
 
-	// jsTree lock plugin begin
-	$.jstree.add_plugin("lock", {
-		defaults : false,
-		fn : {
-			lock		: function () { this.settings.locked = true; },
-			unlock		: function () { this.settings.locked = false; },
-			is_locked	: function () { return this.settings.locked !== undefined && this.settings.locked; }
-		},
-		callbacks : {
-			// "before-all" : 
-		}
-		// TODO: all other functions - maybe they should be blocked? maybe bind to an event function???
-	});
-	// jsTree lock plugin end
+	$.jstree.defaults.plugin_list.push("data");
+})(jQuery);
+// jsTree data plugin end
 
-	// jsTree traverse plugin begin
-	$.jstree.add_plugin("traverse", {
-		fn : {
-			get_next : function (obj, strict) {
-				obj = this.get_node(obj);
-				if(!obj.length) return false;
-				if(strict) return (obj.nextAll("li").size() > 0) ? obj.nextAll("li:eq(0)") : false;
-
-				if(obj.hasClass("jstree-open")) return obj.find("li:eq(0)");
-				else if(obj.nextAll("li").size() > 0) return obj.nextAll("li:eq(0)");
-				else return obj.parents("li").next("li").eq(0);
-			},
-			get_prev : function(obj, strict) {
-				obj = this.get_node(obj);
-				if(!obj.length) return false;
-				if(strict) return (obj.prevAll("li").length > 0) ? obj.prevAll("li:eq(0)") : false;
-
-				if(obj.prev("li").length) {
-					var obj = obj.prev("li").eq(0);
-					while(obj.hasClass("jstree-open")) obj = obj.children("ul:eq(0)").children("li:last");
-					return obj;
-				}
-				else return obj.parents("li:eq(0)").length ? obj.parents("li:eq(0)") : false;
-			},
-			get_parent : function(obj) {
-				obj = this.get_node(obj);
-				if(obj == -1 || !obj.length) return false;
-				return obj.parents("li:eq(0)").length ? obj.parents("li:eq(0)") : -1;
-			},
-			get_children : function(obj) {
-				obj = this.get_node(obj);
-				if(obj === -1) return this.get_container().children("ul:eq(0)").children("li");
-				if(!obj.length) return false;
-				return obj.children("ul:eq(0)").children("li");
-			}
-		}
-	});
-	// jsTree traverse plugin end
-
-	// jsTree themes plugin begin
+// jsTree themes plugin begin
+(function ($) {
 	var themes_loaded = [];
-	$.jstree.themes = false;
-	$.jstree.add_plugin("themes", {
+	$.jstree._themes = false;
+	$.jstree.plugin("themes", {
 		defaults : { theme : "default", dots : true },
-		fn : {
+		_fn : {
 			set_theme : function (theme_name, theme_url) {
 				if(theme_name === undefined) return false;
-				if(theme_url === undefined) theme_url = $.jstree.themes + theme_name + '/style.css';
+				if(theme_url === undefined) theme_url = $.jstree._themes + theme_name + '/style.css';
 				if($.inArray(theme_url, themes_loaded) == -1) {
-					$.jstree.css.add_sheet({ "url" : theme_url, "rel" : "jstree" });
+					$.jstree._css.add_sheet({ "url" : theme_url, "rel" : "jstree" });
 					themes_loaded.push(theme_url);
 				}
 				if(this.data.theme != theme_name) {
@@ -364,30 +381,33 @@
 				if(this.settings.themes.dots == false) this.get_container().children("ul").addClass("jstree-no-dots");
 			}
 		},
-		callbacks : {
-			"before-init" : function () { this.set_theme(this.settings.themes.theme); },
-			"after-load" : function (ret) { if(!ret.is_partial) this.set_theme(this.settings.themes.theme); }
+		callback : function (t, f, d) {
+			var cb = t + ":" + f;
+			if(/^(before:_init|after:load)$/.test(cb)) this.set_theme(this.settings.themes.theme);
 		}
 	});
 	$(function () {
-		if($.jstree.themes === false) {
+		if($.jstree._themes === false) {
 			$("script").each(function () { 
 				if(this.src.toString().match(/jquery\.jstree[^/]*?\.js(\?.*)?$/)) { 
-					$.jstree.themes = this.src.toString().replace(/jquery\.jstree[^/]*?\.js(\?.*)?$/, "") + 'themes/'; 
+					$.jstree._themes = this.src.toString().replace(/jquery\.jstree[^/]*?\.js(\?.*)?$/, "") + 'themes/'; 
 					return false; 
 				}
 			});
 		}
-		if($.jstree.themes === false) $.jstree.themes = "themes/";
+		if($.jstree._themes === false) $.jstree._themes = "themes/";
 	});
-	// jsTree themes plugin end
+	$.jstree.defaults.plugin_list.push("themes");
+})(jQuery);
+// jsTree themes plugin end
 
-	// jsTree languages plugins begin
-	$.jstree.add_plugin("languages", {
+// jsTree languages plugins begin
+(function ($) {
+	$.jstree.plugin("languages", {
 		defaults : [],
-		fn : {
+		_fn : {
 			set_lang : function (i) { 
-				var langs = this.setting.languages;
+				var langs = this.settings.languages;
 				if(!$.isArray(langs) || langs.length == 0) return false;
 				if($.inArray(i,langs) == -1) {
 					if(langs[i] != undefined) i = langs[i];
@@ -395,9 +415,9 @@
 				}
 				if(i == this.data.current_language) return true;
 				var st = false, selector = ".jstree-" + this.get_index() + ' ul li a';
-				st = $.jstree.css.get_css(selector + "." + this.data.current_language, false, this.data.language_css);
+				st = $.jstree._css.get_css(selector + "." + this.data.current_language, false, this.data.language_css);
 				if(st !== false) st.style.display = "none";
-				st = $.jstree.css.get_css(selector + "." + i, false, this.data.language_css);
+				st = $.jstree._css.get_css(selector + "." + i, false, this.data.language_css);
 				if(st !== false) st.style.display = "";
 				this.data.current_language = i;
 				return true;
@@ -428,10 +448,9 @@
 				else obj = obj.children("a:eq(0)");
 				obj = obj.contents().filter(function() { return this.nodeType == 3; })[0];
 				return obj.nodeValue = val;
-			}
-		},
-		callbacks : {
-			"before-init" : function () {
+			},
+			
+			__load_css : function () {
 				var langs = this.settings.languages;
 				if($.isArray(langs) && langs.length) {
 					this.data.current_language = langs[0];
@@ -441,17 +460,24 @@
 						if(langs[ln] != this.data.current_language) str += " display:none; ";
 						str += " } ";
 					}
-					this.data.language_css = $.jstree.css.add_sheet({ 'str' : str });
+					this.data.language_css = $.jstree._css.add_sheet({ 'str' : str });
 				}
 			}
+		},
+		callback : function (t, f, d) {
+			var cb = t + ":" + f;
+			if(/^(before:_init)$/.test(cb)) this.__load_css(false, true);
 		}
 	});
-	// jsTree languages plugin end
+	$.jstree.defaults.plugin_list.push("languages");
+})(jQuery);
+// jsTree languages plugin end
 
-	// jsTree open_close plugin begin
-	$.jstree.add_plugin("open", {
+// jsTree open_close plugin begin
+(function ($) {
+	$.jstree.plugin("open", {
 		defaults : [],
-		fn : {
+		_fn : {
 			open_node : function (obj, callback, is_async, is_refresh) {
 				obj = this.get_node(obj);
 				if(!obj.length) return false;
@@ -477,7 +503,7 @@
 				if(obj.hasClass("jstree-open"))		return this.close_node(obj); 
 			},
 			open_all : function (obj, original_obj) {
-				obj = obj ? this.get_node(obj) : container;
+				obj = obj ? this.get_node(obj) : this.get_container();
 				if(original_obj) { 
 					obj = obj.find("li.jstree-closed");
 				}
@@ -493,15 +519,15 @@
 						_this.open_all(__this, original_obj); 
 					});
 				});
-				if(original_object && original_object.find('li.jstree-closed').size() == 0) return { 'obj' : obj };
+				if(original_obj && original_obj.find('li.jstree-closed').size() == 0) return { 'obj' : obj };
 			},
 			close_all : function (obj) {
 				var _this = this;
-				obj = obj ? this.get_node(obj) : container;
-				obj.find("li.open").andSelf().each(function () { _this.close_node(this); });
+				obj = obj ? this.get_node(obj) : this.get_container();
+				obj.find("li.jstree-open").andSelf().each(function () { _this.close_node(this); });
 				return { 'obj' : obj };
 			},
-			reopen : function () {
+			__reopen : function () {
 				var _this = this;
 				if(this.data.opened_ids.length) {
 					var remaining = [];
@@ -514,31 +540,40 @@
 				}
 			}
 		},
-		callbacks : {
-			"before-load" : function () {
-				if(arguments[1] == true) this.data.opened_ids = $.map($.makeArray(this.settings.open), function (n) { return "#" + n.toString().replace(/^#/,"").replace('\\/','/').replace('/','\\/'); });
-				else data.obj.find(".jstree-open").each(function() { this.data.opened_ids.push("#" + this.id.replace('/','\\/')); });
-			},
-			"after-load" : function () {
-				this.reopen();
-			},
-			"after-open_node" : function (data) {
-				if(data.is_refresh && data.is_async) this.reopen();
+		callback : function (t, f, d) {
+			var cb = t + ":" + f;
+			switch(t + ":" + f) {
+				case "before:load": 
+					if(d[1] == true) this.data.opened_ids = $.map($.makeArray(this.settings.open), function (n) { return "#" + n.toString().replace(/^#/,"").replace('\\/','/').replace('/','\\/'); });
+					else data.obj.find(".jstree-open").each(function() { this.data.opened_ids.push("#" + this.id.replace('/','\\/')); });
+					break;
+				case "after:load":
+					this.__reopen();
+					break;
+				case "after:open_node": 
+					if(d.is_refresh && d.is_async) this.__reopen();
+					break;
 			}
 		}
 	});
-	// jsTree open_close plugin end
+	$.jstree.defaults.plugin_list.push("open");
+})(jQuery);
+// jsTree open_close plugin end
 
-	// jsTree selection plugin begin
-	$.jstree.add_plugin("select", {
+// jsTree selection plugin begin
+(function ($) {
+	$.jstree.plugin("select", {
 		defaults : { 
 			selected : [],
 			selected_parent_close : false,
 			selected_parent_delete : false,
 			// TODO: implement multiple (maybe UI plugin, separate function or here)
-			multiple : false
+			multiple : false, // TODO: on, ctrl, shift, alt
+			enhance : {
+				"func_name" : 1 // function name, parameter index (0-based)
+			}
 		},
-		fn : {
+		_fn : {
 			select_node : function (obj) {
 				obj = this.get_node(obj);
 				if(!obj.length) return false;
@@ -563,7 +598,7 @@
 			},
 			is_selected : function (obj) { return this.data.selected.index(this.get_node(obj)) >= 0; },
 			get_selected : function (context) { if(context) return $(context).find(".jstree-clicked").parent(); else return this.data.selected; },
-			reselect : function () {
+			__reselect : function () {
 				var _this = this;
 				if(this.data.selected_ids.length) {
 					var remaining = [];
@@ -576,44 +611,112 @@
 				}
 			}
 		},
-		callbacks : {
-			"before-init" : function () {
-				this.data.selected = $([]);
-				this.data.selected_ids = [];
-			},
-			"before-load" : function () {
-				this.data.selected_ids = [];
-				if(arguments[1] == true) this.data.selected_ids = $.map($.makeArray(this.settings.select.selected), function (n) { return "#" + n.toString().replace(/^#/,"").replace('\\/','/').replace('/','\\/'); });
-				else this.data.selected.each(function() { this.data.selected_ids.push("#" + this.id.replace('/','\\/')); });
-			},
-			"after-load" : function () {
-				this.reselect();
-			},
-			"after-open_node" : function (data) {
-				if(data.is_refresh && data.is_async) this.reselect();
-			},
-			"after-close_node" : function (data) {
-				if(data.obj && this.settings.select.selected_parent_close) {
-					var n = this.get_selected(data.object), _this = this;
-					if(n.length) {
-						n.each(function () { 
-							_this.deselect_node(this); 
-						});
-						if(this.settings.select.selected_parent_close == "select_parent") this.select_node(data.obj);
+		callback : function (t, f, d) {
+			switch(t + ":" + f) {
+				case "before:_init": 
+					this.data.selected = $([]);
+					this.data.selected_ids = [];
+					break;
+				case "before:load":
+					this.data.selected_ids = [];
+					if(d[1] == true) this.data.selected_ids = $.map($.makeArray(this.settings.select.selected), function (n) { return "#" + n.toString().replace(/^#/,"").replace('\\/','/').replace('/','\\/'); });
+					else this.data.selected.each(function() { this.data.selected_ids.push("#" + this.id.replace('/','\\/')); });
+					break;
+				case "after:load": 
+					this.__reselect();
+					break;
+				case "after:open_node":
+					if(d.is_refresh && d.is_async) this.__reselect();
+					break;
+				case "after:close_node" :
+					if(d.obj && this.settings.select.selected_parent_close) {
+						var n = this.get_selected(data.object), _this = this;
+						if(n.length) {
+							n.each(function () { 
+								_this.deselect_node(this); 
+							});
+							if(this.settings.select.selected_parent_close == "select_parent") this.select_node(data.obj);
+						}
 					}
-				}
-			},
-			"before-delete_node" : function (obj) {
-				if(this.is_selected(obj) && this.settings.select.selected_delete == "select_previous") this.data.selected_delete = this.get_prev(obj);
-				else this.data.selected_delete = false;
-			},
-			"after-delete_node" : function (data) {
-				if(this.data.selected_delete) this.select_node(this.data.selected_delete);
-				this.data.selected_delete = false;
+					break;
+				case "before:delete_node": 
+					if(this.is_selected(obj) && this.settings.select.selected_delete == "select_previous") this.data.selected_delete = this.get_prev(obj);
+					else this.data.selected_delete = false;
+					break;
+				case "after:delete_node":
+					if(this.data.selected_delete) this.select_node(this.data.selected_delete);
+					this.data.selected_delete = false;
+					break;
 			}
+			if(t == "before" && typeof this.settings.select.enhance[f] !== "undefined") d[this.settings.enhance[f]] = this.data.selected;
 		}
 	});
-	// jsTree selection plugin end
+	$.jstree.defaults.plugin_list.push("select");
+})(jQuery);
+// jsTree selection plugin end
+
+
+
+// Datastores begin
+(function ($) {
+	// html datastore begin
+	$.extend($.jstree.datastores, {
+		"html" : function (tree, opts, is_partial) {
+			var cnt = (!is_partial && !opts.url) ? tree.get_container().children("ul:eq(0)").html() : null;
+			return {
+				get		: function(obj) { return obj && $(obj).size() ? $('<div>').append(tree.get_node(obj).clone()).html() : tree.get_container().children("ul:eq(0)").html(); },
+				parse	: function(data, callback) { return data; },
+				load	: function(data, callback) {
+					if(opts.url) {
+						$.ajax({
+							'type'		: opts.method,
+							'url'		: opts.url, 
+							'data'		: data, 
+							'dataType'	: "html",
+							'success'	: function (d, textStatus) {
+								callback.call(null, d);
+							},
+							'error'		: function (xhttp, textStatus, errorThrown) { 
+								callback.call(null, false);
+								tree.error(errorThrown + " " + textStatus); 
+							}
+						});
+					}
+					else {
+						callback.call(null, opts.staticData || cnt || "");
+					}
+				}
+			};
+		}
+	});
+	// html datastore end
+})(jQuery);
+// Datastores end
+
+
+/*
+	$.jstree.fn = $.jstree.instance.prototype = {
+
+	};
+
+
+// Plugins begin
+(function($) {
+
+	// jsTree lock plugin begin
+	$.jstree.add_plugin("lock", {
+		defaults : false,
+		fn : {
+			lock		: function () { this.settings.locked = true; },
+			unlock		: function () { this.settings.locked = false; },
+			is_locked	: function () { return this.settings.locked !== undefined && this.settings.locked; }
+		},
+		callbacks : {
+			// "before-all" : 
+		}
+		// TODO: all other functions - maybe they should be blocked? maybe bind to an event function???
+	});
+	// jsTree lock plugin end
 
 	// jsTree types plugin begin
 	$.jstree.add_plugin("rules", {
@@ -714,6 +817,24 @@
 	// TODO: add create/rename (set_text)/delete
 
 	// jsTree move plugin begin
+	$.jstree.add_plugin("move", {
+		defaults : {
+			copy : "on" // TODO: ctrl, shift, alt
+		},
+		fn : {
+			copy : function (obj) {
+				obj = this.get_node(obj);
+				if(obj && obj.length) { move.set_node(obj, this); move.data.is_copy = true; }
+			},
+			cut : function (obj) {
+				obj = this.get_node(obj);
+				if(obj && obj.length) { move.set_node(obj, this); move.data.is_copy = true; }
+			},
+			paste : function (obj, position) {
+				
+			}
+		}
+	});
 	// TODO: get_parent is used? Describe requirement - traverse plugin
 	var move = {
 		set_node : function (n, t) {
@@ -884,46 +1005,6 @@
 	$.jstree.copy	= function (obj) { $.jstree.cut(obj); move.data.is_copy = true; }; // TODO: add copy option
 	$.jstree.paste	= function (ref, p, skip_check) { move.set_ref_node(ref); move.set_position(p || "inside"); if(skip_check || move.check_move()) move.do_move(); }; // TODO: how about check move
 	// jsTree move plugin end
-
-	// push all plugins for testing
-	$.jstree.defaults.plugin = [ "data", "lock", "traverse", "themes", "languages", "rules", "select", "open", "debug" ];
 })(jQuery);
 // Plugins end
-
-// Datastores begin
-(function ($) {
-	// html datastore begin
-	$.extend($.jstree.datastores, {
-		"html" : function (tree, opts, is_partial) {
-			var cnt = (!is_partial && !opts.url) ? tree.get_container().children("ul:eq(0)").html() : null;
-			return {
-				get		: function(obj) { return obj && $(obj).size() ? $('<div>').append(tree.get_node(obj).clone()).html() : tree.get_container().children("ul:eq(0)").html(); },
-				parse	: function(data, callback) { return data; },
-				load	: function(data, callback) {
-					if(opts.url) {
-						$.ajax({
-							'type'		: opts.method,
-							'url'		: opts.url, 
-							'data'		: data, 
-							'dataType'	: "html",
-							'success'	: function (d, textStatus) {
-								callback.call(null, d);
-							},
-							'error'		: function (xhttp, textStatus, errorThrown) { 
-								callback.call(null, false);
-								tree.error(errorThrown + " " + textStatus); 
-							}
-						});
-					}
-					else {
-						callback.call(null, opts.staticData || cnt || "");
-					}
-				}
-			};
-		}
-	});
-	// html datastore end
-})(jQuery);
-// Datastores end
-
-
+*/
