@@ -64,6 +64,9 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 <input type="button" value="$.jstree._focused().rename_node(null, 'some <em>mixed </em> title');" onclick="$.jstree._focused().rename_node(null, 'some <em>mixed </em> title');" />
 <hr />
 <input type="button" value="$.jstree._focused().set_state(STATE);" onclick="$.jstree._focused().set_state($.extend(true, {}, STATE));" />
+<hr />
+<input type="button" value="$.jstree._focused().move_node(null, -1, 0);" onclick="$.jstree._focused().move_node(null, -1, 0);" />
+<input type="button" value="$.jstree._focused().move_node(null, '#some-node-id', 'before');" onclick="$.jstree._focused().move_node(null, '#some-node-id', 'before');" />
 
 </body>
 </html>

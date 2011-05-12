@@ -675,7 +675,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			*/
 			get_parent : function (obj) {
 				obj = this.get_node(obj);
-				if(obj == -1 || !obj || !obj.length) { return false; }
+				if(obj === -1 || !obj || !obj.length) { return false; }
 				var o = obj.parentsUntil(".jstree", "li:eq(0)");
 				return o.length ? o : -1;
 			},
@@ -1186,7 +1186,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				this.data.core.state = this.get_state();
 				this.load_node(-1, function (o, s) { 
 					if(s) {
-						this.set_state(this.data.core.state);
+						this.set_state(this.data.core.state, function () { this.__trigger('refresh'); });
 					}
 					this.data.core.state = null;
 				});
@@ -1244,7 +1244,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				pos = typeof pos === "undefined" ? "last" : pos;
 
 				if(par !== -1 && !par.length) { return false; }
-				if(!is_loaded && !this.is_loaded(par)) { 
+				if(!pos.match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) { 
 					return this.load_node(par, function () { this.create_node(par, node, pos, callback, true); }); 
 				}
 
@@ -1303,8 +1303,58 @@ Some static functions and variables, unless you know exactly what you are doing 
 				this.__callback({ "obj" : obj, "prev" : pre, "parent" : par });
 				return obj;
 			},
-			move_node : function () {
+			move_node : function (obj, par, pos, callback, is_loaded) {
+				obj = this.get_node(obj);
+				par = this.get_node(par);
+				pos = typeof pos === "undefined" ? "last" : pos;
 
+				if(par !== -1 && !par.length) { return false; }
+				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) { 
+					return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); }); 
+				}
+
+				var old_par = this.get_parent(obj),
+					new_par = (!pos.toString().match(/^(before|after)$/) || par === -1) ? par : this.get_parent(par);
+				if(par === -1) {
+					par = this.get_container();
+					if(pos === "before") { pos = "first"; }
+					if(pos === "after") { pos = "last"; }
+				}
+				// if (new_par !== -1 && new_par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) return false;
+				switch(pos) {
+					case "before": 
+						if(par.get(0) === obj.get(0) || par.prev().get(0) === obj.get(0)) { return true; }
+						par.before(obj); 
+						break;
+					case "after" : 
+						if(par.get(0) === obj.get(0) || par.next().get(0) === obj.get(0)) { return true; }
+						par.after(obj); 
+						break;
+					case "inside":
+					case "first" :
+						if(!par.children("ul").length) { par.append("<ul />"); }
+						par.children("ul").prepend(obj);
+						break;
+					case "last":
+						if(!par.children("ul").length) { par.append("<ul />"); }
+						par.children("ul").append(obj);
+						break;
+					default:
+						if(!par.children("ul").length) { par.append("<ul />"); }
+						if(!pos) { pos = 0; }
+						new_par = par.children("ul").children("li").eq(pos);
+						if(new_par.get(0) === obj.get(0)) { return true; }
+						if(new_par.length) { new_par.before(obj); }
+						else { par.children("ul").append(obj); }
+						new_par = par;
+						break;
+				}
+				if(new_par === -1 || new_par.get(0) === this.get_container().get(0)) { new_par = -1; }
+				this.__callback({ "obj" : obj, "par" : new_par, "index" : obj.index() });
+				this.correct_node(new_par, true); // $.jstree._reference(new_par).correct_node(new_par, true);
+				this.correct_node(old_par, true); // $.jstree._reference(old_par).correct_node(old_par, true);
+				if(callback) { callback.call(this, obj, par, pos); }
+				return true;
 			}
 		}
 	});
