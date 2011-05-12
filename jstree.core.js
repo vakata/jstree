@@ -1288,7 +1288,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			rename_node : function (obj, val) {
 				obj = this.get_node(obj);
 				if(obj && obj.length) {
-					this.set_text(obj, val) // .apply(this, Array.prototype.slice.call(arguments)) 
+					this.set_text(obj, val); // .apply(this, Array.prototype.slice.call(arguments)) 
 					this.__callback({ "obj" : obj, "name" : val }); 
 				}
 			},
