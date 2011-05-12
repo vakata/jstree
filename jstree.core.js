@@ -484,7 +484,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 			<_get_string>
 		*/
 		defaults : { 
-			strings : false
+			strings : false,
+			check_move : function () { return true; }
 		},
 		_fn : { 
 			/* 
@@ -805,7 +806,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(obj !== -1) { obj.addClass("jstree-loading"); }
 				this._load_node(obj, $.proxy(function (status) {
 					if(obj !== -1) { obj.removeClass("jstree-loading"); }
-					if(callback) { callback.call(this, status); }
+					if(callback) { callback.call(this, obj, status); }
 					this.__callback({ "obj" : obj, "status" : status });
 				}, this));
 				return true;
@@ -822,7 +823,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			_load_node	: function (obj, callback) {
 				// if using async - empty the node first
 				if(obj === -1) {
-					this.get_container_ul().empty().append(this.data.core.original_container_html);
+					this.get_container_ul().empty().append(this.data.core.original_container_html.clone(true));
 				}
 				callback.call(null, true);
 			},
@@ -1186,7 +1187,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				this.data.core.state = this.get_state();
 				this.load_node(-1, function (o, s) { 
 					if(s) {
-						this.set_state(this.data.core.state, function () { this.__trigger('refresh'); });
+						this.set_state($.extend(true, {}, this.data.core.state), function () { this.__trigger('refresh'); });
 					}
 					this.data.core.state = null;
 				});
@@ -1303,6 +1304,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 				this.__callback({ "obj" : obj, "prev" : pre, "parent" : par });
 				return obj;
 			},
+			check_move : function (obj, par, pos) {
+				if(par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) { return false; }
+				if(!this.get_settings(true).core.check_move.call(this, obj, par, pos)) { return false; }
+				return true;
+			},
 			move_node : function (obj, par, pos, callback, is_loaded) {
 				obj = this.get_node(obj);
 				par = this.get_node(par);
@@ -1314,13 +1320,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 
 				var old_par = this.get_parent(obj),
-					new_par = (!pos.toString().match(/^(before|after)$/) || par === -1) ? par : this.get_parent(par);
+					new_par = (!pos.toString().match(/^(before|after)$/) || par === -1) ? par : this.get_parent(par),
+					old_ins = $.jstree._reference(obj),
+					new_ins = par === -1 ? this : $.jstree._reference(par);
 				if(par === -1) {
 					par = this.get_container();
 					if(pos === "before") { pos = "first"; }
 					if(pos === "after") { pos = "last"; }
 				}
-				// if (new_par !== -1 && new_par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) return false;
+				if(!this.check_move(obj, new_par, pos)) {
+					return false;
+				}
 				switch(pos) {
 					case "before": 
 						if(par.get(0) === obj.get(0) || par.prev().get(0) === obj.get(0)) { return true; }
@@ -1351,8 +1361,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				if(new_par === -1 || new_par.get(0) === this.get_container().get(0)) { new_par = -1; }
 				this.__callback({ "obj" : obj, "par" : new_par, "index" : obj.index() });
-				this.correct_node(new_par, true); // $.jstree._reference(new_par).correct_node(new_par, true);
-				this.correct_node(old_par, true); // $.jstree._reference(old_par).correct_node(old_par, true);
+				old_ins.correct_node(old_par, true);
+				new_ins.correct_node(new_par, true);
 				if(callback) { callback.call(this, obj, par, pos); }
 				return true;
 			}
