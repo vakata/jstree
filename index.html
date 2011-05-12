@@ -1,0 +1,69 @@
+<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta content="text/html;charset=utf-8" http-equiv="content-type" />
+	<title>jstree testing</title>
+	<script type="text/javascript" src="_lib/jquery.js"></script>
+	<script type="text/javascript" src="vakata.js"></script>
+	<script type="text/javascript" src="jstree.core.js"></script>
+	<script type="text/javascript" src="jstree.themes.js"></script>
+	<script type="text/javascript" src="jstree.ui.js"></script>
+	<style type="text/css">
+	html, body { margin:0; padding:0; font-family:Verdana; font-size:10px; }
+	#container { width:800px; margin:0 auto; }
+	.demo { width:300px; margin:20px auto; float:none; border:1px solid gray; height:200px; overflow:auto; }
+	</style>
+	<script type="text/javascript">
+	var STATE = false;
+	function save_state() {
+		STATE = $('#jstree').jstree('get_state');
+	}
+	$(function () {
+		$("#jstree").bind('__ready.jstree', function () {
+			save_state();
+		});
+		$("#jstree").jstree();
+	});
+	</script>
+</head>
+<body>
+
+<div id="jstree">
+	<ul>
+		<li id="some-node-id">Root node
+			<ul>
+				<li data-jstree='{ "icon" : false }'>child with no icon</li>
+				<li>child</li>
+				<li data-jstree='{ "selected" : true }' id="the-selected-one">selected child</li>
+				<li><em>italic child</em></li>
+				<li>mixed <span style="color:red;">content </span><strong>child</strong></li>
+				<li><strong>strong child</strong></li>
+			</ul>
+		</li>
+		<li id="some-node-id2" data-jstree='{ "opened" : true }'>Root node 2
+			<ul>
+				<li>opened child</li>
+			</ul>
+		</li>
+		<li id="some-node-id3" data-jstree='{ "opened" : true }'>Root node 3
+			<ul>
+				<li>opened child</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+<hr />
+<input type="button" value="$.jstree._focused().create_node();" onclick="$.jstree._focused().create_node();" />
+<input type="button" value="$.jstree._focused().create_node(-1, 'New root node');" onclick="$.jstree._focused().create_node(-1, 'New root node');" />
+<input type="button" value="$.jstree._focused().create_node(null, { title : 'New root node', children : [ 'Created child 1', 'Created child 2' ] });" onclick="$.jstree._focused().create_node(null, { title : 'New root node', children : [ 'Created child 1', 'Created child 2' ] });" />
+<hr />
+<input type="button" value="$.jstree._focused().delete_node();" onclick="$.jstree._focused().delete_node();" />
+<hr />
+<input type="button" value="$.jstree._focused().rename_node(null, 'some <em>mixed </em> title');" onclick="$.jstree._focused().rename_node(null, 'some <em>mixed </em> title');" />
+<hr />
+<input type="button" value="$.jstree._focused().set_state(STATE);" onclick="$.jstree._focused().set_state($.extend(true, {}, STATE));" />
+
+</body>
+</html>

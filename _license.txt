@@ -1,0 +1,14 @@
+Title: License
+
+*<jstree at http://jstree.com/> is licensed same as <jQuery at http://jquery.com>.*
+
+The MIT License is recommended for most projects. It is simple and easy to understand and it places almost no restrictions on what you can do with <jstree at http://jstree.com/>.
+
+If the GPL suits your project better you are also free to use <jstree at http://jstree.com/> under that license.
+
+You don't have to do anything special to choose one license or the other and you don't have to notify anyone which license you are using. You are free to use <jstree at http://jstree.com/> in commercial projects as long as the copyright header is left intact.
+
+*Licenses*
+
+ - <MIT License at http://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt> (<More Information at http://en.wikipedia.org/wiki/MIT_License>)
+ - <GPL License at http://github.com/jquery/jquery/blob/master/GPL-LICENSE.txt> (<More Information at http://en.wikipedia.org/wiki/GNU_General_Public_License>)

@@ -1,0 +1,86 @@
+Title: Usage
+
+*Introduction*
+
+ - jsTree is a *javascript based, cross browser tree component*. It is packaged as a <jQuery at http://jquery.com> plugin.
+ - jsTree *is absolutely free*
+ - jsTree is a <one man at http://vakata.com> project and relies on <its great community at http://groups.google.com/group/jstree> for <feature requests & bug reports at http://code.google.com/p/jstree/issues/list>. Join in!
+ - jsTree passes <jslint validation at http://jslint.com>, minifies nicely and does not modify the global scope in any way.
+ - jsTree uses plugins so feel free to remove any plugins you do not use (or use the <download builder at http://jstree.com>) or create your own plugins.
+
+*Features at a glance*
+ - Various data sources - HTML, JSON, XML
+ - Supports AJAX loading
+ - Drag & drop support
+ - Highly configurable
+ - Theme support + included themes
+ - Uses jQuery's event system
+ - Optional keyboard navigation
+ - Maintain the same tree in many languages
+ - Inline editing
+ - Open/close optional animation
+ - Define node types and fine tune them
+ - Configurable multitree drag & drop
+ - Optional checkbox tree support
+ - Search function
+ - Supports plugins
+ - Optional state saving using cookies
+ - RTL support
+ - Optional sorting / unique management
+
+*Including the files*
+
+First of all, as jsTree is a jQuery component, you need to include jQuery itself. jsTree v.1.0 requires jQuery version 1.4.4 :
+><script type="text/javascript" src="_lib/jquery.js"></script>
+
+Then you need to include jstree itself : 
+><script type="text/javascript" src="jquery.jstree.js"></script>
+
+You may change the path to whatever you like, but it is recommended not to rename _jquery.tree.js_ (or _jquery.tree.min.js_) as the filename may be used for path autodetection (for example in the <jstree.themes.js> plugin, however all official plugins will provide an alternative way of specifying any needed path manually).
+
+Additionally some plugins have dependencies. If a plugin detects that a dependency is missing, it will throw an error.
+
+*Creating and configuring an instance*
+
+You can create a tree in the following manner (<$().jstree>) :
+>jQuery("some-selector-to-container-node-here").jstree([ config_object ]);
+
+In the optional config object you specify all the options that you want to set. Each plugin will describe its configuration and defaults. Each plugin's options (even the core) are set in their own subobject, which is named after the plugin. For example all of the core's options are set in the _core_ key of the config object.
+>jQuery("some-selector-to-container-node-here")
+>	.jstree({
+>		core : {
+>			/* core options go here */
+>		}
+>	});
+
+*Please note that if your options for a given plugin are the same as the defaults you may omit those options or omit the subobject completely (if you do not need to modify the defaults).*
+
+The special _plugins_ config option is not part of any plugin, it defines a list of active plugins for the instance being created. 
+Although many plugins may be included, only the ones listed in this option will be active.
+>jQuery("some-selector-to-container-node-here")
+>	.jstree({
+>		core : { /* core options go here */ },
+>		plugins : [ "themes", "html_data", "some-other-plugin" ]
+>	});
+
+*Interacting with the tree*
+
+To perform an operation programatically on a given instance you can use two methods (<$().jstree>, <$.jstree._reference>).
+>/* METHOD ONE */
+>jQuery("some-selector-to-container-node-here")
+>	.jstree("operation_name" [, argument_1, argument_2, ...]);
+> 
+>/* METHOD TWO */
+>jQuery.jstree._reference(needle)
+>	.operation_name([ argument_1, argument_2, ...]);
+
+jsTree uses events to notify of any changes happening in the tree. All events fire on the tree container in the _jstree_ namespace and are named after the function that triggered them. 
+Personally I believe it is best to bind to the events and then create the instance.
+
+>jQuery("some-container")
+>	.bind("loaded.jstree", function (event, data) {
+>		alert("TREE IS LOADED");
+>	})
+>	.jstree({ /* configuration here */ });
+
+Please note the second parameter data. Read the documentation on each event to see what it contains.
