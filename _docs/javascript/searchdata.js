@@ -30,7 +30,7 @@ var indexSectionsWithContent = {
       "Z": false
       },
    "Variables": {
-      "Symbols": true,
+      "Symbols": false,
       "Numbers": false,
       "A": false,
       "B": false,

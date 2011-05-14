@@ -37,6 +37,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 	*/
 	$.jstree = { 
 		/* 
+			Variable: $.jstree.VERSION
+				*string* the version of jstree
+		*/
+		VERSION : '1.0',
+		/* 
 			Variable: $.jstree.IS_IE6
 				*boolean* indicating if the client is running Internet Explorer 6
 		*/
@@ -1114,6 +1119,14 @@ Some static functions and variables, unless you know exactly what you are doing 
 				});
 				return obj;
 			},
+			/* 
+				Function: scroll_to_node
+				This function scrolls the container to the desired node (if needed).
+
+				Parameters:
+					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
+
+			*/
 			scroll_to_node : function (obj) {
 				var c = this.get_container()[0], t;
 				if(c.scrollHeight > c.offsetHeight) {
@@ -1128,12 +1141,63 @@ Some static functions and variables, unless you know exactly what you are doing 
 					}
 				}
 			},
+			/* 
+				Function: get_state
+				This function returns the current state of the tree (as collected from all active plugins). 
+				Plugin authors: pay special attention to the way this function is extended for new plugins. In your plugin code write:
+				> get_state : function () {
+				>   var state = this.__call_old();
+				>   state.your-plugin-name = <some-value-you-collect>;
+				>   return state;
+				> }
 
+				Returns:
+					object - the current state of the instance
+			*/
 			get_state : function () { // TODO: scroll position, theme
 				var state	= { 'open' : [], 'scroll' : { 'left' : this.get_container().scrollLeft(), 'top' : this.get_container().scrollTop() } };
 				this.get_container_ul().find('.jstree-open').each(function () { if(this.id) { state.open.push(this.id); } });
 				return state;
 			},
+			/* 
+				Function: set_state
+				This function returns sets the state of the tree. 
+				Plugin authors: pay special attention to the way this function is extended for new plugins. In your plugin code write:
+				> set_state : function (state, callback) {
+				>   if(this.__call_old()) {
+				>     if(state.your-plugin-name) {
+				>       
+				>       // restore using `state.your-plugin-name`
+				>       // if you need some async activity so that you return to this bit of code
+				>       // do not delete state.your-plugin-name and return false (see core's function for example)
+				>       
+				>       delete state.your-plugin-name;
+				>       this.set_state(state, callback);
+				>       return false;
+				>     }
+				>     return true;
+				>   }
+				>   return false;
+				> }
+
+				Parameters:
+					state - *object* the state to restore to
+					callback - *function* this will be executed in the instance's scope once restoring is done
+
+				Returns:
+					boolean - the return value is used to determine the phase of restoration
+
+				Triggers:
+					<set_state>
+
+				Event: set_state
+				This event is triggered in the *jstree* namespace when a set_state call completes.
+
+				Parameters:
+					data.inst - the instance
+					data.args - *array* the arguments passed to the function
+					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
+			*/
 			set_state : function (state, callback) {
 				if(state) {
 					if($.isArray(state.open)) {
@@ -1183,6 +1247,19 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				return false;
 			},
+			/* 
+				Function: refresh
+				This function saves the current state, reloads the complete tree and returns it to the saved state. 
+
+				Triggers:
+					<refresh>
+
+				Event: refresh
+				This event is triggered in the *jstree* namespace when a refresh call completes.
+
+				Parameters:
+					data.inst - the instance
+			*/
 			refresh : function () {
 				this.data.core.state = this.get_state();
 				this.load_node(-1, function (o, s) { 
@@ -1192,7 +1269,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 					this.data.core.state = null;
 				});
 			},
+			/* 
+				Function: get_text
+				This function returns the title of the node. 
 
+				Parameters:
+					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
+					remove_html - *boolean* set to _true_ to return plain text instead of HTML
+
+				Returns:
+					string - the title of the node, specified by _obj_
+			*/
 			get_text : function (obj, remove_html) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
@@ -1200,6 +1287,35 @@ Some static functions and variables, unless you know exactly what you are doing 
 				obj.children(".jstree-icon").remove();
 				return obj[ remove_html ? 'text' : 'html' ]();
 			},
+			/* 
+				Function: set_text
+				This function sets the title of the node. This is a low-level function, you'd be better off using <rename>.
+
+				Parameters:
+					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
+					val - *string* the new title of the node (can be HTMl too)
+
+				Returns:
+					boolean - was the rename successfull
+
+				Triggers:
+					<set_text>
+
+				Event: set_text
+				This event is triggered in the *jstree* namespace when a set_text call completes.
+
+				Parameters:
+					data.inst - the instance
+					data.args - *array* the arguments passed to the function
+					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
+					data.rslt - *object* which contains a two key: _obj_ (the node) and _val_ (the new title).
+				
+				Example:
+				> $("div").bind("set_text.jstree", function (e, data) { 
+				>   alert("Renamed to: " + data.rslt.val);
+				> });
+			
+			*/
 			set_text : function (obj, val) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
@@ -1209,7 +1325,28 @@ Some static functions and variables, unless you know exactly what you are doing 
 				this.__callback({ "obj" : obj, "text" : val });
 				return true;
 			},
+			/* 
+				Function: parse_json
+				This function returns a jQuery node after parsing a JSON object (a LI node for single elements or an UL node for multiple). This function will use the default title from _jstree.config.core.strings_ if none is specified.
 
+				Parameters:
+					node - *mixed* the input to parse
+					> // can be a string
+					> "The title of the parsed node"
+					> // array of strings
+					> [ "Node 1", "Node 2" ]
+					> // an object
+					> { "title" : "The title of the parsed node" }
+					> // you can manipulate the output
+					> { "title" : "The title of the parsed node", "li_attr" : { "id" : "id_for_li" }, "a_attr" : { "href" : "http://jstree.com" } }
+					> // you can supply metadata, which you can later access using $(the_li_node).data()
+					> { "title" : "The title of the parsed node", "data" : { <some-values-here> } }
+					> // you can supply children (they can be objects too)
+					> { "title" : "The title of the parsed node", "children" : [ "Node 1", { "title" : "Node 2" } ] }
+
+				Returns:
+					jQuery - the LI (or UL) node which was produced from the JSON
+			*/
 			parse_json : function (node) {
 				var li, a, ul, t;
 				if($.isArray(node)) {
