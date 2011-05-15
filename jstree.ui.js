@@ -156,8 +156,10 @@ This plugin enables selecting, deselecting and hovering tree items.
 				return obj.each(function () {
 					var t = $(this),
 						d = t.data("jstree");
+					t.find('.jstree-clicked').removeClass('jstree-clicked');
 					if(d && d.selected) {
 						_this.select_node(t);
+						d.selected = false;
 					}
 				});
 			},

@@ -1,15 +1,13 @@
 /*
- * jsTree 1.0-rc3
+ * jsTree 1.0
  * http://jstree.com/
  *
- * Copyright (c) 2010 Ivan Bozhanov (vakata.com)
+ * Copyright (c) 2011 Ivan Bozhanov (vakata.com)
  *
  * Licensed same as jquery - under the terms of either the MIT License or the GPL Version 2 License
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  *
- * $Date: 2010-11-04 12:27:14 +0200 (четв, 04 ноември 2010) $
- * $Revision: 232 $
  */
 
 /*jslint browser: true, onevar: true, undef: true, bitwise: true, strict: true */
@@ -21,7 +19,7 @@ The only required part of jstree it consists of a few functions bound to the $.j
 "use strict";
 (function () { 
 	if(!jQuery) { throw "jsTree: jQuery not included."; }
-	if(jQuery.jstree) { return; }
+	if(jQuery.jstree) { return; } // prevent another load? maybe there is a better way?
 
 /* Group: $.jstree. 
 Some static functions and variables, unless you know exactly what you are doing do not use these, but <$().jstree> instead.
@@ -41,6 +39,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				*string* the version of jstree
 		*/
 		VERSION : '1.0',
+
 		/* 
 			Variable: $.jstree.IS_IE6
 				*boolean* indicating if the client is running Internet Explorer 6
@@ -155,12 +154,12 @@ Some static functions and variables, unless you know exactly what you are doing 
 		/* 
 			Function: $.jstree.__call
 				Call a function on the instance and return the result
-		
+
 			Parameters:
 				instance - *mixed* the instance to destroy (this argument is passed to <$.jstree._reference> to get the instance)
 				operation - *string* the operation to execute
 				args - *array* the arguments to pass to the function
-		
+
 			See also:
 				<$.jstree._reference>
 		*/
@@ -172,7 +171,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 		/* 
 			Function: $.jstree._reference
 				Returns an instance
-		
+
 			Parameters:
 				needle - *mixed* - integer, DOM node contained inside a jstree container, ID string, jQuery object, selector
 		*/
@@ -193,10 +192,10 @@ Some static functions and variables, unless you know exactly what you are doing 
 		/*
 			Function: $.jstree._focus
 				Make an instance focused (which defocuses the previously focused instance)
-		
+
 			Parameters:
 				instance - *mixed* the instance to focus (this argument is passed to <$.jstree._reference> to get the instance)
-		
+
 			See also:
 				<$.jstree._reference>
 		*/
@@ -221,7 +220,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 		/*
 			Function: $.jstree.plugin
 				Register a plugin
-		
+
 			Parameters:
 				plugin_name - *string* the name of the new plugin (it will be used as a key in an object - make sure it is valid)
 				plugin_data - *object* consists of 4 keys. Default is:
@@ -381,7 +380,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 
 			this.get_container()
 				.bind("__construct.jstree", $.proxy(function () {
-						this.init();
+						// defer, so that events bound AFTER creating the instance (like __ready) are still handled
+						setTimeout($.proxy(function () { this.init(); }, this), 0);
 					}, this))
 				.bind("before.jstree", $.proxy(function (e, data) {
 						if(!/^is_locked|unlock$/.test(data.func) && this.data.core.locked) {
@@ -489,8 +489,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			<_get_string>
 		*/
 		defaults : { 
-			strings : false,
-			check_move : function () { return true; }
+			strings : false
 		},
 		_fn : { 
 			/* 
@@ -514,7 +513,6 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(a && a[s]) { return a[s]; }
 				return s; 
 			},
-
 			/* 
 				Function: init
 				Used internally. This function is called once the core plugin is constructed.
@@ -530,6 +528,12 @@ Some static functions and variables, unless you know exactly what you are doing 
 				
 				Example:
 				> $("div").bind("__loaded.jstree", function (e, data) { data.inst.do_something(); });
+
+				Event: __ready
+				This event is triggered in the *jstree* namespace when all initial loading is done. It won't be triggered after a refresh. Fires only once.
+
+				Parameters:
+					data.inst - the instance
 			*/
 			init : function () { 
 				this.data.core.original_container_html = this.get_container().find(" > ul > li").clone(true);
@@ -600,7 +604,6 @@ Some static functions and variables, unless you know exactly what you are doing 
 			is_locked : function () { 
 				return this.data.core.locked; 
 			},
-
 			/* 
 				Function: get_node
 				Get a hold of the LI node (which represents the jstree node).
@@ -619,7 +622,6 @@ Some static functions and variables, unless you know exactly what you are doing 
 				$obj = $obj.closest("li", this.get_container()); 
 				return $obj.length ? $obj : false; 
 			},
-
 			/* 
 				Function: get_next
 				Get the next sibling of a node
@@ -702,7 +704,6 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(!obj || !obj.length) { return false; }
 				return obj.find("> ul > li");
 			},
-
 			/* 
 				Function: is_parent
 				Check if a node is a parent.
@@ -1062,6 +1063,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 					var t = $(this),
 						d = t.data("jstree"),
 						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length ? "closed" : "leaf";
+					if(d.opened) { d.opened = false; }
+					if(d.closed) { d.closed = false; }
 					t.removeClass("jstree-open jstree-closed jstree-leaf jstree-last");
 					if(!t.children("a").length) { 
 						// allow for text and HTML markup inside the nodes
@@ -1125,7 +1128,6 @@ Some static functions and variables, unless you know exactly what you are doing 
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
-
 			*/
 			scroll_to_node : function (obj) {
 				var c = this.get_container()[0], t;
@@ -1308,13 +1310,12 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.inst - the instance
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
-					data.rslt - *object* which contains a two key: _obj_ (the node) and _val_ (the new title).
+					data.rslt - *object* which contains a two keys: _obj_ (the node) and _val_ (the new title).
 				
 				Example:
 				> $("div").bind("set_text.jstree", function (e, data) { 
 				>   alert("Renamed to: " + data.rslt.val);
 				> });
-			
 			*/
 			set_text : function (obj, val) {
 				obj = this.get_node(obj);
@@ -1327,7 +1328,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			},
 			/* 
 				Function: parse_json
-				This function returns a jQuery node after parsing a JSON object (a LI node for single elements or an UL node for multiple). This function will use the default title from _jstree.config.core.strings_ if none is specified.
+				This function returns a jQuery node after parsing a JSON object (a LI node for single elements or an UL node for multiple). This function will use the default title from <jstree.config.core.strings> if none is specified.
 
 				Parameters:
 					node - *mixed* the input to parse
@@ -1377,6 +1378,37 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				return li;
 			},
+			/* 
+				Function: create_node
+				This function creates a new node.
+
+				Parameters:
+					parent - *mixed* the parent for the newly created node. This is used as a jquery selector, can be jQuery object, DOM node, string, etc. Use -1 to create a new root node.
+					node - *mixed* the input to parse, check <parse_json> for description
+					position - *mixed* where to create the new node. Can be one of "before", "after", "first", "last", "inside" or a numerical index.
+					callback - optional function to be executed once the node is created
+					is_loaded - used internally when a node needs to be loaded - do not pass this
+
+				Returns:
+					jQuery - the LI node which was produced from the JSON (may return _undefined_ if the parent node is not yet loaded, but will create the node)
+
+				Triggers:
+					<create_node>
+
+				Event: create_node
+				This event is triggered in the *jstree* namespace when a new node is created.
+
+				Parameters:
+					data.inst - the instance
+					data.args - *array* the arguments passed to the function
+					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
+					data.rslt - *object* which contains a three keys: _obj_ (the node), _parent_ (the parent) and _position_ which is the numerical index.
+				
+				Example:
+				> $("div").bind("create_node.jstree", function (e, data) { 
+				>   alert("Created `" + data.inst.get_text(data.rslt.obj) + "` inside `" + (data.rslt.parent === -1 ? 'the main container' : data.inst.get_text(data.rslt.parent)) + "` at index " + data.rslt.position);
+				> });
+			*/
 			create_node : function (par, node, pos, callback, is_loaded) {
 				par = this.get_node(par);
 				pos = typeof pos === "undefined" ? "last" : pos;
@@ -1418,18 +1450,71 @@ Some static functions and variables, unless you know exactly what you are doing 
 						break;
 				}
 				if(tmp === -1 || tmp.get(0) === this.get_container().get(0)) { tmp = -1; }
-				this.__callback({ "obj" : li, "parent" : tmp });
 				this.correct_node(tmp, true);
 				if(callback) { callback.call(this, li); }
+				this.__callback({ "obj" : li, "parent" : tmp, "position" : li.index() });
 				return li;
 			},
+			/*
+				Function: rename_node
+				This function renames a new node.
+
+				Parameters:
+					obj - *mixed* the node to rename. This is used as a jquery selector, can be jQuery object, DOM node, string, etc.
+					val - *string* the new title
+
+				Triggers:
+					<rename_node>
+
+				Event: rename_node
+				This event is triggered in the *jstree* namespace when a node is renamed.
+
+				Parameters:
+					data.inst - the instance
+					data.args - *array* the arguments passed to the function
+					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
+					data.rslt - *object* which contains a three keys: _obj_ (the node), _title_ (the new title), _old_ (the old title)
+				
+				Example:
+				> $("div").bind("rename_node.jstree", function (e, data) { 
+				>   alert("Node rename from `" + data.rslt.old + "` to `" + data.rslt.title "`");
+				> });
+			*/
 			rename_node : function (obj, val) {
 				obj = this.get_node(obj);
+				var old = this.get_text(obj);
 				if(obj && obj.length) {
 					this.set_text(obj, val); // .apply(this, Array.prototype.slice.call(arguments)) 
-					this.__callback({ "obj" : obj, "name" : val }); 
+					this.__callback({ "obj" : obj, "title" : val, "old" : old }); 
 				}
 			},
+			/*
+				Function: delete_node
+				This function deletes a node.
+
+				Parameters:
+					obj - *mixed* the node to remove. This is used as a jquery selector, can be jQuery object, DOM node, string, etc.
+
+				Returns:
+					mixed - the removed node on success, _false_ on failure
+
+				Triggers:
+					<delete_node>
+
+				Event: delete_node
+				This event is triggered in the *jstree* namespace when a node is deleted.
+
+				Parameters:
+					data.inst - the instance
+					data.args - *array* the arguments passed to the function
+					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
+					data.rslt - *object* which contains a three keys: _obj_ (the removed node), _prev_ (the previous sibling of the removed node), _parent_ (the parent of the removed node)
+				
+				Example:
+				> $("div").bind("delete_node.jstree", function (e, data) { 
+				>   alert("Node deleted!");
+				> });
+			*/
 			delete_node : function (obj) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
@@ -1441,16 +1526,63 @@ Some static functions and variables, unless you know exactly what you are doing 
 				this.__callback({ "obj" : obj, "prev" : pre, "parent" : par });
 				return obj;
 			},
-			check_move : function (obj, par, pos) {
-				if(par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) { return false; }
-				if(!this.get_settings(true).core.check_move.call(this, obj, par, pos)) { return false; }
+			/*
+				Function: check_move
+				This function checks if a move is valid. This function also calls the check_move config function.
+
+				Parameters:
+					obj - *mixed* the node to be moved. This is used as a jquery selector, can be jQuery object, DOM node, string, etc.
+					par - *mixed* the new parent. This is used as a jquery selector, can be jQuery object, DOM node, string, etc.
+					pos - *number* the index among the parent's children to move to
+					is_copy - *boolean* is this a copy or a move call
+
+				Returns:
+					boolean - _true_ if the move is valid, _false_ otherwise
+			*/
+			check_move : function (obj, par, pos, is_copy) {
+				if(!is_copy && par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) { return false; }
+				// this needs to be separated - no place in the core
+				// if(!this.get_settings(true).core.check_move.call(this, obj, par, pos)) { return false; }
 				return true;
 			},
+			/*
+				Function: move_node
+				This function moves a node.
+
+				Parameters:
+					obj - *mixed* the node to move. This is used as a jquery selector, can be jQuery object, DOM node, string, etc.
+					parent - *mixed* the new parent. This is used as a jquery selector, can be jQuery object, DOM node, string, etc. Use -1 to promote to a root node.
+					position - *mixed* where to create the new node. Can be one of "before", "after", "first", "last", "inside" or a numerical index.
+					callback - optional function to be executed once the node is moved
+					is_loaded - used internally when a node needs to be loaded - do not pass this
+
+				Returns:
+					boolean - indicating if the move was successfull (may return _undefined_ if the parent node is not yet loaded, but will move the node)
+
+
+				Triggers:
+					<move_node>
+
+				Event: move_node
+				This event is triggered in the *jstree* namespace when a node is moved.
+
+				Parameters:
+					data.inst - the instance
+					data.args - *array* the arguments passed to the function
+					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
+					data.rslt - *object* which contains a five keys: _obj_ (the node), _parent_ (the new parent) and _position_ which is the numerical index, _old_parent_ (the old parent) and is_multi (a boolean indicating if the node is coming from another tree instance)
+				
+				Example:
+				> $("div").bind("move_node.jstree", function (e, data) { 
+				>   alert("Moved `" + data.inst.get_text(data.rslt.obj) + "` inside `" + (data.rslt.parent === -1 ? 'the main container' : data.inst.get_text(data.rslt.parent)) + "` at index " + data.rslt.position);
+				> });
+			*/
 			move_node : function (obj, par, pos, callback, is_loaded) {
 				obj = this.get_node(obj);
 				par = this.get_node(par);
 				pos = typeof pos === "undefined" ? "last" : pos;
 
+				if(!obj || obj === -1 || !obj.length) { return false; }
 				if(par !== -1 && !par.length) { return false; }
 				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) { 
 					return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); }); 
@@ -1459,7 +1591,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				var old_par = this.get_parent(obj),
 					new_par = (!pos.toString().match(/^(before|after)$/) || par === -1) ? par : this.get_parent(par),
 					old_ins = $.jstree._reference(obj),
-					new_ins = par === -1 ? this : $.jstree._reference(par);
+					new_ins = par === -1 ? this : $.jstree._reference(par),
+					is_multi = (old_ins.get_index() !== new_ins.get_index());
 				if(par === -1) {
 					par = this.get_container();
 					if(pos === "before") { pos = "first"; }
@@ -1497,10 +1630,110 @@ Some static functions and variables, unless you know exactly what you are doing 
 						break;
 				}
 				if(new_par === -1 || new_par.get(0) === this.get_container().get(0)) { new_par = -1; }
-				this.__callback({ "obj" : obj, "par" : new_par, "index" : obj.index() });
+				if(is_multi) { // if multitree - clean the node recursively - remove all icons, and call deep clean_node
+					obj.find('.jstree-icon, .jstree-ocl').remove();
+					this.clean_node(obj);
+				}
 				old_ins.correct_node(old_par, true);
 				new_ins.correct_node(new_par, true);
-				if(callback) { callback.call(this, obj, par, pos); }
+				if(callback) { callback.call(this, obj, new_par, obj.index()); }
+				this.__callback({ "obj" : obj, "parent" : new_par, "position" : obj.index(), "old_parent" : old_par, "is_multi" : is_multi });
+				return true;
+			},
+			/*
+				Function: copy_node
+				This function copies a node.
+
+				Parameters:
+					obj - *mixed* the node to copy. This is used as a jquery selector, can be jQuery object, DOM node, string, etc.
+					parent - *mixed* the new parent. This is used as a jquery selector, can be jQuery object, DOM node, string, etc. Use -1 to promote to a root node.
+					position - *mixed* where to create the new node. Can be one of "before", "after", "first", "last", "inside" or a numerical index.
+					callback - optional function to be executed once the node is moved
+					is_loaded - used internally when a node needs to be loaded - do not pass this
+
+				Returns:
+					boolean - indicating if the move was successfull (may return _undefined_ if the parent node is not yet loaded, but will move the node)
+
+
+				Triggers:
+					<copy_node>
+
+				Event: copy_node
+				This event is triggered in the *jstree* namespace when a node is copied.
+
+				Parameters:
+					data.inst - the instance
+					data.args - *array* the arguments passed to the function
+					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
+					data.rslt - *object* which contains a five keys: _obj_ (the node), _parent_ (the new parent) and _position_ which is the numerical index, _original_ (the original object) and is_multi (a boolean indicating if the node is coming from another tree instance)
+				
+				Example:
+				> $("div").bind("copy_node.jstree", function (e, data) { 
+				>   alert("Copied `" + data.inst.get_text(data.rslt.original) + "` inside `" + (data.rslt.parent === -1 ? 'the main container' : data.inst.get_text(data.rslt.parent)) + "` at index " + data.rslt.position);
+				> });
+			*/
+			copy_node : function (obj, par, pos, callback, is_loaded) {
+				obj = this.get_node(obj);
+				par = this.get_node(par);
+				pos = typeof pos === "undefined" ? "last" : pos;
+
+				if(!obj || obj === -1 || !obj.length) { return false; }
+				if(par !== -1 && !par.length) { return false; }
+				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) { 
+					return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true); }); 
+				}
+				var org_obj = obj,
+					old_par = this.get_parent(obj),
+					new_par = (!pos.toString().match(/^(before|after)$/) || par === -1) ? par : this.get_parent(par),
+					old_ins = $.jstree._reference(obj),
+					new_ins = par === -1 ? this : $.jstree._reference(par),
+					is_multi = (old_ins.get_index() !== new_ins.get_index());
+
+				obj = obj.clone(true);
+				obj.find("*[id]").andSelf().each(function () {
+					if(this.id) { this.id = "copy_" + this.id; }
+				});
+
+				if(par === -1) {
+					par = this.get_container();
+					if(pos === "before") { pos = "first"; }
+					if(pos === "after") { pos = "last"; }
+				}
+				if(!this.check_move(obj, new_par, pos, true)) {
+					return false;
+				}
+				switch(pos) {
+					case "before": 
+						par.before(obj); 
+						break;
+					case "after" : 
+						par.after(obj); 
+						break;
+					case "inside":
+					case "first" :
+						if(!par.children("ul").length) { par.append("<ul />"); }
+						par.children("ul").prepend(obj);
+						break;
+					case "last":
+						if(!par.children("ul").length) { par.append("<ul />"); }
+						par.children("ul").append(obj);
+						break;
+					default:
+						if(!par.children("ul").length) { par.append("<ul />"); }
+						if(!pos) { pos = 0; }
+						new_par = par.children("ul").children("li").eq(pos);
+						if(new_par.length) { new_par.before(obj); }
+						else { par.children("ul").append(obj); }
+						new_par = par;
+						break;
+				}
+				if(new_par === -1 || new_par.get(0) === this.get_container().get(0)) { new_par = -1; }
+
+				this.clean_node(obj); // always clean so that selected states, etc. are removed
+
+				new_ins.correct_node(new_par, true); // no need to correct the old parent, as nothing has changed there
+				if(callback) { callback.call(this, obj, new_par, obj.index(), org_obj); }
+				this.__callback({ "obj" : obj, "parent" : new_par, "position" : obj.index(), "original" : org_obj, "is_multi" : is_multi });
 				return true;
 			}
 		}
