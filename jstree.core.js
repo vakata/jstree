@@ -812,8 +812,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(obj !== -1) { obj.addClass("jstree-loading"); }
 				this._load_node(obj, $.proxy(function (status) {
 					if(obj !== -1) { obj.removeClass("jstree-loading"); }
-					if(callback) { callback.call(this, obj, status); }
 					this.__callback({ "obj" : obj, "status" : status });
+					if(callback) { callback.call(this, obj, status); }
 				}, this));
 				return true;
 			},
