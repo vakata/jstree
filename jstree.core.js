@@ -1063,8 +1063,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 					var t = $(this),
 						d = t.data("jstree"),
 						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length ? "closed" : "leaf";
-					if(d.opened) { d.opened = false; }
-					if(d.closed) { d.closed = false; }
+					if(d && d.opened) { d.opened = false; }
+					if(d && d.closed) { d.closed = false; }
 					t.removeClass("jstree-open jstree-closed jstree-leaf jstree-last");
 					if(!t.children("a").length) { 
 						// allow for text and HTML markup inside the nodes
