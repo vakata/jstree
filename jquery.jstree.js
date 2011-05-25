@@ -2819,10 +2819,7 @@
 						}
 					});
 				});
-				if(!ts) {
-					if(obj.length === 1 && obj.is("li")) { this._repair_state(obj); }
-					if(obj.is("li")) { obj.each(function () { _this._repair_state(this); }); }
-					else { obj.find("> ul > li").each(function () { _this._repair_state(this); }); }
+				if(!ts) {					
 					obj.find(".jstree-checked").parent().parent().each(function () { _this._repair_state(this); }); 
 				}
 			},
