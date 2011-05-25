@@ -809,6 +809,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			load_node	: function (obj, callback) {
 				obj = this.get_node(obj);
 				if(!obj) { callback.call(this, obj, false); return false; }
+				// if(this.is_loading(obj)) { return true; }
 				if(obj !== -1) { obj.addClass("jstree-loading"); }
 				this._load_node(obj, $.proxy(function (status) {
 					if(obj !== -1) { obj.removeClass("jstree-loading"); }
@@ -1361,7 +1362,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(typeof node === "undefined") { node = {}; }
 				if(typeof node === "string") { node = { "title" : node }; }
 				if(!node.li_attr) { node.li_attr = {}; }
-				if(!node.a_attr) { node.a_attr = { }; }
+				if(!node.a_attr) { node.a_attr = {}; }
 				if(!node.a_attr.href) { node.a_attr.href = '#'; }
 				if(!node.title) { node.title = this._get_string("New node"); }
 
@@ -1369,6 +1370,13 @@ Some static functions and variables, unless you know exactly what you are doing 
 				a	= $("<a />").attr(node.a_attr).html(node.title);
 				ul	= $("<ul />");
 				if(node.data) { li.data(node.data); }
+				if(
+					node.children === true ||
+					$.isArray(node.children) || 
+					(li.data('jstree') && $.isArray(li.data('jstree').children))
+				) {
+					li.data('jstree').closed = true;
+				}
 				li.append(a);
 				if($.isArray(node.children)) {
 					$.each(node.children, $.proxy(function (i, n) {

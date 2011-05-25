@@ -11,6 +11,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	<script type="text/javascript" src="jstree.themes.js"></script>
 	<script type="text/javascript" src="jstree.ui.js"></script>
 	<script type="text/javascript" src="jstree.state.js"></script>
+	<script type="text/javascript" src="jstree.json.js"></script>
 	<style type="text/css">
 	html, body { margin:0; padding:0; font-family:Verdana; font-size:10px; }
 	#container { width:800px; margin:0 auto; }
@@ -30,12 +31,43 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 			.bind("create_node.jstree", function (e, data) { 
 				alert("Created `" + data.inst.get_text(data.rslt.obj) + "` inside `" + (data.rslt.parent === -1 ? 'the main container' : data.inst.get_text(data.rslt.parent)) + "` at index " + data.rslt.position);
 			});
+		$("#jstree-json")
+			.jstree({
+				'json' : {
+					// data function:
+					// 'data' : function (o, c) { c.call(this, ['node 1', 'node 2']
+					// data static:
+					'data' : [ 
+						{
+							'title' : 'Root 1', 
+							'data' : { 'jstree' : { 'closed' : true } }
+						},
+						'Root 2', 
+						{ 
+							'title' : 'Root 3', 
+							'data' : { 'jstree' : { 'children' : [ 'Child 1', 'Child 2' ] } } 
+						} 
+					],
+					// mixed with ajax
+					'ajax' : { 
+						// static url
+						'url' : 'test.json'
+						// url with function 
+						// 'url' : function (o) { return 'test.json'; },
+						// with some data
+						// 'data' : function () { return { 'foo' : 'bar' }; }
+					}
+				},
+				'plugins' : [ 'core', 'themes', 'ui', 'json' ]
+			});
 	});
 	</script>
 </head>
 <body>
 
-<div id="jstree">
+<div id="jstree-json" style="float:left; width:45%; margin-left:1%;"></div>
+
+<div id="jstree" style="float:right; width:45%; margin-right:1%;">
 	<ul>
 		<li id="some-node-id">Root node
 			<ul>
@@ -59,7 +91,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 		</li>
 	</ul>
 </div>
-<hr />
+<hr style="clear:both;" />
 <input type="button" value="$.jstree._focused().create_node();" onclick="$.jstree._focused().create_node();" />
 <input type="button" value="$.jstree._focused().create_node(-1, 'New root node');" onclick="$.jstree._focused().create_node(-1, 'New root node');" />
 <input type="button" value="$.jstree._focused().create_node(null, { title : 'New root node', children : [ 'Created child 1', 'Created child 2' ] });" onclick="$.jstree._focused().create_node(null, { title : 'New root node', children : [ 'Created child 1', 'Created child 2' ] });" />
