@@ -2812,12 +2812,16 @@
 							else {
 								$t.children(":checkbox").addClass("jstree-real-checkbox");
 							}
-							if(c === "jstree-checked") { 
-								$t.children(":checkbox").attr("checked","checked"); 
+						}
+						if(!ts) {
+							if(c === "jstree-checked" || $t.hasClass("jstree-checked") || $t.children(':checked').length) {
+								$t.find("li").andSelf().addClass("jstree-checked").children(":checkbox").prop("checked", true);
 							}
 						}
-						if(c === "jstree-checked" && !ts) {
-							$t.find("li").addClass("jstree-checked");
+						else {
+							if($t.hasClass("jstree-checked") || $t.children(':checked').length) {
+								$t.addClass("jstree-checked").children(":checkbox").prop("checked", true);
+							}
 						}
 					});
 				});
@@ -2833,11 +2837,11 @@
 				if(this._get_settings().checkbox.two_state) {
 					if(state) { 
 						obj.removeClass("jstree-checked").addClass("jstree-unchecked"); 
-						if(rc) { obj.children(":checkbox").removeAttr("checked"); }
+						if(rc) { obj.children(":checkbox").prop("checked", false); }
 					}
 					else { 
 						obj.removeClass("jstree-unchecked").addClass("jstree-checked"); 
-						if(rc) { obj.children(":checkbox").attr("checked","checked"); }
+						if(rc) { obj.children(":checkbox").prop("checked", true); }
 					}
 				}
 				else {
@@ -2845,13 +2849,13 @@
 						coll = obj.find("li").andSelf();
 						if(!coll.filter(".jstree-checked, .jstree-undetermined").length) { return false; }
 						coll.removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked"); 
-						if(rc) { coll.children(":checkbox").removeAttr("checked"); }
+						if(rc) { coll.children(":checkbox").prop("checked", false); }
 					}
 					else { 
 						coll = obj.find("li").andSelf();
 						if(!coll.filter(".jstree-unchecked, .jstree-undetermined").length) { return false; }
 						coll.removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked"); 
-						if(rc) { coll.children(":checkbox").attr("checked","checked"); }
+						if(rc) { coll.children(":checkbox").prop("checked", true); }
 						if(this.data.ui) { this.data.ui.last_selected = obj; }
 						this.data.checkbox.last_selected = obj;
 					}
@@ -2860,23 +2864,23 @@
 						if(state) {
 							if($this.children("ul").children("li.jstree-checked, li.jstree-undetermined").length) {
 								$this.parentsUntil(".jstree", "li").andSelf().removeClass("jstree-checked jstree-unchecked").addClass("jstree-undetermined");
-								if(rc) { $this.parentsUntil(".jstree", "li").andSelf().children(":checkbox").removeAttr("checked"); }
+								if(rc) { $this.parentsUntil(".jstree", "li").andSelf().children(":checkbox").prop("checked", false); }
 								return false;
 							}
 							else {
 								$this.removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked");
-								if(rc) { $this.children(":checkbox").removeAttr("checked"); }
+								if(rc) { $this.children(":checkbox").prop("checked", false); }
 							}
 						}
 						else {
 							if($this.children("ul").children("li.jstree-unchecked, li.jstree-undetermined").length) {
 								$this.parentsUntil(".jstree", "li").andSelf().removeClass("jstree-checked jstree-unchecked").addClass("jstree-undetermined");
-								if(rc) { $this.parentsUntil(".jstree", "li").andSelf().children(":checkbox").removeAttr("checked"); }
+								if(rc) { $this.parentsUntil(".jstree", "li").andSelf().children(":checkbox").prop("checked", false); }
 								return false;
 							}
 							else {
 								$this.removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked");
-								if(rc) { $this.children(":checkbox").attr("checked","checked"); }
+								if(rc) { $this.children(":checkbox").prop("checked", true); }
 							}
 						}
 					});
@@ -2934,6 +2938,10 @@
 			_repair_state : function (obj) {
 				obj = this._get_node(obj);
 				if(!obj.length) { return; }
+				if(this._get_settings().checkbox.two_state) {
+					obj.find('li').andSelf().not('.jstree-checked').removeClass('jstree-undetermined').addClass('jstree-unchecked').children(':checkbox').prop('checked', true);
+					return;
+				}
 				var rc = this._get_settings().checkbox.real_checkboxes,
 					a = obj.find("> ul > .jstree-checked").length,
 					b = obj.find("> ul > .jstree-undetermined").length,
@@ -2943,7 +2951,7 @@
 				else if(a === c) { this.change_state(obj, false); }
 				else { 
 					obj.parentsUntil(".jstree","li").andSelf().removeClass("jstree-checked jstree-unchecked").addClass("jstree-undetermined");
-					if(rc) { obj.parentsUntil(".jstree", "li").andSelf().children(":checkbox").removeAttr("checked"); }
+					if(rc) { obj.parentsUntil(".jstree", "li").andSelf().children(":checkbox").prop("checked", false); }
 				}
 			},
 			reselect : function () {
