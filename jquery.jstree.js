@@ -2820,7 +2820,7 @@
 						}
 					});
 				});
-				if(!ts) {					
+				if(!ts) {
 					obj.find(".jstree-checked").parent().parent().each(function () { _this._repair_state(this); }); 
 				}
 			},
