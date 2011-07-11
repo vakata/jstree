@@ -381,7 +381,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			this.get_container()
 				.bind("__construct.jstree", $.proxy(function () {
 						// defer, so that events bound AFTER creating the instance (like __ready) are still handled
-						setTimeout($.proxy(function () { this.init(); }, this), 0);
+						setTimeout($.proxy(function () { if(this) { this.init(); } }, this), 0);
 					}, this))
 				.bind("before.jstree", $.proxy(function (e, data) {
 						if(!/^is_locked|unlock$/.test(data.func) && this.data.core.locked) {
