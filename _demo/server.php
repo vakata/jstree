@@ -14,7 +14,7 @@ if(isset($_GET["analyze"])) {
 	die();
 }
 
-if($_REQUEST["operation"] && strpos("_", $_REQUEST["operation"]) !== 0 && method_exists($jstree, $_REQUEST["operation"])) {
+if($_REQUEST["operation"] && strpos($_REQUEST["operation"], "_") !== 0 && method_exists($jstree, $_REQUEST["operation"])) {
 	header("HTTP/1.0 200 OK");
 	header('Content-type: application/json; charset=utf-8');
 	header("Cache-Control: no-cache, must-revalidate");
