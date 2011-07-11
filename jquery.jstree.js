@@ -356,7 +356,8 @@
 				this.get_container()
 					.delegate("li > ins", "click.jstree", $.proxy(function (event) {
 							var trgt = $(event.target);
-							if(trgt.is("ins") && event.pageY - trgt.offset().top < this.data.core.li_height) { this.toggle_node(trgt); }
+							// if(trgt.is("ins") && event.pageY - trgt.offset().top < this.data.core.li_height) { this.toggle_node(trgt); }
+							this.toggle_node(trgt);
 						}, this))
 					.bind("mousedown.jstree", $.proxy(function () { 
 							this.set_focus(); // This used to be setTimeout(set_focus,0) - why?
