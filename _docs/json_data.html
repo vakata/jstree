@@ -111,7 +111,7 @@ $(function () {
 			]
 		},
 		"plugins" : [ "themes", "json_data", "ui" ]
-	}).bind("select_node.jstree", function (e, data) { alert(jQuery.data(data.rslt.obj[0], "jstree").id) });
+	}).bind("select_node.jstree", function (e, data) { alert(jQuery.data(data.rslt.obj[0], "id")); });
 });
 </script>
 
