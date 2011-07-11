@@ -86,7 +86,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			s.plugins = t;
 			i = parseInt(instances.push({}),10) - 1;
 			container
-				.data("jstree-instance-id", i)
+				.data("jstree_instance_id", i)
 				.addClass("jstree jstree-" + i);
 
 			this.data				= d;
@@ -141,7 +141,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			instance.get_container()
 				.unbind(".jstree")
 				.undelegate(".jstree")
-				.removeData("jstree-instance-id")
+				.removeData("jstree_instance_id")
 				.find("[class^='jstree']")
 					.andSelf()
 					.attr("class", function () { return this.className.replace(/jstree[^ ]*|$/ig,''); });
@@ -180,7 +180,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			var o = $(needle); 
 			if(!o.length && typeof needle === "string") { o = $("#" + needle); }
 			if(!o.length) { return null; }
-			return instances[o.closest(".jstree").data("jstree-instance-id")] || null; 
+			return instances[o.closest(".jstree").data("jstree_instance_id")] || null; 
 		},
 		/*
 			Function: $.jstree._focused
@@ -418,8 +418,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 						else { if(window.getSelection) { var sel = window.getSelection(); try { sel.removeAllRanges(); sel.collapse(); } catch (er) { } } }
 					})
 				.delegate("li > ins", "click.jstree", $.proxy(function (e) {
-						var trgt = $(e.target);
-						if(trgt.is("ins") && e.pageY - trgt.offset().top < this.data.core.li_height) { this.toggle_node(trgt); }
+						// var trgt = $(e.target);
+						// if(trgt.is("ins") && e.pageY - trgt.offset().top < this.data.core.li_height) { this.toggle_node(trgt); }
+						this.toggle_node(e.target);
 					}, this));
 		},
 		__destruct : function () { 
