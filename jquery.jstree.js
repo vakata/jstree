@@ -159,7 +159,7 @@
 				$.each(instances[instance_id]._get_settings().plugins, function (i, val) { instances[instance_id].data[val] = {}; });
 				$.each(instances[instance_id]._get_settings().plugins, function (i, val) { if(plugins[val]) { plugins[val].__init.apply(instances[instance_id]); } });
 				// initialize the instance
-				setTimeout(function() { instances[instance_id].init(); }, 0);
+				setTimeout(function() { if(instances[instance_id]) { instances[instance_id].init(); } }, 0);
 			});
 		}
 		// return the jquery selection (or if it was a method call that returned a value - the returned value)
