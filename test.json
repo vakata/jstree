@@ -1,0 +1,4 @@
+[
+	"Async child 1",
+	{ "title" : "Async child 2", "data" : { "jstree" : { "closed" : true } } }
+]

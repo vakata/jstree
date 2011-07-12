@@ -6,12 +6,17 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	<meta content="text/html;charset=utf-8" http-equiv="content-type" />
 	<title>jstree testing</title>
 	<script type="text/javascript" src="_lib/jquery.js"></script>
+	<script type="text/javascript" src="_lib/jquery.hotkeys.js"></script>
 	<script type="text/javascript" src="vakata.js"></script>
 	<script type="text/javascript" src="jstree.core.js"></script>
 	<script type="text/javascript" src="jstree.themes.js"></script>
 	<script type="text/javascript" src="jstree.ui.js"></script>
 	<script type="text/javascript" src="jstree.state.js"></script>
+	<script type="text/javascript" src="jstree.html.js"></script>
 	<script type="text/javascript" src="jstree.json.js"></script>
+	<script type="text/javascript" src="jstree.sort.js"></script>
+	<script type="text/javascript" src="jstree.contextmenu.js"></script>
+	<script type="text/javascript" src="jstree.hotkeys.js"></script>
 	<style type="text/css">
 	html, body { margin:0; padding:0; font-family:Verdana; font-size:10px; }
 	#container { width:800px; margin:0 auto; }
@@ -46,6 +51,11 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 						{ 
 							'title' : 'Root 3', 
 							'data' : { 'jstree' : { 'children' : [ 'Child 1', 'Child 2' ] } } 
+						},
+						{ 
+							'title' : 'Root 4', 
+							'data' : { },
+							'children' : [ 'Child 1', 'Child 2' ] 
 						} 
 					],
 					// mixed with ajax
@@ -56,14 +66,27 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 						// 'url' : function (o) { return 'test.json'; },
 						// with some data
 						// 'data' : function () { return { 'foo' : 'bar' }; }
-					}
+					},
+					progressive_render : true,
+					progressive_unload : true
 				},
-				'plugins' : [ 'core', 'themes', 'ui', 'json' ]
+				'plugins' : [ 'core', 'themes', 'ui', 'json', 'state' ]
 			});
 	});
 	</script>
 </head>
 <body>
+<div style="width:960px; margin:10px auto;">
+
+<p><strong>TODO:</strong></p>
+<p>
+PLUGINS: crrm, dnd, checkbox, xml, search, types, themeroller, unique, wholerow, model, treegrid<br />
+DOCS + some explanations (NaturalDocs)<br />
+UNIT TESTS + JSLINT<br />
+THEMES
+</p>
+
+<hr />
 
 <div id="jstree-json" style="float:left; width:45%; margin-left:1%;"></div>
 
@@ -107,5 +130,6 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 <input type="button" value="$.jstree._focused().move_node(null, '#some-node-id', 'before');" onclick="$.jstree._focused().move_node(null, '#some-node-id', 'before');" />
 <input type="button" value="$.jstree._focused().copy_node(null, -1, 0);" onclick="$.jstree._focused().copy_node(null, -1, 0);" />
 
+</div>
 </body>
 </html>
