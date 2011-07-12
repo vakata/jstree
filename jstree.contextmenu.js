@@ -1,5 +1,5 @@
-/* File: jstree.sort.js 
-Sorts items alphabetically (or using any other function)
+/* File: jstree.contextmenu.js 
+Enables a rightclick contextmenu.
 */
 /* Group: jstree sort plugin */
 (function ($) {
