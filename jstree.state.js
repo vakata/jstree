@@ -35,5 +35,5 @@ This plugin enables state saving between reloads.
 		}
 	});
 	// include the state plugin by default
-	$.jstree.defaults.plugins.push("state");
+	// $.jstree.defaults.plugins.push("state");
 })(jQuery);

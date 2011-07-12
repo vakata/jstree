@@ -1376,6 +1376,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					$.isArray(node.children) || 
 					(li.data('jstree') && $.isArray(li.data('jstree').children))
 				) {
+					if(!li.data('jstree')) {
+						li.data('jstree', {});
+					}
 					li.data('jstree').closed = true;
 				}
 				li.append(a);

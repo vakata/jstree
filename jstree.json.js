@@ -4,18 +4,37 @@ This plugin makes it possible for jstree to use JSON data sources.
 /* Group: jstree json plugin */
 (function ($) {
 	$.jstree.plugin("json", {
+		__construct : function () {
+			this.get_container()
+				.bind("__after_close.jstree", $.proxy(function (e, data) {
+						var t = $(data.rslt.obj);
+						if(this.get_settings(true).json.progressive_unload && t.data('jstree').parsed_children) {
+							t.data('jstree').children = t.data('jstree').parsed_children;
+							t.children("ul").remove();
+						}
+					}, this))
+		},
 		defaults : {
 			data	: false,
 			ajax	: false, 
-			progressive_render : false // get_json, data on each node
+			progressive_render : false, // get_json, data on each node
+			progressive_unload : false
 		},
 		_fn : { 
 			parse_json : function (node) {
-				if(this.get_settings(true).json.progressive_render && node.children) {
-					if(!node.data) { node.data = {}; }
-					if(!node.data.jstree) { node.data.jstree = {}; }
-					node.data.jstree.children = node.children;
-					node.children = true;
+				var s = this.get_settings(true).json;
+				if($.isArray(node.children)) {
+					if(s.progressive_render) {
+						if(!node.data) { node.data = {}; }
+						if(!node.data.jstree) { node.data.jstree = {}; }
+						node.data.jstree.children = node.children;
+						node.children = true;
+					}
+					if(!s.progressive_render && s.progressive_unload) {
+						if(!node.data) { node.data = {}; }
+						if(!node.data.jstree) { node.data.jstree = {}; }
+						node.data.jstree.parsed_children = node.children;
+					}
 				}
 				return this.__call_old(true, node);
 			},
@@ -44,6 +63,9 @@ This plugin makes it possible for jstree to use JSON data sources.
 					case (obj !== -1 && obj.length && obj.data('jstree') && $.isArray(obj.data('jstree').children)):
 						d = obj.data('jstree').children;
 						obj.data('jstree').children = null;
+						if(this.get_settings(true).json.progressive_unload) {
+							obj.data('jstree').parsed_children = d;
+						}
 						return callback.call(this, this._append_json_data(obj, d));
 					// no settings
 					case (!s.data && !s.ajax): 
@@ -80,6 +102,6 @@ This plugin makes it possible for jstree to use JSON data sources.
 			}
 		}
 	});
-	// include the state plugin by default
+	// include the json plugin by default
 	// $.jstree.defaults.plugins.push("json");
 })(jQuery);
