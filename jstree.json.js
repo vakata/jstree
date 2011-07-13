@@ -8,11 +8,11 @@ This plugin makes it possible for jstree to use JSON data sources.
 			this.get_container()
 				.bind("__after_close.jstree", $.proxy(function (e, data) {
 						var t = $(data.rslt.obj);
-						if(this.get_settings(true).json.progressive_unload && t.data('jstree').parsed_children) {
-							t.data('jstree').children = t.data('jstree').parsed_children;
+						if(this.get_settings(true).json.progressive_unload) {
+							t.data('jstree').children = this.get_json(t)[0].children;
 							t.children("ul").remove();
 						}
-					}, this))
+					}, this));
 		},
 		defaults : {
 			data	: false,
@@ -29,11 +29,6 @@ This plugin makes it possible for jstree to use JSON data sources.
 						if(!node.data.jstree) { node.data.jstree = {}; }
 						node.data.jstree.children = node.children;
 						node.children = true;
-					}
-					if(!s.progressive_render && s.progressive_unload) {
-						if(!node.data) { node.data = {}; }
-						if(!node.data.jstree) { node.data.jstree = {}; }
-						node.data.jstree.parsed_children = node.children;
 					}
 				}
 				return this.__call_old(true, node);
@@ -63,9 +58,6 @@ This plugin makes it possible for jstree to use JSON data sources.
 					case (obj !== -1 && obj.length && obj.data('jstree') && $.isArray(obj.data('jstree').children)):
 						d = obj.data('jstree').children;
 						obj.data('jstree').children = null;
-						if(this.get_settings(true).json.progressive_unload) {
-							obj.data('jstree').parsed_children = d;
-						}
 						return callback.call(this, this._append_json_data(obj, d));
 					// no settings
 					case (!s.data && !s.ajax): 

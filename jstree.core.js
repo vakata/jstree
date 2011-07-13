@@ -1042,7 +1042,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Function: clean_node
 				This function converts inserted nodes to the required by jsTree format. It takes care of converting a simple unodreder list to the internally used markup. 
 				The core calls this function automatically when new data arrives (by binding to the <load_node> event).
-				Each plugin may override this function to include its own markup, but keep in mind to do it like that:
+				Each plugin may override this function to include its own source, but keep in mind to do it like that:
 				> clean_node : function(obj) {
 				>  obj = this.__call_old();
 				>  obj.each(function () { 
@@ -1389,6 +1389,75 @@ Some static functions and variables, unless you know exactly what you are doing 
 					li.append(ul);
 				}
 				return li;
+			},
+			/* 
+				Function: get_json
+				This function returns the whole tree (or a single node) in JSON format.
+				Each plugin may override this function to include its own source, but keep in mind to do it like that:
+				> get_json : function(obj, li_attr, a_attr, is_callback) {
+				>  var r = this.__call_old();
+				>  if(is_callback && obj && obj.length && obj.is && obj.is('li')) {
+				>   if(<some-condition>) { r.data.jstree.<some-key> = <some-value-this-plugin-will-process>; }
+				>  }
+				>  return r;
+				> }
+
+				Parameters:
+					obj - *mixed* the input to parse
+					li_attr - *array* the attributes to collect from the li node (defaults to [ 'id', 'class', 'rel' ])
+					a_attr - *array* the attributes to collect from the a node (defaults to [ 'href', 'title' ])
+					is_callback - do not modify this, jstree uses this parameter to keep track of the recursion
+
+				Returns:
+					Array - an array consisting of objects (one for each node)
+			*/
+			get_json : function (obj, li_attr, a_attr, is_callback) {
+				// TODO: li_attr, a_attr - remove in favour of collection the attributes automatically
+				obj = this.get_node(obj);
+				if(!is_callback) {
+					li_attr = $.isArray(li_attr) ? li_attr : [ "id", "class", "rel" ];
+					a_attr = $.isArray(a_attr) ? a_attr : [ "href", "title" ];
+					if(!obj || obj === -1) { obj = this.get_container_ul().children("li"); }
+				}
+				var r, t;
+				if(!obj || obj.length) { return false; }
+				if(obj.length > 1 || !is_callback) {
+					r = [];
+					t = this;
+					obj.each(function () {
+						r.push(t.get_json(this, li_attr, a_attr, true));
+					});
+					return r;
+				}
+				r = { title : this.get_text(obj), data : $.extend(true, {}, obj.data() || {}), children : false };
+				if(li_attr.length) {
+					r.li_attr = {};
+					$.each(li_attr, function (i, v) {
+						// TODO: if ID - do not replace
+						r.li_attr[v] = obj.attr(v) ? $.trim((' ' + obj.attr(v)).replace(/ jstree[^ ]*/ig,'').replace(/\s+$/ig," ")) : '';
+					});
+				}
+				if(a_attr.length) {
+					r.a_attr = {};
+					t = obj.children('a:eq(0)');
+					$.each(a_attr, function (i, v) {
+						r.a_attr[v] = t.attr(v) ? $.trim((' ' + t.attr(v)).replace(/ jstree[^ ]*/ig,'').replace(/\s+$/ig," ")) : '';
+					});
+				}
+
+				if(!r.data.jstree) { r.data.jstree = {}; }
+				if(this.is_open(obj)) { r.data.jstree.opened = true; }
+				if(this.is_closed(obj)) { r.data.jstree.closed = true; }
+
+				obj = obj.find('> ul > li');
+				if(obj.length) {
+					r.children = [];
+					t = this;
+					obj.each(function () {
+						r.children.push(t.get_json(this, li_attr, a_attr, true));
+					});
+				}
+				return r;
 			},
 			/* 
 				Function: create_node

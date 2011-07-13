@@ -1181,12 +1181,12 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 		}
 		else {
 			_storage_elm = document.createElement('link');
-			if(_storage_elm.addBehavior){
+			if(_storage_elm.addBehavior) {
 				_storage_elm.style.behavior = 'url(#default#userData)';
 				document.getElementsByTagName('head')[0].appendChild(_storage_elm);
 				_storage_elm.load("jStorage");
 				var data = "{}";
-				try{
+				try {
 					data = _storage_elm.getAttribute("jStorage");
 				} catch(E5) {}
 				_storage_service.jStorage = data;

@@ -8,6 +8,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	<script type="text/javascript" src="_lib/jquery.js"></script>
 	<script type="text/javascript" src="_lib/jquery.hotkeys.js"></script>
 	<script type="text/javascript" src="vakata.js"></script>
+	<!--
 	<script type="text/javascript" src="jstree.core.js"></script>
 	<script type="text/javascript" src="jstree.themes.js"></script>
 	<script type="text/javascript" src="jstree.ui.js"></script>
@@ -17,6 +18,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	<script type="text/javascript" src="jstree.sort.js"></script>
 	<script type="text/javascript" src="jstree.contextmenu.js"></script>
 	<script type="text/javascript" src="jstree.hotkeys.js"></script>
+	-->
 	<style type="text/css">
 	html, body { margin:0; padding:0; font-family:Verdana; font-size:10px; }
 	#container { width:800px; margin:0 auto; }
@@ -28,6 +30,15 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 		STATE = $('#jstree').jstree('get_state');
 	}
 	$(function () {
+		return;
+		/*
+		var m = $("#jstree-json")[0].attributes, r = '';
+		$.each(m, function (i, v) { 
+			if(v.nodeValue !== null && v.nodeValue != '') r += v.nodeName + "=" + v.nodeValue + "; ";
+		});
+		alert(r);
+		*/
+
 		$("#jstree")
 			.jstree()
 			.bind('__ready.jstree', function () {
