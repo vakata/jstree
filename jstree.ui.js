@@ -159,7 +159,7 @@ This plugin enables selecting, deselecting and hovering tree items.
 					t.find('.jstree-clicked').removeClass('jstree-clicked');
 					if(d && d.selected) {
 						_this.select_node(t);
-						d.selected = false;
+						delete d.selected;
 					}
 				});
 			},
@@ -184,6 +184,15 @@ This plugin enables selecting, deselecting and hovering tree items.
 					return true;
 				}
 				return false;
+			},
+			get_json : function (obj, is_callback) {
+				var r = this.__call_old();
+				if(is_callback) {
+					if(this.is_selected(obj)) { 
+						r.data.jstree.selected = true; 
+					}
+				}
+				return r;
 			}
 		}
 	});

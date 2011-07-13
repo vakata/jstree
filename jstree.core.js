@@ -1065,12 +1065,14 @@ Some static functions and variables, unless you know exactly what you are doing 
 					var t = $(this),
 						d = t.data("jstree"),
 						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length ? "closed" : "leaf";
-					if(d && d.opened) { d.opened = false; }
-					if(d && d.closed) { d.closed = false; }
+					if(d && d.opened) { delete d.opened; }
+					if(d && d.closed) { delete d.closed; }
 					t.removeClass("jstree-open jstree-closed jstree-leaf jstree-last");
 					if(!t.children("a").length) { 
 						// allow for text and HTML markup inside the nodes
 						t.contents().filter(function() { return this.nodeType === 3 || this.tagName !== 'UL'; }).wrapAll('<a href="#"></a>');
+						// TODO: make this faster
+						t.children('a').html(t.children('a').html().replace(/[\s\t\n]+$/,''));
 					}
 					if(!t.children("ins.jstree-ocl").length) { 
 						t.prepend("<ins class='jstree-icon jstree-ocl'>&#160;</ins>");
@@ -1394,9 +1396,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Function: get_json
 				This function returns the whole tree (or a single node) in JSON format.
 				Each plugin may override this function to include its own source, but keep in mind to do it like that:
-				> get_json : function(obj, li_attr, a_attr, is_callback) {
+				> get_json : function(obj, is_callback) {
 				>  var r = this.__call_old();
-				>  if(is_callback && obj && obj.length && obj.is && obj.is('li')) {
+				>  if(is_callback) {
 				>   if(<some-condition>) { r.data.jstree.<some-key> = <some-value-this-plugin-will-process>; }
 				>  }
 				>  return r;
@@ -1404,46 +1406,43 @@ Some static functions and variables, unless you know exactly what you are doing 
 
 				Parameters:
 					obj - *mixed* the input to parse
-					li_attr - *array* the attributes to collect from the li node (defaults to [ 'id', 'class', 'rel' ])
-					a_attr - *array* the attributes to collect from the a node (defaults to [ 'href', 'title' ])
 					is_callback - do not modify this, jstree uses this parameter to keep track of the recursion
 
 				Returns:
 					Array - an array consisting of objects (one for each node)
 			*/
-			get_json : function (obj, li_attr, a_attr, is_callback) {
-				// TODO: li_attr, a_attr - remove in favour of collection the attributes automatically
-				obj = this.get_node(obj);
+			get_json : function (obj, is_callback) {
+				obj = typeof obj !== 'undefined' ? this.get_node(obj) : false;
 				if(!is_callback) {
-					li_attr = $.isArray(li_attr) ? li_attr : [ "id", "class", "rel" ];
-					a_attr = $.isArray(a_attr) ? a_attr : [ "href", "title" ];
 					if(!obj || obj === -1) { obj = this.get_container_ul().children("li"); }
 				}
-				var r, t;
-				if(!obj || obj.length) { return false; }
+				var r, t, li_attr, a_attr;
+				if(!obj || !obj.length) { return false; }
 				if(obj.length > 1 || !is_callback) {
 					r = [];
 					t = this;
 					obj.each(function () {
-						r.push(t.get_json(this, li_attr, a_attr, true));
+						r.push(t.get_json($(this), true));
 					});
 					return r;
 				}
-				r = { title : this.get_text(obj), data : $.extend(true, {}, obj.data() || {}), children : false };
-				if(li_attr.length) {
-					r.li_attr = {};
-					$.each(li_attr, function (i, v) {
-						// TODO: if ID - do not replace
-						r.li_attr[v] = obj.attr(v) ? $.trim((' ' + obj.attr(v)).replace(/ jstree[^ ]*/ig,'').replace(/\s+$/ig," ")) : '';
-					});
-				}
-				if(a_attr.length) {
-					r.a_attr = {};
-					t = obj.children('a:eq(0)');
-					$.each(a_attr, function (i, v) {
-						r.a_attr[v] = t.attr(v) ? $.trim((' ' + t.attr(v)).replace(/ jstree[^ ]*/ig,'').replace(/\s+$/ig," ")) : '';
-					});
-				}
+				li_attr = $.vakata.attributes(obj, true);
+				a_attr = $.vakata.attributes(obj.children('a'), true);
+				$.each(li_attr, function (i, v) {
+					if(i == 'id') { return true; }
+					li_attr[i] = $.trim(v.replace(/ jstree[^ ]*/ig,'').replace(/\s+$/ig," "));
+				});
+				$.each(a_attr, function (i, v) {
+					if(i == 'id') { return true; }
+					li_attr[i] = $.trim(v.replace(/ jstree[^ ]*/ig,'').replace(/\s+$/ig," "));
+				});
+				r = { 
+					'title'		: this.get_text(obj), 
+					'data'		: $.extend(true, {}, obj.data() || {}), 
+					'children'	: false, 
+					'li_attr'	: li_attr, 
+					'a_attr'	: a_attr 
+				};
 
 				if(!r.data.jstree) { r.data.jstree = {}; }
 				if(this.is_open(obj)) { r.data.jstree.opened = true; }
@@ -1454,7 +1453,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					r.children = [];
 					t = this;
 					obj.each(function () {
-						r.children.push(t.get_json(this, li_attr, a_attr, true));
+						r.children.push(t.get_json($(this), true));
 					});
 				}
 				return r;
