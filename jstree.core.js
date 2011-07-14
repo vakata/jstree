@@ -1372,7 +1372,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				li	= $("<li />").attr(node.li_attr);
 				a	= $("<a />").attr(node.a_attr).html(node.title);
 				ul	= $("<ul />");
-				if(node.data) { li.data(node.data); }
+				if(node.data && !$.isEmptyObject(node.data)) { li.data(node.data); }
 				if(
 					node.children === true ||
 					$.isArray(node.children) || 

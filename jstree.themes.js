@@ -95,37 +95,57 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 			hide_icons		: function () { this.data.themes.icons = false; this.get_container().children("ul").addClass("jstree-no-icons"); },
 			toggle_icons	: function () { if(this.data.themes.icons) { this.hide_icons(); } else { this.show_icons(); } },
 
+			set_icon : function (obj, icon) { 
+				obj = this.get_node(obj);
+				if(!obj || obj === -1 || !obj.length) { return false; }
+				obj = obj.find("> a > .jstree-themeicon");
+				if(icon === false) { 
+					this.hide_icon(obj);
+				}
+				else if(icon.indexOf("/") === -1) { 
+					obj.addClass(icon).attr("rel",icon);
+				}
+				else { 
+					obj.css("background", "url('" + icon + "') center center no-repeat").attr("rel",icon);
+				}
+				return true;
+			},
+			get_icon : function (obj) {
+				obj = this.get_node(obj);
+				if(!obj || obj === -1 || !obj.length) { return null; }
+				obj = obj.find("> a > .jstree-themeicon");
+				if(obj.hasClass('jstree-themeicon-hidden')) { return false; }
+				obj = obj.attr("rel");
+				return (obj && obj.length) ? obj : null;
+			},
+			hide_icon : function (obj) {
+				obj = this.get_node(obj);
+				if(!obj || obj === -1 || !obj.length) { return false; }
+				obj.find('> a > .jstree-themeicon').addClass('jstree-themeicon-hidden');
+				return true;
+			},
+			show_icon : function (obj) {
+				obj = this.get_node(obj);
+				if(!obj || obj === -1 || !obj.length) { return false; }
+				obj.find('> a > .jstree-themeicon').removeClass('jstree-themeicon-hidden');
+				return true;
+			},
+
 			clean_node : function(obj) {
 				obj = this.__call_old();
+				var t = this;
 				return obj.each(function () {
-					var t = $(this),
-						d = t.data("jstree");
-					if(!t.find("> a > ins.jstree-themeicon").length) { 
-						t.children("a").prepend("<ins class='jstree-icon jstree-themeicon'>&#160;</ins>");
+					var o = $(this),
+						d = o.data("jstree");
+					if(!o.find("> a > ins.jstree-themeicon").length) { 
+						o.children("a").prepend("<ins class='jstree-icon jstree-themeicon'>&#160;</ins>");
 					}
-					if(d && d.icon) {
-						if(d.icon.indexOf("/") === -1) { t.find("> a > .jstree-themeicon").addClass(d.icon); }
-						else { t.find("> a > .jstree-themeicon").css("background", "url('" + d.icon + "') center center no-repeat"); }
-					}
-					else if(d && d.icon === false) {
-						t.find("> a > .jstree-themeicon").hide();
-					}
-					else {
-						t.children("a").each(function () {
-							var t = $(this),
-								d = t.data("jstree");
-							if(d && d.icon) {
-								if(d.icon.indexOf("/") === -1) { t.children(".jstree-themeicon").addClass(d.icon); }
-								else { t.children(".jstree-themeicon").css("background", "url('" + d.icon + "') center center no-repeat"); }
-							}
-							else if(d && d.icon === false) {
-								t.children(".jstree-themeicon").hide();
-							}
-						});
+					if(d && typeof d.icon !== 'undefined') {
+						t.set_icon(o, d.icon);
+						delete d.icon;
 					}
 				});
 			},
-
 			get_state : function () {
 				var state = this.__call_old();
 				state.themes = { 'theme' : this.get_theme(), 'icons' : this.data.themes.icons, 'dots' : this.data.themes.dots };
@@ -150,6 +170,16 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 					return true;
 				}
 				return false;
+			},
+			get_json : function (obj, is_callback) {
+				var r = this.__call_old(), i;
+				if(is_callback) {
+					i = this.get_icon(obj);
+					if(typeof i !== 'undefined' && i !== null) { 
+						r.data.jstree.icon = i; 
+					}
+				}
+				return r;
 			}
 		}
 	});
@@ -169,7 +199,7 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 				'.jstree a { text-decoration:none; } ' + 
 				'.jstree a > .jstree-themeicon { height:16px; width:16px; margin-right:3px; } ' + 
 				'.jstree-rtl a > .jstree-themeicon { margin-left:3px; margin-right:0; } ' + 
-				'.jstree .jstree-no-icons .jstree-themeicon { display:none; } '; 
+				'.jstree .jstree-no-icons .jstree-themeicon, .jstree .jstree-themeicon-hidden { display:none; } '; 
 		// Correct IE 6 (does not support the > CSS selector)
 		if($.jstree.IS_IE6) { 
 			css_string += '' + 
