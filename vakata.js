@@ -53,6 +53,31 @@ Output:
 })(jQuery);
 
 /*
+Function: $.vakata.array_unique
+Returns only the unique items from an array.
+
+Input:
+> $.vakata.array_unique(['c','a','a','b','c','b']);
+
+Output: 
+>['a', 'b', 'c']
+*/
+(function ($) {
+	$.vakata.array_unique = function(array) {
+		var a = [], i, j, l;
+		for(i = 0, l = array.length; i < l; i++) {
+			for(j = 0; j <= i; j++) {
+				if(array[i] === array[j]) {
+					break;
+				}
+			}
+			if(j === i) { a.push(array[i]); }
+		}
+		return a;
+	};
+})(jQuery);
+
+/*
 Function: $.vakata.attributes
 Collects all attributes from a DOM node.
 */
