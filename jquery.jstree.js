@@ -922,10 +922,12 @@
 			check_move : function () {
 				var obj = prepared_move, ret = true, r = obj.r === -1 ? this.get_container() : obj.r;
 				if(!obj || !obj.o || obj.or[0] === obj.o[0]) { return false; }
-				if(obj.op && obj.np && obj.op[0] === obj.np[0] && obj.cp - 1 === obj.o.index()) { return false; }
-				obj.o.each(function () { 
-					if(r.parentsUntil(".jstree", "li").andSelf().index(this) !== -1) { ret = false; return false; }
-				});
+				if(!obj.cy) {
+					if(obj.op && obj.np && obj.op[0] === obj.np[0] && obj.cp - 1 === obj.o.index()) { return false; }
+					obj.o.each(function () { 
+						if(r.parentsUntil(".jstree", "li").andSelf().index(this) !== -1) { ret = false; return false; }
+					});
+				}
 				return ret;
 			},
 			move_node : function (obj, ref, position, is_copy, is_prepared, skip_check) {
