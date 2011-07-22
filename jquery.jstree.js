@@ -4340,15 +4340,19 @@
 		},
 		_fn : { 
 			_check_unique : function (nms, p, func) {
-				var cnms = [];
+				var cnms = [], ok = true;
 				p.children("a").each(function () { cnms.push($(this).text().replace(/^\s+/g,"")); });
 				if(!cnms.length || !nms.length) { return true; }
-				cnms = cnms.sort().join(",,").replace(/(,|^)([^,]+)(,,\2)+(,|$)/g,"$1$2$4").replace(/,,+/g,",").replace(/,$/,"").split(",");
-				if((cnms.length + nms.length) != cnms.concat(nms).sort().join(",,").replace(/(,|^)([^,]+)(,,\2)+(,|$)/g,"$1$2$4").replace(/,,+/g,",").replace(/,$/,"").split(",").length) {
+				$.each(nms, function (i, v) {
+					if($.inArray(v, cnms) !== -1) {
+						ok = false;
+						return false;
+					}
+				});
+				if(!ok) {
 					this._get_settings().unique.error_callback.call(null, nms, p, func);
-					return false;
 				}
-				return true;
+				return ok;
 			},
 			check_move : function () {
 				if(!this.__call_old()) { return false; }
