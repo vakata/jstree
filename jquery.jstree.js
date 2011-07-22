@@ -4227,7 +4227,8 @@
 		_fn : {
 			_themeroller : function (obj) {
 				var s = this._get_settings().themeroller;
-				obj = !obj || obj == -1 ? this.get_container_ul() : this._get_node(obj).parent();
+				obj = (!obj || obj == -1) ? this.get_container_ul() : this._get_node(obj);
+				obj = (!obj || obj == -1) ? this.get_container_ul() : obj.parent();
 				obj
 					.find("li.jstree-closed")
 						.children("ins.jstree-icon").removeClass(s.opened).addClass("ui-icon " + s.closed).end()
