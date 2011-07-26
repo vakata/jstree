@@ -55,7 +55,7 @@ Enables drag'n'drop.
 
 					// if are hovering the container itself add a new root node
 					if(data.event.target === ins.get_container()[0] || data.event.target === ins.get_container_ul()[0]) {
-						if(ins.check_move(data.data.obj, -1, 'last')) {
+						if(ins.check_move(data.data.obj, -1, 'last', )) {
 							lastmv = { 'ins' : ins, 'par' : -1, 'pos' : 'last' };
 							marker.hide();
 							data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');
@@ -99,7 +99,7 @@ Enables drag'n'drop.
 										i = ref.parent().index() + 1;
 										break;
 								}
-								if(ins.check_move(data.data.obj, p, i)) {
+								if(ins.check_move(data.data.obj, p, i, data.event[data.data.origin.get_settings().dnd.copy_modifier + "Key"])) {
 									if(v === 'i' && ref.parent().is('.jstree-closed') && ins.get_settings(true).dnd.open_timeout) {
 										opento = setTimeout((function (x, z) { return function () { x.open_node(z); }; })(ins, ref), ins.get_settings(true).dnd.open_timeout);
 									}
