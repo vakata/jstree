@@ -77,10 +77,10 @@ Some static functions and variables, unless you know exactly what you are doing 
 			if($.jstree._reference(container)) { $.jstree.__destruct(container); }
 			$.extend.apply(null, [true, s].concat(Array.prototype.slice.call(arguments, 1), (container.data("jstree") || {}) ));
 			p = $.isArray(s.plugins) ? s.plugins : $.jstree.defaults.plugins.slice();
-			p = p.sort().join(",,").replace(/(,|^)([^,]+)(,,\2)+(,|$)/g,"$1$2$4").replace(/,,+/g,",").replace(/,$/,"").split(",");
+			p = $.vakata.array_unique(p);
 			s = $.extend(true, {}, $.jstree.defaults, s);
 			$.each(plugins, function (i, val) { 
-				if(i !== "core" && $.inArray(i, s.plugins) === -1) { s[i] = null; delete s[i]; } 
+				if(i !== "core" && $.inArray(i, p) === -1) { s[i] = null; delete s[i]; } 
 				else { t.push(i); d[i] = {}; }
 			});
 			s.plugins = t;

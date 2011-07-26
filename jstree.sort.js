@@ -19,7 +19,7 @@ Sorts items alphabetically (or using any other function)
 						this._sort(m, false);
 					}, this));
 		},
-		defaults : function (a, b) { return this.get_text(a) > this.get_text(b) ? 1 : -1; },
+		defaults : function (a, b) { return this.get_text(a, true) > this.get_text(b, true) ? 1 : -1; },
 		_fn : { 
 			_sort : function (obj, deep) {
 				var s = this.get_settings(true).sort,

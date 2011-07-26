@@ -37,10 +37,10 @@
 .jstree-default .jstree-unchecked > a > .jstree-checkbox:hover { background-position:-2px -37px; }
 .jstree-default .jstree-undetermined > a > .jstree-checkbox:hover { background-position:-20px -37px; }
 
-#vakata-dragged.jstree-default ins { background:transparent !important; }
-#vakata-dragged.jstree-default .jstree-ok { background:url("d.png") -2px -53px no-repeat !important; }
-#vakata-dragged.jstree-default .jstree-invalid { background:url("d.png") -18px -53px no-repeat !important; }
-#jstree-marker.jstree-default { background:url("d.png") -41px -57px no-repeat !important; text-indent:-100px; }
+#jstree-dnd.jstree-default ins { background:transparent; }
+#jstree-dnd.jstree-default .jstree-ok { background:url("d.png") -2px -53px no-repeat; }
+#jstree-dnd.jstree-default .jstree-er { background:url("d.png") -18px -53px no-repeat; }
+/*#jstree-marker.jstree-default { background:url("d.png") -41px -57px no-repeat !important; text-indent:-100px; }*/
 
 .jstree-default .jstree-locked a { color:silver; cursor:default; }
 

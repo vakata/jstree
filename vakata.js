@@ -295,12 +295,20 @@ Functions needed to drag'n'drop elements
 			Used internally to trigger all necessary events.
 		*/
 		_trigger : function (event_name, e) {
-			$(document).triggerHandler("dnd_" + event_name + ".vakata", { 
-				"event"		: e,
+			var data = $.vakata.dnd._get();
+			data.event = e;
+			$(document).triggerHandler("dnd_" + event_name + ".vakata", data);
+		},
+		/* 
+			Function: $.vakata.dnd._get
+			Used internally to get all items for the drag event. Can be used by foreign code too.
+		*/
+		_get : function () {
+			return { 
 				"data"		: vakata_dnd.data,
 				"element"	: vakata_dnd.element,
 				"helper"	: vakata_dnd.helper
-			});
+			};
 		},
 		/* 
 			Function: $.vakata.dnd._clean
@@ -329,6 +337,23 @@ Functions needed to drag'n'drop elements
 		/* 
 			Function: $.vakata.dnd._scroll
 			Used internally to scroll hovered elements.
+
+			Triggers:
+			<dnd_scroll>
+
+			Event: dnd_scroll
+			Fires when a container is scrolled due to dragging near its edge. Triggered on the document, the event is fired in the *vakata* namespace.
+
+			Parameters:
+				data.event - the scrolled element
+				data.data - the data you supplied when calling <$.vakata.dnd.start>
+				data.element - the origin element
+				data.helper - the jquery extended drag-helper node (or false if it is not used)
+
+			Example:
+			>$(document).bind("dnd_start.vakata", function (e, data) {
+			>	// do something
+			>});
 		*/
 		_scroll : function (init_only) {
 			if(!vakata_dnd.scroll_e || (!vakata_dnd.scroll_l && !vakata_dnd.scroll_t)) {
@@ -340,8 +365,14 @@ Functions needed to drag'n'drop elements
 				return false;
 			}
 			if(init_only === true) { return false; }
-			vakata_dnd.scroll_e.scrollTop(vakata_dnd.scroll_e.scrollTop()  + vakata_dnd.scroll_t * $.vakata.dnd.settings.scroll_speed);
-			vakata_dnd.scroll_e.scrollLeft(vakata_dnd.scroll_e.scrollLeft() + vakata_dnd.scroll_l * $.vakata.dnd.settings.scroll_speed);
+
+			var i = vakata_dnd.scroll_e.scrollTop(), 
+				j = vakata_dnd.scroll_e.scrollLeft();
+			vakata_dnd.scroll_e.scrollTop(i + vakata_dnd.scroll_t * $.vakata.dnd.settings.scroll_speed);
+			vakata_dnd.scroll_e.scrollLeft(j + vakata_dnd.scroll_l * $.vakata.dnd.settings.scroll_speed);
+			if(i !== vakata_dnd.scroll_e.scrollTop() || j !== vakata_dnd.scroll_e.scrollLeft()) {
+				$.vakata.dnd._trigger("scroll", vakata_dnd.scroll_e);
+			}
 		},
 		/* 
 			Function: $.vakata.dnd.start
@@ -376,7 +407,7 @@ Functions needed to drag'n'drop elements
 				vakata_dnd.helper = $("<div id='vakata-dnd'></div>").html(html).css({
 					"display"		: "block", 
 					"margin"		: "0",
-					"padding"		: "4px 4px 4px 24px",
+					"padding"		: "0",
 					"position"		: "absolute",
 					"top"			: "-2000px",
 					"lineHeight"	: "16px",
@@ -528,7 +559,9 @@ Functions needed to drag'n'drop elements
 				>	// do something
 				>});
 			*/
-			$.vakata.dnd._trigger("stop", e);
+			if(vakata_dnd.is_drag) {
+				$.vakata.dnd._trigger("stop", e);
+			}
 			$.vakata.dnd._clean();
 		}
 	};
