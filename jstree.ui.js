@@ -99,6 +99,13 @@ This plugin enables selecting, deselecting and hovering tree items.
 					this.__callback({ "obj" : obj });
 				}
 			},
+			select_all : function (context) {
+				var ret = context ? $(context).find("a").parent() : this.get_container().find("a").parent();
+				ret.children("a").addClass("jstree-clicked");
+				this.data.ui.selected = ret;
+				this.data.ui.last_selected = ret.eq(0);
+				this.__callback({ "obj" : ret });
+			},
 			deselect_all : function (context) {
 				var ret = context ? $(context).find("a.jstree-clicked").parent() : this.get_container().find("a.jstree-clicked").parent();
 				ret.children("a.jstree-clicked").removeClass("jstree-clicked");
