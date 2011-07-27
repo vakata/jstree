@@ -1499,40 +1499,45 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 
 				var li = this.parse_json(node),
-					tmp;
+					tmp = par === -1 ? this.get_container() : par;
 
 				if(par === -1) {
-					par = this.get_container();
 					if(pos === "before") { pos = "first"; }
 					if(pos === "after") { pos = "last"; }
 				}
 				switch(pos) {
-					case "before": par.before(li); tmp = this.get_parent(par); break;
-					case "after" : par.after(li);  tmp = this.get_parent(par); break;
+					case "before": 
+						pos = par.index();
+						par = this.get_parent(par);
+						break;
+					case "after" : 
+						pos = par.index() + 1;
+						par = this.get_parent(par); 
+						break;
 					case "inside":
-					case "first" :
-						if(!par.children("ul").length) { par.append("<ul />"); }
-						par.children("ul").prepend(li);
-						tmp = par;
+					case "first":
+						pos = 0;
 						break;
 					case "last":
-						if(!par.children("ul").length) { par.append("<ul />"); }
-						par.children("ul").append(li);
-						tmp = par;
+						pos = tmp.children('ul').children('li').length;
 						break;
 					default:
-						if(!par.children("ul").length) { par.append("<ul />"); }
 						if(!pos) { pos = 0; }
-						tmp = par.children("ul").children("li").eq(pos);
-						if(tmp.length) { tmp.before(li); }
-						else { par.children("ul").append(li); }
-						tmp = par;
 						break;
 				}
-				if(tmp === -1 || tmp.get(0) === this.get_container().get(0)) { tmp = -1; }
-				this.correct_node(tmp, true);
+				if(!this.check("create_node", li, par, pos)) { return false; }
+
+				tmp = par === -1 ? this.get_container() : par;
+				if(!tmp.children("ul").length) { tmp.append("<ul />"); }
+				if(tmp.children("ul").children("li").eq(pos).length) {
+					tmp.children("ul").children("li").eq(pos).before(li);
+				}
+				else { 
+					tmp.children("ul").append(li); 
+				}
+				this.correct_node(par, true);
 				if(callback) { callback.call(this, li); }
-				this.__callback({ "obj" : li, "parent" : tmp, "position" : li.index() });
+				this.__callback({ "obj" : li, "parent" : par, "position" : li.index() });
 				return li;
 			},
 			/*
@@ -1563,6 +1568,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			rename_node : function (obj, val) {
 				obj = this.get_node(obj);
 				var old = this.get_text(obj);
+				if(!this.check("rename_node", obj, this.get_parent(obj), val)) { return false; }
 				if(obj && obj.length) {
 					this.set_text(obj, val); // .apply(this, Array.prototype.slice.call(arguments)) 
 					this.__callback({ "obj" : obj, "title" : val, "old" : old }); 
@@ -1600,6 +1606,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(!obj || obj === -1 || !obj.length) { return false; }
 				var par = this.get_parent(obj), 
 					pre = this.get_prev(obj);
+				if(!this.check("delete_node", obj, par, obj.index())) { return false; }
 				obj = obj.detach();
 				this.correct_node(par);
 				this.correct_node(pre);
@@ -1607,10 +1614,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 				return obj;
 			},
 			/*
-				Function: check_move
-				This function checks if a move is valid. This function also calls the check_move config function.
+				Function: check
+				This function checks if a structure modification is valid. 
 
 				Parameters:
+					chk - *string* what are we checking (copy_node, move_node, rename_node, create_node, delete_node)
 					obj - *mixed* the node to be moved. This is used as a jquery selector, can be jQuery object, DOM node, string, etc.
 					par - *mixed* the new parent. This is used as a jquery selector, can be jQuery object, DOM node, string, etc.
 					pos - *number* the index among the parent's children to move to
@@ -1619,10 +1627,27 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Returns:
 					boolean - _true_ if the move is valid, _false_ otherwise
 			*/
-			check_move : function (obj, par, pos, is_copy) {
-				if(!is_copy && par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) { return false; }
-				// this needs to be separated - no place in the core
-				// if(!this.get_settings(true).core.check_move.call(this, obj, par, pos)) { return false; }
+			check : function (chk, obj, par, pos) {
+				switch(chk) {
+					case "create_node":
+						break;
+					case "rename_node":
+						break;
+					case "move_node":
+						var tmp = par === -1 ? this.get_container() : par;
+						tmp = tmp.children('ul').children('li');
+						if(tmp.length && tmp.index(obj) !== -1 && (pos === obj.index() || pos === obj.index() + 1)) {
+							return false;
+						}
+						if(par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) { 
+							return false; 
+						}
+						break;
+					case "copy_node":
+						break;
+					case "delete_node":
+						break;
+				}
 				return true;
 			},
 			/*
@@ -1660,7 +1685,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			move_node : function (obj, par, pos, callback, is_loaded) {
 				obj = this.get_node(obj);
 				par = this.get_node(par);
-				pos = typeof pos === "undefined" ? "last" : pos;
+				pos = typeof pos === "undefined" ? 0 : pos;
 
 				if(!obj || obj === -1 || !obj.length) { return false; }
 				if(par !== -1 && !par.length) { return false; }
@@ -1673,43 +1698,39 @@ Some static functions and variables, unless you know exactly what you are doing 
 					old_ins = $.jstree._reference(obj),
 					new_ins = par === -1 ? this : $.jstree._reference(par),
 					is_multi = (old_ins.get_index() !== new_ins.get_index());
-				if(par === -1) {
-					par = this.get_container();
+				if(new_par === -1) {
+					par = new_ins.get_container();
 					if(pos === "before") { pos = "first"; }
 					if(pos === "after") { pos = "last"; }
 				}
-				if(!this.check_move(obj, new_par, pos)) {
-					return false;
-				}
 				switch(pos) {
 					case "before": 
-						if(par.get(0) === obj.get(0) || par.prev().get(0) === obj.get(0)) { return true; }
-						par.before(obj); 
+						pos = par.index();
 						break;
 					case "after" : 
-						if(par.get(0) === obj.get(0) || par.next().get(0) === obj.get(0)) { return true; }
-						par.after(obj); 
+						pos = par.index() + 1;
 						break;
 					case "inside":
-					case "first" :
-						if(!par.children("ul").length) { par.append("<ul />"); }
-						par.children("ul").prepend(obj);
+					case "first":
+						pos = 0;
 						break;
 					case "last":
-						if(!par.children("ul").length) { par.append("<ul />"); }
-						par.children("ul").append(obj);
+						pos = par.children('ul').children('li').length;
 						break;
 					default:
-						if(!par.children("ul").length) { par.append("<ul />"); }
 						if(!pos) { pos = 0; }
-						new_par = par.children("ul").children("li").eq(pos);
-						if(new_par.get(0) === obj.get(0)) { return true; }
-						if(new_par.length) { new_par.before(obj); }
-						else { par.children("ul").append(obj); }
-						new_par = par;
 						break;
 				}
-				if(new_par === -1 || new_par.get(0) === this.get_container().get(0)) { new_par = -1; }
+				if(!this.check("move_node", obj, new_par, pos)) { return false; }
+
+				if(!par.children("ul").length) { par.append("<ul />"); }
+				if(par.children("ul").children("li").eq(pos).length) {
+					par.children("ul").children("li").eq(pos).before(obj);
+				}
+				else { 
+					par.children("ul").append(obj); 
+				}
+
 				if(is_multi) { // if multitree - clean the node recursively - remove all icons, and call deep clean_node
 					obj.find('.jstree-icon, .jstree-ocl').remove();
 					this.clean_node(obj);
@@ -1773,44 +1794,42 @@ Some static functions and variables, unless you know exactly what you are doing 
 				obj.find("*[id]").andSelf().each(function () {
 					if(this.id) { this.id = "copy_" + this.id; }
 				});
-
-				if(par === -1) {
-					par = this.get_container();
+				if(new_par === -1) {
+					par = new_ins.get_container();
 					if(pos === "before") { pos = "first"; }
 					if(pos === "after") { pos = "last"; }
 				}
-				if(!this.check_move(obj, new_par, pos, true)) {
-					return false;
-				}
 				switch(pos) {
 					case "before": 
-						par.before(obj); 
+						pos = par.index();
 						break;
 					case "after" : 
-						par.after(obj); 
+						pos = par.index() + 1;
 						break;
 					case "inside":
-					case "first" :
-						if(!par.children("ul").length) { par.append("<ul />"); }
-						par.children("ul").prepend(obj);
+					case "first":
+						pos = 0;
 						break;
 					case "last":
-						if(!par.children("ul").length) { par.append("<ul />"); }
-						par.children("ul").append(obj);
+						pos = par.children('ul').children('li').length;
 						break;
 					default:
-						if(!par.children("ul").length) { par.append("<ul />"); }
 						if(!pos) { pos = 0; }
-						new_par = par.children("ul").children("li").eq(pos);
-						if(new_par.length) { new_par.before(obj); }
-						else { par.children("ul").append(obj); }
-						new_par = par;
 						break;
 				}
-				if(new_par === -1 || new_par.get(0) === this.get_container().get(0)) { new_par = -1; }
+				if(!this.check("copy_node", org_obj, new_par, pos)) { return false; }
 
-				this.clean_node(obj); // always clean so that selected states, etc. are removed
-
+				if(!par.children("ul").length) { par.append("<ul />"); }
+				if(par.children("ul").children("li").eq(pos).length) {
+					par.children("ul").children("li").eq(pos).before(obj);
+				}
+				else { 
+					par.children("ul").append(obj); 
+				}
+				if(is_multi) { // if multitree - clean the node recursively - remove all icons, and call deep clean_node
+					obj.find('.jstree-icon, .jstree-ocl').remove();
+				}
+				new_ins.clean_node(obj); // always clean so that selected states, etc. are removed
 				new_ins.correct_node(new_par, true); // no need to correct the old parent, as nothing has changed there
 				if(callback) { callback.call(this, obj, new_par, obj.index(), org_obj); }
 				this.__callback({ "obj" : obj, "parent" : new_par, "position" : obj.index(), "original" : org_obj, "is_multi" : is_multi });
