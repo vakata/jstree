@@ -579,11 +579,9 @@ A function used to do XSLT transformations.
 		Parameters:
 			xml - *string* the source xml string
 			xsl - *string* the xsl string
-			callback - *function* this function is called in the global scope and is passed the result document
-		
+
 		Returns:
-			true - if the browser supports xslt tranfsormation with strings
-			false - if the browser does not support xslt transformations with strings
+			the transformed result (or _false_ on failure)
 
 		Example:
 		>// simple
@@ -593,44 +591,38 @@ A function used to do XSLT transformations.
 		>	this.some_process(res); 
 		>}, some_object);
 	*/
-	$.vakata.xslt = function (xml, xsl, callback) {
-		var rs = "", xm, xs, processor, support;
-		// TODO: IE9 no XSLTProcessor, no document.recalc
-		if(document.recalc) {
-			xm = document.createElement('xml');
-			xs = document.createElement('xml');
-			xm.innerHTML = xml;
-			xs.innerHTML = xsl;
-			$("body").append(xm).append(xs);
-			setTimeout( (function (xm, xs, callback) {
-				return function () {
-					callback.call(null, xm.transformNode(xs.XMLDocument));
-					setTimeout( (function (xm, xs) { return function () { $(xm).remove(); $(xs).remove(); }; })(xm, xs), 200);
-				};
-			})(xm, xs, callback), 100);
-			return true;
-		}
-		// TODO: IE9 no XSLTProcessor
-		if(typeof window.DOMParser !== "undefined" && typeof window.XMLHttpRequest !== "undefined" && typeof window.XSLTProcessor !== "undefined") {
-			processor = new XSLTProcessor();
-			support = $.isFunction(processor.transformDocument) ? (typeof window.XMLSerializer !== "undefined") : true;
-			if(!support) { return false; }
-			xml = new DOMParser().parseFromString(xml, "text/xml");
-			xsl = new DOMParser().parseFromString(xsl, "text/xml");
-			if($.isFunction(processor.transformDocument)) {
-				rs = document.implementation.createDocument("", "", null);
-				processor.transformDocument(xml, xsl, rs, null);
-				callback.call(null, new XMLSerializer().serializeToString(rs));
-				return true;
+	$.vakata.xslt = function (xml, xsl) {
+		var r = false, p, q, s;
+		// IE9
+		if(r === false && window.ActiveXObject) {
+			try {
+				r = new ActiveXObject("Msxml2.XSLTemplate");
+				q = new ActiveXObject("Msxml2.DOMDocument");
+				q.loadXML(xml);
+				s = new ActiveXObject("Msxml2.FreeThreadedDOMDocument");
+				s.loadXML(xsl);
+				r.stylesheet = s;
+				p = r.createProcessor();
+				p.input = q;
+				p.transform();
+				r = p.output;
 			}
-			else {
-				processor.importStylesheet(xsl);
-				rs = processor.transformToFragment(xml, document);
-				callback.call(null, $("<div />").append(rs).html());
-				return true;
-			}
+			catch (e) { }
 		}
-		return false;
+		xml = $.parseXML(xml);
+		xsl = $.parseXML(xsl);
+		// FF, Chrome
+		if(r === false && typeof (XSLTProcessor) != "undefined") {
+			p = new XSLTProcessor();
+			p.importStylesheet(xsl);
+			r = p.transformToFragment(xml, document);
+			r = $('<div />').append(r).html();
+		}
+		// OLD IE
+		if(r === false && typeof (xml.transformNode) != "undefined") {
+			r = xml.transformNode(xsl);
+		}
+		return r;
 	};
 })(jQuery);
 

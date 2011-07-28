@@ -10,10 +10,11 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 		},
 		_fn : { 
 			_append_html_data : function (dom, data) {
+				data = $(data);
+				if(!data || !data.length || !data.is('ul, li')) { return false; }
 				dom = this.get_node(dom);
 				if(dom === -1) { dom = this.get_container(); }
-				data = $(data);
-				if(!data || !data.length || !dom.length, !data.is('ul, li')) { return false; }
+				if(!dom.length) { return false; }
 				if(!dom.children('ul').length) { dom.append('<ul />'); }
 				dom.children('ul').empty().append(data.is('ul') ? data.children('li') : data);
 				return true;

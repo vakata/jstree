@@ -19,6 +19,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	<script type="text/javascript" src="jstree.hotkeys.js"></script>
 	<script type="text/javascript" src="jstree.dnd.js"></script>
 	<script type="text/javascript" src="jstree.unique.js"></script>
+	<script type="text/javascript" src="jstree.xml.js"></script>
 	<style type="text/css">
 	html, body { margin:0; padding:0; font-family:Verdana; font-size:10px; }
 	#container { width:800px; margin:0 auto; }
@@ -31,7 +32,13 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	}
 	$(function () {
 		$("#jstree")
-			.jstree()
+			.jstree(
+			{
+				'xml' : {
+					'data' : '<?xml version="1.0" encoding="utf-8" ?><root><item data-jstree="{&quot;opened&quot;:true, &quot;selected&quot;:true}" id="n1"><content href="#"><![CDATA[asdf]]></content></item><item parent_id="n1"><content href="#"><![CDATA[asdf2]]></content></item></root>'
+				}
+			}
+			)
 			.bind('__ready.jstree', function () {
 				save_state();
 			})

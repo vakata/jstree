@@ -1074,6 +1074,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 						// TODO: make this faster
 						t.children('a').html(t.children('a').html().replace(/[\s\t\n]+$/,''));
 					}
+					else {
+						if(!$.trim(t.children('a').attr('href'))) { t.children('a').attr("href","#"); }
+					}
 					if(!t.children("ins.jstree-ocl").length) { 
 						t.prepend("<ins class='jstree-icon jstree-ocl'>&#160;</ins>");
 					}
@@ -1416,7 +1419,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(!is_callback) {
 					if(!obj || obj === -1) { obj = this.get_container_ul().children("li"); }
 				}
-				var r, t, li_attr, a_attr;
+				var r, t, li_attr = {}, a_attr = {}, tmp = {};
 				if(!obj || !obj.length) { return false; }
 				if(obj.length > 1 || !is_callback) {
 					r = [];
@@ -1426,15 +1429,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 					});
 					return r;
 				}
-				li_attr = $.vakata.attributes(obj, true);
-				a_attr = $.vakata.attributes(obj.children('a'), true);
-				$.each(li_attr, function (i, v) {
-					if(i == 'id') { return true; }
-					li_attr[i] = $.trim(v.replace(/ jstree[^ ]*/ig,'').replace(/\s+$/ig," "));
+				tmp = $.vakata.attributes(obj, true);
+				$.each(tmp, function (i, v) {
+					if(i == 'id') { li_attr[i] = v; return true; }
+					v = $.trim(v.replace(/\bjstree[^ ]*/ig,'').replace(/\s+$/ig," "));
+					if(v.length) { li_attr[i] = v; }
 				});
-				$.each(a_attr, function (i, v) {
-					if(i == 'id') { return true; }
-					li_attr[i] = $.trim(v.replace(/ jstree[^ ]*/ig,'').replace(/\s+$/ig," "));
+				tmp = $.vakata.attributes(obj.children('a'), true);
+				$.each(tmp, function (i, v) {
+					if(i == 'id') { a_attr[i] = v; return true; }
+					v = $.trim(v.replace(/\bjstree[^ ]*/ig,'').replace(/\s+$/ig," "));
+					if(v.length) { a_attr[i] = v; }
 				});
 				r = { 
 					'title'		: this.get_text(obj), 
@@ -1619,9 +1624,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 
 				Parameters:
 					chk - *string* what are we checking (copy_node, move_node, rename_node, create_node, delete_node)
-					obj - *mixed* the node to be moved. This is used as a jquery selector, can be jQuery object, DOM node, string, etc.
-					par - *mixed* the new parent. This is used as a jquery selector, can be jQuery object, DOM node, string, etc.
-					pos - *number* the index among the parent's children to move to
+					obj - *mixed* the node. 
+					par - *mixed* the parent (if dealing with a move or copy - the new parent).
+					pos - *mixed* the index among the parent's children (or the new name if dealing with a rename)
 					is_copy - *boolean* is this a copy or a move call
 
 				Returns:
