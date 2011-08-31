@@ -15,6 +15,7 @@ Enables drag'n'drop.
 				}, this));
 		},
 		// TODO: is check_timeout or is it OK as is?
+		// TODO: drag foreign items / drop foreign items (pretty easy with dnd events, but need to move marker placement in a function)
 		defaults : {
 			copy_modifier : 'ctrl',
 			open_timeout : 500

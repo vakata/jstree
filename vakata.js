@@ -1318,7 +1318,7 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 			Variable: $.vakata.storage.version
 			*string* the version of jstorage used
 		*/
-		version: "0.1.5.0",
+		version: "0.1.5.2",
 		/* 
 			Function: $.vakata.storage.set
 			Set a key to a value
@@ -1383,7 +1383,7 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 		flush : function(){
 			_storage = {};
 			_save();
-			try{ window.localStorage.clear(); } catch(E8) { }
+			// try{ window.localStorage.clear(); } catch(E8) { }
 			return true;
 		},
 		/* 
@@ -1442,4 +1442,127 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 		}
 	};
 	_init();
+})(jQuery);
+
+/* 
+Group: PrettyDate
+Modifies time elements to a more human readable value. Taken from: https://github.com/zachleat/Humane-Dates/blob/master/src/humane.js
+*/
+(function ($) {
+	/* 
+		Variable: $.vakata.pretty_date
+		*object* holds all pretty-date related functions and properties.
+	*/
+	$.vakata.pretty_date = {
+		/* 
+			Variable: $.vakata.pretty_date.lang
+			*object* the localization to use.
+		*/
+		lang : {
+			ago: 'Ago',
+			from: 'From Now',
+			now: 'Just Now',
+			minute: 'Minute',
+			minutes: 'Minutes',
+			hour: 'Hour',
+			hours: 'Hours',
+			day: 'Day',
+			days: 'Days',
+			week: 'Week',
+			weeks: 'Weeks',
+			month: 'Month',
+			months: 'Months',
+			year: 'Year',
+			years: 'Years'
+		},
+		/* 
+			Function: $.vakata.pretty_date.parse
+			Parses the difference between to dates to a human readable string.
+
+			Parameters:
+				date - the date to calculate from (а string in this YYYY-MM-DDTHH:MM:SSZ format - UTC)
+				comareTo - the date to compare to (as date), if left empty the current date is used
+
+			Returns:
+				*mixed* - the formatted string on success or _null_ on error
+		*/
+		parse : function (date, compareTo) {
+			// remove the timezone (always use gmdate on server side)
+			date = new Date(date.replace(/-/g,"/").replace(/[TZ]/g," ").replace(/\+\d\d\:\d\d$/,''));
+			compareTo = compareTo || new Date();
+			var lang		= $.vakata.pretty_date.lang,
+				formats		= [
+					[60, lang.now],
+					[3600, lang.minute, lang.minutes, 60], // 60 minutes, 1 minute
+					[86400, lang.hour, lang.hours, 3600], // 24 hours, 1 hour
+					[604800, lang.day, lang.days, 86400], // 7 days, 1 day
+					[2628000, lang.week, lang.weeks, 604800], // ~1 month, 1 week
+					[31536000, lang.month, lang.months, 2628000], // 1 year, ~1 month
+					[Infinity, lang.year, lang.years, 31536000] // Infinity, 1 year
+				],
+				seconds		= (compareTo - date + compareTo.getTimezoneOffset() * 60000) / 1000,
+				normalize	= function (val, single) {
+								var margin = 0.1;
+								if(val >= single && val <= single * (1+margin)) {
+									return single;
+								}
+								return val;
+							},
+				token;
+
+			if(seconds < 0) {
+				seconds = Math.abs(seconds);
+				token = ' ' + lang.from;
+			}
+			else {
+				token = ' ' + lang.ago;
+			}
+
+			for(var i = 0, format = formats[0]; formats[i]; format = formats[++i]) {
+				if(seconds < format[0]) {
+					if(i === 0) {
+						return format[1];
+					}
+					var val = Math.ceil(normalize(seconds, format[3]) / (format[3]));
+					return val +
+							' ' +
+							(val != 1 ? format[2] : format[1]) +
+							(i > 0 ? token : '');
+				}
+			}
+		},
+		/* 
+			Function: $.vakata.pretty_date.init
+			Parses all time elements in the document and keeps reparsing them every few seconds.
+
+			Parameters:
+				i - the interval for reparsing (in seconds)
+				format - the format to use, example: _Published %{s}._. Default is _%{s}_.
+		*/
+		init : function (i, format) {
+			$("time").vakata_pretty_date(format);
+			setInterval(function(){ $("time").vakata_pretty_date(format); }, i || 5000);
+		}
+	};
+	/*
+	Function: $().vakata_pretty_date
+	Sets the HTML of every element to the parsed difference of its _datetime_ attribute and the compare parameter.
+
+		Parameters:
+			format - makes it possible to modify the parsed string, example: _Published %{s}._. Default is _%{s}_.
+			compare - the date to compare to. Default is the current date.
+	*/
+	$.fn.vakata_pretty_date = function (format, compare) {
+		if(!format) { format = '%{s}'; }
+		return this.each(function() {
+			var $t = jQuery(this),
+				date = $.vakata.pretty_date.parse($t.attr('datetime'), compare);
+			if(date) {
+				date = format.replace('%{s}', date);
+				if($t.html() != date) {
+					$t.html(date);
+				}
+			}
+		});
+	};
 })(jQuery);
