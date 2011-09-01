@@ -122,7 +122,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 		__destruct	: function (instance) {
 			instance = $.jstree._reference(instance);
 			if(!instance) { return false; }
-			var s = instance._get_settings(),
+			var s = instance.get_settings(),
 				n = instance.get_index(),
 				i = 0;
 			if(focused_instance === n) {
@@ -137,7 +137,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			$.each(s.plugins, function (i, val) {
 				try { plugins[val].__destruct.apply(instance); } catch(err) { }
 			});
-			this.__trigger("__destruct");
+			instance.__trigger("__destruct");
 			instance.get_container()
 				.unbind(".jstree")
 				.undelegate(".jstree")
