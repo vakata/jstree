@@ -1931,6 +1931,7 @@
  * This is useful for maintaining the same structure in many languages (hence the name of the plugin)
  */
 (function ($) {
+	var sh = false;
 	$.jstree.plugin("languages", {
 		__init : function () { this._load_css();  },
 		defaults : [],
@@ -1945,9 +1946,9 @@
 					else { return false; }
 				}
 				if(i == this.data.languages.current_language) { return true; }
-				st = $.vakata.css.get_css(selector + "." + this.data.languages.current_language, false, this.data.languages.language_css);
+				st = $.vakata.css.get_css(selector + "." + this.data.languages.current_language, false, sh);
 				if(st !== false) { st.style.display = "none"; }
-				st = $.vakata.css.get_css(selector + "." + i, false, this.data.languages.language_css);
+				st = $.vakata.css.get_css(selector + "." + i, false, sh);
 				if(st !== false) { st.style.display = ""; }
 				this.data.languages.current_language = i;
 				this.__callback(i);
@@ -2021,7 +2022,7 @@
 						if(langs[ln] != this.data.languages.current_language) { str += " display:none; "; }
 						str += " } ";
 					}
-					this.data.languages.language_css = $.vakata.css.add_sheet({ 'str' : str, 'title' : "jstree-languages" });
+					sh = $.vakata.css.add_sheet({ 'str' : str, 'title' : "jstree-languages" });
 				}
 			},
 			create_node : function (obj, position, js, callback) {
