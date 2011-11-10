@@ -1232,7 +1232,19 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 		_backend = false;
 
 	function _init() {
-		if("localStorage" in window) {
+		var localStorageReallyWorks = false;
+		if("localStorage" in window){
+			try {
+				window.localStorage.setItem('_tmptest', 'tmpval');
+				localStorageReallyWorks = true;
+				window.localStorage.removeItem('_tmptest');
+			} catch(BogusQuotaExceededErrorOnIos5) {
+				// Thanks be to iOS5 Private Browsing mode which throws
+				// QUOTA_EXCEEDED_ERRROR DOM Exception 22.
+			}
+		}
+
+		if(localStorageReallyWorks){
 			try {
 				if(window.localStorage) {
 					_storage_service = window.localStorage;
@@ -1318,7 +1330,7 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 			Variable: $.vakata.storage.version
 			*string* the version of jstorage used
 		*/
-		version: "0.1.5.2",
+		version: "0.1.5.4",
 		/* 
 			Function: $.vakata.storage.set
 			Set a key to a value
