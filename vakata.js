@@ -889,8 +889,8 @@ Functions needed to show a custom context menu.
 					y = vakata_context.position_y,
 					w = e.width(),
 					h = e.height(),
-					dw = $(document).width(),
-					dh = $(document).height();
+					dw = window.innerWidth || $(document).width(),
+					dh = window.innerHeight || $(document).height();
 
 				if(x + w + 20 > dw) {
 					x = dw - (w + 20);
