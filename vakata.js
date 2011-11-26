@@ -888,15 +888,26 @@ Functions needed to show a custom context menu.
 					x = vakata_context.position_x,
 					y = vakata_context.position_y,
 					w = e.width(),
-					h = e.height(),
-					dw = $(document).width(),
-					dh = $(document).height();
-
-				if(x + w + 20 > dw) {
-					x = dw - (w + 20);
-				}
-				if(y + h + 20 > dh) {
-					y = dh - (h + 20);
+					h = e.height();
+					
+				if(window.innerWidth) {
+					if((x + w + 20) - window.scrollX > window.innerWidth) {
+						x = (window.innerWidth + window.scrollX) - (w + 20);
+					}
+					
+					if((y + h + 20) - window.scrollY > window.innerHeight) {
+						y = (window.innerHeight + window.scrollY) - (h + 20);
+					}
+				} else {
+					var dw = $(document).width(),
+						dh = $(document).height();
+					
+					if(x + w + 20 > dw) {
+						x = dw - (w + 20);
+					}
+					if(y + h + 20 > dh) {
+						y = dh - (h + 20);
+					}
 				}
 
 				vakata_context.element
