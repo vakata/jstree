@@ -1847,8 +1847,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 	$(function() {
 		var css_string = '' + 
 				'.jstree ul, .jstree li { display:block; margin:0 0 0 0; padding:0 0 0 0; list-style-type:none; } ' + 
-				'.jstree li { display:block; min-height:18px; line-height:18px; white-space:nowrap; margin-left:18px; min-width:18px; } ' + 
-				'.jstree-rtl li { margin-left:0; margin-right:18px; } ' + 
+				'.jstree li { display:block; min-height:18px; line-height:18px; white-space:nowrap; margin-left:12px; min-width:18px; } ' + 
+				'.jstree-rtl li { margin-left:0; margin-right:12px; } ' + 
 				'.jstree > ul > li { margin-left:0px; } ' + 
 				'.jstree-rtl > ul > li { margin-right:0px; } ' + 
 				'.jstree .jstree-icon { display:inline-block; text-decoration:none; margin:0; padding:0; } ' + 
@@ -1862,8 +1862,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 			try { document.execCommand("BackgroundImageCache", false, true); } catch (err) { } // prevents flickers
 			css_string += '' + 
 				'.jstree li { height:18px; margin-left:0; margin-right:0; } ' + 
-				'.jstree li li { margin-left:18px; } ' + 
-				'.jstree-rtl li li { margin-left:0px; margin-right:18px; } ' + 
+				'.jstree li li { margin-left:12px; } ' + 
+				'.jstree-rtl li li { margin-left:0px; margin-right:12px; } ' + 
 				'li.jstree-open ul { display:block; } ' + 
 				'li.jstree-closed ul { display:none !important; } ' + 
 				'.jstree li a { display:inline; border-width:0 !important; padding:0px 2px !important; } ';
