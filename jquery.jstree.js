@@ -1088,7 +1088,7 @@
 			save_selected : function () {
 				var _this = this;
 				this.data.ui.to_select = [];
-				this.data.ui.selected.each(function () { if(this.id) { _this.data.ui.to_select.push("#" + this.id.toString().replace(/^#/,"").replace(/\\\//g,"/").replace(/\//g,"\\\/").replace(/\\\./g,".").replace(/\./g,"\\.").replace(/\:/g,"\\:")); } });
+				this.data.ui.selected.each(function () { if(!this.id) { _this.data.ui.to_select.push("#" + this.id.toString().replace(/^#/,"").replace(/\\\//g,"/").replace(/\//g,"\\\/").replace(/\\\./g,".").replace(/\./g,"\\.").replace(/\:/g,"\\:")); } });
 				this.__callback(this.data.ui.to_select);
 			},
 			reselect : function () {
