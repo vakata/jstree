@@ -1856,7 +1856,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				'.jstree a { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; padding:1px 2px; margin:0; } ' + 
 				'.jstree a:focus { outline: none; } ' + 
 				'li.jstree-open > ul { display:block; } ' + 
-				'li.jstree-closed > ul { display:none; } ';
+				'li.jstree-closed > ul { display:none !important; } ';
 		// Correct IE 6 (does not support the > CSS selector)
 		if($.jstree.IS_IE6) { 
 			try { document.execCommand("BackgroundImageCache", false, true); } catch (err) { } // prevents flickers
