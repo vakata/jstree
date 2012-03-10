@@ -858,6 +858,7 @@ Functions needed to show a custom context menu.
 				<$.vakata.context.show>
 		*/
 		show : function (reference, position, data) { 
+			$(vakata_context.element).width('');
 			switch(!0) {
 				case (!position && !reference):
 					return false;
