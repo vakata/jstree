@@ -715,7 +715,7 @@ Functions needed to show a custom context menu.
 				vakata_context.items	= [];
 			}
 			var str = "",
-				sep = false;
+				sep = false, tmp;
 
 			if(is_callback) { str += "<ul>"; }
 			$.each(o, function (i, val) {
