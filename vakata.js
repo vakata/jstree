@@ -687,6 +687,7 @@ Functions needed to show a custom context menu.
 		*/
 		_execute : function (i) {
 			i = vakata_context.items[i];
+			if(i._disabled) { return false; }
 			return i && i.action ? i.action.call(null, {
 						"item"		: i,
 						"reference"	: vakata_context.reference,
