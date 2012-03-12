@@ -372,6 +372,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 		}
 	});
 
+
+	var ccp_node = false, 
+		ccp_mode = false;
 	$.jstree.plugin("core", {
 		__construct : function () {
 			this.data.core.rtl = (this.get_container().css("direction") === "rtl");
@@ -1743,7 +1746,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				old_ins.correct_node(old_par, true);
 				new_ins.correct_node(new_par, true);
 				if(callback) { callback.call(this, obj, new_par, obj.index()); }
-				this.__callback({ "obj" : obj, "parent" : new_par, "position" : obj.index(), "old_parent" : old_par, "is_multi" : is_multi });
+				this.__callback({ "obj" : obj, "parent" : new_par, "position" : obj.index(), "old_parent" : old_par, "is_multi" : is_multi, 'old_instance' : old_ins, 'new_instance' : new_ins });
 				return true;
 			},
 			/*
@@ -1771,7 +1774,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.inst - the instance
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
-					data.rslt - *object* which contains a five keys: _obj_ (the node), _parent_ (the new parent) and _position_ which is the numerical index, _original_ (the original object) and is_multi (a boolean indicating if the node is coming from another tree instance)
+					data.rslt - *object* which contains a five keys: _obj_ (the node), _parent_ (the new parent) and _position_ which is the numerical index, _original_ (the original object), is_multi (a boolean indicating if the node is coming from another tree instance, _old_instance_ (the source instance) and _new_instance_ (the receiving instance))
 				
 				Example:
 				> $("div").bind("copy_node.jstree", function (e, data) { 
@@ -1822,6 +1825,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 						if(!pos) { pos = 0; }
 						break;
 				}
+
+				console.log(this.check("copy_node", org_obj, new_par, pos));
+
 				if(!this.check("copy_node", org_obj, new_par, pos)) { return false; }
 
 				if(!par.children("ul").length) { par.append("<ul />"); }
@@ -1837,8 +1843,98 @@ Some static functions and variables, unless you know exactly what you are doing 
 				new_ins.clean_node(obj); // always clean so that selected states, etc. are removed
 				new_ins.correct_node(new_par, true); // no need to correct the old parent, as nothing has changed there
 				if(callback) { callback.call(this, obj, new_par, obj.index(), org_obj); }
-				this.__callback({ "obj" : obj, "parent" : new_par, "position" : obj.index(), "original" : org_obj, "is_multi" : is_multi });
+				this.__callback({ "obj" : obj, "parent" : new_par, "old_parent" : old_par, "position" : obj.index(), "original" : org_obj, "is_multi" : is_multi, 'old_instance' : old_ins, 'new_instance' : new_ins });
 				return true;
+			},
+
+			cut : function (obj) {
+				obj = this.get_node(obj);
+				if(!obj || obj === -1 || !obj.length) { return false; }
+				ccp_node = obj;
+				ccp_mode = 'move_node';
+				this.__callback({ "obj" : obj });
+			},
+			copy : function (obj) {
+				obj = this.get_node(obj);
+				if(!obj || obj === -1 || !obj.length) { return false; }
+				ccp_node = obj;
+				ccp_mode = 'copy_node';
+				this.__callback({ "obj" : obj });
+			},
+			can_paste : function () {
+				return ccp_mode !== false && ccp_node !== false;
+			},
+			paste : function (obj) { 
+				obj = this.get_node(obj);
+				if(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }
+				this[ccp_mode](ccp_node, obj);
+				this.__callback({ "obj" : obj, "nodes" : ccp_node, "mode" : ccp_mode });
+				ccp_node = false;
+				ccp_mode = false;
+			},
+
+			edit : function (obj, default_text) {
+				obj = this.get_node(obj);
+				if(!obj || obj === -1 || !obj.length) { return false; }
+				var rtl = this.data.core.rtl,
+					w  = this.get_container().width(),
+					a  = obj.children('a:eq(0)'),
+					oi = obj.children("ins"),
+					ai = a.children("ins"),
+					w1 = oi.width() * oi.length,
+					w2 = ai.width() * ai.length,
+					t  = typeof default_text === 'string' ? default_text : this.get_text(obj),
+					h1 = $("<div />", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo("body"),
+					h2 = obj.css("position","relative").append(
+						$("<input />", { 
+							"value" : t,
+							"class" : "jstree-rename-input",
+							// "size" : t.length,
+							"css" : {
+								"padding" : "0",
+								"border" : "1px solid silver",
+								"position" : "absolute",
+								"left"  : (rtl ? "auto" : (w1 + w2 + 4) + "px"),
+								"right" : (rtl ? (w1 + w2 + 4) + "px" : "auto"),
+								"top" : "0px",
+								"height" : (this.data.core.li_height - 2) + "px",
+								"lineHeight" : (this.data.core.li_height - 2) + "px",
+								"width" : "150px" // will be set a bit further down
+							},
+							"blur" : $.proxy(function () {
+								var i = obj.children(".jstree-rename-input"),
+									v = i.val();
+								if(v === "") { v = t; }
+								h1.remove();
+								i.remove();
+								this.rename_node(obj, v);
+								obj.css("position", "");
+							}, this),
+							"keyup" : function (event) {
+								var key = event.keyCode || event.which;
+								if(key == 27) { this.value = t; this.blur(); return; }
+								else if(key == 13) { this.blur(); return; }
+								else { h2.width(Math.min(h1.text("pW" + this.value).width(),w)); }
+							},
+							"keypress" : function(event) {
+								var key = event.keyCode || event.which;
+								if(key == 13) { return false; }
+							}
+						})
+					).children(".jstree-rename-input"),
+					fn = {
+							fontFamily		: a.css('fontFamily')		|| '',
+							fontSize		: a.css('fontSize')			|| '',
+							fontWeight		: a.css('fontWeight')		|| '',
+							fontStyle		: a.css('fontStyle')		|| '',
+							fontStretch		: a.css('fontStretch')		|| '',
+							fontVariant		: a.css('fontVariant')		|| '',
+							letterSpacing	: a.css('letterSpacing')	|| '',
+							wordSpacing		: a.css('wordSpacing')		|| ''
+					};
+				this.set_text(obj, "");
+				h1.css(fn);
+				h2.css(fn).width(Math.min(h1.text("pW" + h2[0].value).width(),w))[0].select();
 			}
 		}
 	});
@@ -1851,8 +1947,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				'.jstree-rtl li { margin-left:0; margin-right:18px; } ' + 
 				'.jstree > ul > li { margin-left:0px; } ' + 
 				'.jstree-rtl > ul > li { margin-right:0px; } ' + 
-				'.jstree .jstree-icon { display:inline-block; text-decoration:none; margin:0; padding:0; } ' + 
-				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:default; } ' + 
+				'.jstree .jstree-icon { display:inline-block; text-decoration:none; margin:0; padding:0; vertical-align:top; } ' + 
+				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:default; vertical-align:top; } ' + 
 				'.jstree a { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; padding:1px 2px; margin:0; } ' + 
 				'.jstree a:focus { outline: none; } ' + 
 				'li.jstree-open > ul { display:block; } ' + 

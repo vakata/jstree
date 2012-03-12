@@ -30,12 +30,13 @@
 
 .jstree-default .jstree-no-checkboxes .jstree-checkbox { display:none !important; }
 
-.jstree-default .jstree-checked > a > .jstree-checkbox { background-position:-38px -19px; }
-.jstree-default .jstree-unchecked > a > .jstree-checkbox { background-position:-2px -19px; }
-.jstree-default .jstree-undetermined > a > .jstree-checkbox { background-position:-20px -19px; }
-.jstree-default .jstree-checked > a > .jstree-checkbox:hover { background-position:-38px -37px; }
-.jstree-default .jstree-unchecked > a > .jstree-checkbox:hover { background-position:-2px -37px; }
-.jstree-default .jstree-undetermined > a > .jstree-checkbox:hover { background-position:-20px -37px; }
+.jstree-default .jstree-check { display:none; }
+.jstree-default .jstree-checkbox { background-position:-2px -19px; }
+.jstree-default .jstree-checked { background-position:-38px -19px; }
+.jstree-default .jstree-undetermined { background-position:-20px -19px; }
+.jstree-default a:hover .jstree-checkbox { background-position:-2px -37px; }
+.jstree-default a:hover .jstree-checked { background-position:-38px -37px; }
+.jstree-default a:hover .jstree-undetermined { background-position:-20px -37px; }
 
 #jstree-dnd.jstree-default ins { background:transparent; }
 #jstree-dnd.jstree-default .jstree-ok { background:url("d.png") -2px -53px no-repeat; }

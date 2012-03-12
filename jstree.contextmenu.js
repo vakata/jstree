@@ -27,59 +27,83 @@ Enables a rightclick contextmenu.
 		defaults : { 
 			select_node : true, 
 			show_at_node : true,
-			items : { // Could be a function that should return an object like this one
-				"create" : {
-					"separator_before"	: false,
-					"separator_after"	: true,
-					"label"				: "Create",
-					"action"			: function (data) { }
-				},
-				"rename" : {
-					"separator_before"	: false,
-					"separator_after"	: false,
-					"label"				: "Rename",
-					"action"			: function (data) { }
-				},
-				"remove" : {
-					"separator_before"	: false,
-					"icon"				: false,
-					"separator_after"	: false,
-					"label"				: "Delete",
-					"action"			: function (data) {
-						var inst = $.jstree._reference(data.reference),
-							obj = inst.get_node(data.reference);
-						inst.delete_node(obj);
-					}
-				},
-				"ccp" : {
-					"separator_before"	: true,
-					"icon"				: false,
-					"separator_after"	: false,
-					"label"				: "Edit",
-					"action"			: false,
-					"submenu" : { 
-						"cut" : {
-							"separator_before"	: false,
-							"separator_after"	: false,
-							"label"				: "Cut",
-							"action"			: function (data) { }
-						},
-						"copy" : {
-							"separator_before"	: false,
-							"icon"				: false,
-							"separator_after"	: false,
-							"label"				: "Copy",
-							"action"			: function (data) { }
-						},
-						"paste" : {
-							"separator_before"	: false,
-							"icon"				: false,
-							"separator_after"	: false,
-							"label"				: "Paste",
-							"action"			: function (data) { }
+			items : function (o) { // Could be an object directly
+				return { 
+					"create" : {
+						"separator_before"	: false,
+						"separator_after"	: true,
+						"label"				: "Create",
+						"action"			: function (data) { 
+							var inst = $.jstree._reference(data.reference),
+								obj = inst.get_node(data.reference);
+							inst.create_node(obj);
+							inst.edit(obj);
+						}
+					},
+					"rename" : {
+						"separator_before"	: false,
+						"separator_after"	: false,
+						"label"				: "Rename",
+						"action"			: function (data) { 
+							var inst = $.jstree._reference(data.reference),
+								obj = inst.get_node(data.reference);
+							inst.edit(obj);
+						}
+					},
+					"remove" : {
+						"separator_before"	: false,
+						"icon"				: false,
+						"separator_after"	: false,
+						"label"				: "Delete",
+						"action"			: function (data) {
+							var inst = $.jstree._reference(data.reference),
+								obj = inst.get_node(data.reference);
+							inst.delete_node(obj);
+						}
+					},
+					"ccp" : {
+						"separator_before"	: true,
+						"icon"				: false,
+						"separator_after"	: false,
+						"label"				: "Edit",
+						"action"			: false,
+						"submenu" : { 
+							"cut" : {
+								"separator_before"	: false,
+								"separator_after"	: false,
+								"label"				: "Cut",
+								"action"			: function (data) { 
+									var inst = $.jstree._reference(data.reference),
+										obj = inst.get_node(data.reference);
+									inst.cut(obj);
+								}
+							},
+							"copy" : {
+								"separator_before"	: false,
+								"icon"				: false,
+								"separator_after"	: false,
+								"label"				: "Copy",
+								"action"			: function (data) { 
+									var inst = $.jstree._reference(data.reference),
+										obj = inst.get_node(data.reference);
+									inst.copy(obj);
+								}
+							},
+							"paste" : {
+								"separator_before"	: false,
+								"icon"				: false,
+								"_disabled"			: !(this.can_paste()),
+								"separator_after"	: false,
+								"label"				: "Paste",
+								"action"			: function (data) { 
+									var inst = $.jstree._reference(data.reference),
+										obj = inst.get_node(data.reference);
+									inst.paste(obj);
+								}
+							}
 						}
 					}
-				}
+				};
 			}
 		},
 		_fn : {
