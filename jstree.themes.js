@@ -212,4 +212,3 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 	// include the themes plugin by default
 	$.jstree.defaults.plugins.push("themes");
 })(jQuery);
-//*/

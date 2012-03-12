@@ -1982,6 +1982,4 @@ Some static functions and variables, unless you know exactly what you are doing 
 		$.vakata.css.add_sheet({ str : css_string, title : "jstree" });
 	});
 })(jQuery);
-//*/
-
 })();

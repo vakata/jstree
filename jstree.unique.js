@@ -30,4 +30,3 @@ Does not allow the same name amongst siblings (still a bit experimental).
 	// include the unique plugin by default
 	$.jstree.defaults.plugins.push("unique");
 })(jQuery);
-//*/
