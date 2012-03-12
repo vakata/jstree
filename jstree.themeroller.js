@@ -62,6 +62,21 @@
                 $(data.rslt.obj).children('a').removeClass('ui-state-active');
                 return styleNodes();
             });
+
+            $(document).bind('dnd_start.vakata', function() {
+                $('#vakata-dnd').addClass('ui-widget ui-widget-content ui-state-default').find('.jstree-icon').addClass('ui-icon');
+            });
+
+            var icons = 'ui-icon-check ui-icon-crossthick';
+
+            $(document).bind('dnd_move.vakata', function() {
+                var icon = $('#vakata-dnd').find('.jstree-icon').removeClass(icons);
+                if (icon.hasClass('jstree-ok')) {
+                    icon.addClass('ui-icon-check');
+                } else {
+                    icon.addClass('ui-icon-crossthick');
+                }
+            });
         }
 	});
 })(jQuery);
