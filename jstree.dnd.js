@@ -6,15 +6,20 @@ Enables drag'n'drop.
 (function ($) {
 	$.jstree.plugin("dnd", {
 		__construct : function () {
+            var settings = this.get_settings(true).dnd;
 			this.get_container()
-				.delegate('a', 'mousedown', $.proxy(function (e) { 
-					var obj = this.get_node(e.target);
-					if(obj && obj !== -1 && obj.length && e.which === 1) { // TODO: think about e.which
-						this.get_container().trigger('mousedown.jstree');
-						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : obj }, '<div id="jstree-dnd" class="' + (this.data.themes ? 'jstree-' + this.get_theme() : '') + '"><ins class="jstree-icon jstree-er">&#160;</ins>' + this.get_text(e.currentTarget, true) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
-					}
-				}, this));
-		},
+				.delegate('a', 'mousedown', $.proxy(function (e) {
+                    // Check for and call the check_start method if present
+                    var obj = this.get_node(e.target);
+                    if (settings && $.isFunction(settings.check_start) && !settings.check_start(obj)) {
+                        return false;
+                    }
+                    if(obj && obj !== -1 && obj.length && e.which === 1) { // TODO: think about e.which
+                        return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : obj }, '<div id="jstree-dnd" class="' + (this.data.themes ? 'jstree-' + this.get_theme() : '') + '"><ins class="jstree-icon jstree-er">&#160;</ins>' + this.get_text(e.currentTarget, true) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
+                    }
+                    return true;
+            }, this));
+        },
 		// TODO: is check_timeout or is it OK as is?
 		// TODO: drag foreign items / drop foreign items (pretty easy with dnd events, but need to move marker placement in a function)
 		defaults : {
@@ -68,57 +73,61 @@ Enables drag'n'drop.
 						// if we are hovering a tree node
 						ref = $(data.event.target).closest('a');
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
-							off = ref.offset();
-							rel = data.event.pageY - off.top;
-							h = ref.height();
-							if(rel < h / 3) { 
-								o = ['b', 'i', 'a'];
-							}
-							else if(rel > h - h / 3) {
-								o = ['a', 'i', 'b'];
-							}
-							else {
-								o = rel > h / 2 ? ['i', 'a', 'b'] : ['i', 'b', 'a'];
-							}
-							$.each(o, function (j, v) {
-								switch(v) {
-									case 'b':
-										l = off.left - 6;
-										t = off.top - 5;
-										p = ins.get_parent(ref);
-										i = ref.parent().index();
-										break;
-									case 'i':
-										l = off.left - 2;
-										t = off.top - 5 + h / 2 + 1;
-										p = ref.parent();
-										i = 0;
-										break;
-									case 'a':
-										l = off.left - 6;
-										t = off.top - 5 + h + 2;
-										p = ins.get_parent(ref);
-										i = ref.parent().index() + 1;
-										break;
-								}
-								/*
-								// TODO: moving inside, but the node is not yet loaded?
-								// the check will work anyway, as when moving the node will be loaded first and checked again
-								if(v === 'i' && !ins.is_loaded(p)) { }
-								*/
-								if(ins.check((data.event[data.data.origin.get_settings().dnd.copy_modifier + "Key"] ? "copy_node" : "move_node"),data.data.obj, p, i)) {
-									if(v === 'i' && ref.parent().is('.jstree-closed') && ins.get_settings(true).dnd.open_timeout) {
-										opento = setTimeout((function (x, z) { return function () { x.open_node(z); }; })(ins, ref), ins.get_settings(true).dnd.open_timeout);
-									}
-									lastmv = { 'ins' : ins, 'par' : p, 'pos' : i };
-									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
-									data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');
-									o = true;
-									return false;
-								}
-							});
-							if(o === true) { return; }
-						}
+							  // Check for and call check_drop if present
+                            var settings = data.data.origin.get_settings(true).dnd;
+                            if (settings && settings.check_drop(data.element, ref)) {
+                                off = ref.offset();
+                                rel = data.event.pageY - off.top;
+                                h = ref.height();
+                                if(rel < h / 3) {
+                                    o = ['b', 'i', 'a'];
+                                }
+                                else if(rel > h - h / 3) {
+                                    o = ['a', 'i', 'b'];
+                                }
+                                else {
+                                    o = rel > h / 2 ? ['i', 'a', 'b'] : ['i', 'b', 'a'];
+                                }
+                                $.each(o, function (j, v) {
+                                    switch(v) {
+    									case 'b':
+    										l = off.left - 6;
+    										t = off.top - 5;
+    										p = ins.get_parent(ref);
+    										i = ref.parent().index();
+    										break;
+    									case 'i':
+    										l = off.left - 2;
+    										t = off.top - 5 + h / 2 + 1;
+    										p = ref.parent();
+    										i = 0;
+    										break;
+    									case 'a':
+    										l = off.left - 6;
+    										t = off.top - 5 + h + 2;
+    										p = ins.get_parent(ref);
+    										i = ref.parent().index() + 1;
+    										break;
+    								}
+    								/*
+    								// TODO: moving inside, but the node is not yet loaded?
+    								// the check will work anyway, as when moving the node will be loaded first and checked again
+    								if(v === 'i' && !ins.is_loaded(p)) { }
+    								*/
+    								if(ins.check((data.event[data.data.origin.get_settings().dnd.copy_modifier + "Key"] ? "copy_node" : "move_node"),data.data.obj, p, i)) {
+    									if(v === 'i' && ref.parent().is('.jstree-closed') && ins.get_settings(true).dnd.open_timeout) {
+    										opento = setTimeout((function (x, z) { return function () { x.open_node(z); }; })(ins, ref), ins.get_settings(true).dnd.open_timeout);
+    									}
+    									lastmv = { 'ins' : ins, 'par' : p, 'pos' : i };
+    									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
+    									data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');
+    									o = true;
+    									return false;
+    								}
+    							});
+    							if(o === true) { return; }
+                            }
+                        }
 					}
 				}
 				lastmv = false;
