@@ -350,31 +350,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 //*/
 
 (function ($) {
-	$(function() {
-		var e1, e2;
-		if (/msie/.test(navigator.userAgent.toLowerCase())) {
-			e1 = $('<textarea cols="10" rows="2"></textarea>').css({ position: 'absolute', top: -1000, left: 0 }).appendTo('body');
-			e2 = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>').css({ position: 'absolute', top: -1000, left: 0 }).appendTo('body');
-				/* 
-					Group: $.jstree.
-
-					Variable: $.jstree.SCROLLBAR_WIDTH
-						*integer* indicating the width of the client scrollbar
-				*/
-			$.jstree.SCROLLBAR_WIDTH = e1.width() - e2.width();
-			e1.add(e2).remove();
-		} 
-		else {
-			e1 = $('<div />').css({ width: 100, height: 100, overflow: 'auto', position: 'absolute', top: -1000, left: 0 })
-					.prependTo('body').append('<div />').find('div').css({ width: '100%', height: 200 });
-			$.jstree.SCROLLBAR_WIDTH = 100 - e1.width();
-			e1.parent().remove();
-		}
-	});
-
-
 	var ccp_node = false, 
 		ccp_mode = false;
+
+	$(function() { $.jstree.SCROLLBAR_WIDTH = $.vakata.get_scrollbar_width(); });
+
 	$.jstree.plugin("core", {
 		__construct : function () {
 			this.data.core.rtl = (this.get_container().css("direction") === "rtl");
@@ -1825,8 +1805,6 @@ Some static functions and variables, unless you know exactly what you are doing 
 						if(!pos) { pos = 0; }
 						break;
 				}
-
-				console.log(this.check("copy_node", org_obj, new_par, pos));
 
 				if(!this.check("copy_node", org_obj, new_par, pos)) { return false; }
 
