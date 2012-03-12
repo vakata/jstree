@@ -136,8 +136,12 @@ Enables drag'n'drop.
 				if(!data.data.jstree) { return; }
 				marker.hide();
 				if(lastmv) {
-					lastmv.ins[ data.event[data.data.origin.get_settings().dnd.copy_modifier + "Key"] ? 'copy_node' : 'move_node' ]
-						(data.data.obj, lastmv.par, lastmv.pos);
+                    var settings = data.data.origin.get_settings().dnd;
+                    lastmv.ins[ data.event[settings.copy_modifier + "Key"] ? 'copy_node' : 'move_node' ](data.data.obj, lastmv.par, lastmv.pos);
+
+                    if (settings && $.isFunction(settings.finish_drop)) {
+                        settings.finish_drop(data.element);
+                    }
 				}
 			})
 			.bind('keyup keydown', function (e) {
