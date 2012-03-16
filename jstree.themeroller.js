@@ -12,7 +12,7 @@
                 nodes.each(function(){
                     if (typeof $(this).data('processed') === 'undefined') {
                         var data = $(this).find('[data-options]').data('options');
-                        if (data.classes) {
+                        if (data && data.classes) {
                             $(this).addClass(data.classes);
                         }
                         $(this).data('processed', true);
