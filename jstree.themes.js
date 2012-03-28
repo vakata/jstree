@@ -187,8 +187,8 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 		// autodetect themes path
 		if($.jstree.THEMES_DIR === false) {
 			$("script").each(function () { 
-				if(this.src.toString().match(/jquery\.jstree[^\/]*?\.js(\?.*)?$/)) { 
-					$.jstree.THEMES_DIR = this.src.toString().replace(/jquery\.jstree[^\/]*?\.js(\?.*)?$/, "") + 'themes/'; 
+				if(this.src.toString().match(/jstree\.core[^\/]*?\.js(\?.*)?$/)) { 
+					$.jstree.THEMES_DIR = this.src.toString().replace(/jstree\.core[^\/]*?\.js(\?.*)?$/, "") + 'themes/'; 
 					return false; 
 				}
 			});
