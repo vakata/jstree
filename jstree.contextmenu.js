@@ -35,9 +35,9 @@ Enables a rightclick contextmenu.
 						"label"				: "Create",
 						"action"			: function (data) { 
 							var inst = $.jstree._reference(data.reference),
-								obj = inst.get_node(data.reference);
-							inst.create_node(obj);
-							inst.edit(obj);
+								obj = inst.get_node(data.reference),
+								new_node = inst.create_node(obj);
+							inst.edit(new_node);
 						}
 					},
 					"rename" : {
