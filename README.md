@@ -43,7 +43,7 @@ jQuery.jstree._reference(needle)
   .operation_name([ argument_1, argument_2, ...]);
 ```
 
-###Events
+###Events:
 jsTree uses events to notify of any changes. All events fire on the tree container in the _jstree_ namespace and are named after the function that triggered them.
 
 ```
