@@ -1,10 +1,12 @@
 # jstree
 
 Tree view for jQuery. 
+
 A list of useful pages:
-  http://www.jstree.com/
-  http://www.jstree.com/demo
-  http://www.jstree.com/documentation
+
+ - http://www.jstree.com/
+ - http://www.jstree.com/demo
+ - http://www.jstree.com/documentation
 
 ## Getting Started
 Download the [production version][min] or the [development version][max].
