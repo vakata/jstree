@@ -71,9 +71,9 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 					// mixed with ajax
 					'ajax' : { 
 						// static url
-						'url' : 'test.json'
+						'url' : 'index.json'
 						// url with function 
-						// 'url' : function (o) { return 'test.json'; },
+						// 'url' : function (o) { return 'index.json'; },
 						// with some data
 						// 'data' : function () { return { 'foo' : 'bar' }; }
 					},
@@ -88,6 +88,7 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 <body>
 <div style="width:960px; margin:10px auto;">
 
+<!--
 <p><strong>TODO:</strong></p>
 <p>
 PLUGINS: RULES (old types), crrm (add to UI?), checkbox, search, ... themeroller, wholerow, model, treegrid<br />
@@ -98,6 +99,94 @@ THEMES
 
 <hr />
 
+tests:
+* include without jquery (check for exception)
+* include multiple times (check if top wrapper works)
+* construct instance with __construct (no arguments - defaults must be used)
+* construct instance with __construct (no arguments, data-jstree set, defaults must be extended)
+* construct instance with __construct (no arguments, $.data used, defaults must be extended)
+* construct instance with __construct (with one argument, defaults must be extended)
+* construct instance with __construct (with many arguments, defaults must be extended)
+* construct instance with __construct (with many arguments, with data-jstree set, defaults must be extended)
+* construct instance with __construct (with many arguments, with $.data used, defaults must be extended)
+
+
+
+
+0) MODEL: http://github.com/deitch/jstree-model-back/blob/master/jstreemodel.js
+   - func is done - take a look at model along with jquery dataChanged event
+   GRID:  http://github.com/deitch/jstree-grid/blob/master/jstreegrid.js
+   RADIO: http://bitbucket.org/harobed/jstree/overview
+
+1) checkboxes -> async checkboxes - get_checked 
+2) Documentation (+ events and data.rslt, data.rlbk, $.vakata tools options (like hide_on_mouseleave), plugin order, default values for func arguments) - move_node.jstree demo in DND demo
+3) Download builder
+4) IE9 - xml_data fix
+5) option to deselect on outside click
+
+
+* wordwrap
+* data.rslt.op - move_node, when multiple nodes are used, only the first parent is returned.
+* two panel layout - same tree
+
+* types $.data option - DOCUMENT IT
+* document the notify plugins functionality 
+  - activated plugins: core, ui, checkbox, types, contextmenu
+  - how to attach using any datastore (html - data-jstree="{}", xml - data-jstree="{}", json - "metadata" : { "jstree" : "" })
+* document the creation options
+
+
+// TREE TABLE
+
+
+function setWidthRecursive(NODE, TREE_OBJ, width) {
+    TREE_OBJ._get_node(NODE).children('a').width(width)
+    var childNodes = TREE_OBJ._get_children(NODE);
+    for (var i = 0; i < childNodes.length; ++i) {
+        setWidthRecursive(childNodes[i], TREE_OBJ, width - 18);
+    }
+}
+
+var tree;
+
+$(function () { 
+    tree = $("#basic_html").jstree({
+		"dnd" : {
+			"drop_finish" : function () { 
+				alert("DROP"); 
+			},
+			"drag_check" : function (data) {
+				if(data.r.attr("id") == "phtml_1") {
+					return false;
+				}
+				return { 
+					after : false, 
+					before : false, 
+					inside : true 
+				};
+			},
+			"drag_finish" : function (data) { 
+				alert("DRAG OK"); 
+			}
+		},
+		"plugins" : [ "themes", "html_data", "dnd", "crrm" ]
+    });
+    
+    tree.bind("move_node.jstree", function (e, data) {
+        var refWidth = Number(tree.jstree('api')._get_node(data.rslt.np).children('a').width());
+        setWidthRecursive(data.rslt.o, tree.jstree('api'), refWidth - 18);
+    });
+    var minWidth = 200;
+    tree.bind("loaded.jstree", function (event, data) {
+        $('#basic_html > ul > li').each(function () {
+            var n = $(this);
+            setWidthRecursive(n, tree.jstree('api'), minWidth);
+        });
+    })
+    
+});
+
+-->
 <div id="jstree-json" style="float:left; width:45%; margin-left:1%;"></div>
 
 <div id="jstree" style="float:right; width:45%; margin-right:1%;">

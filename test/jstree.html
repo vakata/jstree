@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>jstree Test Suite</title>
+  <!-- Load local jQuery, removing access to $ (use jQuery, not $). -->
+  <script src="../libs/jquery/jquery.js"></script>
+  <script>jQuery.noConflict()</script>
+  <!-- Load local QUnit (grunt requires v1.0.0 or newer). -->
+  <link rel="stylesheet" href="../libs/qunit/qunit.css" media="screen">
+  <script src="../libs/qunit/qunit.js"></script>
+  <!-- Load local lib. -->
+  <script src="../dist/jstree.min.js"></script>
+  <!-- Load tests. -->
+  <script src="vakata.js"></script>
+  <script src="jstree.test.js"></script>
+  <script src="jstree.checkbox.test.js"></script>
+  <script src="jstree.contextmenu.test.js"></script>
+  <script src="jstree.dnd.test.js"></script>
+  <script src="jstree.hotkeys.test.js"></script>
+  <script src="jstree.html.test.js"></script>
+  <script src="jstree.json.test.js"></script>
+  <script src="jstree.sort.test.js"></script>
+  <script src="jstree.state.test.js"></script>
+  <script src="jstree.themes.test.js"></script>
+  <script src="jstree.ui.test.js"></script>
+  <script src="jstree.unique.test.js"></script>
+  <script src="jstree.xml.test.js"></script>
+</head>
+<body>
+  <h1 id="qunit-header">jstree Test Suite</h1>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit-testrunner-toolbar"></div>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+  <div id="qunit-fixture">
+    <span>lame test markup</span>
+    <span>normal test markup</span>
+    <span>awesome test markup</span>
+  </div>
+</body>
+</html>

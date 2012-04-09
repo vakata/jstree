@@ -1,0 +1,33 @@
+{
+  "name": "jstree",
+  "title": "jstree",
+  "description": "Tree view for jQuery",
+  "version": "1.0.0",
+  "homepage": "http://jstree.com",
+  "author": {
+    "name": "Ivan Bozhanov",
+    "email": "jstree@jstree.com",
+    "url": "http://vakata.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vakata/jstree.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vakata/jstree/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://jstree.com/blob/master/LICENSE-MIT"
+    },
+    {
+      "type": "GPL",
+      "url": "http://jstree.com/blob/master/LICENSE-GPL"
+    }
+  ],
+  "dependencies": {
+    "jquery": "~1.7"
+  },
+  "keywords": []
+}
