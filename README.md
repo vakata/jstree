@@ -72,5 +72,6 @@ _Also, please don't edit files in the "dist" subdirectory as they are generated 
 Copyright (c) 2012 Ivan Bozhanov (http://vakata.com) 
 
 Licensed under the MIT, GPL licenses.
+
  - http://www.opensource.org/licenses/mit-license.php
  - http://www.gnu.org/licenses/gpl.html
