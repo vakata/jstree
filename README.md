@@ -11,8 +11,8 @@ A list of useful pages:
 ## Getting Started
 Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/vakata/jstree/master/dist/jstree.min.js
-[max]: https://raw.github.com/vakata/jstree/master/dist/jstree.js
+[min]: https://raw.github.com/vakata/jstree/v.1.0/dist/jstree.min.js
+[max]: https://raw.github.com/vakata/jstree/v.1.0/dist/jstree.js
 
 ###In your web page:
 
