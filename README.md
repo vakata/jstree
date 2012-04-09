@@ -15,7 +15,7 @@ Download the [production version][min] or the [development version][max].
 ###In your web page:
 
 ```
-<script src="libs/jquery.js"></script>
+<script src="libs/jquery/jquery.js"></script>
 <script src="dist/jstree.min.js"></script>
 <script>
 jQuery(function($) {
