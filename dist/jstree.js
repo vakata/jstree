@@ -3923,6 +3923,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 			edit : function (obj, default_text) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
+				obj.parentsUntil(".jstree",".jstree-closed").each($.proxy(function (i, v) { 
+					this.open_node(v, false, 0);
+				}, this));
 				var rtl = this.data.core.rtl,
 					w  = this.get_container().width(),
 					a  = obj.children('a:eq(0)'),
@@ -4110,7 +4113,7 @@ Adds checkboxes to the tree.
 
 				if(!c.hasClass('jstree-checked') && !c.hasClass('jstree-unchecked')) {
 					p = this.get_parent(obj);
-					if(p && p !== -1 && p.length && p.find('> a > .jstree-checked')) { c.addClass('jstree-checked'); }
+					if(p && p !== -1 && p.length && p.find('> a > .jstree-checked').length) { c.addClass('jstree-checked'); }
 					else { c.addClass('jstree-unchecked'); }
 					fix_up = false;
 				}
@@ -4256,8 +4259,9 @@ Enables a rightclick contextmenu.
 						"action"			: function (data) { 
 							var inst = $.jstree._reference(data.reference),
 								obj = inst.get_node(data.reference);
-							inst.create_node(obj);
-							inst.edit(obj);
+							inst.create_node(obj, {}, "last", function (new_node) {
+								setTimeout(function () { inst.edit(new_node); },0);
+							});
 						}
 					},
 					"rename" : {

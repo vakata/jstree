@@ -77,7 +77,7 @@ Adds checkboxes to the tree.
 
 				if(!c.hasClass('jstree-checked') && !c.hasClass('jstree-unchecked')) {
 					p = this.get_parent(obj);
-					if(p && p !== -1 && p.length && p.find('> a > .jstree-checked')) { c.addClass('jstree-checked'); }
+					if(p && p !== -1 && p.length && p.find('> a > .jstree-checked').length) { c.addClass('jstree-checked'); }
 					else { c.addClass('jstree-unchecked'); }
 					fix_up = false;
 				}

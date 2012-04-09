@@ -1854,6 +1854,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 			edit : function (obj, default_text) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
+				obj.parentsUntil(".jstree",".jstree-closed").each($.proxy(function (i, v) { 
+					this.open_node(v, false, 0);
+				}, this));
 				var rtl = this.data.core.rtl,
 					w  = this.get_container().width(),
 					a  = obj.children('a:eq(0)'),
