@@ -69,6 +69,8 @@ Adds checkboxes to the tree.
 					obj.each($.proxy(function (i, d) { 
 						this.checkbox_repair($(d));
 					}, this));
+					
+					return;
 				}
 
 				var c = obj.find(' > a > .jstree-checkbox'),
