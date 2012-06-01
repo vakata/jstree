@@ -22,9 +22,9 @@ Sorts items alphabetically (or using any other function)
 					obj = obj.data('jstree');
 					return {
 						'type'				: false,
-						'max_depth'			: obj.max_depth || -1,
-						'max_children'		: obj.max_children || -1,
-						'valid_children'	: obj.valid_children || -1
+						'max_depth'			: obj && obj.max_depth ? obj.max_depth : -1,
+						'max_children'		: obj && obj.max_children ? obj.max_children : -1,
+						'valid_children'	: obj && obj.valid_children ? obj.valid_children  : -1
 					};
 				}
 				if(!obj || !obj.length) { return false; }
