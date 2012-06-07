@@ -1197,7 +1197,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					if($.isArray(state.open)) {
 						var res = true, 
 							t = this;
-						this.close_all();
+						//this.close_all();
 						$.each(state.open.concat([]), function (i, v) {
 							v = document.getElementById(v);
 							if(v) { 
@@ -1208,7 +1208,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 									$.vakata.array_remove(state.open, i); 
 								}
 								else { 
-									t.open_node(v, $.proxy(function () { this.set_state(state); }, t), 0); 
+									if(!t.is_loading(v)) {
+										t.open_node(v, $.proxy(function () { this.set_state(state); }, t), 0); 
+									}
 									// there will be some async activity - so wait for it
 									res = false; 
 								}
@@ -1615,16 +1617,27 @@ Some static functions and variables, unless you know exactly what you are doing 
 					is_copy - *boolean* is this a copy or a move call
 
 				Returns:
-					boolean - _true_ if the move is valid, _false_ otherwise
+					boolean - _true_ if the modification is valid, _false_ otherwise
 			*/
 			check : function (chk, obj, par, pos) {
+				var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj;
+				tmp = tmp === -1 ? this.get_container().data('jstree') : tmp.data('jstree');
+				if(tmp && tmp.functions && tmp.functions[chk]) {
+					tmp = tmp.functions[chk];
+					if($.isFunction(tmp)) { 
+						tmp = tmp.call(this, chk, obj, par, pos); 
+					}
+					if(tmp === false) {
+						return false;
+					}
+				}
 				switch(chk) {
 					case "create_node":
 						break;
 					case "rename_node":
 						break;
 					case "move_node":
-						var tmp = par === -1 ? this.get_container() : par;
+						tmp = par === -1 ? this.get_container() : par;
 						tmp = tmp.children('ul').children('li');
 						if(tmp.length && tmp.index(obj) !== -1 && (pos === obj.index() || pos === obj.index() + 1)) {
 							return false;

@@ -27,7 +27,8 @@ Enables a rightclick contextmenu.
 		defaults : { 
 			select_node : true, 
 			show_at_node : true,
-			items : function (o) { // Could be an object directly
+			items : function (o) { // Could be an object directly 
+				// TODO: in "_disabled" call this._check()
 				return { 
 					"create" : {
 						"separator_before"	: false,

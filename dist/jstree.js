@@ -1,4 +1,4 @@
-/*! jstree - v1.0.0 - 2012-06-01
+/*! jstree - v1.0.0 - 2012-06-07
 * http://jstree.com
 * Copyright (c) 2012 Ivan Bozhanov; Licensed MIT, GPL */
 
@@ -3266,7 +3266,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					if($.isArray(state.open)) {
 						var res = true, 
 							t = this;
-						this.close_all();
+						//this.close_all();
 						$.each(state.open.concat([]), function (i, v) {
 							v = document.getElementById(v);
 							if(v) { 
@@ -3277,7 +3277,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 									$.vakata.array_remove(state.open, i); 
 								}
 								else { 
-									t.open_node(v, $.proxy(function () { this.set_state(state); }, t), 0); 
+									if(!t.is_loading(v)) {
+										t.open_node(v, $.proxy(function () { this.set_state(state); }, t), 0); 
+									}
 									// there will be some async activity - so wait for it
 									res = false; 
 								}
@@ -3684,16 +3686,27 @@ Some static functions and variables, unless you know exactly what you are doing 
 					is_copy - *boolean* is this a copy or a move call
 
 				Returns:
-					boolean - _true_ if the move is valid, _false_ otherwise
+					boolean - _true_ if the modification is valid, _false_ otherwise
 			*/
 			check : function (chk, obj, par, pos) {
+				var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj;
+				tmp = tmp === -1 ? this.get_container().data('jstree') : tmp.data('jstree');
+				if(tmp && tmp.functions && tmp.functions[chk]) {
+					tmp = tmp.functions[chk];
+					if($.isFunction(tmp)) { 
+						tmp = tmp.call(this, chk, obj, par, pos); 
+					}
+					if(tmp === false) {
+						return false;
+					}
+				}
 				switch(chk) {
 					case "create_node":
 						break;
 					case "rename_node":
 						break;
 					case "move_node":
-						var tmp = par === -1 ? this.get_container() : par;
+						tmp = par === -1 ? this.get_container() : par;
 						tmp = tmp.children('ul').children('li');
 						if(tmp.length && tmp.index(obj) !== -1 && (pos === obj.index() || pos === obj.index() + 1)) {
 							return false;
@@ -4252,7 +4265,8 @@ Enables a rightclick contextmenu.
 		defaults : { 
 			select_node : true, 
 			show_at_node : true,
-			items : function (o) { // Could be an object directly
+			items : function (o) { // Could be an object directly 
+				// TODO: in "_disabled" call this._check()
 				return { 
 					"create" : {
 						"separator_before"	: false,
@@ -4903,7 +4917,7 @@ Sorts items alphabetically (or using any other function)
 			},
 			check : function (chk, obj, par, pos) {
 				if(this.__call_old() === false) { return false; }
-				var r = this.get_rules(par),
+				var r = false,
 					s = this.get_settings().rules,
 					t = this,
 					o = false,
@@ -4913,6 +4927,9 @@ Sorts items alphabetically (or using any other function)
 					case "create_node":
 					case "move_node":
 					case "copy_node":
+						if(s.check_max_children || s.check_valid_children || s.check_max_depth) {
+							r = this.get_rules(par);
+						}
 						if(s.check_max_children) {
 							if(typeof r.max_children !== 'undefined' && r.max_children !== -1) {
 								if(par.find('> ul >  li').not( chk === 'move_node' ? obj : null ).length + obj.length > r.max_children) {
@@ -5066,10 +5083,10 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 		Variable: $.jstree.THEMES_DIR
 		The location of all themes, this is used when setting a theme without supplying an URL (only by name). 
 		Default is _false_. If left as _false_ the path will be autodetected when the DOM is ready. 
-		The location of _jquery.jstree.js_ is used for the autodetection.
+		The location of _jstree.js_ is used for the autodetection.
 		Normally you won't need to modify this (provided you leave the _themes_ folder in the same folder as _jquery.jstree.js_ and do not rename the file).
 		If you decide to move the folder or rename the file, but still want to load themes by name, simply set this to the new location of the _themes_ folder.
-		> <script type="text/javascript" src="jquery.jstree.js"></script>
+		> <script type="text/javascript" src="jstree.js"></script>
 		> <script type="text/javascript">$.jstree.THEMES_DIR = "some/path/with-a-trailing-slash/";</script>
 	*/
 	$.jstree.THEMES_DIR = false;

@@ -66,7 +66,7 @@ Sorts items alphabetically (or using any other function)
 			},
 			check : function (chk, obj, par, pos) {
 				if(this.__call_old() === false) { return false; }
-				var r = this.get_rules(par),
+				var r = false,
 					s = this.get_settings().rules,
 					t = this,
 					o = false,
@@ -76,6 +76,9 @@ Sorts items alphabetically (or using any other function)
 					case "create_node":
 					case "move_node":
 					case "copy_node":
+						if(s.check_max_children || s.check_valid_children || s.check_max_depth) {
+							r = this.get_rules(par);
+						}
 						if(s.check_max_children) {
 							if(typeof r.max_children !== 'undefined' && r.max_children !== -1) {
 								if(par.find('> ul >  li').not( chk === 'move_node' ? obj : null ).length + obj.length > r.max_children) {

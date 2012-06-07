@@ -9,10 +9,10 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 		Variable: $.jstree.THEMES_DIR
 		The location of all themes, this is used when setting a theme without supplying an URL (only by name). 
 		Default is _false_. If left as _false_ the path will be autodetected when the DOM is ready. 
-		The location of _jquery.jstree.js_ is used for the autodetection.
+		The location of _jstree.js_ is used for the autodetection.
 		Normally you won't need to modify this (provided you leave the _themes_ folder in the same folder as _jquery.jstree.js_ and do not rename the file).
 		If you decide to move the folder or rename the file, but still want to load themes by name, simply set this to the new location of the _themes_ folder.
-		> <script type="text/javascript" src="jquery.jstree.js"></script>
+		> <script type="text/javascript" src="jstree.js"></script>
 		> <script type="text/javascript">$.jstree.THEMES_DIR = "some/path/with-a-trailing-slash/";</script>
 	*/
 	$.jstree.THEMES_DIR = false;
