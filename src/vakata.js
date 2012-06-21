@@ -1022,15 +1022,22 @@ Functions needed to show a custom context menu.
 					dw = $(document).width(),
 					dh = $(document).height();
 
-				if(x + w + 20 > dw) {
-					x = dw - (w + 20);
+				if (right_to_left) {
+					if(x - w < 0) {
+						x = w + 20;
+					}
+				} else {
+					if(x + w + 20 > dw) {
+						x = dw - (w + 20);
+					}
 				}
 				if(y + h + 20 > dh) {
 					y = dh - (h + 20);
 				}
 
 				vakata_context.element
-					.css({ "left" : x, "top" : y })
+					.css('top',y)
+					.css(right_to_left ? {"right":$(window).width()-x-2} : {"left":x})
 					.show()
 					.width(vakata_context.element.outerWidth()); // for ie6
 				vakata_context.is_visible = true;
