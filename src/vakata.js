@@ -857,10 +857,11 @@ Functions needed to show a custom context menu.
 				if($.vakata.context.settings.icons) {
 					str += "<ins ";
 					if(val.icon) {
-						if(val.icon.indexOf("/") !== -1)	{ str += " style='background:url(\"" + val.icon + "\") center center no-repeat' "; }
-						else								{ str += " class='" + val.icon + "' "; }
+						if(val.icon.charAt(0) == '<')			{ str += ">" + val.icon; }
+						else if(val.icon.indexOf("/") !== -1)	{ str += " style='background:url(\"" + val.icon + "\") center center no-repeat'>"; }
+						else									{ str += " class='" + val.icon + "'>"; }
 					}
-					str += ">&#160;</ins><span>&#160;</span>";
+					str += "&#160;</ins><span>&#160;</span>";
 				}
 				str += val.label + "</a>";
 				if(val.submenu) {
