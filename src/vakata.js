@@ -860,7 +860,7 @@ Functions needed to show a custom context menu.
 						if(val.icon.charAt(0) == '<')			{ str += ">" + val.icon; }
 						else if(val.icon.indexOf("/") !== -1)	{ str += " style='background:url(\"" + val.icon + "\") center center no-repeat'>"; }
 						else									{ str += " class='" + val.icon + "'>"; }
-					}
+					} else {str += ">";}
 					str += "&#160;</ins><span>&#160;</span>";
 				}
 				str += val.label + "</a>";
