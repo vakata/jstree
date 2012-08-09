@@ -10,14 +10,14 @@
  *
  */
 
-/*global jQuery */
+/*global jQuery, window, document, setTimeout, setInterval, clearTimeout, clearInterval */
 
 /* File: jstree.js
 The only required part of jstree it consists of a few functions bound to the $.jstree object, the actual plugin function and a few core functions for manipulating a tree.
 */
 (function () { 
-	"use strict";
-	if(!jQuery) { throw "jsTree: jQuery not included."; }
+	"use strict" ;
+	if(!jQuery) { throw "jsTree: jQuery not included.";  }
 	if(jQuery.jstree) { return; } // prevent another load? maybe there is a better way?
 
 /* Group: $.jstree. 
@@ -475,7 +475,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 			<_get_string>
 		*/
 		defaults : { 
-			strings : false
+			strings : false,
+			check_callback : true
 		},
 		_fn : { 
 			/* 
@@ -1620,7 +1621,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 					boolean - _true_ if the modification is valid, _false_ otherwise
 			*/
 			check : function (chk, obj, par, pos) {
-				var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj;
+				var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj,
+					chc = this.get_settings().core.check_callback;
+				if(chc === false || ($.isFunction(chc) && chc.call(this, chk, obj, par, pos) === false)) { 
+					return false;
+				}
 				tmp = tmp === -1 ? this.get_container().data('jstree') : tmp.data('jstree');
 				if(tmp && tmp.functions && tmp.functions[chk]) {
 					tmp = tmp.functions[chk];

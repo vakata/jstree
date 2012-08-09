@@ -13,8 +13,8 @@
 .jstree-default .jstree-leaf > .jstree-ocl { background-position:-36px 0; }
 .jstree-default .jstree-loading > .jstree-ocl { background:url("throbber.gif") center center no-repeat !important; }
 
-.jstree-default .jstree-hovered { background:#e7f4f9; border:1px solid #d8f0fa; padding:0 2px 0 1px; }
-.jstree-default .jstree-clicked { background:#beebff; border:1px solid #99defd; padding:0 2px 0 1px; }
+.jstree-default .jstree-hovered { background:#e7f4f9; border:1px solid #d8f0fa; padding:0 2px 0 1px; border-radius:2px; }
+.jstree-default .jstree-clicked { background:#beebff; border:1px solid #99defd; padding:0 2px 0 1px; border-radius:2px; }
 .jstree-default a .jstree-themeicon { background-position:-56px -19px; }
 
 .jstree-default.jstree-focused { background:#ffffee; }

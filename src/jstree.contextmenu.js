@@ -60,6 +60,9 @@ Enables a rightclick contextmenu.
 						"action"			: function (data) {
 							var inst = $.jstree._reference(data.reference),
 								obj = inst.get_node(data.reference);
+							if(this.data.ui && inst.is_selected(obj)) {
+								obj = inst.get_selected();
+							}
 							inst.delete_node(obj);
 						}
 					},
@@ -77,6 +80,9 @@ Enables a rightclick contextmenu.
 								"action"			: function (data) { 
 									var inst = $.jstree._reference(data.reference),
 										obj = inst.get_node(data.reference);
+									if(this.data.ui && inst.is_selected(obj)) {
+										obj = inst.get_selected();
+									}
 									inst.cut(obj);
 								}
 							},
@@ -88,6 +94,9 @@ Enables a rightclick contextmenu.
 								"action"			: function (data) { 
 									var inst = $.jstree._reference(data.reference),
 										obj = inst.get_node(data.reference);
+									if(this.data.ui && inst.is_selected(obj)) {
+										obj = inst.get_selected();
+									}
 									inst.copy(obj);
 								}
 							},
