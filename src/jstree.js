@@ -16,8 +16,8 @@
 The only required part of jstree it consists of a few functions bound to the $.jstree object, the actual plugin function and a few core functions for manipulating a tree.
 */
 (function () { 
-	"use strict" ;
-	if(!jQuery) { throw "jsTree: jQuery not included.";  }
+	"use strict";
+	if(!jQuery) { throw "jsTree: jQuery not included."; }
 	if(jQuery.jstree) { return; } // prevent another load? maybe there is a better way?
 
 /* Group: $.jstree. 
