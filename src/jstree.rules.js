@@ -140,6 +140,6 @@ Sorts items alphabetically (or using any other function)
 			}
 		}
 	});
-	// include the sort plugin by default
+	// include the rules plugin by default
 	$.jstree.defaults.plugins.push("rules");
 })(jQuery);

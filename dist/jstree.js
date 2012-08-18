@@ -1,4 +1,4 @@
-/*! jstree - v1.0.0 - 2012-08-04
+/*! jstree - v1.0.0 - 2012-08-13
 * http://jstree.com
 * Copyright (c) 2012 Ivan Bozhanov; Licensed MIT, GPL */
 
@@ -2079,14 +2079,14 @@ Selection related functions
 		return _return;
 	};
 })(jQuery);
-/*global jQuery, window, document */
+/*global jQuery, window, document, setTimeout, setInterval, clearTimeout, clearInterval */
 
 /* File: jstree.js
 The only required part of jstree it consists of a few functions bound to the $.jstree object, the actual plugin function and a few core functions for manipulating a tree.
 */
 (function () { 
-	"use strict" ;
-	if(!jQuery) { throw "jsTree: jQuery not included.";  }
+	"use strict";
+	if(!jQuery) { throw "jsTree: jQuery not included."; }
 	if(jQuery.jstree) { return; } // prevent another load? maybe there is a better way?
 
 /* Group: $.jstree. 
