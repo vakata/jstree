@@ -1,6 +1,7 @@
 /* File: jstree.themes.js
 Controls the looks of jstree, without this plugin you will get a functional tree, but it will look just like an ordinary UL list
 */
+
 (function ($) {
 	var themes_loaded = [];
 	/*
@@ -29,7 +30,8 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 							s.theme = this.data.core.rtl ? 'default-rtl' : 'default'; 
 						}
 						this.set_theme(s.theme, s.url);
-
+					}, this))
+				.bind('__construct.jstree __ready.jstree __loaded.jstree', $.proxy(function () {
 						this[ this.data.themes.dots ? "show_dots" : "hide_dots" ]();
 						this[ this.data.themes.icons ? "show_icons" : "hide_icons" ]();
 					}, this));
