@@ -1,3 +1,6 @@
+# PLEASE USE [the stable version][stable] UNTIL THE DOCS FOR v.1.0.0 ARE READY
+[stable]: http://github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip 
+
 # jstree
 
 Tree view for jQuery. 
