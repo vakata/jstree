@@ -904,8 +904,8 @@ Functions needed to show a custom context menu.
 				y = o.offset().top,
 				w = e.width(),
 				h = e.height(),
-				dw = $(document).width(),
-				dh = $(document).height();
+				dw = $(window).width() + $(window).scrollLeft(),
+				dh = $(window).height() + $(window).scrollTop();
 			// може да се спести е една проверка - дали няма някой от класовете вече нагоре
 			if(right_to_left) {
 				o[x - (w + 10 + o.outerWidth()) < 0 ? "addClass" : "removeClass"]("vakata-context-left");
@@ -1019,9 +1019,14 @@ Functions needed to show a custom context menu.
 					y = vakata_context.position_y,
 					w = e.width(),
 					h = e.height(),
-					dw = $(document).width(),
-					dh = $(document).height();
-
+					dw = $(window).width() + $(window).scrollLeft(),
+					dh = $(window).height() + $(window).scrollTop();
+				if(right_to_left) {
+					x -= e.outerWidth();
+					if(x < $(window).scrollLeft() + 20) {
+						x = $(window).scrollLeft() + 20;
+					}
+				}
 				if(x + w + 20 > dw) {
 					x = dw - (w + 20);
 				}

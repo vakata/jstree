@@ -1,5 +1,5 @@
 /* File: jstree.rules.js 
-Sorts items alphabetically (or using any other function)
+Limits the children count, valid children and depth of nodes by using types or embedded data.
 */
 /* Group: jstree rules plugin */
 (function ($) {
