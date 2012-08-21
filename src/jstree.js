@@ -10,7 +10,7 @@
  *
  */
 
-/*global jQuery, window, document, setTimeout, setInterval, clearTimeout, clearInterval */
+/*global jQuery, window, document, setTimeout, setInterval, clearTimeout, clearInterval, console */
 
 /* File: jstree.js
 The only required part of jstree it consists of a few functions bound to the $.jstree object, the actual plugin function and a few core functions for manipulating a tree.

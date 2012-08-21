@@ -29,7 +29,7 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 						if(s.url === false && s.theme === false) { 
 							s.theme = this.data.core.rtl ? 'default-rtl' : 'default'; 
 						}
-						this.set_theme(s.theme, s.url);
+						this.set_theme(s.theme, s.url, s.no_load);
 					}, this))
 				.bind('__construct.jstree __ready.jstree __loaded.jstree', $.proxy(function () {
 						this[ this.data.themes.dots ? "show_dots" : "hide_dots" ]();
@@ -46,6 +46,9 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 			Variable: config.themes.url
 			*mixed* the URL of the stylesheet of the theme you want to use. Default is _false_. If left as _false_ the location will be autodetected using <$.jstree.THEMES_DIR>.
 
+			Variable: config.themes.no_load
+			*boolean* whether to load the theme or just apply the class. Default is _false_. If left as _false_ the theme CSS will be loaded, otherwise only the theme class will be applied, assuming the CSS is already loaded.
+
 			Variable: config.themes.dots
 			*boolean* whether to show dots or not. Default is _true_. The chosen theme should support this option.
 
@@ -55,6 +58,7 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 		defaults : { 
 			theme	: false, 
 			url		: false,
+			no_load	: false,
 			dots	: true,
 			icons	: true
 		},
@@ -75,10 +79,10 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 				>// A custom theme. Please note that if you place your own theme in the _themes_ folder ot will be autodetected too.
 				>$("#div2").jstree("set_theme","custom-theme","/some/path/theme.css");
 			*/
-			set_theme : function (theme_name, theme_url) {
+			set_theme : function (theme_name, theme_url, no_load) {
 				if(!theme_name) { return false; }
 				if(!theme_url) { theme_url = $.jstree.THEMES_DIR + theme_name + '/style.css'; }
-				if($.inArray(theme_url, themes_loaded) === -1) {
+				if(!no_load && $.inArray(theme_url, themes_loaded) === -1) {
 					$.vakata.css.add_sheet({ "url" : theme_url });
 					themes_loaded.push(theme_url);
 				}

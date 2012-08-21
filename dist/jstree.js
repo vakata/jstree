@@ -1,4 +1,4 @@
-/*! jstree - v1.0.0 - 2012-08-13
+/*! jstree - v1.0.0 - 2012-08-21
 * http://jstree.com
 * Copyright (c) 2012 Ivan Bozhanov; Licensed MIT, GPL */
 
@@ -906,8 +906,8 @@ Functions needed to show a custom context menu.
 				y = o.offset().top,
 				w = e.width(),
 				h = e.height(),
-				dw = $(document).width(),
-				dh = $(document).height();
+				dw = $(window).width() + $(window).scrollLeft(),
+				dh = $(window).height() + $(window).scrollTop();
 			// може да се спести е една проверка - дали няма някой от класовете вече нагоре
 			if(right_to_left) {
 				o[x - (w + 10 + o.outerWidth()) < 0 ? "addClass" : "removeClass"]("vakata-context-left");
@@ -1021,9 +1021,14 @@ Functions needed to show a custom context menu.
 					y = vakata_context.position_y,
 					w = e.width(),
 					h = e.height(),
-					dw = $(document).width(),
-					dh = $(document).height();
-
+					dw = $(window).width() + $(window).scrollLeft(),
+					dh = $(window).height() + $(window).scrollTop();
+				if(right_to_left) {
+					x -= e.outerWidth();
+					if(x < $(window).scrollLeft() + 20) {
+						x = $(window).scrollLeft() + 20;
+					}
+				}
 				if(x + w + 20 > dw) {
 					x = dw - (w + 20);
 				}
@@ -2079,7 +2084,7 @@ Selection related functions
 		return _return;
 	};
 })(jQuery);
-/*global jQuery, window, document, setTimeout, setInterval, clearTimeout, clearInterval */
+/*global jQuery, window, document, setTimeout, setInterval, clearTimeout, clearInterval, console */
 
 /* File: jstree.js
 The only required part of jstree it consists of a few functions bound to the $.jstree object, the actual plugin function and a few core functions for manipulating a tree.
@@ -4125,6 +4130,7 @@ Adds checkboxes to the tree.
 					obj.each($.proxy(function (i, d) { 
 						this.checkbox_repair($(d));
 					}, this));
+					return;
 				}
 
 				var c = obj.find(' > a > .jstree-checkbox'),
@@ -4571,6 +4577,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 			tmp = f.get_settings(true).hotkeys[i];
 			if(tmp) { return tmp.call(f, event); }
 		}
+		return true;
 	}
 	$.jstree.plugin("hotkeys", {
 		__construct : function () {
@@ -4671,7 +4678,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 			},
 			"space" : function () { 
 				if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").click(); } 
-				return false; 
+				return true; 
 			},
 			"ctrl+space" : function (event) { 
 				event.type = "click";
@@ -4864,7 +4871,7 @@ This plugin makes it possible for jstree to use JSON data sources.
 	// $.jstree.defaults.plugins.push("json");
 })(jQuery);
 /* File: jstree.rules.js 
-Sorts items alphabetically (or using any other function)
+Limits the children count, valid children and depth of nodes by using types or embedded data.
 */
 /* Group: jstree rules plugin */
 (function ($) {
@@ -5005,9 +5012,101 @@ Sorts items alphabetically (or using any other function)
 			}
 		}
 	});
-	// include the sort plugin by default
+	// include the rules plugin by default
 	$.jstree.defaults.plugins.push("rules");
 })(jQuery);
+/* File: jstree.search.js 
+Searches the tree using a string. DOES NOT WORK WITH JSON PROGRESSIVE RENDER!
+*/
+/* Group: jstree search plugin */
+/*
+(function ($) {
+	$.jstree.plugin("search", {
+		__construct : function () {
+			this.data.search.str = "";
+			this.data.search.result = $();
+			if(this.get_settings().search.show_only_matches) {
+				this.get_container()
+					.bind("search.jstree", function (e, data) {
+						$(this).children("ul").find("li").hide().removeClass("jstree-last");
+						data.rslt.nodes.parentsUntil(".jstree").andSelf().show()
+							.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
+					})
+					.bind("clear_search.jstree", function () {
+						$(this).children("ul").find("li").css("display","").end().end().jstree("correct_node", -1, true);
+					});
+			}
+		},
+		defaults : {
+			ajax : false,
+			search_method : "vakata_contains", // for case insensitive - jstree_contains
+			show_only_matches : false
+		},
+		_fn : {
+			search : function (str, skip_async) {
+				if($.trim(str) === "") { this.clear_search(); return; }
+				var s = this.get_settings().search, 
+					t = this,
+					error_func = function () { },
+					success_func = function () { };
+				this.data.search.str = str;
+
+				if(!skip_async && s.ajax !== false && this.get_container_ul().find("li.jstree-closed:not(:has(ul)):eq(0)").length > 0) {
+					this.search.supress_callback = true;
+					error_func = function () { };
+					success_func = function (d, t, x) {
+						var sf = this.get_settings().search.ajax.success; 
+						if(sf) { d = sf.call(this,d,t,x) || d; }
+						this.data.search.to_open = d;
+						this._search_open();
+					};
+					s.ajax.context = this;
+					s.ajax.error = error_func;
+					s.ajax.success = success_func;
+					if($.isFunction(s.ajax.url)) { s.ajax.url = s.ajax.url.call(this, str); }
+					if($.isFunction(s.ajax.data)) { s.ajax.data = s.ajax.data.call(this, str); }
+					if(!s.ajax.data) { s.ajax.data = { "search_string" : str }; }
+					if(!s.ajax.dataType || /^json/.exec(s.ajax.dataType)) { s.ajax.dataType = "json"; }
+					$.ajax(s.ajax);
+					return;
+				}
+				if(this.data.search.result.length) { this.clear_search(); }
+				this.data.search.result = this.get_container().find("a" + (this.data.languages ? "." + this.get_lang() : "" ) + ":" + (s.search_method) + "(" + this.data.search.str + ")");
+				this.data.search.result.addClass("jstree-search").parent().parents(".jstree-closed").each(function () {
+					t.open_node(this, false, true);
+				});
+				this.__callback({ nodes : this.data.search.result, str : str });
+			},
+			clear_search : function (str) {
+				this.data.search.result.removeClass("jstree-search");
+				this.__callback(this.data.search.result);
+				this.data.search.result = $();
+			},
+			_search_open : function (is_callback) {
+				var _this = this,
+					done = true,
+					current = [],
+					remaining = [];
+				if(this.data.search.to_open.length) {
+					$.each(this.data.search.to_open, function (i, val) {
+						if(val == "#") { return true; }
+						if($(val).length && $(val).is(".jstree-closed")) { current.push(val); }
+						else { remaining.push(val); }
+					});
+					if(current.length) {
+						this.data.search.to_open = remaining;
+						$.each(current, function (i, val) { 
+							_this.open_node(val, function () { _this._search_open(true); }); 
+						});
+						done = false;
+					}
+				}
+				if(done) { this.search(this.data.search.str, true); }
+			}
+		}
+	});
+})(jQuery);
+*/
 /* File: jstree.sort.js 
 Sorts items alphabetically (or using any other function)
 */
@@ -5089,6 +5188,7 @@ This plugin enables state saving between reloads.
 /* File: jstree.themes.js
 Controls the looks of jstree, without this plugin you will get a functional tree, but it will look just like an ordinary UL list
 */
+
 (function ($) {
 	var themes_loaded = [];
 	/*
@@ -5116,8 +5216,9 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 						if(s.url === false && s.theme === false) { 
 							s.theme = this.data.core.rtl ? 'default-rtl' : 'default'; 
 						}
-						this.set_theme(s.theme, s.url);
-
+						this.set_theme(s.theme, s.url, s.no_load);
+					}, this))
+				.bind('__construct.jstree __ready.jstree __loaded.jstree', $.proxy(function () {
 						this[ this.data.themes.dots ? "show_dots" : "hide_dots" ]();
 						this[ this.data.themes.icons ? "show_icons" : "hide_icons" ]();
 					}, this));
@@ -5132,6 +5233,9 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 			Variable: config.themes.url
 			*mixed* the URL of the stylesheet of the theme you want to use. Default is _false_. If left as _false_ the location will be autodetected using <$.jstree.THEMES_DIR>.
 
+			Variable: config.themes.no_load
+			*boolean* whether to load the theme or just apply the class. Default is _false_. If left as _false_ the theme CSS will be loaded, otherwise only the theme class will be applied, assuming the CSS is already loaded.
+
 			Variable: config.themes.dots
 			*boolean* whether to show dots or not. Default is _true_. The chosen theme should support this option.
 
@@ -5141,6 +5245,7 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 		defaults : { 
 			theme	: false, 
 			url		: false,
+			no_load	: false,
 			dots	: true,
 			icons	: true
 		},
@@ -5161,10 +5266,10 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 				>// A custom theme. Please note that if you place your own theme in the _themes_ folder ot will be autodetected too.
 				>$("#div2").jstree("set_theme","custom-theme","/some/path/theme.css");
 			*/
-			set_theme : function (theme_name, theme_url) {
+			set_theme : function (theme_name, theme_url, no_load) {
 				if(!theme_name) { return false; }
 				if(!theme_url) { theme_url = $.jstree.THEMES_DIR + theme_name + '/style.css'; }
-				if($.inArray(theme_url, themes_loaded) === -1) {
+				if(!no_load && $.inArray(theme_url, themes_loaded) === -1) {
 					$.vakata.css.add_sheet({ "url" : theme_url });
 					themes_loaded.push(theme_url);
 				}

@@ -12,6 +12,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 			tmp = f.get_settings(true).hotkeys[i];
 			if(tmp) { return tmp.call(f, event); }
 		}
+		return true;
 	}
 	$.jstree.plugin("hotkeys", {
 		__construct : function () {
@@ -112,7 +113,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 			},
 			"space" : function () { 
 				if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").click(); } 
-				return false; 
+				return true; 
 			},
 			"ctrl+space" : function (event) { 
 				event.type = "click";
