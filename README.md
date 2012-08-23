@@ -1,5 +1,7 @@
-# PLEASE USE [the stable version][stable] UNTIL THE DOCS FOR v.1.0.0 ARE READY
-[stable]: http://github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip 
+# Please use [the stable version][stable] until the docs for v.1.0.0 are ready.
+[stable]: http://github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip
+Older releases can be found on [google code][older]
+[older]: http://code.google.com/p/jstree/downloads/list
 
 # jstree
 
