@@ -133,8 +133,8 @@ Adds checkboxes to the tree.
 			},
 			get_state : function () {
 				var state = this.__call_old();
-				state.checked = [];
-				this.get_container().find('.jstree-checked').closest('li').each(function () { if(this.id) { state.checked.push(this.id); } });
+				state.checkbox = [];
+				this.get_container().find('.jstree-checked').closest('li').each(function () { if(this.id) { state.checkbox.push(this.id); } });
 				return state;
 			},
 			set_state : function (state, callback) {
