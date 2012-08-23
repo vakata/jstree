@@ -378,8 +378,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 						this.clean_node(data.rslt.obj);
 					}, this))
 				.bind("load_node.jstree", $.proxy(function (e, data) {
-						// data.rslt.status
-						this.clean_node(data.rslt.obj === -1 ? this.get_container_ul().children('li') : data.rslt.obj.find('> ul > li'));
+						// data.rslt.status 
+						if(data.rslt.obj === -1) { 
+							// only detach for root (checkbox three-state will not work otherwise)
+							// also - if you could use async clean_node won't be such an issue
+							var ul = this.get_container_ul().detach();
+							this.clean_node(ul.children('li'));
+							this.get_container().prepend(ul);
+						}
+						else {
+							this.clean_node(data.rslt.obj.find('> ul > li'));
+						}
 						if(!this.data.core.ready && !this.get_container_ul().find('.jstree-loading:eq(0)').length) {
 							this.data.core.ready = true;
 							this.__trigger("__ready");
@@ -476,7 +485,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 		*/
 		defaults : { 
 			strings : false,
-			check_callback : true
+			check_callback : true,
+			animation : 100
 		},
 		_fn : { 
 			/* 
@@ -865,6 +875,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			*/
 			open_node : function (obj, callback, animation) { 
 				obj = this.get_node(obj);
+				animation = (typeof animation).toLowerCase() === "undefined" ? this.get_settings().core.animation : animation;
 				if(obj === -1 || !obj || !obj.length) { return false; }
 				if(!this.is_closed(obj)) { if(callback) { callback.call(this, obj, false); } return false; }
 				if(!this.is_loaded(obj)) { // TODO: is_loading?
@@ -925,6 +936,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			*/
 			close_node : function (obj, animation) { 
 				obj = this.get_node(obj);
+				animation = (typeof animation).toLowerCase() === "undefined" ? this.get_settings().core.animation : animation;
 				if(!obj || !obj.length || !this.is_open(obj)) { return false; }
 				var t = this;
 				obj
