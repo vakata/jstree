@@ -16,7 +16,7 @@ Variable: $.vakata
 	$.vakata = {};
 })(jQuery);
 
-/* 
+/*
 Group: Miscellaneous
 Various small snippets.
 */
@@ -29,7 +29,7 @@ Input:
 > <div>1</div><div>2</div><div>3</div>
 > $("div").vakata_reverse().each(function () { document.write(this.innerHTML); });
 
-Output: 
+Output:
 >321
 */
 (function ($) {
@@ -50,7 +50,7 @@ http://ejohn.org/blog/javascript-array-remove/
 Input:
 > $.vakata.array_remove(['a', 'b', 'c'], 1);
 
-Output: 
+Output:
 >['a', 'c']
 */
 (function ($) {
@@ -69,7 +69,7 @@ Returns only the unique items from an array.
 Input:
 > $.vakata.array_unique(['c','a','a','b','c','b']);
 
-Output: 
+Output:
 >['a', 'b', 'c']
 */
 (function ($) {
@@ -95,9 +95,9 @@ Collects all attributes from a DOM node.
 	$.vakata.attributes = function(node, with_values) {
 		node = $(node)[0];
 		var attr = with_values ? {} : [];
-		$.each(node.attributes, function (i, v) { 
+		$.each(node.attributes, function (i, v) {
 			if($.inArray(v.nodeName.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }
-			if(v.nodeValue !== null && $.trim(v.nodeValue) !== '') { 
+			if(v.nodeValue !== null && $.trim(v.nodeValue) !== '') {
 				if(with_values) { attr[v.nodeName] = v.nodeValue; }
 				else { attr.push(v.nodeName); }
 			}
@@ -114,13 +114,13 @@ Gets the width of the scrollbar
 	var sb;
 	$.vakata.get_scrollbar_width = function () {
 		var e1, e2;
-		if(!sb) { 
+		if(!sb) {
 			if(/msie/.test(navigator.userAgent.toLowerCase())) {
 				e1 = $('<textarea cols="10" rows="2"></textarea>').css({ position: 'absolute', top: -1000, left: 0 }).appendTo('body');
 				e2 = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>').css({ position: 'absolute', top: -1000, left: 0 }).appendTo('body');
 				sb = e1.width() - e2.width();
 				e1.add(e2).remove();
-			} 
+			}
 			else {
 				e1 = $('<div />').css({ width: 100, height: 100, overflow: 'auto', position: 'absolute', top: -1000, left: 0 })
 						.prependTo('body').append('<div />').find('div').css({ width: '100%', height: 200 });
@@ -132,17 +132,17 @@ Gets the width of the scrollbar
 	};
 })(jQuery);
 
-/* 
+/*
 Group: CSS
 Functions needed to manipulate stylesheets (add, remove, change)
 */
 (function ($) {
-	/* 
+	/*
 		Variable: $.vakata.css
 		*object* holds all CSS related functions
 	*/
 	$.vakata.css = {
-		/* 
+		/*
 			Function: $.vakata.css.get_css
 			Retrieves or deletes a specific rule.
 
@@ -150,7 +150,7 @@ Functions needed to manipulate stylesheets (add, remove, change)
 				rule_name - *string* the rule to search for (any CSS rule)
 				delete_flag - *boolean* whether you want to delete or simply retrieve a reference to the rule
 				sheet - the sheet to search in (do not specify this to search in all sheets)
-			
+
 			Returns either:
 				a reference to the rule - if it was found and the delete flag was not set
 				true - if the delete flag was set and the rule was successfully removed
@@ -177,14 +177,14 @@ Functions needed to manipulate stylesheets (add, remove, change)
 			while (css_rules[++j]);
 			return false;
 		},
-		/* 
+		/*
 			Function: $.vakata.css.add_css
 			Adds a rule.
 
 			Parameters:
 				rule_name - *string* the rule to add
 				sheet - a reference to the sheet to add to
-			
+
 			Returns either:
 				a reference to the rule - if the rule was added
 				false - if the rule could not be added, or if such a rule already exists
@@ -194,14 +194,14 @@ Functions needed to manipulate stylesheets (add, remove, change)
 			if(sheet.insertRule) { sheet.insertRule(rule_name + ' { }', 0); } else { sheet.addRule(rule_name, null, 0); }
 			return $.vakata.css.get_css(rule_name);
 		},
-		/* 
+		/*
 			Function: $.vakata.css.remove_css
 			Removes a rule, this functions is a shortcut to <$.vakata.css.get_css> with the delete flag set to true.
 
 			Parameters:
 				rule_name - *string* the rule to remove
 				sheet - the sheet to remove from (you can omit this and all sheets will be searched)
-			
+
 			Returns either:
 				true - if rule was removed
 				false - if the rule could not be removed
@@ -209,10 +209,10 @@ Functions needed to manipulate stylesheets (add, remove, change)
 			See also:
 				<$.vakata.css.get_css>
 		*/
-		remove_css : function(rule_name, sheet) { 
-			return $.vakata.css.get_css(rule_name, true, sheet); 
+		remove_css : function(rule_name, sheet) {
+			return $.vakata.css.get_css(rule_name, true, sheet);
 		},
-		/* 
+		/*
 			Function: $.vakata.css.add_sheet
 			Adds a whole stylesheet or appends to an existing stylesheet.
 
@@ -221,8 +221,8 @@ Functions needed to manipulate stylesheets (add, remove, change)
 				options.url - location of the stylesheet - when this is supplied _options.str_ and _options.title_ should not be set and a new LINK element is always created
 				options.str - text content of the stylesheet - when this is supplied _options.url_ is not used. A STYLE element is used.
 				options.title - the ID of the added stylesheet (if you pass `foo` the ID will be `foo-stylesheet`), when the stylesheet exists the content is appended and no new stylesheet is created.
-			
-			Returns: 
+
+			Returns:
 				a reference to the stylesheet
 		*/
 		add_sheet : function(opts) {
@@ -236,12 +236,12 @@ Functions needed to manipulate stylesheets (add, remove, change)
 					if(opts.title) { tmp.setAttribute("id", opts.title + "-stylesheet"); }
 				}
 				if(tmp.styleSheet) {
-					if(is_new) { 
-						document.getElementsByTagName("head")[0].appendChild(tmp); 
-						tmp.styleSheet.cssText = opts.str; 
+					if(is_new) {
+						document.getElementsByTagName("head")[0].appendChild(tmp);
+						tmp.styleSheet.cssText = opts.str;
 					}
 					else {
-						tmp.styleSheet.cssText = tmp.styleSheet.cssText + " " + opts.str; 
+						tmp.styleSheet.cssText = tmp.styleSheet.cssText + " " + opts.str;
 					}
 				}
 				else {
@@ -268,7 +268,7 @@ Functions needed to manipulate stylesheets (add, remove, change)
 	};
 })(jQuery);
 
-/* 
+/*
 Group: Drag'n'drop
 Functions needed to drag'n'drop elements
 */
@@ -288,45 +288,45 @@ Functions needed to drag'n'drop elements
 		scroll_e: false,
 		scroll_i: false
 	};
-	/* 
+	/*
 		Variable: $.vakata.dnd
 		*object* holds all DND related functions
 	*/
 	$.vakata.dnd = {
-		/* 
+		/*
 			Variable: $.vakata.dnd.settings
 			*object* holds the global settings object for DND. You can easily modify any of the settings.
 			>// modification example
 			>$.vakata.dnd.settings.threshold = 10;
 		*/
 		settings : {
-			/* 
+			/*
 				Variable: $.vakata.dnd.settings.scroll_speed
 				*integer* how fast (pixel count for each step) should a scrollable parent scroll when dragging near the edge. Default is _10_.
 			*/
 			scroll_speed		: 10,
-			/* 
+			/*
 				Variable: $.vakata.dnd.settings.scroll_proximity
 				*integer* number of pixels from the edge of a scrollable parent below which the parent will start scrolling. Default is _20_.
 			*/
 			scroll_proximity	: 20,
-			/* 
+			/*
 				Variable: $.vakata.dnd.settings.helper_left
 				*integer* number of pixels left of the cursor to move the drag-helper to. Default is _5_;
 			*/
 			helper_left			: 5,
-			/* 
+			/*
 				Variable: $.vakata.dnd.settings.helper_top
 				*integer* number of pixels below the cursor to move the drag-helper to. Default is _10_.
 			*/
 			helper_top			: 10,
-			/* 
+			/*
 				Variable: $.vakata.dnd.settings.threshold
 				*integer* amount of pixels required to move before the drag is started. Default is _5_.
 			*/
 			threshold			: 5
 		},
-		/* 
+		/*
 			Function: $.vakata.dnd._trigger
 			Used internally to trigger all necessary events.
 		*/
@@ -335,18 +335,18 @@ Functions needed to drag'n'drop elements
 			data.event = e;
 			$(document).triggerHandler("dnd_" + event_name + ".vakata", data);
 		},
-		/* 
+		/*
 			Function: $.vakata.dnd._get
 			Used internally to get all items for the drag event. Can be used by foreign code too.
 		*/
 		_get : function () {
-			return { 
+			return {
 				"data"		: vakata_dnd.data,
 				"element"	: vakata_dnd.element,
 				"helper"	: vakata_dnd.helper
 			};
 		},
-		/* 
+		/*
 			Function: $.vakata.dnd._clean
 			Used internally to cleanup after a drop, so that all variables are nulled and ready for the next drag.
 		*/
@@ -370,7 +370,7 @@ Functions needed to drag'n'drop elements
 			$(document).unbind("mousemove",	$.vakata.dnd.drag);
 			$(document).unbind("mouseup",	$.vakata.dnd.stop);
 		},
-		/* 
+		/*
 			Function: $.vakata.dnd._scroll
 			Used internally to scroll hovered elements.
 
@@ -394,15 +394,15 @@ Functions needed to drag'n'drop elements
 		_scroll : function (init_only) {
 			if(!vakata_dnd.scroll_e || (!vakata_dnd.scroll_l && !vakata_dnd.scroll_t)) {
 				if(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }
-				return false; 
+				return false;
 			}
-			if(!vakata_dnd.scroll_i) { 
-				vakata_dnd.scroll_i = setInterval($.vakata.dnd._scroll, 100); 
+			if(!vakata_dnd.scroll_i) {
+				vakata_dnd.scroll_i = setInterval($.vakata.dnd._scroll, 100);
 				return false;
 			}
 			if(init_only === true) { return false; }
 
-			var i = vakata_dnd.scroll_e.scrollTop(), 
+			var i = vakata_dnd.scroll_e.scrollTop(),
 				j = vakata_dnd.scroll_e.scrollLeft();
 			vakata_dnd.scroll_e.scrollTop(i + vakata_dnd.scroll_t * $.vakata.dnd.settings.scroll_speed);
 			vakata_dnd.scroll_e.scrollLeft(j + vakata_dnd.scroll_l * $.vakata.dnd.settings.scroll_speed);
@@ -410,7 +410,7 @@ Functions needed to drag'n'drop elements
 				$.vakata.dnd._trigger("scroll", vakata_dnd.scroll_e);
 			}
 		},
-		/* 
+		/*
 			Function: $.vakata.dnd.start
 			Use this function to start a drag (usually with the mousedown event)
 
@@ -419,7 +419,7 @@ Functions needed to drag'n'drop elements
 				data - *mixed* some custom data you want to bind with that particular drag - you will receive this in all events
 				html - *mixed* the text for the drag-helper as a *string*, if set to _false_ no helper is shown
 
-			Returns: 
+			Returns:
 				false
 
 			Example:
@@ -427,7 +427,7 @@ Functions needed to drag'n'drop elements
 			>	return $.vakata.dnd.start(e, {}, "Dragging");
 			>});
 		*/
-		start : function (e, data, html) { 
+		start : function (e, data, html) {
 			if(vakata_dnd.is_drag) { $.vakata.dnd.stop({}); }
 			try {
 				e.currentTarget.unselectable = "on";
@@ -441,7 +441,7 @@ Functions needed to drag'n'drop elements
 			vakata_dnd.element	= e.currentTarget;
 			if(html !== false) {
 				vakata_dnd.helper = $("<div id='vakata-dnd'></div>").html(html).css({
-					"display"		: "block", 
+					"display"		: "block",
 					"margin"		: "0",
 					"padding"		: "0",
 					"position"		: "absolute",
@@ -454,7 +454,7 @@ Functions needed to drag'n'drop elements
 			$(document).bind("mouseup", $.vakata.dnd.stop);
 			return false;
 		},
-		/* 
+		/*
 			Function: $.vakata.dnd.drag
 			Used internally to process the mousemove event after <$.vakata.dnd.start> is called.
 
@@ -464,13 +464,13 @@ Functions needed to drag'n'drop elements
 			Triggers:
 			<dnd_start>, <dnd_move>
 		*/
-		drag : function (e) { 
+		drag : function (e) {
 			if(!vakata_dnd.is_down) { return; }
 			if(!vakata_dnd.is_drag) {
 				if(
-					Math.abs(e.pageX - vakata_dnd.init_x) > $.vakata.dnd.settings.threshold || 
+					Math.abs(e.pageX - vakata_dnd.init_x) > $.vakata.dnd.settings.threshold ||
 					Math.abs(e.pageY - vakata_dnd.init_y) > $.vakata.dnd.settings.threshold
-				) { 
+				) {
 					if(vakata_dnd.helper) {
 						vakata_dnd.helper.appendTo("body");
 						vakata_dnd.helper_w = vakata_dnd.helper.outerWidth();
@@ -507,9 +507,9 @@ Functions needed to drag'n'drop elements
 			vakata_dnd.scroll_e = false;
 			var p = $(e.target)
 				.parentsUntil("body").andSelf().vakata_reverse()
-				.filter(function () { 
-					return	(/^auto|scroll$/).test($(this).css("overflow")) && 
-							(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth); 
+				.filter(function () {
+					return	(/^auto|scroll$/).test($(this).css("overflow")) &&
+							(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);
 				})
 				.each(function () {
 					var t = $(this), o = t.offset();
@@ -521,9 +521,9 @@ Functions needed to drag'n'drop elements
 						if(o.left + t.width() - e.pageX < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_l = 1; }
 						if(e.pageX - o.left < $.vakata.dnd.settings.scroll_proximity)				{ vakata_dnd.scroll_l = -1; }
 					}
-					if(vakata_dnd.scroll_t || vakata_dnd.scroll_l) { 
+					if(vakata_dnd.scroll_t || vakata_dnd.scroll_l) {
 						vakata_dnd.scroll_e = $(this);
-						return false; 
+						return false;
 					}
 				});
 
@@ -536,7 +536,7 @@ Functions needed to drag'n'drop elements
 				if(dh > wh && wh - (e.pageY - dt) < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_t = 1; }
 				if(dw > ww && e.pageX - dl < $.vakata.dnd.settings.scroll_proximity)		{ vakata_dnd.scroll_l = -1; }
 				if(dw > ww && ww - (e.pageX - dl) < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_l = 1; }
-				if(vakata_dnd.scroll_t || vakata_dnd.scroll_l) { 
+				if(vakata_dnd.scroll_t || vakata_dnd.scroll_l) {
 					vakata_dnd.scroll_e = d;
 				}
 			}
@@ -547,9 +547,9 @@ Functions needed to drag'n'drop elements
 				hl = parseInt(e.pageX + $.vakata.dnd.settings.helper_left, 10);
 				if(dh && ht + 25 > dh) { ht = dh - 50; }
 				if(dw && hl + vakata_dnd.helper_w > dw) { hl = dw - (vakata_dnd.helper_w + 2); }
-				vakata_dnd.helper.css({ 
-					left	: hl + "px", 
-					top		: ht + "px" 
+				vakata_dnd.helper.css({
+					left	: hl + "px",
+					top		: ht + "px"
 				});
 			}
 			/*
@@ -580,7 +580,7 @@ Functions needed to drag'n'drop elements
 			<dnd_stop>
 		*/
 		stop : function (e) {
-			/* 
+			/*
 				Event: dnd_stop
 				Marks the end of the drag. This event is triggered on the document after <dnd_start> (and possibly <dnd_move>) when a drop (mouseup) occurs or when the drag is programatically terminated, the event is fired in the *vakata* namespace.
 
@@ -603,7 +603,7 @@ Functions needed to drag'n'drop elements
 	};
 })(jQuery);
 
-/* 
+/*
 Group: XSLT
 A function used to do XSLT transformations.
 */
@@ -623,8 +623,8 @@ A function used to do XSLT transformations.
 		>// simple
 		>$.vakata.xslt("<xml-string-here>", "<xsl-string-here>", function (res) { $("#some-container").append(res); });
 		>// with scope
-		>$.vakata.xslt("<xml-string-here>", "<xsl-string-here>", $.proxy(function (res) { 
-		>	this.some_process(res); 
+		>$.vakata.xslt("<xml-string-here>", "<xsl-string-here>", $.proxy(function (res) {
+		>	this.some_process(res);
 		>}, some_object);
 	*/
 	$.vakata.xslt = function (xml, xsl) {
@@ -662,11 +662,11 @@ A function used to do XSLT transformations.
 	};
 })(jQuery);
 
-/* 
+/*
 Group: Hotkeys
 Copy of the John Resig's fork of http://github.com/tzuryby/hotkeys for consistency
 */
-if(typeof jQuery.hotkeys === "undefined") { 
+if(typeof jQuery.hotkeys === "undefined") {
 	(function ($) {
 			$.vakata_hotkeys = {
 				version: "0.8",
@@ -674,16 +674,16 @@ if(typeof jQuery.hotkeys === "undefined") {
 				specialKeys: {
 					8: "backspace", 9: "tab", 13: "return", 16: "shift", 17: "ctrl", 18: "alt", 19: "pause",
 					20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home",
-					37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del", 
+					37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del",
 					96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6", 103: "7",
-					104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/", 
-					112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8", 
+					104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/",
+					112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8",
 					120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 191: "/", 224: "meta"
 				},
-			
+
 				shiftNums: {
-					"`": "~", "1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^", "7": "&", 
-					"8": "*", "9": "(", "0": ")", "-": "_", "=": "+", ";": ": ", "'": "\"", ",": "<", 
+					"`": "~", "1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^", "7": "&",
+					"8": "*", "9": "(", "0": ")", "-": "_", "=": "+", ";": ": ", "'": "\"", ",": "<",
 					".": ">",  "/": "?",  "\\": "|"
 				}
 			};
@@ -693,17 +693,17 @@ if(typeof jQuery.hotkeys === "undefined") {
 				if ( typeof handleObj.data !== "string" ) {
 					return;
 				}
-				
+
 				var origHandler = handleObj.handler,
 					keys = handleObj.data.toLowerCase().split(" ");
-			
+
 				handleObj.handler = function( event ) {
 					// Don't fire in text-accepting inputs that we didn't directly bind to
 					if ( this !== event.target && (/textarea|select/i.test( event.target.nodeName ) ||
 						event.target.type === "text") ) {
 						return;
 					}
-					
+
 					// Keypress represents characters, not special keys
 					var special = event.type !== "keypress" && jQuery.vakata_hotkeys.specialKeys[ event.which ],
 						character = String.fromCharCode( event.which ).toLowerCase(),
@@ -717,7 +717,7 @@ if(typeof jQuery.hotkeys === "undefined") {
 					if ( event.ctrlKey && special !== "ctrl" ) {
 						modif += "ctrl+";
 					}
-					
+
 					// TODO: Need to make sure this works consistently across platforms
 					if ( event.metaKey && !event.ctrlKey && special !== "meta" ) {
 						modif += "meta+";
@@ -754,12 +754,12 @@ if(typeof jQuery.hotkeys === "undefined") {
 	})(jQuery);
 }
 
-/* 
+/*
 Group: Context menu
 Functions needed to show a custom context menu.
 */
 (function ($) {
-	var right_to_left = false, 
+	var right_to_left = false,
 		vakata_context = {
 			element		: false,
 			reference	: false,
@@ -769,44 +769,44 @@ Functions needed to show a custom context menu.
 			html		: "",
 			is_visible	: false
 		};
-	/* 
+	/*
 		Variable: $.vakata.context
 		*object* holds all context menu related functions and variables.
 	*/
 	$.vakata.context = {
-		/* 
+		/*
 			Variable: $.vakata.context.settings
 			*object* holds the global settings object for context menus. You can easily modify any of the settings.
 			>// modification example
 			>$.vakata.context.settings.icons = false;
 		*/
 		settings : {
-			/* 
+			/*
 				Variable: $.vakata.context.settings.hide_onmouseleave
 				*integer* the amount of milliseconds to wait before hiding the menu after mouseleave. If set to _0_ the menu won't hide on mouseleave. Default is _0_.
 			*/
 			hide_onmouseleave	: 0,
-			/* 
+			/*
 				Variable: $.vakata.context.settings.icons
 				*boolean* whether to show icons or not. Default is _true_.
 			*/
 			icons				: true
 		},
-		/* 
+		/*
 			Function: $.vakata.context._trigger
 			Used internally to trigger all necessary events.
 		*/
 		_trigger : function (event_name) {
-			$(document).triggerHandler("context_" + event_name + ".vakata", { 
+			$(document).triggerHandler("context_" + event_name + ".vakata", {
 				"reference"	: vakata_context.reference,
 				"element"	: vakata_context.element,
-				"position"	: { 
+				"position"	: {
 					"x" : vakata_context.position_x,
 					"y" : vakata_context.position_y
 				}
 			});
 		},
-		/* 
+		/*
 			Function: $.vakata.context._execute
 			Used internally to execute the action (if any) associated with an item.
 
@@ -819,20 +819,20 @@ Functions needed to show a custom context menu.
 						"item"		: i,
 						"reference"	: vakata_context.reference,
 						"element"	: vakata_context.element,
-						"position"	: { 
+						"position"	: {
 							"x" : vakata_context.position_x,
 							"y" : vakata_context.position_y
 						}
 					}) : false;
-		}, 
-		/* 
+		},
+		/*
 			Function: $.vakata.context._parse
 			Used internally to parse a contextmenu description object to an HTML string.
 
 			Parameters:
 				o - *object* the contextmenu description object
 				is_callback - *boolean* used internally to indicate a recursive call
-			
+
 			Triggers:
 			<context_parse>
 		*/
@@ -894,7 +894,7 @@ Functions needed to show a custom context menu.
 			if(!is_callback) { vakata_context.html = str; $.vakata.context._trigger("parse"); }
 			return str.length > 10 ? str : false;
 		},
-		/* 
+		/*
 			Function: $.vakata.context._show_submenu
 			Used internally to show a submenu
 		*/
@@ -921,7 +921,7 @@ Functions needed to show a custom context menu.
 			e.show();
 		},
 
-		/* 
+		/*
 			Function: $.vakata.context.show
 			Shows the context menu. Please note that at least one of _reference_ or _position_ should be specified.
 
@@ -949,7 +949,7 @@ Functions needed to show a custom context menu.
 			>			"action"	: function (data) { alert("Rename on " + data.reference); }
 			>		},
 			>		"edit" : {
-			>			"label"	: "Edit", 
+			>			"label"	: "Edit",
 			>			// Clicking this won't hide the menu, the same can be achieved with:
 			>			// "action" : function () { return false; }
 			>			"submenu" : {
@@ -978,15 +978,15 @@ Functions needed to show a custom context menu.
 				_disabled - *boolean* is this item disabled.
 				action - *functon* if supplied it will be executed when this item is clicked / activated. If not supplied or the function returns _false_ the contextmenu won't be hidden after execution. To force a context use _$.proxy_.
 				In the function you will receive a single argument which is an object, consisting of four keys:
-				_item_ (the <context_menu_item> object), 
-				_reference_ (the DOM node used when <$.vakata.context.show> was called), 
+				_item_ (the <context_menu_item> object),
+				_reference_ (the DOM node used when <$.vakata.context.show> was called),
 				_element_ (the DOM node of the context menu),
 				_position_ (an object consisting of _x_ and _y_ keys, represinting the current position of the menu)
 
-			See also: 
+			See also:
 				<$.vakata.context.show>
 		*/
-		show : function (reference, position, data) { 
+		show : function (reference, position, data) {
 			if(vakata_context.element && vakata_context.element.length) {
 				vakata_context.element.width('');
 			}
@@ -1058,14 +1058,14 @@ Functions needed to show a custom context menu.
 				$.vakata.context._trigger("show");
 			}
 		},
-		/* 
+		/*
 			Function: $.vakata.context.hide
 			Used internally to hide the contextmenu after a click, or on mouseleave, etc.
 
 			Triggers:
 			<context_hide>
 		*/
-		hide : function () { 
+		hide : function () {
 			if(vakata_context.is_visible) {
 				vakata_context.element.hide().find("ul").hide();
 				vakata_context.is_visible = false;
@@ -1090,38 +1090,38 @@ Functions needed to show a custom context menu.
 	$(function () {
 		right_to_left = $("body").css("direction") === "rtl";
 		var to			= false,
-			css_string	= '' + 
-			'.vakata-context { display:none; _width:1px; } ' + 
-			'.vakata-context, ' + 
-			'.vakata-context ul { margin:0; padding:2px; position:absolute; background:#f5f5f5; border:1px solid #979797; ' + 
-			'	-moz-box-shadow:5px 5px 4px -4px #666666; -webkit-box-shadow:2px 2px 2px #999999; box-shadow:2px 2px 2px #999999; }'  + 
-			'.vakata-context ul { list-style:none; left:100%; margin-top:-2.7em; margin-left:-4px; } ' + 
-			'.vakata-context li.vakata-context-right ul { left:auto; right:100%; margin-left:auto; margin-right:-4px; } ' + 
-			'.vakata-context li { list-style:none; display:inline; }' + 
-			'.vakata-context li a { display:block; padding:0 2em 0 2em; text-decoration:none; width:auto; color:black; white-space:nowrap; line-height:2.4em; ' + 
-			'	-moz-text-shadow:1px 1px 0px white; -webkit-text-shadow:1px 1px 0px white; text-shadow:1px 1px 0px white; ' + 
-			'	-moz-border-radius:1px; -webkit-border-radius:1px; border-radius:1px; }' + 
-			'.vakata-context li a:hover { position:relative; background-color:#e8eff7; ' + 
-			'	-moz-box-shadow:0px 0px 2px #0a6aa1; -webkit-box-shadow:0px 0px 2px #0a6aa1; box-shadow:0px 0px 2px #0a6aa1; }' + 
-			'.vakata-context li.vakata-context-hover > a { position:relative; background-color:#e8eff7; ' + 
-			'	-moz-box-shadow:0px 0px 2px #0a6aa1; -webkit-box-shadow:0px 0px 2px #0a6aa1; box-shadow:0px 0px 2px #0a6aa1; }' + 
-			'.vakata-context li a.vakata-context-parent { background-image:url("data:image/gif;base64,R0lGODlhCwAHAIAAACgoKP///yH5BAEAAAEALAAAAAALAAcAAAIORI4JlrqN1oMSnmmZDQUAOw=="); background-position:right center; background-repeat:no-repeat; } ' + 
-			'.vakata-context li.vakata-context-separator a, ' + 
-			'.vakata-context li.vakata-context-separator a:hover { background:white; border:0; border-top:1px solid #e2e3e3; height:1px; min-height:1px; max-height:1px; padding:0; margin:0 0 0 2.4em; border-left:1px solid #e0e0e0; _overflow:hidden; ' + 
-			'	-moz-text-shadow:0 0 0 transparent; -webkit-text-shadow:0 0 0 transparent; text-shadow:0 0 0 transparent; ' + 
-			'	-moz-box-shadow:0 0 0 transparent; -webkit-box-shadow:0 0 0 transparent; box-shadow:0 0 0 transparent; ' + 
-			'	-moz-border-radius:0; -webkit-border-radius:0; border-radius:0; }' + 
+			css_string	= '' +
+			'.vakata-context { display:none; _width:1px; } ' +
+			'.vakata-context, ' +
+			'.vakata-context ul { margin:0; padding:2px; position:absolute; background:#f5f5f5; border:1px solid #979797; ' +
+			'	-moz-box-shadow:5px 5px 4px -4px #666666; -webkit-box-shadow:2px 2px 2px #999999; box-shadow:2px 2px 2px #999999; }'  +
+			'.vakata-context ul { list-style:none; left:100%; margin-top:-2.7em; margin-left:-4px; } ' +
+			'.vakata-context li.vakata-context-right ul { left:auto; right:100%; margin-left:auto; margin-right:-4px; } ' +
+			'.vakata-context li { list-style:none; display:inline; }' +
+			'.vakata-context li a { display:block; padding:0 2em 0 2em; text-decoration:none; width:auto; color:black; white-space:nowrap; line-height:2.4em; ' +
+			'	-moz-text-shadow:1px 1px 0px white; -webkit-text-shadow:1px 1px 0px white; text-shadow:1px 1px 0px white; ' +
+			'	-moz-border-radius:1px; -webkit-border-radius:1px; border-radius:1px; }' +
+			'.vakata-context li a:hover { position:relative; background-color:#e8eff7; ' +
+			'	-moz-box-shadow:0px 0px 2px #0a6aa1; -webkit-box-shadow:0px 0px 2px #0a6aa1; box-shadow:0px 0px 2px #0a6aa1; }' +
+			'.vakata-context li.vakata-context-hover > a { position:relative; background-color:#e8eff7; ' +
+			'	-moz-box-shadow:0px 0px 2px #0a6aa1; -webkit-box-shadow:0px 0px 2px #0a6aa1; box-shadow:0px 0px 2px #0a6aa1; }' +
+			'.vakata-context li a.vakata-context-parent { background-image:url("data:image/gif;base64,R0lGODlhCwAHAIAAACgoKP///yH5BAEAAAEALAAAAAALAAcAAAIORI4JlrqN1oMSnmmZDQUAOw=="); background-position:right center; background-repeat:no-repeat; } ' +
+			'.vakata-context li.vakata-context-separator a, ' +
+			'.vakata-context li.vakata-context-separator a:hover { background:white; border:0; border-top:1px solid #e2e3e3; height:1px; min-height:1px; max-height:1px; padding:0; margin:0 0 0 2.4em; border-left:1px solid #e0e0e0; _overflow:hidden; ' +
+			'	-moz-text-shadow:0 0 0 transparent; -webkit-text-shadow:0 0 0 transparent; text-shadow:0 0 0 transparent; ' +
+			'	-moz-box-shadow:0 0 0 transparent; -webkit-box-shadow:0 0 0 transparent; box-shadow:0 0 0 transparent; ' +
+			'	-moz-border-radius:0; -webkit-border-radius:0; border-radius:0; }' +
 			'.vakata-context li.vakata-contextmenu-disabled a, .vakata-context li.vakata-contextmenu-disabled a:hover { color:silver; background-color:transparent; border:0; box-shadow:0 0 0; }' +
-			'' + 
-			'.vakata-context li a ins { text-decoration:none; display:inline-block; width:2.4em; height:2.4em; background:transparent; margin:0 0 0 -2em; } ' + 
-			'.vakata-context li a span { display:inline-block; width:1px; height:2.4em; background:white; margin:0 0.5em 0 0; border-left:1px solid #e2e3e3; _overflow:hidden; } ' + 
-			'' + 
-			'.vakata-context-rtl ul { left:auto; right:100%; margin-left:auto; margin-right:-4px; } ' + 
-			'.vakata-context-rtl li a.vakata-context-parent { background-image:url("data:image/gif;base64,R0lGODlhCwAHAIAAACgoKP///yH5BAEAAAEALAAAAAALAAcAAAINjI+AC7rWHIsPtmoxLAA7"); background-position:left center; background-repeat:no-repeat; } ' + 
-			'.vakata-context-rtl li.vakata-context-separator a { margin:0 2.4em 0 0; border-left:0; border-right:1px solid #e2e3e3;} ' + 
-			'.vakata-context-rtl li.vakata-context-left ul { right:auto; left:100%; margin-left:-4px; margin-right:auto; } ' + 
-			'.vakata-context-rtl li a ins { margin:0 -2em 0 0; } ' + 
-			'.vakata-context-rtl li a span { margin:0 0 0 0.5em; border-left-color:white; background:#e2e3e3; } ' + 
+			'' +
+			'.vakata-context li a ins { text-decoration:none; display:inline-block; width:2.4em; height:2.4em; background:transparent; margin:0 0 0 -2em; } ' +
+			'.vakata-context li a span { display:inline-block; width:1px; height:2.4em; background:white; margin:0 0.5em 0 0; border-left:1px solid #e2e3e3; _overflow:hidden; } ' +
+			'' +
+			'.vakata-context-rtl ul { left:auto; right:100%; margin-left:auto; margin-right:-4px; } ' +
+			'.vakata-context-rtl li a.vakata-context-parent { background-image:url("data:image/gif;base64,R0lGODlhCwAHAIAAACgoKP///yH5BAEAAAEALAAAAAALAAcAAAINjI+AC7rWHIsPtmoxLAA7"); background-position:left center; background-repeat:no-repeat; } ' +
+			'.vakata-context-rtl li.vakata-context-separator a { margin:0 2.4em 0 0; border-left:0; border-right:1px solid #e2e3e3;} ' +
+			'.vakata-context-rtl li.vakata-context-left ul { right:auto; left:100%; margin-left:-4px; margin-right:auto; } ' +
+			'.vakata-context-rtl li a ins { margin:0 -2em 0 0; } ' +
+			'.vakata-context-rtl li a span { margin:0 0 0 0.5em; border-left-color:white; background:#e2e3e3; } ' +
 			'';
 		$.vakata.css.add_sheet({ str : css_string, title : "vakata-context" });
 
@@ -1130,10 +1130,10 @@ Functions needed to show a custom context menu.
 			.delegate("li", "mouseenter", function (e) {
 				e.stopImmediatePropagation();
 
-				if($.contains(this, e.relatedTarget)) { 
+				if($.contains(this, e.relatedTarget)) {
 					// премахнато заради delegate mouseleave по-долу
 					// $(this).find(".vakata-context-hover").removeClass("vakata-context-hover");
-					return; 
+					return;
 				}
 
 				if(to) { clearTimeout(to); }
@@ -1152,14 +1152,14 @@ Functions needed to show a custom context menu.
 			.bind("mouseleave", function (e) {
 				$(this).find(".vakata-context-hover").removeClass("vakata-context-hover");
 				if($.vakata.context.settings.hide_onmouseleave) {
-					to = setTimeout( 
-						(function (t) { 
+					to = setTimeout(
+						(function (t) {
 							return function () { $.vakata.context.hide(); };
 						})(this), $.vakata.context.settings.hide_onmouseleave);
 				}
 			})
-			.delegate("a", "click", function (e) { 
-				e.preventDefault(); 
+			.delegate("a", "click", function (e) {
+				e.preventDefault();
 			})
 			.delegate("a", "mouseup", function (e) {
 				if(!$(this).blur().parent().hasClass("vakata-context-disabled") && $.vakata.context._execute($(this).attr("rel")) !== false) {
@@ -1169,8 +1169,8 @@ Functions needed to show a custom context menu.
 			.appendTo("body");
 
 		$(document)
-			.bind("mousedown", function (e) { 
-				if(vakata_context.is_visible && !$.contains(vakata_context.element[0], e.target)) { $.vakata.context.hide(); } 
+			.bind("mousedown", function (e) {
+				if(vakata_context.is_visible && !$.contains(vakata_context.element[0], e.target)) { $.vakata.context.hide(); }
 			})
 			.bind("context_show.vakata", function (e, data) {
 				vakata_context.element.find("li:has(ul)").children("a").addClass("vakata-context-parent");
@@ -1183,43 +1183,43 @@ Functions needed to show a custom context menu.
 
 		if(typeof $.hotkeys !== "undefined" || typeof $.vakata_hotkeys !== "undefined") {
 			$(document)
-				.bind("keydown", "up", function (e) { 
-					if(vakata_context.is_visible) { 
+				.bind("keydown", "up", function (e) {
+					if(vakata_context.is_visible) {
 						var o = vakata_context.element.find("ul:visible").andSelf().last().children(".vakata-context-hover").removeClass("vakata-context-hover").prevAll("li:not(.vakata-context-separator)").first();
 						if(!o.length) { o = vakata_context.element.find("ul:visible").andSelf().last().children("li:not(.vakata-context-separator)").last(); }
 						o.addClass("vakata-context-hover");
-						e.stopImmediatePropagation(); 
+						e.stopImmediatePropagation();
 						e.preventDefault();
-					} 
+					}
 				})
-				.bind("keydown", "down", function (e) { 
-					if(vakata_context.is_visible) { 
+				.bind("keydown", "down", function (e) {
+					if(vakata_context.is_visible) {
 						var o = vakata_context.element.find("ul:visible").andSelf().last().children(".vakata-context-hover").removeClass("vakata-context-hover").nextAll("li:not(.vakata-context-separator)").first();
 						if(!o.length) { o = vakata_context.element.find("ul:visible").andSelf().last().children("li:not(.vakata-context-separator)").first(); }
 						o.addClass("vakata-context-hover");
-						e.stopImmediatePropagation(); 
+						e.stopImmediatePropagation();
 						e.preventDefault();
-					} 
+					}
 				})
-				.bind("keydown", "right", function (e) { 
-					if(vakata_context.is_visible) { 
+				.bind("keydown", "right", function (e) {
+					if(vakata_context.is_visible) {
 						vakata_context.element.find(".vakata-context-hover").last().children("ul").show().children("li:not(.vakata-context-separator)").removeClass("vakata-context-hover").first().addClass("vakata-context-hover");
-						e.stopImmediatePropagation(); 
+						e.stopImmediatePropagation();
 						e.preventDefault();
-					} 
+					}
 				})
-				.bind("keydown", "left", function (e) { 
-					if(vakata_context.is_visible) { 
+				.bind("keydown", "left", function (e) {
+					if(vakata_context.is_visible) {
 						vakata_context.element.find(".vakata-context-hover").last().parents("li:eq(0)").find("ul").hide().find(".vakata-context-hover").removeClass("vakata-context-hover");
-						e.stopImmediatePropagation(); 
+						e.stopImmediatePropagation();
 						e.preventDefault();
-					} 
+					}
 				})
-				.bind("keydown", "esc", function (e) { 
-					$.vakata.context.hide(); 
+				.bind("keydown", "esc", function (e) {
+					$.vakata.context.hide();
 					e.preventDefault();
 				})
-				.bind("keydown", "space", function (e) { 
+				.bind("keydown", "space", function (e) {
 					vakata_context.element.find(".vakata-context-hover").last().children("a").click();
 					e.preventDefault();
 				});
@@ -1227,7 +1227,7 @@ Functions needed to show a custom context menu.
 	});
 })(jQuery);
 
-/* 
+/*
 Group: JSON
 Functions needed to encode/decode JSON. Based on the jQuery JSON Plugin.
 */
@@ -1246,7 +1246,7 @@ Functions needed to encode/decode JSON. Based on the jQuery JSON Plugin.
 		}
 		return '"' + str + '"';
 	};
-	/* 
+	/*
 		Variable: $.vakata.json
 		*object* holds all JSON related functions.
 	*/
@@ -1266,7 +1266,7 @@ Functions needed to encode/decode JSON. Based on the jQuery JSON Plugin.
 
 			var tmp = [], i;
 			switch(typeof(o)) {
-				case "undefined": 
+				case "undefined":
 					return undefined;
 				case "number":
 				case "boolean":
@@ -1278,14 +1278,14 @@ Functions needed to encode/decode JSON. Based on the jQuery JSON Plugin.
 						return $.vakata.json.encode(o.toJSON());
 					}
 					if(o.constructor === Date) {
-						return '"' + 
-							o.getUTCFullYear() + '-' + 
-							String("0" + (o.getUTCMonth() + 1)).slice(-2) + '-' + 
-							String("0" + o.getUTCDate()).slice(-2) + 'T' + 
-							String("0" + o.getUTCHours()).slice(-2) + ':' + 
-							String("0" + o.getUTCMinutes()).slice(-2) + ':' + 
-							String("0" + o.getUTCSeconds()).slice(-2) + '.' + 
-							String("00" + o.getUTCMilliseconds()).slice(-3) + 'Z"'; 
+						return '"' +
+							o.getUTCFullYear() + '-' +
+							String("0" + (o.getUTCMonth() + 1)).slice(-2) + '-' +
+							String("0" + o.getUTCDate()).slice(-2) + 'T' +
+							String("0" + o.getUTCHours()).slice(-2) + ':' +
+							String("0" + o.getUTCMinutes()).slice(-2) + ':' +
+							String("0" + o.getUTCSeconds()).slice(-2) + '.' +
+							String("00" + o.getUTCMilliseconds()).slice(-3) + 'Z"';
 					}
 					if(o.constructor === Array) {
 						for(i = 0; i < o.length; i++) {
@@ -1303,7 +1303,7 @@ Functions needed to encode/decode JSON. Based on the jQuery JSON Plugin.
 					return "{" + tmp.join(", ") + "}";
 			}
 		},
-		/* 
+		/*
 			Function: $.vakata.json.decode
 			Exists for consistency and is a simple wrapper for jQuery.parseJSON.
 
@@ -1319,7 +1319,7 @@ Functions needed to encode/decode JSON. Based on the jQuery JSON Plugin.
 	};
 })(jQuery);
 
-/* 
+/*
 Group: Cookie
 A copy of the jQuery cookie plugin.
 */
@@ -1344,7 +1344,7 @@ A copy of the jQuery cookie plugin.
 			return (document.cookie = [
 				encodeURIComponent(key), '=',
 				options.raw ? value : encodeURIComponent(value),
-				options.expires ? '; expires=' + options.expires.toUTCString() : '', 
+				options.expires ? '; expires=' + options.expires.toUTCString() : '',
 				options.path ? '; path=' + options.path : '',
 				options.domain ? '; domain=' + options.domain : '',
 				options.secure ? '; secure' : ''
@@ -1356,7 +1356,7 @@ A copy of the jQuery cookie plugin.
 	};
 })(jQuery);
 
-/* 
+/*
 Group: LocalStorage
 Functions for dealing with localStorage with fallback to userData or cookies. A slight modification of jstorage.
 */
@@ -1415,10 +1415,10 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 			}
 			if(
 				!_backend && (
-					!!$.vakata.cookie('__vjstorage') || 
+					!!$.vakata.cookie('__vjstorage') ||
 					($.vakata.cookie('__vjstorage', '{}', { 'expires' : 365 }) && $.vakata.cookie('__vjstorage') === '{}')
 				)
-			) { 
+			) {
 				_storage_elm = null;
 				_storage_service.jStorage = $.vakata.cookie('__vjstorage');
 				_backend = "cookie";
@@ -1469,10 +1469,10 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 	}
 
 	function _handleTTL() {
-		var curtime = +new Date(), 
-			i, 
-			TTL, 
-			nextExpire = Infinity, 
+		var curtime = +new Date(),
+			i,
+			TTL,
+			nextExpire = Infinity,
 			changed = false;
 
 		if(_ttl_timeout !== false) {
@@ -1505,17 +1505,17 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 		}
 	}
 
-	/* 
+	/*
 		Variable: $.vakata.storage
 		*object* holds all storage related functions and properties.
 	*/
 	$.vakata.storage = {
-		/* 
+		/*
 			Variable: $.vakata.storage.version
 			*string* the version of jstorage used
 		*/
 		version: "0.1.6.1",
-		/* 
+		/*
 			Function: $.vakata.storage.set
 			Set a key to a value
 
@@ -1532,7 +1532,7 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 			_save();
 			return value;
 		},
-		/* 
+		/*
 			Function: $.vakata.storage.get
 			Get a value by key.
 
@@ -1550,7 +1550,7 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 			}
 			return typeof(def) === 'undefined' ? null : def;
 		},
-		/* 
+		/*
 			Function: $.vakata.storage.del
 			Remove a key.
 
@@ -1599,7 +1599,7 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 			return false;
 		},
 
-		/* 
+		/*
 			Function: $.vakata.storage.flush
 			Empty the storage.
 
@@ -1612,56 +1612,56 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 			// try{ window.localStorage.clear(); } catch(E8) { }
 			return true;
 		},
-		/* 
+		/*
 			Function: $.vakata.storage.storageObj
 			Get a read only copy of the whole storage.
 
 			Returns:
-				*object* 
+				*object*
 		*/
 		storageObj : function(){
 			function F() {}
 			F.prototype = _storage;
 			return new F();
 		},
-		/* 
+		/*
 			Function: $.vakata.storage.index
 			Get an array of all the set keys in the storage.
 
 			Returns:
-				*array* 
+				*array*
 		*/
 		index : function(){
 			var index = [], i;
 			$.each(_storage, function (i, v) { if(i !== "__jstorage_meta") { index.push(i); } });
 			return index;
 		},
-		/* 
+		/*
 			Function: $.vakata.storage.storageSize
 			Get the size of all items in the storage in bytes.
 
 			Returns:
-				*number* 
+				*number*
 		*/
 		storageSize : function(){
 			return _storage_size;
 		},
-		/* 
+		/*
 			Function: $.vakata.storage.currentBackend
 			Get the current backend used.
 
 			Returns:
-				*string* 
+				*string*
 		*/
 		currentBackend : function(){
 			return _backend;
 		},
-		/* 
+		/*
 			Function: $.vakata.storage.storageAvailable
 			See if storage functionality is available.
 
 			Returns:
-				*boolean* 
+				*boolean*
 		*/
 		storageAvailable : function(){
 			return !!_backend;
@@ -1670,17 +1670,17 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 	_init();
 })(jQuery);
 
-/* 
+/*
 Group: PrettyDate
 Modifies time elements to a more human readable value. Taken from: https://github.com/zachleat/Humane-Dates/blob/master/src/humane.js
 */
 (function ($) {
-	/* 
+	/*
 		Variable: $.vakata.pretty_date
 		*object* holds all pretty-date related functions and properties.
 	*/
 	$.vakata.pretty_date = {
-		/* 
+		/*
 			Variable: $.vakata.pretty_date.lang
 			*object* the localization to use.
 		*/
@@ -1701,7 +1701,7 @@ Modifies time elements to a more human readable value. Taken from: https://githu
 			year: 'Year',
 			years: 'Years'
 		},
-		/* 
+		/*
 			Function: $.vakata.pretty_date.parse
 			Parses the difference between to dates to a human readable string.
 
@@ -1757,7 +1757,7 @@ Modifies time elements to a more human readable value. Taken from: https://githu
 				}
 			}
 		},
-		/* 
+		/*
 			Function: $.vakata.pretty_date.init
 			Parses all time elements in the document and keeps reparsing them every few seconds.
 
@@ -1793,17 +1793,17 @@ Modifies time elements to a more human readable value. Taken from: https://githu
 	};
 })(jQuery);
 
-/* 
+/*
 Group: Selection
 Selection related functions
 */
 (function ($) {
-	/* 
+	/*
 		Variable: $.vakata.selection
 		*object* holds all selection related functions and properties.
 	*/
 	$.vakata.selection = {
-		/* 
+		/*
 			Function: $.vakata.selection.get
 			Gets the current selection.
 
@@ -1833,7 +1833,7 @@ Selection related functions
 			}
 			return '';
 		},
-		/* 
+		/*
 			Function: $.vakata.selection.elm_get
 			Gets the selection inside an input element or textarea.
 
@@ -1847,11 +1847,11 @@ Selection related functions
 			e = typeof e === 'string' ? document.getElementById(e) : e;
 			if(e.jquery) { e = e.get(0); }
 			if('selectionStart' in e) { // Mozilla and DOM 3.0
-				return { 
-					'start'		: e.selectionStart, 
-					'end'		: e.selectionEnd, 
-					'length'	: (e.selectionEnd - e.selectionStart), 
-					'text'		: e.value.substr(e.selectionStart, (e.selectionEnd - e.selectionStart)) 
+				return {
+					'start'		: e.selectionStart,
+					'end'		: e.selectionEnd,
+					'length'	: (e.selectionEnd - e.selectionStart),
+					'text'		: e.value.substr(e.selectionStart, (e.selectionEnd - e.selectionStart))
 				};
 			}
 			else if(document.selection) { // IE
@@ -1871,7 +1871,7 @@ Selection related functions
 
 					if(tr1.compareEndPoints("StartToEnd", tr2) > -1) {
 						the_start = the_end = len;
-					} 
+					}
 					else {
 						the_start  = -tr1.moveStart("character", -len);
 						the_start += text_whole.slice(0, the_start).split("\n").length - 1;
@@ -1883,24 +1883,24 @@ Selection related functions
 						}
 					}
 					text_whole = e.value.slice(the_start, the_end);
-					return { 
-						'start'		: the_start, 
-						'end'		: the_end, 
-						'length'	: text_whole.length, 
+					return {
+						'start'		: the_start,
+						'end'		: the_end,
+						'length'	: text_whole.length,
 						'text'		: text_whole
 					};
 				}
 			}
 			else { // not supported
-				return { 
-					'start'		: e.value.length, 
-					'end'		: e.value.length, 
-					'length'	: 0, 
-					'text'		: '' 
+				return {
+					'start'		: e.value.length,
+					'end'		: e.value.length,
+					'length'	: 0,
+					'text'		: ''
 				};
 			}
 		},
-		/* 
+		/*
 			Function: $.vakata.selection.elm_set
 			Sets the selection inside an input element or textarea.
 
@@ -1922,7 +1922,7 @@ Selection related functions
 			}
 			else if(document.selection) { // IE
 				e.focus();
-				var tr	= e.createTextRange(), 
+				var tr	= e.createTextRange(),
 					tx	= e.value.replace(/\r\n/g, "\n");
 
 				beg -= tx.slice(0, beg).split("\n").length - 1;
@@ -1930,12 +1930,12 @@ Selection related functions
 
 				tr.collapse(true);
 				tr.moveEnd('character', end);
-				tr.moveStart('character', beg); 
+				tr.moveStart('character', beg);
 				tr.select();
 			}
 			return $.vakata.selection.elm_get(e);
 		},
-		/* 
+		/*
 			Function: $.vakata.selection.elm_replace
 			Replace the selection inside an input element or textarea.
 
@@ -1954,14 +1954,14 @@ Selection related functions
 				end = beg + replace.length;
 			e.value = e.value.substr(0, beg) + replace + e.value.substr(sel.end, e.value.length);
 			$.vakata.selection.elm_set(e, beg, end);
-			return { 
-				'start'		: beg, 
-				'end'		: end, 
-				'length'	: replace.length, 
+			return {
+				'start'		: beg,
+				'end'		: end,
+				'length'	: replace.length,
 				'text'		: replace
 			};
 		},
-		/* 
+		/*
 			Function: $.vakata.selection.elm_get_caret
 			Returns the caret position in the element.
 
@@ -1974,7 +1974,7 @@ Selection related functions
 		elm_get_caret : function (e) {
 			return $.vakata.selection.elm_get(e).end;
 		},
-		/* 
+		/*
 			Function: $.vakata.selection.elm_set_caret
 			Sets the caret position in the element.
 
@@ -1988,7 +1988,7 @@ Selection related functions
 		elm_set_caret : function (e, pos) {
 			return $.vakata.selection.elm_set(e, pos, pos);
 		},
-		/* 
+		/*
 			Function: $.vakata.selection.elm_get_caret_position
 			Returns the caret position in pixels relative to the element.
 
@@ -2048,8 +2048,8 @@ Selection related functions
 	*/
 	$.fn.vakata_highlight = function (settings) {
 		var _return = this;
-		if(typeof settings === 'string') { 
-			settings = [ settings ]; 
+		if(typeof settings === 'string') {
+			settings = [ settings ];
 		}
 		if($.isArray(settings)) {
 			settings = { 'words' : settings };
@@ -2089,12 +2089,12 @@ Selection related functions
 /* File: jstree.js
 The only required part of jstree it consists of a few functions bound to the $.jstree object, the actual plugin function and a few core functions for manipulating a tree.
 */
-(function () { 
+(function () {
 	"use strict";
 	if(!jQuery) { throw "jsTree: jQuery not included."; }
 	if(jQuery.jstree) { return; } // prevent another load? maybe there is a better way?
 
-/* Group: $.jstree. 
+/* Group: $.jstree.
 Some static functions and variables, unless you know exactly what you are doing do not use these, but <$().jstree> instead.
 */
 (function ($) {
@@ -2102,24 +2102,24 @@ Some static functions and variables, unless you know exactly what you are doing 
 		focused_instance	= -1,
 		plugins				= {},
 		functions			= {};
-	/* 
+	/*
 		Variable: $.jstree
 		*object* Contains all static functions and variables used by jstree, some plugins also append variables.
 	*/
-	$.jstree = { 
-		/* 
+	$.jstree = {
+		/*
 			Variable: $.jstree.VERSION
 				*string* the version of jstree
 		*/
 		VERSION : '1.0.0',
 
-		/* 
+		/*
 			Variable: $.jstree.IS_IE6
 				*boolean* indicating if the client is running Internet Explorer 6
 		*/
 		IS_IE6 : (jQuery.browser.msie && parseInt(jQuery.browser.version,10) === 6),
 
-		/* 
+		/*
 			Variable: $.jstree.IS_IE7
 				*boolean* indicating if the client is running Internet Explorer 7
 		*/
@@ -2131,7 +2131,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 		*/
 		IS_FF2 : (jQuery.browser.mozilla && parseFloat(jQuery.browser.version,10) < 1.9),
 
-		/* 
+		/*
 			Function: $.jstree.__construct
 				Creates a new jstree instance, any arguments after the first one are merged and used to configure the tree.
 
@@ -2152,8 +2152,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 			p = $.isArray(s.plugins) ? s.plugins : $.jstree.defaults.plugins.slice();
 			p = $.vakata.array_unique(p);
 			s = $.extend(true, {}, $.jstree.defaults, s);
-			$.each(plugins, function (i, val) { 
-				if(i !== "core" && $.inArray(i, p) === -1) { s[i] = null; delete s[i]; } 
+			$.each(plugins, function (i, val) {
+				if(i !== "core" && $.inArray(i, p) === -1) { s[i] = null; delete s[i]; }
 				else { t.push(i); d[i] = {}; }
 			});
 			s.plugins = t;
@@ -2167,7 +2167,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			this.get_container		= function () { return container; };
 			this.get_container_ul	= function () { return container.children("ul:eq(0)"); };
 			this.get_settings		= function (writable) { return writable ? s : $.extend(true, {}, s); };
-			this.__trigger			= function (ev, data) { 
+			this.__trigger			= function (ev, data) {
 				if(!ev) { return; }
 				if(!data) { data = {}; }
 				if(typeof ev === "string") { ev = ev.replace(".jstree","") + ".jstree"; }
@@ -2181,7 +2181,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			return this;
 		},
 		/*
-			Group: $.jstree. 
+			Group: $.jstree.
 
 			Function: $.jstree.__destruct
 				Destroys an instance, and also clears `jstree-` prefixed classes and all events in the `jstree` namespace
@@ -2199,11 +2199,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 				n = instance.get_index(),
 				i = 0;
 			if(focused_instance === n) {
-				for(i in instances) { 
-					if(instances.hasOwnProperty(i) && i !== n) { 
+				for(i in instances) {
+					if(instances.hasOwnProperty(i) && i !== n) {
 						$.jstree._focus(i);
-						break; 
-					} 
+						break;
+					}
 				}
 				if(focused_instance === n) { $.jstree._focus(false); }
 			}
@@ -2224,7 +2224,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			delete instances[n];
 			return true;
 		},
-		/* 
+		/*
 			Function: $.jstree.__call
 				Call a function on the instance and return the result
 
@@ -2241,26 +2241,26 @@ Some static functions and variables, unless you know exactly what you are doing 
 			if(!instance || !$.isFunction(instance[operation])) { return; }
 			return instance[operation].apply(instance, args);
 		},
-		/* 
+		/*
 			Function: $.jstree._reference
 				Returns an instance
 
 			Parameters:
 				needle - *mixed* - integer, DOM node contained inside a jstree container, ID string, jQuery object, selector
 		*/
-		_reference	: function (needle) { 
+		_reference	: function (needle) {
 			if(instances[needle]) { return instances[needle]; }
-			var o = $(needle); 
+			var o = $(needle);
 			if(!o.length && typeof needle === "string") { o = $("#" + needle); }
 			if(!o.length) { return null; }
-			return instances[o.closest(".jstree").data("jstree_instance_id")] || null; 
+			return instances[o.closest(".jstree").data("jstree_instance_id")] || null;
 		},
 		/*
 			Function: $.jstree._focused
 				Returns the currently focused instance (by default once an instance is created it is focused)
 		*/
 		_focused	: function () {
-			return instances[focused_instance] || null; 
+			return instances[focused_instance] || null;
 		},
 		/*
 			Function: $.jstree._focus
@@ -2297,7 +2297,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			Parameters:
 				plugin_name - *string* the name of the new plugin (it will be used as a key in an object - make sure it is valid)
 				plugin_data - *object* consists of 4 keys. Default is:
-				>{ 
+				>{
 				>	__construct	: $.noop,	// this function will be executed when a new instance is created
 				>	__destuct	: $.noop,	// this function will be executed when an instance is destroyed
 				>	_fn			: { },		// each key of this object should be a function that will extend the jstree prototype
@@ -2306,7 +2306,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 		*/
 		plugin		: function (plugin_name, plugin_data) {
 			plugin_data = $.extend({}, {
-					__construct	: $.noop, 
+					__construct	: $.noop,
 					__destuct	: $.noop,
 					_fn			: { },
 					defaults	: false
@@ -2336,8 +2336,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 						rslt = this.__trigger(evnt, { "func" : i, "args" : args, "plugin" : func.plugin });
 						if(rslt === false) { return; }
 						rslt = func.apply(
-							$.extend({}, this, { 
-								__callback : function (data) { 
+							$.extend({}, this, {
+								__callback : function (data) {
 									this.__trigger( i, { "args" : args, "rslt" : data, "plugin" : func.plugin });
 									return data;
 								},
@@ -2354,19 +2354,19 @@ Some static functions and variables, unless you know exactly what you are doing 
 		},
 		/*
 			Variable: $.jstree.defaults
-				*object* storing all the default configuration options for every plugin and the core. 
+				*object* storing all the default configuration options for every plugin and the core.
 				If this is modified all instances created after the modification, which do not explicitly specify some other value will use the new default.
-			
+
 			Example:
 			>// this instance will use the _default_ theme
-			>$("#div0").jstree({ plugins : ["themes"] }); 
+			>$("#div0").jstree({ plugins : ["themes"] });
 			>$.jstree.defaults.themes.theme = "classic";
 			>// this instance will use the _classic_ theme
-			>$("#div1").jstree({ plugins : ["themes"] }); 
+			>$("#div1").jstree({ plugins : ["themes"] });
 			>// this instance will use the _apple_ theme
-			>$("#div2").jstree({ themes : { "theme" : "apple" }, plugins : ["themes"] }); 
+			>$("#div2").jstree({ themes : { "theme" : "apple" }, plugins : ["themes"] });
 		*/
-		defaults	: { 
+		defaults	: {
 			plugins : []
 		}
 	};
@@ -2378,17 +2378,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 		Creates an instance using the specified objects for containers, or executes a command on an instance, specified by a container.
 
 		Parameters:
-			settings - *mixed* 
-			
-			- if you pass an *object* a new instance will be created (using <$.jstree.__construct>) 
-			for each of the objects in the jquery collection, 
+			settings - *mixed*
+
+			- if you pass an *object* a new instance will be created (using <$.jstree.__construct>)
+			for each of the objects in the jquery collection,
 			if an instance already exists on the container it will be destroyed first
-			
+
 			- if you pass a *string* it will be executed using <$.jstree.__call> on each instance
 
 		Examples:
 			> // this creates an instance
-			> $("#some-id").jstree({ 
+			> $("#some-id").jstree({
 			>	plugins : [ "html_data", "themes", "ui" ]
 			> });
 			>
@@ -2396,13 +2396,13 @@ Some static functions and variables, unless you know exactly what you are doing 
 			> $("#some-id").jstree("select_node", "#the-id-to-select");
 
 		See also:
-			<$.jstree.__construct>, 
-			<$.jstree.__destruct>, 
+			<$.jstree.__construct>,
+			<$.jstree.__destruct>,
 			<$.jstree.__call>
 	*/
 	$.fn.jstree = function (settings) {
-		var _is_method	= (typeof settings === 'string'), 
-			_arguments	= Array.prototype.slice.call(arguments, 1), 
+		var _is_method	= (typeof settings === 'string'),
+			_arguments	= Array.prototype.slice.call(arguments, 1),
 			_return		= this;
 		this.each(function () {
 			if(_is_method) {
@@ -2419,14 +2419,14 @@ Some static functions and variables, unless you know exactly what you are doing 
 		return _return;
 	};
 	functions = $.jstree.__construct.prototype;
-	
+
 	$.expr[':'].jstree = function(a,i,m) {
 		return typeof ($(a).data("jstree_instance_id")) !== 'undefined';
 	};
 })(jQuery);
 
 (function ($) {
-	var ccp_node = false, 
+	var ccp_node = false,
 		ccp_mode = false;
 
 	$(function() { $.jstree.SCROLLBAR_WIDTH = $.vakata.get_scrollbar_width(); });
@@ -2452,8 +2452,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 						this.clean_node(data.rslt.obj);
 					}, this))
 				.bind("load_node.jstree", $.proxy(function (e, data) {
-						// data.rslt.status 
-						if(data.rslt.obj === -1) { 
+						// data.rslt.status
+						if(data.rslt.obj === -1) {
 							// only detach for root (checkbox three-state will not work otherwise)
 							// also - if you could use async clean_node won't be such an issue
 							var ul = this.get_container_ul().detach();
@@ -2478,10 +2478,10 @@ Some static functions and variables, unless you know exactly what you are doing 
 							data.inst.correct_node(this);
 						});
 					}, this))
-				.bind("mousedown.jstree", $.proxy(function () { 
+				.bind("mousedown.jstree", $.proxy(function () {
 						$.jstree._focus(this.get_index());
 					}, this))
-				.bind("dblclick.jstree", function () { 
+				.bind("dblclick.jstree", function () {
 						if(document.selection && document.selection.empty) { document.selection.empty(); }
 						else { if(window.getSelection) { var sel = window.getSelection(); try { sel.removeAllRanges(); sel.collapse(); } catch (er) { } } }
 					})
@@ -2491,8 +2491,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 						this.toggle_node(e.target);
 					}, this));
 		},
-		__destruct : function () { 
-			
+		__destruct : function () {
+
 		},
 		/* Class: jstree */
 		/*
@@ -2529,15 +2529,15 @@ Some static functions and variables, unless you know exactly what you are doing 
 				data - the additional object to pass along with the event. By default _data.inst_ will be the current instance, so when you bind to the event, you can access the instance easily.
 				> $("div").bind("some-event.jstree", function (e, data) { data.inst.some_function(); });
 		*/
-		/* 
+		/*
 			Group: CORE options
 
 			Variable: config.core.strings
 			*mixed* used to store all localization strings. Default is _false_.
 
-			Example 1: 
+			Example 1:
 			>$("div").jstree({
-			>	core : { 
+			>	core : {
 			>		strings : function (s) {
 			>			if(s === "Loading ...") { s = "Please wait ..."; }
 			>			return s;
@@ -2545,9 +2545,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 			>	}
 			>});
 
-			Example 2: 
+			Example 2:
 			>$("div").jstree({
-			>	core : { 
+			>	core : {
 			>		strings : {
 			>			"Loading ..." : "Please wait ..."
 			>		}
@@ -2557,17 +2557,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 			See also:
 			<_get_string>
 		*/
-		defaults : { 
+		defaults : {
 			strings : false,
 			check_callback : true,
 			animation : 100
 		},
-		_fn : { 
-			/* 
+		_fn : {
+			/*
 				Group: CORE functions
 
 				Function: _get_string
-				Used to get the common string in the tree. 
+				Used to get the common string in the tree.
 
 				If <config.core.strings> is set to a function, that function is called with a single parameter (the needed string), the response is returned.
 
@@ -2578,13 +2578,13 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Parameters:
 					needed_string - *string* the needed string
 			*/
-			_get_string : function (s) { 
+			_get_string : function (s) {
 				var a = this.get_settings(true).core.strings;
 				if($.isFunction(a)) { return a.call(this, s); }
 				if(a && a[s]) { return a[s]; }
-				return s; 
+				return s;
 			},
-			/* 
+			/*
 				Function: init
 				Used internally. This function is called once the core plugin is constructed.
 
@@ -2596,7 +2596,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 
 				Parameters:
 					data.inst - the instance
-				
+
 				Example:
 				> $("div").bind("__loaded.jstree", function (e, data) { data.inst.do_something(); });
 
@@ -2606,17 +2606,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Parameters:
 					data.inst - the instance
 			*/
-			init : function () { 
+			init : function () {
 				this.data.core.original_container_html = this.get_container().find(" > ul > li").clone(true);
 				this.data.core.original_container_html.find("li").andSelf().contents().filter(function() { return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue)); }).remove();
 				this.get_container().html("<ul><li class='jstree-loading'><a href='#'>" + this._get_string("Loading ...") + "</a></li></ul>");
 				this.clean_node(-1);
 				this.data.core.li_height = this.get_container_ul().children("li:eq(0)").height() || 18;
-				this.load_node(-1, function () { 
+				this.load_node(-1, function () {
 					this.__trigger("__loaded");
 				});
 			},
-			/* 
+			/*
 				Function: lock
 				Used to lock the tree. When the tree is in a locked state, no functions can be called on the instance (except <is_locked> and <unlock>).
 				Additionally a _jstree-locked_ class is applied on the container.
@@ -2632,16 +2632,16 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - _null_
-				
+
 				Example:
 				> $("div").bind("lock.jstree", function (e, data) { data.inst.do_something(); });
 			*/
-			lock : function () { 
-				this.data.core.locked = true; 
-				this.get_container().addClass("jstree-locked"); 
-				this.__callback(); 
+			lock : function () {
+				this.data.core.locked = true;
+				this.get_container().addClass("jstree-locked");
+				this.__callback();
 			},
-			/* 
+			/*
 				Function: unlock
 				Used to unlock the tree. Instance can be used normally again. The _jstree-locked_ class is removed from the container.
 
@@ -2656,44 +2656,44 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - _null_
-				
+
 				Example:
 				> $("div").bind("unlock.jstree", function (e, data) { data.inst.do_something(); });
 			*/
-			unlock : function () { 
-				this.data.core.locked = false; 
-				this.get_container().removeClass("jstree-locked"); 
-				this.__callback(); 
+			unlock : function () {
+				this.data.core.locked = false;
+				this.get_container().removeClass("jstree-locked");
+				this.__callback();
 			},
-			/* 
+			/*
 				Function: is_locked
 				Used to get the locked status of the tree.
 
 				Returns:
 					locked - *boolean* _true_ if tree is locked, _false_ otherwise
 			*/
-			is_locked : function () { 
-				return this.data.core.locked; 
+			is_locked : function () {
+				return this.data.core.locked;
 			},
-			/* 
+			/*
 				Function: get_node
 				Get a hold of the LI node (which represents the jstree node).
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
-				
+
 				Returns:
 					jquery collection - node was found, the collection contains the LI node
 					-1 - the tree container was referenced
 					false - on failure (obj is not part of a tree, or does not exists in the DOM)
 			*/
-			get_node : function (obj) { 
-				var $obj = $(obj, this.get_container()); 
-				if($obj.is(".jstree") || obj === -1) { return -1; } 
-				$obj = $obj.closest("li", this.get_container()); 
-				return $obj.length ? $obj : false; 
+			get_node : function (obj) {
+				var $obj = $(obj, this.get_container());
+				if($obj.is(".jstree") || obj === -1) { return -1; }
+				$obj = $obj.closest("li", this.get_container());
+				return $obj.length ? $obj : false;
 			},
-			/* 
+			/*
 				Function: get_next
 				Get the next sibling of a node
 
@@ -2715,7 +2715,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				else if(obj.nextAll("li").size() > 0) { return obj.nextAll("li:eq(0)"); }
 				else { return obj.parentsUntil(".jstree","li").next("li").eq(0); }
 			},
-			/* 
+			/*
 				Function: get_prev
 				Get the previous sibling of a node
 
@@ -2740,7 +2740,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				else { var o = obj.parentsUntil(".jstree","li:eq(0)"); return o.length ? o : false; }
 			},
-			/* 
+			/*
 				Function: get_parent
 				Get the parent of a node
 
@@ -2758,7 +2758,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				var o = obj.parentsUntil(".jstree", "li:eq(0)");
 				return o.length ? o : -1;
 			},
-			/* 
+			/*
 				Function: get_children
 				Get all the children of a node
 
@@ -2775,7 +2775,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(!obj || !obj.length) { return false; }
 				return obj.find("> ul > li");
 			},
-			/* 
+			/*
 				Function: is_parent
 				Check if a node is a parent.
 
@@ -2787,7 +2787,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is not a valid node or has no children (leaf node)
 			*/
 			is_parent	: function (obj) { obj = this.get_node(obj); return obj && obj !== -1 && (obj.find("> ul > li:eq(0)").length || obj.hasClass("jstree-closed")); },
-			/* 
+			/*
 				Function: is_loaded
 				Check if a node is loaded.
 
@@ -2799,7 +2799,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is currently loading or is not a leaf, but has no children
 			*/
 			is_loaded	: function (obj) { obj = this.get_node(obj); return obj && ( (obj === -1 && !this.get_container().find("> ul > li.jstree-loading").length) || ( obj !== -1 && !obj.hasClass('jstree-loading') && (obj.find('> ul > li').length || obj.hasClass('jstree-leaf')) ) ); },
-			/* 
+			/*
 				Function: is_loading
 				Check if a node is currently loading.
 
@@ -2811,7 +2811,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is not currently loading
 			*/
 			is_loading	: function (obj) { obj = this.get_node(obj); return obj && ( (obj === -1 && this.get_container().find("> ul > li.jstree-loading").length) || (obj !== -1 && obj.hasClass("jstree-loading")) ); },
-			/* 
+			/*
 				Function: is_open
 				Check if a node is currently open.
 
@@ -2823,7 +2823,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is not currently open
 			*/
 			is_open		: function (obj) { obj = this.get_node(obj); return obj && obj !== -1 && obj.hasClass("jstree-open"); },
-			/* 
+			/*
 				Function: is_closed
 				Check if a node is currently closed.
 
@@ -2835,7 +2835,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is not currently closed
 			*/
 			is_closed	: function (obj) { obj = this.get_node(obj); return obj && obj !== -1 && obj.hasClass("jstree-closed"); },
-			/* 
+			/*
 				Function: is_leaf
 				Check if a node is a leaf node (has no children).
 
@@ -2847,7 +2847,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is not a leaf node
 			*/
 			is_leaf		: function (obj) { obj = this.get_node(obj); return obj && obj !== -1 && obj.hasClass("jstree-leaf"); },
-			/* 
+			/*
 				Function: load_node
 				Load the children of a node.
 
@@ -2873,7 +2873,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - *object* which contains two keys _obj_ (the loaded node) and _status_ - whether the node was loaded successfully.
-				
+
 				Example:
 				> $("div").bind("load_node.jstree", function (e, data) { if(data.rslt.status) { data.inst.open_node(data.rslt.obj); } });
 			*/
@@ -2889,9 +2889,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}, this));
 				return true;
 			},
-			/* 
+			/*
 				Function: _load_node
-				Load the children of a node, but as opposed to <load_node> does not change any visual properties or trigger events. This function is used in <load_node> internally. The idea is for data source plugins to overwrite this function. 
+				Load the children of a node, but as opposed to <load_node> does not change any visual properties or trigger events. This function is used in <load_node> internally. The idea is for data source plugins to overwrite this function.
 				This implementation (from the *core*) only uses markup found in the tree container, and does not load async.
 
 				Parameters:
@@ -2905,7 +2905,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				callback.call(null, true);
 			},
-			/* 
+			/*
 				Function: open_node
 				Open a node so that its children are visible. If the node is not loaded try loading it first.
 
@@ -2913,7 +2913,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
 					callback - a function to be executed in the tree's scope. Receives two arguments: _obj_ (the node being opened) and _status_ (a boolean indicating if the node was opened successfully).
 					animation - the duration in miliseconds of the slideDown animation. If not supplied the jQuery default is used. Please note that on IE6 a _0_ is enforced here due to performance issues.
-				
+
 				Triggers:
 					<open_node>, <__after_open>
 
@@ -2925,11 +2925,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - *object* which contains a single key: _obj_ (the opened node).
-				
+
 				Example:
-				> $("div").bind("open_node.jstree", function (e, data) { 
-				>   data.rslt.obj.find('> ul > .jstree-closed').each(function () { 
-				>     data.inst.open_node(this); 
+				> $("div").bind("open_node.jstree", function (e, data) {
+				>   data.rslt.obj.find('> ul > .jstree-closed').each(function () {
+				>     data.inst.open_node(this);
 				>   }
 				> });
 
@@ -2939,21 +2939,21 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Parameters:
 					data.inst - the instance
 					data.rslt - *object* which contains a single key: _obj_ (the opened node).
-				
+
 				Example:
-				> $("div").bind("__after_open.jstree", function (e, data) { 
-				>   data.rslt.obj.find('> ul > .jstree-closed').each(function () { 
-				>     data.inst.open_node(this); 
+				> $("div").bind("__after_open.jstree", function (e, data) {
+				>   data.rslt.obj.find('> ul > .jstree-closed').each(function () {
+				>     data.inst.open_node(this);
 				>   }
 				> });
 			*/
-			open_node : function (obj, callback, animation) { 
+			open_node : function (obj, callback, animation) {
 				obj = this.get_node(obj);
 				animation = (typeof animation).toLowerCase() === "undefined" ? this.get_settings().core.animation : animation;
 				if(obj === -1 || !obj || !obj.length) { return false; }
 				if(!this.is_closed(obj)) { if(callback) { callback.call(this, obj, false); } return false; }
 				if(!this.is_loaded(obj)) { // TODO: is_loading?
-					this.load_node(obj, function (o, ok) { 
+					this.load_node(obj, function (o, ok) {
 						return ok ? this.open_node(o, callback, animation) : callback ? callback.call(this, o, false) : false;
 					});
 				}
@@ -2961,24 +2961,24 @@ Some static functions and variables, unless you know exactly what you are doing 
 					var t = this;
 					obj
 						.children("ul").css("display","none").end()
-						.removeClass("jstree-closed").addClass("jstree-open") 
+						.removeClass("jstree-closed").addClass("jstree-open")
 						// .children("ins").text("-").end()
-						.children("ul").stop(true, true).slideDown( ($.jstree.IS_IE6 ? 0 : animation), function () { 
-								this.style.display = ""; 
-								t.__trigger("__after_open", { "rslt" : { "obj" : obj } }); 
-							}); 
+						.children("ul").stop(true, true).slideDown( ($.jstree.IS_IE6 ? 0 : animation), function () {
+								this.style.display = "";
+								t.__trigger("__after_open", { "rslt" : { "obj" : obj } });
+							});
 					if(callback) { callback.call(this, obj, true); }
 					this.__callback({ "obj" : obj });
 				}
 			},
-			/* 
+			/*
 				Function: close_node
 				Close a node so that its children are not visible.
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
 					animation - the duration in miliseconds of the slideDown animation. If not supplied the jQuery default is used. Please note that on IE6 a _0_ is enforced here due to performance issues.
-				
+
 				Triggers:
 					<close_node>, <__after_close>
 
@@ -2990,9 +2990,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - *object* which contains a single key: _obj_ (the closed node).
-				
+
 				Example:
-				> $("div").bind("close_node.jstree", function (e, data) { 
+				> $("div").bind("close_node.jstree", function (e, data) {
 				>   data.rslt.obj.children('ul').remove();
 				> });
 
@@ -3002,13 +3002,13 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Parameters:
 					data.inst - the instance
 					data.rslt - *object* which contains a single key: _obj_ (the opened node).
-				
+
 				Example:
-				> $("div").bind("__after_close.jstree", function (e, data) { 
+				> $("div").bind("__after_close.jstree", function (e, data) {
 				>   data.rslt.obj.children('ul').remove();
 				> });
 			*/
-			close_node : function (obj, animation) { 
+			close_node : function (obj, animation) {
 				obj = this.get_node(obj);
 				animation = (typeof animation).toLowerCase() === "undefined" ? this.get_settings().core.animation : animation;
 				if(!obj || !obj.length || !this.is_open(obj)) { return false; }
@@ -3017,24 +3017,24 @@ Some static functions and variables, unless you know exactly what you are doing 
 					.children("ul").attr("style","display:block !important").end()
 					.removeClass("jstree-open").addClass("jstree-closed")
 					// .children("ins").text("+").end()
-					.children("ul").stop(true, true).slideUp( ($.jstree.IS_IE6 ? 0 : animation), function () { 
-						this.style.display = ""; 
-						t.__trigger("__after_close", { "rslt" : { "obj" : obj } }); 
+					.children("ul").stop(true, true).slideUp( ($.jstree.IS_IE6 ? 0 : animation), function () {
+						this.style.display = "";
+						t.__trigger("__after_close", { "rslt" : { "obj" : obj } });
 					});
 				this.__callback({ "obj" : obj });
 			},
-			/* 
+			/*
 				Function: toggle_node
 				If a node is closed - open it, if it is open - close it.
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
 			*/
-			toggle_node : function (obj) { 
+			toggle_node : function (obj) {
 				if(this.is_closed(obj)) { return this.open_node(obj); }
 				if(this.is_open(obj)) { return this.close_node(obj); }
 			},
-			/* 
+			/*
 				Function: open_all
 				Open all nodes from a certain node down.
 
@@ -3042,7 +3042,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc. If _-1_ is used or is omitted all nodes in the tree are opened.
 					animation - the duration of the slideDown animation when opening the nodes. If not set _0_ is enforced for performance issues.
 					original_obj - used internally to keep track of the recursion - do not set manually!
-				
+
 				Triggers:
 					<open_all>
 
@@ -3054,9 +3054,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - *object* which contains a single key: _obj_ (the node used in the call).
-				
+
 				Example:
-				> $("div").bind("open_all.jstree", function (e, data) { 
+				> $("div").bind("open_all.jstree", function (e, data) {
 				>   alert('DONE');
 				> });
 			*/
@@ -3066,25 +3066,25 @@ Some static functions and variables, unless you know exactly what you are doing 
 				original_obj = original_obj || obj;
 				var _this = this;
 				obj = this.is_closed(obj) ? obj.find('li.jstree-closed').andSelf() : obj.find('li.jstree-closed');
-				obj.each(function () { 
+				obj.each(function () {
 					_this.open_node(
-						this, 
-						_this.is_loaded(this) ? 
-							false : 
-							function(obj) { this.open_all(obj, animation, original_obj); }, 
+						this,
+						_this.is_loaded(this) ?
+							false :
+							function(obj) { this.open_all(obj, animation, original_obj); },
 						animation || 0
-					); 
+					);
 				});
 				if(original_obj.find('li.jstree-closed').length === 0) { this.__callback({ "obj" : original_obj }); }
 			},
-			/* 
+			/*
 				Function: close_all
 				Close all nodes from a certain node down.
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc. If _-1_ is used or is omitted all nodes in the tree are closed.
 					animation - the duration of the slideDown animation when closing the nodes. If not set _0_ is enforced for performance issues.
-				
+
 				Triggers:
 					<close_all>
 
@@ -3096,9 +3096,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - *object* which contains a single key: _obj_ (the node used in the call).
-				
+
 				Example:
-				> $("div").bind("close_all.jstree", function (e, data) { 
+				> $("div").bind("close_all.jstree", function (e, data) {
 				>   alert('DONE');
 				> });
 			*/
@@ -3110,14 +3110,14 @@ Some static functions and variables, unless you know exactly what you are doing 
 				$obj.each(function () { _this.close_node(this, animation || 0); });
 				this.__callback({ "obj" : obj });
 			},
-			/* 
+			/*
 				Function: clean_node
-				This function converts inserted nodes to the required by jsTree format. It takes care of converting a simple unodreder list to the internally used markup. 
+				This function converts inserted nodes to the required by jsTree format. It takes care of converting a simple unodreder list to the internally used markup.
 				The core calls this function automatically when new data arrives (by binding to the <load_node> event).
 				Each plugin may override this function to include its own source, but keep in mind to do it like that:
 				> clean_node : function(obj) {
 				>  obj = this.__call_old();
-				>  obj.each(function () { 
+				>  obj.each(function () {
 				>    // do your stuff here
 				>  });
 				> }
@@ -3140,7 +3140,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					if(d && d.opened) { delete d.opened; }
 					if(d && d.closed) { delete d.closed; }
 					t.removeClass("jstree-open jstree-closed jstree-leaf jstree-last");
-					if(!t.children("a").length) { 
+					if(!t.children("a").length) {
 						// allow for text and HTML markup inside the nodes
 						t.contents().filter(function() { return this.nodeType === 3 || this.tagName !== 'UL'; }).wrapAll('<a href="#"></a>');
 						// TODO: make this faster
@@ -3149,28 +3149,28 @@ Some static functions and variables, unless you know exactly what you are doing 
 					else {
 						if(!$.trim(t.children('a').attr('href'))) { t.children('a').attr("href","#"); }
 					}
-					if(!t.children("ins.jstree-ocl").length) { 
+					if(!t.children("ins.jstree-ocl").length) {
 						t.prepend("<ins class='jstree-icon jstree-ocl'>&#160;</ins>");
 					}
-					if(t.is(":last-child")) { 
-						t.addClass("jstree-last"); 
+					if(t.is(":last-child")) {
+						t.addClass("jstree-last");
 					}
 					switch(s) {
 						case 'leaf':
-							t.addClass('jstree-leaf'); 
+							t.addClass('jstree-leaf');
 							break;
 						case 'closed':
-							t.addClass('jstree-open'); 
+							t.addClass('jstree-open');
 							_this.close_node(t, 0);
 							break;
 						case 'open':
 							t.addClass('jstree-closed');
-							_this.open_node(t, false, 0); 
+							_this.open_node(t, false, 0);
 							break;
 					}
 				});
 			},
-			/* 
+			/*
 				Function: correct_node
 				This function corrects the open/closed/leaf state as data changes (as the user interacts with the tree).
 				The core calls this function automatically when a node is opened, deleted or moved.
@@ -3182,7 +3182,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					jQuery collection - the processed children of the original node.
 			*/
 			/* PROCESS SINGLE NODE (OR USE BOOLEAN single PARAM), CALL FROM CLEAN_NODE, LOSE THE EVENTS ABOVE */
-			correct_node : function (obj, deep) { 
+			correct_node : function (obj, deep) {
 				obj = this.get_node(obj);
 				if(!obj || (obj === -1 && !deep)) { return false; }
 				if(obj === -1) { obj = this.get_container().find('li'); }
@@ -3201,7 +3201,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				});
 				return obj;
 			},
-			/* 
+			/*
 				Function: scroll_to_node
 				This function scrolls the container to the desired node (if needed).
 
@@ -3214,17 +3214,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 					obj = this.get_node(obj);
 					if(!obj || obj === -1 || !obj.length || !obj.is(":visible")) { return; }
 					t = obj.offset().top - this.get_container().offset().top;
-					if(t < 0) { 
-						c.scrollTop = c.scrollTop + t - 1; 
+					if(t < 0) {
+						c.scrollTop = c.scrollTop + t - 1;
 					}
-					if(t + this.data.core.li_height + (c.scrollWidth > c.offsetWidth ? $.jstree.SCROLLBAR_WIDTH : 0) > c.offsetHeight) { 
-						c.scrollTop = c.scrollTop + (t - c.offsetHeight + this.data.core.li_height + 1 + (c.scrollWidth > c.offsetWidth ? $.jstree.SCROLLBAR_WIDTH : 0)); 
+					if(t + this.data.core.li_height + (c.scrollWidth > c.offsetWidth ? $.jstree.SCROLLBAR_WIDTH : 0) > c.offsetHeight) {
+						c.scrollTop = c.scrollTop + (t - c.offsetHeight + this.data.core.li_height + 1 + (c.scrollWidth > c.offsetWidth ? $.jstree.SCROLLBAR_WIDTH : 0));
 					}
 				}
 			},
-			/* 
+			/*
 				Function: get_state
-				This function returns the current state of the tree (as collected from all active plugins). 
+				This function returns the current state of the tree (as collected from all active plugins).
 				Plugin authors: pay special attention to the way this function is extended for new plugins. In your plugin code write:
 				> get_state : function () {
 				>   var state = this.__call_old();
@@ -3240,18 +3240,18 @@ Some static functions and variables, unless you know exactly what you are doing 
 				this.get_container_ul().find('.jstree-open').each(function () { if(this.id) { state.open.push(this.id); } });
 				return state;
 			},
-			/* 
+			/*
 				Function: set_state
-				This function returns sets the state of the tree. 
+				This function returns sets the state of the tree.
 				Plugin authors: pay special attention to the way this function is extended for new plugins. In your plugin code write:
 				> set_state : function (state, callback) {
 				>   if(this.__call_old()) {
 				>     if(state.your-plugin-name) {
-				>       
+				>
 				>       // restore using `state.your-plugin-name`
 				>       // if you need some async activity so that you return to this bit of code
 				>       // do not delete state.your-plugin-name and return false (see core's function for example)
-				>       
+				>
 				>       delete state.your-plugin-name;
 				>       this.set_state(state, callback);
 				>       return false;
@@ -3282,39 +3282,39 @@ Some static functions and variables, unless you know exactly what you are doing 
 			set_state : function (state, callback) {
 				if(state) {
 					if($.isArray(state.open)) {
-						var res = true, 
+						var res = true,
 							t = this;
 						//this.close_all();
 						$.each(state.open.concat([]), function (i, v) {
 							v = document.getElementById(v);
-							if(v) { 
-								if(t.is_loaded(v)) { 
+							if(v) {
+								if(t.is_loaded(v)) {
 									if(t.is_closed(v)) {
-										t.open_node(v, false, 0); 
+										t.open_node(v, false, 0);
 									}
-									$.vakata.array_remove(state.open, i); 
+									$.vakata.array_remove(state.open, i);
 								}
-								else { 
+								else {
 									if(!t.is_loading(v)) {
-										t.open_node(v, $.proxy(function () { this.set_state(state); }, t), 0); 
+										t.open_node(v, $.proxy(function () { this.set_state(state); }, t), 0);
 									}
 									// there will be some async activity - so wait for it
-									res = false; 
+									res = false;
 								}
 							}
 						});
 						if(res) {
-							delete state.open; 
-							this.set_state(state, callback); 
+							delete state.open;
+							this.set_state(state, callback);
 						}
 						return false;
 					}
 					if(state.scroll) {
-						if(state.scroll && typeof state.scroll.left !== 'undefined') { 
-							this.get_container().scrollLeft(state.scroll.left); 
+						if(state.scroll && typeof state.scroll.left !== 'undefined') {
+							this.get_container().scrollLeft(state.scroll.left);
 						}
-						if(state.scroll && typeof state.scroll.top !== 'undefined') { 
-							this.get_container().scrollTop(state.scroll.top); 
+						if(state.scroll && typeof state.scroll.top !== 'undefined') {
+							this.get_container().scrollTop(state.scroll.top);
 						}
 						delete state.scroll;
 						delete state.open;
@@ -3330,9 +3330,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				return false;
 			},
-			/* 
+			/*
 				Function: refresh
-				This function saves the current state, reloads the complete tree and returns it to the saved state. 
+				This function saves the current state, reloads the complete tree and returns it to the saved state.
 
 				Triggers:
 					<refresh>
@@ -3345,16 +3345,16 @@ Some static functions and variables, unless you know exactly what you are doing 
 			*/
 			refresh : function () {
 				this.data.core.state = this.get_state();
-				this.load_node(-1, function (o, s) { 
+				this.load_node(-1, function (o, s) {
 					if(s) {
 						this.set_state($.extend(true, {}, this.data.core.state), function () { this.__trigger('refresh'); });
 					}
 					this.data.core.state = null;
 				});
 			},
-			/* 
+			/*
 				Function: get_text
-				This function returns the title of the node. 
+				This function returns the title of the node.
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
@@ -3370,7 +3370,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				obj.children(".jstree-icon").remove();
 				return obj[ remove_html ? 'text' : 'html' ]();
 			},
-			/* 
+			/*
 				Function: set_text
 				This function sets the title of the node. This is a low-level function, you'd be better off using <rename>.
 
@@ -3392,9 +3392,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a two keys: _obj_ (the node) and _val_ (the new title).
-				
+
 				Example:
-				> $("div").bind("set_text.jstree", function (e, data) { 
+				> $("div").bind("set_text.jstree", function (e, data) {
 				>   alert("Renamed to: " + data.rslt.val);
 				> });
 			*/
@@ -3407,7 +3407,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				this.__callback({ "obj" : obj, "text" : val });
 				return true;
 			},
-			/* 
+			/*
 				Function: parse_json
 				This function returns a jQuery node after parsing a JSON object (a LI node for single elements or an UL node for multiple). This function will use the default title from <jstree.config.core.strings> if none is specified.
 
@@ -3452,7 +3452,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(node.data && !$.isEmptyObject(node.data)) { li.data(node.data); }
 				if(
 					node.children === true ||
-					$.isArray(node.children) || 
+					$.isArray(node.children) ||
 					(li.data('jstree') && $.isArray(li.data('jstree').children))
 				) {
 					if(!li.data('jstree')) {
@@ -3469,7 +3469,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				return li;
 			},
-			/* 
+			/*
 				Function: get_json
 				This function returns the whole tree (or a single node) in JSON format.
 				Each plugin may override this function to include its own source, but keep in mind to do it like that:
@@ -3515,12 +3515,12 @@ Some static functions and variables, unless you know exactly what you are doing 
 					v = $.trim(v.replace(/\bjstree[^ ]*/ig,'').replace(/\s+$/ig," "));
 					if(v.length) { a_attr[i] = v; }
 				});
-				r = { 
-					'title'		: this.get_text(obj), 
-					'data'		: $.extend(true, {}, obj.data() || {}), 
-					'children'	: false, 
-					'li_attr'	: li_attr, 
-					'a_attr'	: a_attr 
+				r = {
+					'title'		: this.get_text(obj),
+					'data'		: $.extend(true, {}, obj.data() || {}),
+					'children'	: false,
+					'li_attr'	: li_attr,
+					'a_attr'	: a_attr
 				};
 
 				if(!r.data.jstree) { r.data.jstree = {}; }
@@ -3537,7 +3537,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				return r;
 			},
-			/* 
+			/*
 				Function: create_node
 				This function creates a new node.
 
@@ -3562,9 +3562,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a three keys: _obj_ (the node), _parent_ (the parent) and _position_ which is the numerical index.
-				
+
 				Example:
-				> $("div").bind("create_node.jstree", function (e, data) { 
+				> $("div").bind("create_node.jstree", function (e, data) {
 				>   alert("Created `" + data.inst.get_text(data.rslt.obj) + "` inside `" + (data.rslt.parent === -1 ? 'the main container' : data.inst.get_text(data.rslt.parent)) + "` at index " + data.rslt.position);
 				> });
 			*/
@@ -3573,8 +3573,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				pos = typeof pos === "undefined" ? "last" : pos;
 
 				if(par !== -1 && !par.length) { return false; }
-				if(!pos.match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) { 
-					return this.load_node(par, function () { this.create_node(par, node, pos, callback, true); }); 
+				if(!pos.match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
+					return this.load_node(par, function () { this.create_node(par, node, pos, callback, true); });
 				}
 
 				var li = this.parse_json(node),
@@ -3585,13 +3585,13 @@ Some static functions and variables, unless you know exactly what you are doing 
 					if(pos === "after") { pos = "last"; }
 				}
 				switch(pos) {
-					case "before": 
+					case "before":
 						pos = par.index();
 						par = this.get_parent(par);
 						break;
-					case "after" : 
+					case "after" :
 						pos = par.index() + 1;
-						par = this.get_parent(par); 
+						par = this.get_parent(par);
 						break;
 					case "inside":
 					case "first":
@@ -3611,8 +3611,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(tmp.children("ul").children("li").eq(pos).length) {
 					tmp.children("ul").children("li").eq(pos).before(li);
 				}
-				else { 
-					tmp.children("ul").append(li); 
+				else {
+					tmp.children("ul").append(li);
 				}
 				this.correct_node(par, true);
 				if(callback) { callback.call(this, li); }
@@ -3638,9 +3638,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a three keys: _obj_ (the node), _title_ (the new title), _old_ (the old title)
-				
+
 				Example:
-				> $("div").bind("rename_node.jstree", function (e, data) { 
+				> $("div").bind("rename_node.jstree", function (e, data) {
 				>   alert("Node rename from `" + data.rslt.old + "` to `" + data.rslt.title "`");
 				> });
 			*/
@@ -3649,8 +3649,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				var old = this.get_text(obj);
 				if(!this.check("rename_node", obj, this.get_parent(obj), val)) { return false; }
 				if(obj && obj.length) {
-					this.set_text(obj, val); // .apply(this, Array.prototype.slice.call(arguments)) 
-					this.__callback({ "obj" : obj, "title" : val, "old" : old }); 
+					this.set_text(obj, val); // .apply(this, Array.prototype.slice.call(arguments))
+					this.__callback({ "obj" : obj, "title" : val, "old" : old });
 				}
 			},
 			/*
@@ -3674,16 +3674,16 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a three keys: _obj_ (the removed node), _prev_ (the previous sibling of the removed node), _parent_ (the parent of the removed node)
-				
+
 				Example:
-				> $("div").bind("delete_node.jstree", function (e, data) { 
+				> $("div").bind("delete_node.jstree", function (e, data) {
 				>   alert("Node deleted!");
 				> });
 			*/
 			delete_node : function (obj) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
-				var par = this.get_parent(obj), 
+				var par = this.get_parent(obj),
 					pre = this.get_prev(obj);
 				if(!this.check("delete_node", obj, par, obj.index())) { return false; }
 				obj = obj.detach();
@@ -3694,11 +3694,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 			},
 			/*
 				Function: check
-				This function checks if a structure modification is valid. 
+				This function checks if a structure modification is valid.
 
 				Parameters:
 					chk - *string* what are we checking (copy_node, move_node, rename_node, create_node, delete_node)
-					obj - *mixed* the node. 
+					obj - *mixed* the node.
 					par - *mixed* the parent (if dealing with a move or copy - the new parent).
 					pos - *mixed* the index among the parent's children (or the new name if dealing with a rename)
 					is_copy - *boolean* is this a copy or a move call
@@ -3709,14 +3709,14 @@ Some static functions and variables, unless you know exactly what you are doing 
 			check : function (chk, obj, par, pos) {
 				var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj,
 					chc = this.get_settings().core.check_callback;
-				if(chc === false || ($.isFunction(chc) && chc.call(this, chk, obj, par, pos) === false)) { 
+				if(chc === false || ($.isFunction(chc) && chc.call(this, chk, obj, par, pos) === false)) {
 					return false;
 				}
 				tmp = tmp === -1 ? this.get_container().data('jstree') : tmp.data('jstree');
 				if(tmp && tmp.functions && tmp.functions[chk]) {
 					tmp = tmp.functions[chk];
-					if($.isFunction(tmp)) { 
-						tmp = tmp.call(this, chk, obj, par, pos); 
+					if($.isFunction(tmp)) {
+						tmp = tmp.call(this, chk, obj, par, pos);
 					}
 					if(tmp === false) {
 						return false;
@@ -3733,8 +3733,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 						if(tmp.length && tmp.index(obj) !== -1 && (pos === obj.index() || pos === obj.index() + 1)) {
 							return false;
 						}
-						if(par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) { 
-							return false; 
+						if(par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) {
+							return false;
 						}
 						break;
 					case "copy_node":
@@ -3770,9 +3770,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a five keys: _obj_ (the node), _parent_ (the new parent) and _position_ which is the numerical index, _old_parent_ (the old parent) and is_multi (a boolean indicating if the node is coming from another tree instance)
-				
+
 				Example:
-				> $("div").bind("move_node.jstree", function (e, data) { 
+				> $("div").bind("move_node.jstree", function (e, data) {
 				>   alert("Moved `" + data.inst.get_text(data.rslt.obj) + "` inside `" + (data.rslt.parent === -1 ? 'the main container' : data.inst.get_text(data.rslt.parent)) + "` at index " + data.rslt.position);
 				> });
 			*/
@@ -3783,8 +3783,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 
 				if(!obj || obj === -1 || !obj.length) { return false; }
 				if(par !== -1 && !par.length) { return false; }
-				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) { 
-					return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); }); 
+				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
+					return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); });
 				}
 
 				var old_par = this.get_parent(obj),
@@ -3798,10 +3798,10 @@ Some static functions and variables, unless you know exactly what you are doing 
 					if(pos === "after") { pos = "last"; }
 				}
 				switch(pos) {
-					case "before": 
+					case "before":
 						pos = par.index();
 						break;
-					case "after" : 
+					case "after" :
 						pos = par.index() + 1;
 						break;
 					case "inside":
@@ -3821,8 +3821,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(par.children("ul").children("li").eq(pos).length) {
 					par.children("ul").children("li").eq(pos).before(obj);
 				}
-				else { 
-					par.children("ul").append(obj); 
+				else {
+					par.children("ul").append(obj);
 				}
 
 				if(is_multi) { // if multitree - clean the node recursively - remove all icons, and call deep clean_node
@@ -3861,9 +3861,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a five keys: _obj_ (the node), _parent_ (the new parent) and _position_ which is the numerical index, _original_ (the original object), is_multi (a boolean indicating if the node is coming from another tree instance, _old_instance_ (the source instance) and _new_instance_ (the receiving instance))
-				
+
 				Example:
-				> $("div").bind("copy_node.jstree", function (e, data) { 
+				> $("div").bind("copy_node.jstree", function (e, data) {
 				>   alert("Copied `" + data.inst.get_text(data.rslt.original) + "` inside `" + (data.rslt.parent === -1 ? 'the main container' : data.inst.get_text(data.rslt.parent)) + "` at index " + data.rslt.position);
 				> });
 			*/
@@ -3874,8 +3874,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 
 				if(!obj || obj === -1 || !obj.length) { return false; }
 				if(par !== -1 && !par.length) { return false; }
-				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) { 
-					return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true); }); 
+				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
+					return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true); });
 				}
 				var org_obj = obj,
 					old_par = this.get_parent(obj),
@@ -3894,10 +3894,10 @@ Some static functions and variables, unless you know exactly what you are doing 
 					if(pos === "after") { pos = "last"; }
 				}
 				switch(pos) {
-					case "before": 
+					case "before":
 						pos = par.index();
 						break;
-					case "after" : 
+					case "after" :
 						pos = par.index() + 1;
 						break;
 					case "inside":
@@ -3918,8 +3918,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(par.children("ul").children("li").eq(pos).length) {
 					par.children("ul").children("li").eq(pos).before(obj);
 				}
-				else { 
-					par.children("ul").append(obj); 
+				else {
+					par.children("ul").append(obj);
 				}
 				if(is_multi) { // if multitree - clean the node recursively - remove all icons, and call deep clean_node
 					obj.find('.jstree-icon, .jstree-ocl').remove();
@@ -3948,7 +3948,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			can_paste : function () {
 				return ccp_mode !== false && ccp_node !== false;
 			},
-			paste : function (obj) { 
+			paste : function (obj) {
 				obj = this.get_node(obj);
 				if(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }
 				this[ccp_mode](ccp_node, obj);
@@ -3960,7 +3960,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			edit : function (obj, default_text) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
-				obj.parentsUntil(".jstree",".jstree-closed").each($.proxy(function (i, v) { 
+				obj.parentsUntil(".jstree",".jstree-closed").each($.proxy(function (i, v) {
 					this.open_node(v, false, 0);
 				}, this));
 				var rtl = this.data.core.rtl,
@@ -3973,7 +3973,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					t  = typeof default_text === 'string' ? default_text : this.get_text(obj),
 					h1 = $("<div />", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo("body"),
 					h2 = obj.css("position","relative").append(
-						$("<input />", { 
+						$("<input />", {
 							"value" : t,
 							"class" : "jstree-rename-input",
 							// "size" : t.length,
@@ -4025,40 +4025,40 @@ Some static functions and variables, unless you know exactly what you are doing 
 			}
 		}
 	});
-	
+
 	// add core CSS
 	$(function() {
-		var css_string = '' + 
-				'.jstree ul, .jstree li { display:block; margin:0 0 0 0; padding:0 0 0 0; list-style-type:none; } ' + 
-				'.jstree li { display:block; min-height:18px; line-height:18px; white-space:nowrap; margin-left:18px; min-width:18px; } ' + 
-				'.jstree-rtl li { margin-left:0; margin-right:18px; } ' + 
-				'.jstree > ul > li { margin-left:0px; } ' + 
-				'.jstree-rtl > ul > li { margin-right:0px; } ' + 
-				'.jstree .jstree-icon { display:inline-block; text-decoration:none; margin:0; padding:0; vertical-align:top; } ' + 
-				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:default; vertical-align:top; } ' + 
-				'.jstree a { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; padding:1px 2px; margin:0; } ' + 
-				'.jstree a:focus { outline: none; } ' + 
-				'li.jstree-open > ul { display:block; } ' + 
+		var css_string = '' +
+				'.jstree ul, .jstree li { display:block; margin:0 0 0 0; padding:0 0 0 0; list-style-type:none; } ' +
+				'.jstree li { display:block; min-height:18px; line-height:18px; white-space:nowrap; margin-left:18px; min-width:18px; } ' +
+				'.jstree-rtl li { margin-left:0; margin-right:18px; } ' +
+				'.jstree > ul > li { margin-left:0px; } ' +
+				'.jstree-rtl > ul > li { margin-right:0px; } ' +
+				'.jstree .jstree-icon { display:inline-block; text-decoration:none; margin:0; padding:0; vertical-align:top; } ' +
+				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:default; vertical-align:top; } ' +
+				'.jstree a { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; padding:1px 2px; margin:0; } ' +
+				'.jstree a:focus { outline: none; } ' +
+				'li.jstree-open > ul { display:block; } ' +
 				'li.jstree-closed > ul { display:none; } ';
 		// Correct IE 6 (does not support the > CSS selector)
-		if($.jstree.IS_IE6) { 
+		if($.jstree.IS_IE6) {
 			try { document.execCommand("BackgroundImageCache", false, true); } catch (err) { } // prevents flickers
-			css_string += '' + 
-				'.jstree li { height:18px; margin-left:0; margin-right:0; } ' + 
-				'.jstree li li { margin-left:18px; } ' + 
-				'.jstree-rtl li li { margin-left:0px; margin-right:18px; } ' + 
-				'li.jstree-open ul { display:block; } ' + 
-				'li.jstree-closed ul { display:none !important; } ' + 
+			css_string += '' +
+				'.jstree li { height:18px; margin-left:0; margin-right:0; } ' +
+				'.jstree li li { margin-left:18px; } ' +
+				'.jstree-rtl li li { margin-left:0px; margin-right:18px; } ' +
+				'li.jstree-open ul { display:block; } ' +
+				'li.jstree-closed ul { display:none !important; } ' +
 				'.jstree li a { display:inline; border-width:0 !important; padding:0px 2px !important; } ';
 		}
 		// Correct IE 7 (shifts anchor nodes onhover)
-		if($.jstree.IS_IE7) { 
+		if($.jstree.IS_IE7) {
 			css_string += '.jstree li a { border-width:0 !important; padding:0px 2px !important; } ';
 		}
 		// Correct ff2 lack of display:inline-block
 		if($.jstree.IS_FF2) {
-			css_string += '' + 
-				'.jstree .jstree-icon { display:-moz-inline-box; } ' + 
+			css_string += '' +
+				'.jstree .jstree-icon { display:-moz-inline-box; } ' +
 				'.jstree li { line-height:12px; } ' + // WHY??
 				'.jstree a { display:-moz-inline-box; } ';
 				/* за темите
@@ -4099,7 +4099,7 @@ Adds checkboxes to the tree.
 						this.toggle_check(obj);
 					}, this));
 		},
-		defaults : { 
+		defaults : {
 			three_state : true
 		},
 		_fn : {
@@ -4118,11 +4118,11 @@ Adds checkboxes to the tree.
 			},
 			toggle_check : function (obj) {
 				obj = obj.find(' > a > .jstree-checkbox').removeClass('jstree-undetermined').toggleClass('jstree-checked');
-				if(!obj.hasClass('jstree-checked')) { 
-					obj.addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('undermined', false); 
+				if(!obj.hasClass('jstree-checked')) {
+					obj.addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('undermined', false);
 				}
-				else { 
-					obj.children(':checkbox').prop('checked', true).prop('undermined', false); 
+				else {
+					obj.children(':checkbox').prop('checked', true).prop('undermined', false);
 				}
 				this.checkbox_repair(this.get_node(obj));
 			},
@@ -4139,7 +4139,7 @@ Adds checkboxes to the tree.
 					obj = this.get_container_ul().children('li');
 				}
 				if(obj.length > 1) {
-					obj.each($.proxy(function (i, d) { 
+					obj.each($.proxy(function (i, d) {
 						this.checkbox_repair($(d));
 					}, this));
 					return;
@@ -4242,14 +4242,14 @@ Adds checkboxes to the tree.
 	});
 	$(function () {
 		// add checkbox specific CSS
-		var css_string = '' + 
-				'.jstree a > .jstree-checkbox { height:16px; width:16px; margin-right:1px; } ' + 
-				'.jstree-rtl a > .jstree-checkbox { margin-right:0; margin-left:1px; } ' + 
+		var css_string = '' +
+				'.jstree a > .jstree-checkbox { height:16px; width:16px; margin-right:1px; } ' +
+				'.jstree-rtl a > .jstree-checkbox { margin-right:0; margin-left:1px; } ' +
 				'.jstree .jstree-check { margin:0; padding:0; border:0; display:inline; vertical-align:text-bottom; } ';
 		// Correct IE 6 (does not support the > CSS selector)
-		if($.jstree.IS_IE6) { 
-			css_string += '' + 
-				'.jstree li a .jstree-checkbox { height:16px; width:16px; background:transparent; margin-right:1px; } ' + 
+		if($.jstree.IS_IE6) {
+			css_string += '' +
+				'.jstree li a .jstree-checkbox { height:16px; width:16px; background:transparent; margin-right:1px; } ' +
 				'.jstree-rtl li a .jstree-checkbox { margin-right:0; margin-left:1px; } ';
 		}
 		// the default stylesheet
@@ -4259,7 +4259,7 @@ Adds checkboxes to the tree.
 	$.jstree.defaults.plugins.push("checkbox");
 })(jQuery);
 //*/
-/* File: jstree.contextmenu.js 
+/* File: jstree.contextmenu.js
 Enables a rightclick contextmenu.
 */
 /* Group: jstree sort plugin */
@@ -4285,17 +4285,17 @@ Enables a rightclick contextmenu.
 				this._hide_contextmenu();
 			}
 		},
-		defaults : { 
-			select_node : true, 
+		defaults : {
+			select_node : true,
 			show_at_node : true,
-			items : function (o) { // Could be an object directly 
+			items : function (o) { // Could be an object directly
 				// TODO: in "_disabled" call this._check()
-				return { 
+				return {
 					"create" : {
 						"separator_before"	: false,
 						"separator_after"	: true,
 						"label"				: "Create",
-						"action"			: function (data) { 
+						"action"			: function (data) {
 							var inst = $.jstree._reference(data.reference),
 								obj = inst.get_node(data.reference);
 							inst.create_node(obj, {}, "last", function (new_node) {
@@ -4307,7 +4307,7 @@ Enables a rightclick contextmenu.
 						"separator_before"	: false,
 						"separator_after"	: false,
 						"label"				: "Rename",
-						"action"			: function (data) { 
+						"action"			: function (data) {
 							var inst = $.jstree._reference(data.reference),
 								obj = inst.get_node(data.reference);
 							inst.edit(obj);
@@ -4333,12 +4333,12 @@ Enables a rightclick contextmenu.
 						"separator_after"	: false,
 						"label"				: "Edit",
 						"action"			: false,
-						"submenu" : { 
+						"submenu" : {
 							"cut" : {
 								"separator_before"	: false,
 								"separator_after"	: false,
 								"label"				: "Cut",
-								"action"			: function (data) { 
+								"action"			: function (data) {
 									var inst = $.jstree._reference(data.reference),
 										obj = inst.get_node(data.reference);
 									if(this.data.ui && inst.is_selected(obj)) {
@@ -4352,7 +4352,7 @@ Enables a rightclick contextmenu.
 								"icon"				: false,
 								"separator_after"	: false,
 								"label"				: "Copy",
-								"action"			: function (data) { 
+								"action"			: function (data) {
 									var inst = $.jstree._reference(data.reference),
 										obj = inst.get_node(data.reference);
 									if(this.data.ui && inst.is_selected(obj)) {
@@ -4367,7 +4367,7 @@ Enables a rightclick contextmenu.
 								"_disabled"			: !(this.can_paste()),
 								"separator_after"	: false,
 								"label"				: "Paste",
-								"action"			: function (data) { 
+								"action"			: function (data) {
 									var inst = $.jstree._reference(data.reference),
 										obj = inst.get_node(data.reference);
 									inst.paste(obj);
@@ -4398,7 +4398,7 @@ Enables a rightclick contextmenu.
 				i = obj.data("jstree") && obj.data("jstree").contextmenu ? obj.data("jstree").contextmenu : s.items;
 				if($.isFunction(i)) { i = i.call(this, obj); }
 
-				$(document).one("context_show.vakata", $.proxy(function (e, data) { 
+				$(document).one("context_show.vakata", $.proxy(function (e, data) {
 					var cls = 'jstree-contextmenu';
 					if(this.data.themes.theme) {
 						cls += ' jstree-' + this.data.themes.theme + '-contextmenu';
@@ -4413,7 +4413,7 @@ Enables a rightclick contextmenu.
 	});
 	$.jstree.defaults.plugins.push("contextmenu");
 })(jQuery);
-/* File: jstree.dnd.js 
+/* File: jstree.dnd.js
 Enables drag'n'drop.
 */
 /* Group: jstree drag'n'drop plugin */
@@ -4422,7 +4422,7 @@ Enables drag'n'drop.
 	$.jstree.plugin("dnd", {
 		__construct : function () {
 			this.get_container()
-				.delegate('a', 'mousedown', $.proxy(function (e) { 
+				.delegate('a', 'mousedown', $.proxy(function (e) {
 					var obj = this.get_node(e.target);
 					if(obj && obj !== -1 && obj.length && e.which === 1) { // TODO: think about e.which
 						this.get_container().trigger('mousedown.jstree');
@@ -4445,10 +4445,10 @@ Enables drag'n'drop.
 			marker = $('<div id="jstree-marker">&#160;</div>').hide().appendTo('body');
 
 		$(document)
-			.bind('dnd_start.vakata', function (e, data) { 
+			.bind('dnd_start.vakata', function (e, data) {
 				lastmv = false;
 			})
-			.bind('dnd_move.vakata', function (e, data) { 
+			.bind('dnd_move.vakata', function (e, data) {
 				if(opento) { clearTimeout(opento); }
 				if(!data.data.jstree) { return; }
 
@@ -4479,14 +4479,14 @@ Enables drag'n'drop.
 							return;
 						}
 					}
-					else { 
+					else {
 						// if we are hovering a tree node
 						ref = $(data.event.target).closest('a');
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
 							off = ref.offset();
 							rel = data.event.pageY - off.top;
 							h = ref.height();
-							if(rel < h / 3) { 
+							if(rel < h / 3) {
 								o = ['b', 'i', 'a'];
 							}
 							else if(rel > h - h / 3) {
@@ -4540,13 +4540,13 @@ Enables drag'n'drop.
 				data.helper.find('.jstree-icon').removeClass('jstree-ok').addClass('jstree-er');
 				marker.hide();
 			})
-			.bind('dnd_scroll.vakata', function (e, data) { 
+			.bind('dnd_scroll.vakata', function (e, data) {
 				if(!data.data.jstree) { return; }
 				marker.hide();
 				lastmv = false;
 				data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-ok').addClass('jstree-er');
 			})
-			.bind('dnd_stop.vakata', function (e, data) { 
+			.bind('dnd_stop.vakata', function (e, data) {
 				if(opento) { clearTimeout(opento); }
 				if(!data.data.jstree) { return; }
 				marker.hide();
@@ -4563,19 +4563,19 @@ Enables drag'n'drop.
 			});
 
 		// add DND CSS
-		var css_string = '' + 
-				'#jstree-marker { position: absolute; top:0; left:0; margin:0; padding:0; border-right:0; border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:5px solid; width:0; height:0; font-size:0; line-height:0; _border-top-color:pink; _border-botton-color:pink; _filter:chroma(color=pink); } ' + 
-				'#jstree-dnd { line-height:16px; margin:0; padding:4px; } ' + 
-				'#jstree-dnd .jstree-icon, #jstree-dnd .jstree-copy { display:inline-block; text-decoration:none; margin:0 2px 0 0; padding:0; width:16px; height:16px; } ' + 
-				'#jstree-dnd .jstree-ok { background:green; } ' + 
-				'#jstree-dnd .jstree-er { background:red; } ' + 
+		var css_string = '' +
+				'#jstree-marker { position: absolute; top:0; left:0; margin:0; padding:0; border-right:0; border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:5px solid; width:0; height:0; font-size:0; line-height:0; _border-top-color:pink; _border-botton-color:pink; _filter:chroma(color=pink); } ' +
+				'#jstree-dnd { line-height:16px; margin:0; padding:4px; } ' +
+				'#jstree-dnd .jstree-icon, #jstree-dnd .jstree-copy { display:inline-block; text-decoration:none; margin:0 2px 0 0; padding:0; width:16px; height:16px; } ' +
+				'#jstree-dnd .jstree-ok { background:green; } ' +
+				'#jstree-dnd .jstree-er { background:red; } ' +
 				'#jstree-dnd .jstree-copy { margin:0 2px 0 2px; }';
 		$.vakata.css.add_sheet({ str : css_string, title : "jstree" });
 	});
 	// include the dnd plugin by default
 	$.jstree.defaults.plugins.push("dnd");
 })(jQuery);
-/* File: jstree.hotkeys.js 
+/* File: jstree.hotkeys.js
 Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 */
 /* Group: jstree hotkeys plugin */
@@ -4585,7 +4585,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 	var bound = [];
 	function exec(i, event) {
 		var f = $.jstree._focused(), tmp;
-		if(f && f.data && f.data.hotkeys && f.data.hotkeys.enabled) { 
+		if(f && f.data && f.data.hotkeys && f.data.hotkeys.enabled) {
 			tmp = f.get_settings(true).hotkeys[i];
 			if(tmp) { return tmp.call(f, event); }
 		}
@@ -4610,37 +4610,37 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 			this.enable_hotkeys();
 		},
 		defaults : {
-			"up" : function () { 
+			"up" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected || -1;
 				this.hover_node(this.get_prev(o));
-				return false; 
+				return false;
 			},
-			"ctrl+up" : function () { 
+			"ctrl+up" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected || -1;
 				this.hover_node(this.get_prev(o));
-				return false; 
+				return false;
 			},
-			"shift+up" : function () { 
+			"shift+up" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected || -1;
 				this.hover_node(this.get_prev(o));
-				return false; 
+				return false;
 			},
-			"down" : function () { 
+			"down" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected || -1;
 				this.hover_node(this.get_next(o));
 				return false;
 			},
-			"ctrl+down" : function () { 
+			"ctrl+down" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected || -1;
 				this.hover_node(this.get_next(o));
 				return false;
 			},
-			"shift+down" : function () { 
+			"shift+down" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected || -1;
 				this.hover_node(this.get_next(o));
 				return false;
 			},
-			"left" : function () { 
+			"left" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected;
 				if(o) {
 					if(o.hasClass("jstree-open")) { this.close_node(o); }
@@ -4648,7 +4648,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 				}
 				return false;
 			},
-			"ctrl+left" : function () { 
+			"ctrl+left" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected;
 				if(o) {
 					if(o.hasClass("jstree-open")) { this.close_node(o); }
@@ -4656,7 +4656,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 				}
 				return false;
 			},
-			"shift+left" : function () { 
+			"shift+left" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected;
 				if(o) {
 					if(o.hasClass("jstree-open")) { this.close_node(o); }
@@ -4664,7 +4664,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 				}
 				return false;
 			},
-			"right" : function () { 
+			"right" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected;
 				if(o && o.length) {
 					if(o.hasClass("jstree-closed")) { this.open_node(o); }
@@ -4672,7 +4672,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 				}
 				return false;
 			},
-			"ctrl+right" : function () { 
+			"ctrl+right" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected;
 				if(o && o.length) {
 					if(o.hasClass("jstree-closed")) { this.open_node(o); }
@@ -4680,7 +4680,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 				}
 				return false;
 			},
-			"shift+right" : function () { 
+			"shift+right" : function () {
 				var o = this.data.ui.hovered || this.data.ui.last_selected;
 				if(o && o.length) {
 					if(o.hasClass("jstree-closed")) { this.open_node(o); }
@@ -4688,19 +4688,19 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 				}
 				return false;
 			},
-			"space" : function () { 
-				if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").click(); } 
-				return true; 
+			"space" : function () {
+				if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").click(); }
+				return true;
 			},
-			"ctrl+space" : function (event) { 
+			"ctrl+space" : function (event) {
 				event.type = "click";
-				if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").trigger(event); } 
-				return false; 
+				if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").trigger(event); }
+				return false;
 			},
-			"shift+space" : function (event) { 
+			"shift+space" : function (event) {
 				event.type = "click";
-				if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").trigger(event); } 
-				return false; 
+				if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").trigger(event); }
+				return false;
 			}
 		},
 		_fn : {
@@ -4714,7 +4714,7 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 	});
 	$.jstree.defaults.plugins.push("hotkeys");
 })(jQuery);
-/* File: jstree.html.js 
+/* File: jstree.html.js
 This plugin makes it possible for jstree to use HTML data sources (other than the container's initial HTML).
 */
 /* Group: jstree html plugin */
@@ -4724,7 +4724,7 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 			data	: false,
 			ajax	: false
 		},
-		_fn : { 
+		_fn : {
 			_append_html_data : function (dom, data) {
 				data = $(data);
 				if(!data || !data.length || !data.is('ul, li')) { return false; }
@@ -4743,7 +4743,7 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 
 				switch(!0) {
 					// no settings - user original html
-					case (!s.data && !s.ajax): 
+					case (!s.data && !s.ajax):
 						if(obj === -1) {
 							this._append_html_data(-1, this.data.core.original_container_html.clone(true));
 						}
@@ -4758,14 +4758,14 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 						return callback.call(this, this._append_html_data(obj, s.data));
 					// data is not set, ajax is set, or both are set, but we are dealing with a normal node
 					case ((!s.data && !!s.ajax) || (!!s.data && !!s.ajax && obj !== -1)):
-						s.ajax.success = $.proxy(function (d, t, x) { 
+						s.ajax.success = $.proxy(function (d, t, x) {
 							var s = this.get_settings().html.ajax;
 							if($.isFunction(s.success)) {
 								d = s.success.call(this, d, t, x) || d;
 							}
 							callback.call(this, this._append_html_data(obj, d));
 						}, this);
-						s.ajax.error = $.proxy(function (x, t, e) { 
+						s.ajax.error = $.proxy(function (x, t, e) {
 							var s = this.get_settings().html.ajax;
 							if($.isFunction(s.error)) {
 								s.error.call(this, x, t, e);
@@ -4783,7 +4783,7 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 	// include the html plugin by default
 	$.jstree.defaults.plugins.push("html");
 })(jQuery);
-/* File: jstree.json.js 
+/* File: jstree.json.js
 This plugin makes it possible for jstree to use JSON data sources.
 */
 /* Group: jstree json plugin */
@@ -4801,11 +4801,11 @@ This plugin makes it possible for jstree to use JSON data sources.
 		},
 		defaults : {
 			data	: false,
-			ajax	: false, 
+			ajax	: false,
 			progressive_render : false, // get_json, data on each node
 			progressive_unload : false
 		},
-		_fn : { 
+		_fn : {
 			parse_json : function (node) {
 				var s = this.get_settings(true).json;
 				if($.isArray(node.children)) {
@@ -4845,7 +4845,7 @@ This plugin makes it possible for jstree to use JSON data sources.
 						obj.data('jstree').children = null;
 						return callback.call(this, this._append_json_data(obj, d));
 					// no settings
-					case (!s.data && !s.ajax): 
+					case (!s.data && !s.ajax):
 						throw "Neither data nor ajax settings supplied.";
 					// data is function
 					case ($.isFunction(s.data)):
@@ -4857,14 +4857,14 @@ This plugin makes it possible for jstree to use JSON data sources.
 						return callback.call(this, this._append_json_data(obj, s.data));
 					// data is not set, ajax is set, or both are set, but we are dealing with a normal node
 					case ((!s.data && !!s.ajax) || (!!s.data && !!s.ajax && obj !== -1)):
-						s.ajax.success = $.proxy(function (d, t, x) { 
+						s.ajax.success = $.proxy(function (d, t, x) {
 							var s = this.get_settings().json.ajax;
 							if($.isFunction(s.success)) {
 								d = s.success.call(this, d, t, x) || d;
 							}
 							callback.call(this, this._append_json_data(obj, d));
 						}, this);
-						s.ajax.error = $.proxy(function (x, t, e) { 
+						s.ajax.error = $.proxy(function (x, t, e) {
 							var s = this.get_settings().json.ajax;
 							if($.isFunction(s.error)) {
 								s.error.call(this, x, t, e);
@@ -4882,7 +4882,7 @@ This plugin makes it possible for jstree to use JSON data sources.
 	// include the json plugin by default
 	// $.jstree.defaults.plugins.push("json");
 })(jQuery);
-/* File: jstree.rules.js 
+/* File: jstree.rules.js
 Limits the children count, valid children and depth of nodes by using types or embedded data.
 */
 /* Group: jstree rules plugin */
@@ -4898,10 +4898,10 @@ Limits the children count, valid children and depth of nodes by using types or e
 			'check_valid_children'	: true,
 			'types'					: { }
 		},
-		_fn : { 
+		_fn : {
 			get_rules : function (obj) {
 				obj = this.get_node(obj);
-				if(obj === -1) { 
+				if(obj === -1) {
 					obj = this.get_container();
 					obj = obj.data('jstree');
 					return {
@@ -4915,7 +4915,7 @@ Limits the children count, valid children and depth of nodes by using types or e
 				obj = obj.data('jstree');
 				var s = this.get_settings().rules,
 					t = this.get_type(obj),
-					r = { 
+					r = {
 						'type'				: t,
 						'max_depth'			: -1,
 						'max_children'		: -1,
@@ -4975,7 +4975,7 @@ Limits the children count, valid children and depth of nodes by using types or e
 								if(!$.isArray(r.valid_children)) { return false; }
 								obj.each(function () {
 									if($.inArray(t.get_type(this), r.valid_children) === -1) {
-										t = false; 
+										t = false;
 										return false;
 									}
 								});
@@ -5027,7 +5027,7 @@ Limits the children count, valid children and depth of nodes by using types or e
 	// include the rules plugin by default
 	$.jstree.defaults.plugins.push("rules");
 })(jQuery);
-/* File: jstree.search.js 
+/* File: jstree.search.js
 Searches the tree using a string. DOES NOT WORK WITH JSON PROGRESSIVE RENDER!
 */
 /* Group: jstree search plugin */
@@ -5057,7 +5057,7 @@ Searches the tree using a string. DOES NOT WORK WITH JSON PROGRESSIVE RENDER!
 		_fn : {
 			search : function (str, skip_async) {
 				if($.trim(str) === "") { this.clear_search(); return; }
-				var s = this.get_settings().search, 
+				var s = this.get_settings().search,
 					t = this,
 					error_func = function () { },
 					success_func = function () { };
@@ -5067,7 +5067,7 @@ Searches the tree using a string. DOES NOT WORK WITH JSON PROGRESSIVE RENDER!
 					this.search.supress_callback = true;
 					error_func = function () { };
 					success_func = function (d, t, x) {
-						var sf = this.get_settings().search.ajax.success; 
+						var sf = this.get_settings().search.ajax.success;
 						if(sf) { d = sf.call(this,d,t,x) || d; }
 						this.data.search.to_open = d;
 						this._search_open();
@@ -5107,8 +5107,8 @@ Searches the tree using a string. DOES NOT WORK WITH JSON PROGRESSIVE RENDER!
 					});
 					if(current.length) {
 						this.data.search.to_open = remaining;
-						$.each(current, function (i, val) { 
-							_this.open_node(val, function () { _this._search_open(true); }); 
+						$.each(current, function (i, val) {
+							_this.open_node(val, function () { _this._search_open(true); });
 						});
 						done = false;
 					}
@@ -5119,7 +5119,7 @@ Searches the tree using a string. DOES NOT WORK WITH JSON PROGRESSIVE RENDER!
 	});
 })(jQuery);
 */
-/* File: jstree.sort.js 
+/* File: jstree.sort.js
 Sorts items alphabetically (or using any other function)
 */
 /* Group: jstree sort plugin */
@@ -5141,7 +5141,7 @@ Sorts items alphabetically (or using any other function)
 					}, this));
 		},
 		defaults : function (a, b) { return this.get_text(a, true) > this.get_text(b, true) ? 1 : -1; },
-		_fn : { 
+		_fn : {
 			_sort : function (obj, deep) {
 				var s = this.get_settings(true).sort,
 					t = this;
@@ -5157,16 +5157,16 @@ Sorts items alphabetically (or using any other function)
 	// include the sort plugin by default
 	$.jstree.defaults.plugins.push("sort");
 })(jQuery);
-/* File: jstree.state.js 
+/* File: jstree.state.js
 This plugin enables state saving between reloads.
 */
 /* Group: jstree state plugin */
 (function ($) {
 	$.jstree.plugin("state", {
-		__construct : function () { 
+		__construct : function () {
 			if(typeof $.vakata.storage === "undefined") { throw "jsTree state plugin: vakata storage helper not included."; }
 
-			this.get_container() 
+			this.get_container()
 				.bind("__loaded.jstree", $.proxy(function (e, data) {
 						this.restore_state();
 					}, this))
@@ -5181,7 +5181,7 @@ This plugin enables state saving between reloads.
 			key		: 'jstree', // pass unique name to work with many trees
 			events	: 'select_node.jstree open_node.jstree close_node.jstree deselect_node.jstree deselect_all.jstree'
 		},
-		_fn : { 
+		_fn : {
 			save_state : function () {
 				var s = this.get_settings(true).state;
 				$.vakata.storage.set(s.key, this.get_state());
@@ -5204,11 +5204,11 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 (function ($) {
 	var themes_loaded = [];
 	/*
-		Group: $.jstree. 
+		Group: $.jstree.
 
 		Variable: $.jstree.THEMES_DIR
-		The location of all themes, this is used when setting a theme without supplying an URL (only by name). 
-		Default is _false_. If left as _false_ the path will be autodetected when the DOM is ready. 
+		The location of all themes, this is used when setting a theme without supplying an URL (only by name).
+		Default is _false_. If left as _false_ the path will be autodetected when the DOM is ready.
 		The location of _jstree.js_ is used for the autodetection.
 		Normally you won't need to modify this (provided you leave the _themes_ folder in the same folder as _jquery.jstree.js_ and do not rename the file).
 		If you decide to move the folder or rename the file, but still want to load themes by name, simply set this to the new location of the _themes_ folder.
@@ -5222,11 +5222,11 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 			this.get_container()
 				.bind("__construct.jstree", $.proxy(function () {
 						var s = this.get_settings(true).themes;
-						this.data.themes.dots	= s.dots; 
-						this.data.themes.icons	= s.icons; 
+						this.data.themes.dots	= s.dots;
+						this.data.themes.icons	= s.icons;
 
-						if(s.url === false && s.theme === false) { 
-							s.theme = this.data.core.rtl ? 'default-rtl' : 'default'; 
+						if(s.url === false && s.theme === false) {
+							s.theme = this.data.core.rtl ? 'default-rtl' : 'default';
 						}
 						this.set_theme(s.theme, s.url, s.no_load);
 					}, this))
@@ -5254,8 +5254,8 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 			Variable: config.themes.icons
 			*boolean* whether to show icons or not. Default is _true_.
 		*/
-		defaults : { 
-			theme	: false, 
+		defaults : {
+			theme	: false,
 			url		: false,
 			no_load	: false,
 			dots	: true,
@@ -5271,7 +5271,7 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 				Parameters:
 					theme_name - the name of the theme to apply
 					theme_url - the URL of the stylesheet - leave this blank for autodetect
-					
+
 				Example:
 				>// Set the theme and autodetect the location
 				>$("#div1").jstree("set_theme","classic");
@@ -5300,17 +5300,17 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 			hide_icons		: function () { this.data.themes.icons = false; this.get_container().children("ul").addClass("jstree-no-icons"); },
 			toggle_icons	: function () { if(this.data.themes.icons) { this.hide_icons(); } else { this.show_icons(); } },
 
-			set_icon : function (obj, icon) { 
+			set_icon : function (obj, icon) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
 				obj = obj.find("> a > .jstree-themeicon");
-				if(icon === false) { 
+				if(icon === false) {
 					this.hide_icon(obj);
 				}
-				else if(icon.indexOf("/") === -1) { 
+				else if(icon.indexOf("/") === -1) {
 					obj.addClass(icon).attr("rel",icon);
 				}
-				else { 
+				else {
 					obj.css("background", "url('" + icon + "') center center no-repeat").attr("rel",icon);
 				}
 				return true;
@@ -5342,7 +5342,7 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 				return obj.each(function () {
 					var o = $(this),
 						d = o.data("jstree");
-					if(!o.find("> a > ins.jstree-themeicon").length) { 
+					if(!o.find("> a > ins.jstree-themeicon").length) {
 						o.children("a").prepend("<ins class='jstree-icon jstree-themeicon'>&#160;</ins>");
 					}
 					if(d && typeof d.icon !== 'undefined') {
@@ -5380,8 +5380,8 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 				var r = this.__call_old(), i;
 				if(is_callback) {
 					i = this.get_icon(obj);
-					if(typeof i !== 'undefined' && i !== null) { 
-						r.data.jstree.icon = i; 
+					if(typeof i !== 'undefined' && i !== null) {
+						r.data.jstree.icon = i;
 					}
 				}
 				return r;
@@ -5391,24 +5391,24 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 	$(function () {
 		// autodetect themes path
 		if($.jstree.THEMES_DIR === false) {
-			$("script").each(function () { 
-				if(this.src.toString().match(/jstree[^\/]*?\.js(\?.*)?$/)) { 
-					$.jstree.THEMES_DIR = this.src.toString().replace(/jstree[^\/]*?\.js(\?.*)?$/, "") + 'themes/'; 
-					return false; 
+			$("script").each(function () {
+				if(this.src.toString().match(/jstree[^\/]*?\.js(\?.*)?$/)) {
+					$.jstree.THEMES_DIR = this.src.toString().replace(/jstree[^\/]*?\.js(\?.*)?$/, "") + 'themes/';
+					return false;
 				}
 			});
 		}
 		if($.jstree.THEMES_DIR === false) { $.jstree.THEMES_DIR = "themes/"; }
 		// add themes specific CSS
-		var css_string = '' + 
-				'.jstree a { text-decoration:none; } ' + 
-				'.jstree a > .jstree-themeicon { height:16px; width:16px; margin-right:3px; } ' + 
-				'.jstree-rtl a > .jstree-themeicon { margin-left:3px; margin-right:0; } ' + 
-				'.jstree .jstree-no-icons .jstree-themeicon, .jstree .jstree-themeicon-hidden { display:none; } '; 
+		var css_string = '' +
+				'.jstree a { text-decoration:none; } ' +
+				'.jstree a > .jstree-themeicon { height:16px; width:16px; margin-right:3px; } ' +
+				'.jstree-rtl a > .jstree-themeicon { margin-left:3px; margin-right:0; } ' +
+				'.jstree .jstree-no-icons .jstree-themeicon, .jstree .jstree-themeicon-hidden { display:none; } ';
 		// Correct IE 6 (does not support the > CSS selector)
-		if($.jstree.IS_IE6) { 
-			css_string += '' + 
-				'.jstree li a .jstree-themeicon { height:16px; width:16px; margin-right:3px; } ' + 
+		if($.jstree.IS_IE6) {
+			css_string += '' +
+				'.jstree li a .jstree-themeicon { height:16px; width:16px; margin-right:3px; } ' +
 				'.jstree-rtl li a .jstree-themeicon { margin-right:0px; margin-left:3px; } ';
 		}
 		// the default stylesheet
@@ -5418,16 +5418,16 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 	$.jstree.defaults.plugins.push("themes");
 })(jQuery);
 //*/
-/* File: jstree.ui.js 
+/* File: jstree.ui.js
 This plugin enables selecting, deselecting and hovering tree items.
 */
 /* Group: jstree UI plugin */
 (function ($) {
 	$.jstree.plugin("ui", {
-		__construct : function () { 
-			this.data.ui.selected = $(); 
+		__construct : function () {
+			this.data.ui.selected = $();
 			this.data.ui.hovered = null;
-			this.data.ui.last_selected = false; 
+			this.data.ui.last_selected = false;
 
 			this.get_container() // TODO: configurable event (click/dblclick/etc)
 				.delegate("a", "click.jstree", $.proxy(function (e) {
@@ -5460,14 +5460,14 @@ This plugin enables selecting, deselecting and hovering tree items.
 				.delegate("a", "mouseleave.jstree", $.proxy(function (e) {
 						this.dehover_node(e.target);
 					}, this))
-				.bind("delete_node.jstree", $.proxy(function (event, data) { 
+				.bind("delete_node.jstree", $.proxy(function (event, data) {
 						var o = this.get_node(data.rslt.obj),
 							n = (o && o.length) ? o.find("a.jstree-clicked") : $(),
 							t = this;
 						n.each(function () { t.deselect_node(this); });
 					}, this))
-				.bind("move_node.jstree", $.proxy(function (event, data) { 
-						if(data.rslt.cy) { 
+				.bind("move_node.jstree", $.proxy(function (event, data) {
+						if(data.rslt.cy) {
 							data.rslt.oc.find("a.jstree-clicked").removeClass("jstree-clicked");
 						}
 					}, this));
@@ -5477,7 +5477,7 @@ This plugin enables selecting, deselecting and hovering tree items.
 			select_range_modifier : "shift", // on, or ctrl, shift, alt, or false
 			disable_nested_selection : true
 		},
-		_fn : { 
+		_fn : {
 			get_node : function (obj, allow_multiple) {
 				if(typeof obj === "undefined" || obj === null) { return allow_multiple ? this.data.ui.selected : this.data.ui.last_selected; }
 				return this.__call_old();
@@ -5553,9 +5553,9 @@ This plugin enables selecting, deselecting and hovering tree items.
 				obj = this.get_node(obj);
 				if(obj === -1 || !obj || !obj.length || this.is_loading(obj)) { return false; }
 				if(!keep_old_selection) { this.deselect_all(); }
-				else { 
+				else {
 					if(
-						this.get_settings(true).ui.disable_nested_selection && 
+						this.get_settings(true).ui.disable_nested_selection &&
 						(
 							(obj.parentsUntil(".jstree","li").children("a.jstree-clicked:eq(0)").length) ||
 							(obj.children("ul").find("a.jstree-clicked:eq(0)").length)
@@ -5608,8 +5608,8 @@ This plugin enables selecting, deselecting and hovering tree items.
 			get_json : function (obj, is_callback) {
 				var r = this.__call_old();
 				if(is_callback) {
-					if(this.is_selected(obj)) { 
-						r.data.jstree.selected = true; 
+					if(this.is_selected(obj)) {
+						r.data.jstree.selected = true;
 					}
 				}
 				return r;
@@ -5619,19 +5619,19 @@ This plugin enables selecting, deselecting and hovering tree items.
 	// include the selection plugin by default
 	$.jstree.defaults.plugins.push("ui");
 })(jQuery);
-/* File: jstree.unique.js 
+/* File: jstree.unique.js
 Does not allow the same name amongst siblings (still a bit experimental).
 */
 /* Group: jstree drag'n'drop plugin */
 (function ($) {
 	$.jstree.plugin("unique", {
 		// TODO: think about an option to work with HTML or not?
-		_fn : { 
+		_fn : {
 			check : function (chk, obj, par, pos) {
 				if(!this.__call_old()) { return false; }
 
 				par = par === -1 ? this.get_container() : par;
-				var n = chk === "rename_node" ? $('<div />').html(pos).text() : this.get_text(obj, true), 
+				var n = chk === "rename_node" ? $('<div />').html(pos).text() : this.get_text(obj, true),
 					c = [],
 					t = this;
 				par.children('ul').children('li').each(function () { c.push(t.get_text(this, true)); });
@@ -5664,27 +5664,27 @@ Does not allow the same name amongst siblings (still a bit experimental).
 			this.data.wholerow.html = false;
 			this.data.wholerow.to = false;
 			this.get_container()
-				.bind("__construct.jstree", $.proxy(function (e, data) { 
+				.bind("__construct.jstree", $.proxy(function (e, data) {
 						this.get_settings(true).core.animation = 0;
 					}, this))
-				.bind("open_node.jstree create_node.jstree clean_node.jstree __loaded.jstree", $.proxy(function (e, data) { 
+				.bind("open_node.jstree create_node.jstree clean_node.jstree __loaded.jstree", $.proxy(function (e, data) {
 						this._prepare_wholerow_span( data && data.rslt && data.rslt.obj ? data.rslt.obj : -1 );
 					}, this))
-				.bind("__loaded.jstree refresh.jstree __after_open.jstree __after_close.jstree create_node.jstree delete_node.jstree clean_node.jstree", $.proxy(function (e, data) { 
+				.bind("__loaded.jstree refresh.jstree __after_open.jstree __after_close.jstree create_node.jstree delete_node.jstree clean_node.jstree", $.proxy(function (e, data) {
 						if(this.data.to) { clearTimeout(this.data.to); }
 						this.data.to = setTimeout( (function (t, o) { return function() { t._prepare_wholerow_ul(o); }; })(this,  data && data.rslt && data.rslt.obj ? data.rslt.obj : -1), 0);
 					}, this))
-				.bind("deselect_all.jstree", $.proxy(function (e, data) { 
+				.bind("deselect_all.jstree", $.proxy(function (e, data) {
 						this.get_container().find(" > .jstree-wholerow .jstree-clicked").removeClass("jstree-clicked " + (this.data.themeroller ? this._get_settings().themeroller.item_a : "" ));
 					}, this))
-				.bind("select_node.jstree deselect_node.jstree ", $.proxy(function (e, data) { 
-						data.rslt.obj.each(function () { 
+				.bind("select_node.jstree deselect_node.jstree ", $.proxy(function (e, data) {
+						data.rslt.obj.each(function () {
 							var ref = data.inst.get_container().find(" > .jstree-wholerow li:visible:eq(" + ( parseInt((($(this).offset().top - data.inst.get_container().offset().top + data.inst.get_container()[0].scrollTop) / data.inst.data.core.li_height),10)) + ")");
 							// ref.children("a")[e.type === "select_node" ? "addClass" : "removeClass"]("jstree-clicked");
 							ref.children("a").attr("class",data.rslt.obj.children("a").attr("class"));
 						});
 					}, this))
-				.bind("hover_node.jstree dehover_node.jstree", $.proxy(function (e, data) { 
+				.bind("hover_node.jstree dehover_node.jstree", $.proxy(function (e, data) {
 						this.get_container().find(" > .jstree-wholerow .jstree-hovered").removeClass("jstree-hovered " + (this.data.themeroller ? this._get_settings().themeroller.item_h : "" ));
 						if(e.type === "hover_node") {
 							var ref = this.get_container().find(" > .jstree-wholerow li:visible:eq(" + ( parseInt(((data.rslt.obj.offset().top - this.get_container().offset().top + this.get_container()[0].scrollTop) / this.data.core.li_height),10)) + ")");
@@ -5748,25 +5748,25 @@ Does not allow the same name amongst siblings (still a bit experimental).
 		}
 	});
 	$(function() {
-		var css_string = '' + 
-			'.jstree .jstree-wholerow-real { position:relative; z-index:1; } ' + 
-			'.jstree .jstree-wholerow-real li { cursor:pointer; } ' + 
-			'.jstree .jstree-wholerow-real a { border-left-color:transparent !important; border-right-color:transparent !important; } ' + 
-			'.jstree .jstree-wholerow { position:relative; z-index:0; height:0; } ' + 
-			'.jstree .jstree-wholerow ul, .jstree .jstree-wholerow li { width:100%; } ' + 
-			'.jstree .jstree-wholerow, .jstree .jstree-wholerow ul, .jstree .jstree-wholerow li, .jstree .jstree-wholerow a { margin:0 !important; padding:0 !important; } ' + 
-			'.jstree .jstree-wholerow, .jstree .jstree-wholerow ul, .jstree .jstree-wholerow li { background:transparent !important; }' + 
-			'.jstree .jstree-wholerow ins, .jstree .jstree-wholerow span, .jstree .jstree-wholerow input { display:none !important; }' + 
-			'.jstree .jstree-wholerow a, .jstree .jstree-wholerow a:hover { text-indent:-9999px; !important; width:100%; padding:0 !important; border-right-width:0px !important; border-left-width:0px !important; } ' + 
+		var css_string = '' +
+			'.jstree .jstree-wholerow-real { position:relative; z-index:1; } ' +
+			'.jstree .jstree-wholerow-real li { cursor:pointer; } ' +
+			'.jstree .jstree-wholerow-real a { border-left-color:transparent !important; border-right-color:transparent !important; } ' +
+			'.jstree .jstree-wholerow { position:relative; z-index:0; height:0; } ' +
+			'.jstree .jstree-wholerow ul, .jstree .jstree-wholerow li { width:100%; } ' +
+			'.jstree .jstree-wholerow, .jstree .jstree-wholerow ul, .jstree .jstree-wholerow li, .jstree .jstree-wholerow a { margin:0 !important; padding:0 !important; } ' +
+			'.jstree .jstree-wholerow, .jstree .jstree-wholerow ul, .jstree .jstree-wholerow li { background:transparent !important; }' +
+			'.jstree .jstree-wholerow ins, .jstree .jstree-wholerow span, .jstree .jstree-wholerow input { display:none !important; }' +
+			'.jstree .jstree-wholerow a, .jstree .jstree-wholerow a:hover { text-indent:-9999px; !important; width:100%; padding:0 !important; border-right-width:0px !important; border-left-width:0px !important; } ' +
 			'.jstree .jstree-wholerow-span { position:absolute; left:0; margin:0px; padding:0; height:18px; border-width:0; padding:0; z-index:0; }';
 		if($.jstree.IS_FF2) {
-			css_string += '' + 
-				'.jstree .jstree-wholerow a { display:block; height:18px; margin:0; padding:0; border:0; } ' + 
+			css_string += '' +
+				'.jstree .jstree-wholerow a { display:block; height:18px; margin:0; padding:0; border:0; } ' +
 				'.jstree .jstree-wholerow-real a { border-color:transparent !important; } ';
 		}
 		if($.jstree.IS_IE7 || $.jstree.IS_IE6) {
-			css_string += '' + 
-				'.jstree .jstree-wholerow, .jstree .jstree-wholerow li, .jstree .jstree-wholerow ul, .jstree .jstree-wholerow a { margin:0; padding:0; line-height:18px; } ' + 
+			css_string += '' +
+				'.jstree .jstree-wholerow, .jstree .jstree-wholerow li, .jstree .jstree-wholerow ul, .jstree .jstree-wholerow a { margin:0; padding:0; line-height:18px; } ' +
 				'.jstree .jstree-wholerow a { display:block; height:18px; line-height:18px; overflow:hidden; } ';
 		}
 		$.vakata.css.add_sheet({ str : css_string, title : "jstree" });
@@ -5775,75 +5775,75 @@ Does not allow the same name amongst siblings (still a bit experimental).
 	$.jstree.defaults.plugins.push("wholerow");
 })(jQuery);
 //*/
-/* File: jstree.xml.js 
+/* File: jstree.xml.js
 This plugin makes it possible for jstree to use XML data sources.
 */
 /* Group: jstree xml plugin */
 (function ($) {
 	var xsl = {
-		'nest' : '' + 
-			'<' + '?xml version="1.0" encoding="utf-8" ?>' + 
-			'<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >' + 
-			'<xsl:output method="html" encoding="utf-8" omit-xml-declaration="yes" standalone="no" indent="no" media-type="text/html" />' + 
-			'<xsl:template match="/">' + 
-			'	<xsl:call-template name="nodes">' + 
-			'		<xsl:with-param name="node" select="/root" />' + 
-			'	</xsl:call-template>' + 
-			'</xsl:template>' + 
-			'<xsl:template name="nodes">' + 
-			'	<xsl:param name="node" />' + 
-			'	<ul>' + 
-			'	<xsl:for-each select="$node/item">' + 
-			'		<xsl:variable name="children" select="count(./item) &gt; 0" />' + 
-			'		<li>' + 
-			'			<xsl:for-each select="@*"><xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute></xsl:for-each>' + 
-			'			<a>' + 
-			'				<xsl:for-each select="./content/@*"><xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute></xsl:for-each>' + 
-			'				<xsl:copy-of select="./content/child::node()" />' + 
-			'			</a>' + 
-			'			<xsl:if test="$children"><xsl:call-template name="nodes"><xsl:with-param name="node" select="current()" /></xsl:call-template></xsl:if>' + 
-			'		</li>' + 
-			'	</xsl:for-each>' + 
-			'	</ul>' + 
-			'</xsl:template>' + 
+		'nest' : '' +
+			'<' + '?xml version="1.0" encoding="utf-8" ?>' +
+			'<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >' +
+			'<xsl:output method="html" encoding="utf-8" omit-xml-declaration="yes" standalone="no" indent="no" media-type="text/html" />' +
+			'<xsl:template match="/">' +
+			'	<xsl:call-template name="nodes">' +
+			'		<xsl:with-param name="node" select="/root" />' +
+			'	</xsl:call-template>' +
+			'</xsl:template>' +
+			'<xsl:template name="nodes">' +
+			'	<xsl:param name="node" />' +
+			'	<ul>' +
+			'	<xsl:for-each select="$node/item">' +
+			'		<xsl:variable name="children" select="count(./item) &gt; 0" />' +
+			'		<li>' +
+			'			<xsl:for-each select="@*"><xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute></xsl:for-each>' +
+			'			<a>' +
+			'				<xsl:for-each select="./content/@*"><xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute></xsl:for-each>' +
+			'				<xsl:copy-of select="./content/child::node()" />' +
+			'			</a>' +
+			'			<xsl:if test="$children"><xsl:call-template name="nodes"><xsl:with-param name="node" select="current()" /></xsl:call-template></xsl:if>' +
+			'		</li>' +
+			'	</xsl:for-each>' +
+			'	</ul>' +
+			'</xsl:template>' +
 			'</xsl:stylesheet>',
-		'flat' : '' + 
-			'<' + '?xml version="1.0" encoding="utf-8" ?>' + 
-			'<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >' + 
-			'<xsl:output method="html" encoding="utf-8" omit-xml-declaration="yes" standalone="no" indent="no" media-type="text/xml" />' + 
-			'<xsl:template match="/">' + 
-			'	<ul>' + 
+		'flat' : '' +
+			'<' + '?xml version="1.0" encoding="utf-8" ?>' +
+			'<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >' +
+			'<xsl:output method="html" encoding="utf-8" omit-xml-declaration="yes" standalone="no" indent="no" media-type="text/xml" />' +
+			'<xsl:template match="/">' +
+			'	<ul>' +
 			'	<xsl:for-each select="//item[not(@parent_id) or @parent_id=0 or not(@parent_id = //item/@id)]">' + /* the last `or` may be removed */
-			'		<xsl:call-template name="nodes">' + 
-			'			<xsl:with-param name="node" select="." />' + 
-			'		</xsl:call-template>' + 
-			'	</xsl:for-each>' + 
-			'	</ul>' + 
-			'</xsl:template>' + 
-			'<xsl:template name="nodes">' + 
-			'	<xsl:param name="node" />' + 
-			'	<xsl:variable name="children" select="count(//item[@parent_id=$node/attribute::id]) &gt; 0" />' + 
-			'	<li>' + 
-			'		<xsl:for-each select="@*">' + 
-			'			<xsl:if test="name() != \'parent_id\'">' + 
+			'		<xsl:call-template name="nodes">' +
+			'			<xsl:with-param name="node" select="." />' +
+			'		</xsl:call-template>' +
+			'	</xsl:for-each>' +
+			'	</ul>' +
+			'</xsl:template>' +
+			'<xsl:template name="nodes">' +
+			'	<xsl:param name="node" />' +
+			'	<xsl:variable name="children" select="count(//item[@parent_id=$node/attribute::id]) &gt; 0" />' +
+			'	<li>' +
+			'		<xsl:for-each select="@*">' +
+			'			<xsl:if test="name() != \'parent_id\'">' +
 			'				<xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute>' +
-			'			</xsl:if>' + 
-			'		</xsl:for-each>' + 
-			'		<a>' + 
-			'			<xsl:for-each select="./content/@*"><xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute></xsl:for-each>' + 
-			'			<xsl:copy-of select="./content/child::node()" />' + 
-			'		</a>' + 
-			'		<xsl:if test="$children">' + 
-			'		<ul>' + 
-			'			<xsl:for-each select="//item[@parent_id=$node/attribute::id]">' + 
-			'				<xsl:call-template name="nodes">' + 
-			'					<xsl:with-param name="node" select="." />' + 
-			'				</xsl:call-template>' + 
-			'			</xsl:for-each>' + 
-			'		</ul>' + 
-			'		</xsl:if>' + 
-			'	</li>' + 
-			'</xsl:template>' + 
+			'			</xsl:if>' +
+			'		</xsl:for-each>' +
+			'		<a>' +
+			'			<xsl:for-each select="./content/@*"><xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute></xsl:for-each>' +
+			'			<xsl:copy-of select="./content/child::node()" />' +
+			'		</a>' +
+			'		<xsl:if test="$children">' +
+			'		<ul>' +
+			'			<xsl:for-each select="//item[@parent_id=$node/attribute::id]">' +
+			'				<xsl:call-template name="nodes">' +
+			'					<xsl:with-param name="node" select="." />' +
+			'				</xsl:call-template>' +
+			'			</xsl:for-each>' +
+			'		</ul>' +
+			'		</xsl:if>' +
+			'	</li>' +
+			'</xsl:template>' +
 			'</xsl:stylesheet>'
 	},
 	escape_xml = function(string) {
@@ -5863,7 +5863,7 @@ This plugin makes it possible for jstree to use XML data sources.
 			data	: false,
 			ajax	: false
 		},
-		_fn : { 
+		_fn : {
 			_append_xml_data : function (dom, data) {
 				data = $.vakata.xslt(data, xsl[this.get_settings().xml.xsl]);
 				if(data === false) { return false; }
@@ -5892,14 +5892,14 @@ This plugin makes it possible for jstree to use XML data sources.
 						return callback.call(this, this._append_xml_data(obj, s.data));
 					// data is not set, ajax is set, or both are set, but we are dealing with a normal node
 					case ((!s.data && !!s.ajax) || (!!s.data && !!s.ajax && obj !== -1)):
-						s.ajax.success = $.proxy(function (d, t, x) { 
+						s.ajax.success = $.proxy(function (d, t, x) {
 							var s = this.get_settings().xml.ajax;
 							if($.isFunction(s.success)) {
 								d = s.success.call(this, d, t, x) || d;
 							}
 							callback.call(this, this._append_xml_data(obj, d));
 						}, this);
-						s.ajax.error = $.proxy(function (x, t, e) { 
+						s.ajax.error = $.proxy(function (x, t, e) {
 							var s = this.get_settings().xml.ajax;
 							if($.isFunction(s.error)) {
 								s.error.call(this, x, t, e);
@@ -5920,8 +5920,8 @@ This plugin makes it possible for jstree to use XML data sources.
 					$.each(obj, $.proxy(function (i, v) {
 						r += this.get_xml(mode, v, true);
 					}, this));
-					return '' + 
-						'<' + '?xml version="1.0" encoding="utf-8" ?>' + 
+					return '' +
+						'<' + '?xml version="1.0" encoding="utf-8" ?>' +
 						'<root>' + r + '</root>';
 				}
 				r += '<item';

@@ -1,13 +1,13 @@
-/* File: jstree.ui.js 
+/* File: jstree.ui.js
 This plugin enables selecting, deselecting and hovering tree items.
 */
 /* Group: jstree UI plugin */
 (function ($) {
 	$.jstree.plugin("ui", {
-		__construct : function () { 
-			this.data.ui.selected = $(); 
+		__construct : function () {
+			this.data.ui.selected = $();
 			this.data.ui.hovered = null;
-			this.data.ui.last_selected = false; 
+			this.data.ui.last_selected = false;
 
 			this.get_container() // TODO: configurable event (click/dblclick/etc)
 				.delegate("a", "click.jstree", $.proxy(function (e) {
@@ -40,14 +40,14 @@ This plugin enables selecting, deselecting and hovering tree items.
 				.delegate("a", "mouseleave.jstree", $.proxy(function (e) {
 						this.dehover_node(e.target);
 					}, this))
-				.bind("delete_node.jstree", $.proxy(function (event, data) { 
+				.bind("delete_node.jstree", $.proxy(function (event, data) {
 						var o = this.get_node(data.rslt.obj),
 							n = (o && o.length) ? o.find("a.jstree-clicked") : $(),
 							t = this;
 						n.each(function () { t.deselect_node(this); });
 					}, this))
-				.bind("move_node.jstree", $.proxy(function (event, data) { 
-						if(data.rslt.cy) { 
+				.bind("move_node.jstree", $.proxy(function (event, data) {
+						if(data.rslt.cy) {
 							data.rslt.oc.find("a.jstree-clicked").removeClass("jstree-clicked");
 						}
 					}, this));
@@ -57,7 +57,7 @@ This plugin enables selecting, deselecting and hovering tree items.
 			select_range_modifier : "shift", // on, or ctrl, shift, alt, or false
 			disable_nested_selection : true
 		},
-		_fn : { 
+		_fn : {
 			get_node : function (obj, allow_multiple) {
 				if(typeof obj === "undefined" || obj === null) { return allow_multiple ? this.data.ui.selected : this.data.ui.last_selected; }
 				return this.__call_old();
@@ -133,9 +133,9 @@ This plugin enables selecting, deselecting and hovering tree items.
 				obj = this.get_node(obj);
 				if(obj === -1 || !obj || !obj.length || this.is_loading(obj)) { return false; }
 				if(!keep_old_selection) { this.deselect_all(); }
-				else { 
+				else {
 					if(
-						this.get_settings(true).ui.disable_nested_selection && 
+						this.get_settings(true).ui.disable_nested_selection &&
 						(
 							(obj.parentsUntil(".jstree","li").children("a.jstree-clicked:eq(0)").length) ||
 							(obj.children("ul").find("a.jstree-clicked:eq(0)").length)
@@ -188,8 +188,8 @@ This plugin enables selecting, deselecting and hovering tree items.
 			get_json : function (obj, is_callback) {
 				var r = this.__call_old();
 				if(is_callback) {
-					if(this.is_selected(obj)) { 
-						r.data.jstree.selected = true; 
+					if(this.is_selected(obj)) {
+						r.data.jstree.selected = true;
 					}
 				}
 				return r;

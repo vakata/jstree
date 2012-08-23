@@ -1,4 +1,4 @@
-/* File: jstree.rules.js 
+/* File: jstree.rules.js
 Limits the children count, valid children and depth of nodes by using types or embedded data.
 */
 /* Group: jstree rules plugin */
@@ -14,10 +14,10 @@ Limits the children count, valid children and depth of nodes by using types or e
 			'check_valid_children'	: true,
 			'types'					: { }
 		},
-		_fn : { 
+		_fn : {
 			get_rules : function (obj) {
 				obj = this.get_node(obj);
-				if(obj === -1) { 
+				if(obj === -1) {
 					obj = this.get_container();
 					obj = obj.data('jstree');
 					return {
@@ -31,7 +31,7 @@ Limits the children count, valid children and depth of nodes by using types or e
 				obj = obj.data('jstree');
 				var s = this.get_settings().rules,
 					t = this.get_type(obj),
-					r = { 
+					r = {
 						'type'				: t,
 						'max_depth'			: -1,
 						'max_children'		: -1,
@@ -91,7 +91,7 @@ Limits the children count, valid children and depth of nodes by using types or e
 								if(!$.isArray(r.valid_children)) { return false; }
 								obj.each(function () {
 									if($.inArray(t.get_type(this), r.valid_children) === -1) {
-										t = false; 
+										t = false;
 										return false;
 									}
 								});

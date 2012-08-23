@@ -26,7 +26,7 @@ Adds checkboxes to the tree.
 						this.toggle_check(obj);
 					}, this));
 		},
-		defaults : { 
+		defaults : {
 			three_state : true
 		},
 		_fn : {
@@ -45,11 +45,11 @@ Adds checkboxes to the tree.
 			},
 			toggle_check : function (obj) {
 				obj = obj.find(' > a > .jstree-checkbox').removeClass('jstree-undetermined').toggleClass('jstree-checked');
-				if(!obj.hasClass('jstree-checked')) { 
-					obj.addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('undermined', false); 
+				if(!obj.hasClass('jstree-checked')) {
+					obj.addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('undermined', false);
 				}
-				else { 
-					obj.children(':checkbox').prop('checked', true).prop('undermined', false); 
+				else {
+					obj.children(':checkbox').prop('checked', true).prop('undermined', false);
 				}
 				this.checkbox_repair(this.get_node(obj));
 			},
@@ -66,7 +66,7 @@ Adds checkboxes to the tree.
 					obj = this.get_container_ul().children('li');
 				}
 				if(obj.length > 1) {
-					obj.each($.proxy(function (i, d) { 
+					obj.each($.proxy(function (i, d) {
 						this.checkbox_repair($(d));
 					}, this));
 					return;
@@ -169,14 +169,14 @@ Adds checkboxes to the tree.
 	});
 	$(function () {
 		// add checkbox specific CSS
-		var css_string = '' + 
-				'.jstree a > .jstree-checkbox { height:16px; width:16px; margin-right:1px; } ' + 
-				'.jstree-rtl a > .jstree-checkbox { margin-right:0; margin-left:1px; } ' + 
+		var css_string = '' +
+				'.jstree a > .jstree-checkbox { height:16px; width:16px; margin-right:1px; } ' +
+				'.jstree-rtl a > .jstree-checkbox { margin-right:0; margin-left:1px; } ' +
 				'.jstree .jstree-check { margin:0; padding:0; border:0; display:inline; vertical-align:text-bottom; } ';
 		// Correct IE 6 (does not support the > CSS selector)
-		if($.jstree.IS_IE6) { 
-			css_string += '' + 
-				'.jstree li a .jstree-checkbox { height:16px; width:16px; background:transparent; margin-right:1px; } ' + 
+		if($.jstree.IS_IE6) {
+			css_string += '' +
+				'.jstree li a .jstree-checkbox { height:16px; width:16px; background:transparent; margin-right:1px; } ' +
 				'.jstree-rtl li a .jstree-checkbox { margin-right:0; margin-left:1px; } ';
 		}
 		// the default stylesheet

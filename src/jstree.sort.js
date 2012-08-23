@@ -1,4 +1,4 @@
-/* File: jstree.sort.js 
+/* File: jstree.sort.js
 Sorts items alphabetically (or using any other function)
 */
 /* Group: jstree sort plugin */
@@ -20,7 +20,7 @@ Sorts items alphabetically (or using any other function)
 					}, this));
 		},
 		defaults : function (a, b) { return this.get_text(a, true) > this.get_text(b, true) ? 1 : -1; },
-		_fn : { 
+		_fn : {
 			_sort : function (obj, deep) {
 				var s = this.get_settings(true).sort,
 					t = this;

@@ -1,13 +1,13 @@
-/* File: jstree.state.js 
+/* File: jstree.state.js
 This plugin enables state saving between reloads.
 */
 /* Group: jstree state plugin */
 (function ($) {
 	$.jstree.plugin("state", {
-		__construct : function () { 
+		__construct : function () {
 			if(typeof $.vakata.storage === "undefined") { throw "jsTree state plugin: vakata storage helper not included."; }
 
-			this.get_container() 
+			this.get_container()
 				.bind("__loaded.jstree", $.proxy(function (e, data) {
 						this.restore_state();
 					}, this))
@@ -22,7 +22,7 @@ This plugin enables state saving between reloads.
 			key		: 'jstree', // pass unique name to work with many trees
 			events	: 'select_node.jstree open_node.jstree close_node.jstree deselect_node.jstree deselect_all.jstree'
 		},
-		_fn : { 
+		_fn : {
 			save_state : function () {
 				var s = this.get_settings(true).state;
 				$.vakata.storage.set(s.key, this.get_state());

@@ -1,4 +1,4 @@
-/* File: jstree.dnd.js 
+/* File: jstree.dnd.js
 Enables drag'n'drop.
 */
 /* Group: jstree drag'n'drop plugin */
@@ -7,7 +7,7 @@ Enables drag'n'drop.
 	$.jstree.plugin("dnd", {
 		__construct : function () {
 			this.get_container()
-				.delegate('a', 'mousedown', $.proxy(function (e) { 
+				.delegate('a', 'mousedown', $.proxy(function (e) {
 					var obj = this.get_node(e.target);
 					if(obj && obj !== -1 && obj.length && e.which === 1) { // TODO: think about e.which
 						this.get_container().trigger('mousedown.jstree');
@@ -30,10 +30,10 @@ Enables drag'n'drop.
 			marker = $('<div id="jstree-marker">&#160;</div>').hide().appendTo('body');
 
 		$(document)
-			.bind('dnd_start.vakata', function (e, data) { 
+			.bind('dnd_start.vakata', function (e, data) {
 				lastmv = false;
 			})
-			.bind('dnd_move.vakata', function (e, data) { 
+			.bind('dnd_move.vakata', function (e, data) {
 				if(opento) { clearTimeout(opento); }
 				if(!data.data.jstree) { return; }
 
@@ -64,14 +64,14 @@ Enables drag'n'drop.
 							return;
 						}
 					}
-					else { 
+					else {
 						// if we are hovering a tree node
 						ref = $(data.event.target).closest('a');
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
 							off = ref.offset();
 							rel = data.event.pageY - off.top;
 							h = ref.height();
-							if(rel < h / 3) { 
+							if(rel < h / 3) {
 								o = ['b', 'i', 'a'];
 							}
 							else if(rel > h - h / 3) {
@@ -125,13 +125,13 @@ Enables drag'n'drop.
 				data.helper.find('.jstree-icon').removeClass('jstree-ok').addClass('jstree-er');
 				marker.hide();
 			})
-			.bind('dnd_scroll.vakata', function (e, data) { 
+			.bind('dnd_scroll.vakata', function (e, data) {
 				if(!data.data.jstree) { return; }
 				marker.hide();
 				lastmv = false;
 				data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-ok').addClass('jstree-er');
 			})
-			.bind('dnd_stop.vakata', function (e, data) { 
+			.bind('dnd_stop.vakata', function (e, data) {
 				if(opento) { clearTimeout(opento); }
 				if(!data.data.jstree) { return; }
 				marker.hide();
@@ -148,12 +148,12 @@ Enables drag'n'drop.
 			});
 
 		// add DND CSS
-		var css_string = '' + 
-				'#jstree-marker { position: absolute; top:0; left:0; margin:0; padding:0; border-right:0; border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:5px solid; width:0; height:0; font-size:0; line-height:0; _border-top-color:pink; _border-botton-color:pink; _filter:chroma(color=pink); } ' + 
-				'#jstree-dnd { line-height:16px; margin:0; padding:4px; } ' + 
-				'#jstree-dnd .jstree-icon, #jstree-dnd .jstree-copy { display:inline-block; text-decoration:none; margin:0 2px 0 0; padding:0; width:16px; height:16px; } ' + 
-				'#jstree-dnd .jstree-ok { background:green; } ' + 
-				'#jstree-dnd .jstree-er { background:red; } ' + 
+		var css_string = '' +
+				'#jstree-marker { position: absolute; top:0; left:0; margin:0; padding:0; border-right:0; border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:5px solid; width:0; height:0; font-size:0; line-height:0; _border-top-color:pink; _border-botton-color:pink; _filter:chroma(color=pink); } ' +
+				'#jstree-dnd { line-height:16px; margin:0; padding:4px; } ' +
+				'#jstree-dnd .jstree-icon, #jstree-dnd .jstree-copy { display:inline-block; text-decoration:none; margin:0 2px 0 0; padding:0; width:16px; height:16px; } ' +
+				'#jstree-dnd .jstree-ok { background:green; } ' +
+				'#jstree-dnd .jstree-er { background:red; } ' +
 				'#jstree-dnd .jstree-copy { margin:0 2px 0 2px; }';
 		$.vakata.css.add_sheet({ str : css_string, title : "jstree" });
 	});

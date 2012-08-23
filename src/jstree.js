@@ -15,12 +15,12 @@
 /* File: jstree.js
 The only required part of jstree it consists of a few functions bound to the $.jstree object, the actual plugin function and a few core functions for manipulating a tree.
 */
-(function () { 
+(function () {
 	"use strict";
 	if(!jQuery) { throw "jsTree: jQuery not included."; }
 	if(jQuery.jstree) { return; } // prevent another load? maybe there is a better way?
 
-/* Group: $.jstree. 
+/* Group: $.jstree.
 Some static functions and variables, unless you know exactly what you are doing do not use these, but <$().jstree> instead.
 */
 (function ($) {
@@ -28,24 +28,24 @@ Some static functions and variables, unless you know exactly what you are doing 
 		focused_instance	= -1,
 		plugins				= {},
 		functions			= {};
-	/* 
+	/*
 		Variable: $.jstree
 		*object* Contains all static functions and variables used by jstree, some plugins also append variables.
 	*/
-	$.jstree = { 
-		/* 
+	$.jstree = {
+		/*
 			Variable: $.jstree.VERSION
 				*string* the version of jstree
 		*/
 		VERSION : '1.0.0',
 
-		/* 
+		/*
 			Variable: $.jstree.IS_IE6
 				*boolean* indicating if the client is running Internet Explorer 6
 		*/
 		IS_IE6 : (jQuery.browser.msie && parseInt(jQuery.browser.version,10) === 6),
 
-		/* 
+		/*
 			Variable: $.jstree.IS_IE7
 				*boolean* indicating if the client is running Internet Explorer 7
 		*/
@@ -57,7 +57,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 		*/
 		IS_FF2 : (jQuery.browser.mozilla && parseFloat(jQuery.browser.version,10) < 1.9),
 
-		/* 
+		/*
 			Function: $.jstree.__construct
 				Creates a new jstree instance, any arguments after the first one are merged and used to configure the tree.
 
@@ -78,8 +78,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 			p = $.isArray(s.plugins) ? s.plugins : $.jstree.defaults.plugins.slice();
 			p = $.vakata.array_unique(p);
 			s = $.extend(true, {}, $.jstree.defaults, s);
-			$.each(plugins, function (i, val) { 
-				if(i !== "core" && $.inArray(i, p) === -1) { s[i] = null; delete s[i]; } 
+			$.each(plugins, function (i, val) {
+				if(i !== "core" && $.inArray(i, p) === -1) { s[i] = null; delete s[i]; }
 				else { t.push(i); d[i] = {}; }
 			});
 			s.plugins = t;
@@ -93,7 +93,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			this.get_container		= function () { return container; };
 			this.get_container_ul	= function () { return container.children("ul:eq(0)"); };
 			this.get_settings		= function (writable) { return writable ? s : $.extend(true, {}, s); };
-			this.__trigger			= function (ev, data) { 
+			this.__trigger			= function (ev, data) {
 				if(!ev) { return; }
 				if(!data) { data = {}; }
 				if(typeof ev === "string") { ev = ev.replace(".jstree","") + ".jstree"; }
@@ -107,7 +107,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			return this;
 		},
 		/*
-			Group: $.jstree. 
+			Group: $.jstree.
 
 			Function: $.jstree.__destruct
 				Destroys an instance, and also clears `jstree-` prefixed classes and all events in the `jstree` namespace
@@ -125,11 +125,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 				n = instance.get_index(),
 				i = 0;
 			if(focused_instance === n) {
-				for(i in instances) { 
-					if(instances.hasOwnProperty(i) && i !== n) { 
+				for(i in instances) {
+					if(instances.hasOwnProperty(i) && i !== n) {
 						$.jstree._focus(i);
-						break; 
-					} 
+						break;
+					}
 				}
 				if(focused_instance === n) { $.jstree._focus(false); }
 			}
@@ -150,7 +150,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			delete instances[n];
 			return true;
 		},
-		/* 
+		/*
 			Function: $.jstree.__call
 				Call a function on the instance and return the result
 
@@ -167,26 +167,26 @@ Some static functions and variables, unless you know exactly what you are doing 
 			if(!instance || !$.isFunction(instance[operation])) { return; }
 			return instance[operation].apply(instance, args);
 		},
-		/* 
+		/*
 			Function: $.jstree._reference
 				Returns an instance
 
 			Parameters:
 				needle - *mixed* - integer, DOM node contained inside a jstree container, ID string, jQuery object, selector
 		*/
-		_reference	: function (needle) { 
+		_reference	: function (needle) {
 			if(instances[needle]) { return instances[needle]; }
-			var o = $(needle); 
+			var o = $(needle);
 			if(!o.length && typeof needle === "string") { o = $("#" + needle); }
 			if(!o.length) { return null; }
-			return instances[o.closest(".jstree").data("jstree_instance_id")] || null; 
+			return instances[o.closest(".jstree").data("jstree_instance_id")] || null;
 		},
 		/*
 			Function: $.jstree._focused
 				Returns the currently focused instance (by default once an instance is created it is focused)
 		*/
 		_focused	: function () {
-			return instances[focused_instance] || null; 
+			return instances[focused_instance] || null;
 		},
 		/*
 			Function: $.jstree._focus
@@ -223,7 +223,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			Parameters:
 				plugin_name - *string* the name of the new plugin (it will be used as a key in an object - make sure it is valid)
 				plugin_data - *object* consists of 4 keys. Default is:
-				>{ 
+				>{
 				>	__construct	: $.noop,	// this function will be executed when a new instance is created
 				>	__destuct	: $.noop,	// this function will be executed when an instance is destroyed
 				>	_fn			: { },		// each key of this object should be a function that will extend the jstree prototype
@@ -232,7 +232,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 		*/
 		plugin		: function (plugin_name, plugin_data) {
 			plugin_data = $.extend({}, {
-					__construct	: $.noop, 
+					__construct	: $.noop,
 					__destuct	: $.noop,
 					_fn			: { },
 					defaults	: false
@@ -262,8 +262,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 						rslt = this.__trigger(evnt, { "func" : i, "args" : args, "plugin" : func.plugin });
 						if(rslt === false) { return; }
 						rslt = func.apply(
-							$.extend({}, this, { 
-								__callback : function (data) { 
+							$.extend({}, this, {
+								__callback : function (data) {
 									this.__trigger( i, { "args" : args, "rslt" : data, "plugin" : func.plugin });
 									return data;
 								},
@@ -280,19 +280,19 @@ Some static functions and variables, unless you know exactly what you are doing 
 		},
 		/*
 			Variable: $.jstree.defaults
-				*object* storing all the default configuration options for every plugin and the core. 
+				*object* storing all the default configuration options for every plugin and the core.
 				If this is modified all instances created after the modification, which do not explicitly specify some other value will use the new default.
-			
+
 			Example:
 			>// this instance will use the _default_ theme
-			>$("#div0").jstree({ plugins : ["themes"] }); 
+			>$("#div0").jstree({ plugins : ["themes"] });
 			>$.jstree.defaults.themes.theme = "classic";
 			>// this instance will use the _classic_ theme
-			>$("#div1").jstree({ plugins : ["themes"] }); 
+			>$("#div1").jstree({ plugins : ["themes"] });
 			>// this instance will use the _apple_ theme
-			>$("#div2").jstree({ themes : { "theme" : "apple" }, plugins : ["themes"] }); 
+			>$("#div2").jstree({ themes : { "theme" : "apple" }, plugins : ["themes"] });
 		*/
-		defaults	: { 
+		defaults	: {
 			plugins : []
 		}
 	};
@@ -304,17 +304,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 		Creates an instance using the specified objects for containers, or executes a command on an instance, specified by a container.
 
 		Parameters:
-			settings - *mixed* 
-			
-			- if you pass an *object* a new instance will be created (using <$.jstree.__construct>) 
-			for each of the objects in the jquery collection, 
+			settings - *mixed*
+
+			- if you pass an *object* a new instance will be created (using <$.jstree.__construct>)
+			for each of the objects in the jquery collection,
 			if an instance already exists on the container it will be destroyed first
-			
+
 			- if you pass a *string* it will be executed using <$.jstree.__call> on each instance
 
 		Examples:
 			> // this creates an instance
-			> $("#some-id").jstree({ 
+			> $("#some-id").jstree({
 			>	plugins : [ "html_data", "themes", "ui" ]
 			> });
 			>
@@ -322,13 +322,13 @@ Some static functions and variables, unless you know exactly what you are doing 
 			> $("#some-id").jstree("select_node", "#the-id-to-select");
 
 		See also:
-			<$.jstree.__construct>, 
-			<$.jstree.__destruct>, 
+			<$.jstree.__construct>,
+			<$.jstree.__destruct>,
 			<$.jstree.__call>
 	*/
 	$.fn.jstree = function (settings) {
-		var _is_method	= (typeof settings === 'string'), 
-			_arguments	= Array.prototype.slice.call(arguments, 1), 
+		var _is_method	= (typeof settings === 'string'),
+			_arguments	= Array.prototype.slice.call(arguments, 1),
 			_return		= this;
 		this.each(function () {
 			if(_is_method) {
@@ -345,14 +345,14 @@ Some static functions and variables, unless you know exactly what you are doing 
 		return _return;
 	};
 	functions = $.jstree.__construct.prototype;
-	
+
 	$.expr[':'].jstree = function(a,i,m) {
 		return typeof ($(a).data("jstree_instance_id")) !== 'undefined';
 	};
 })(jQuery);
 
 (function ($) {
-	var ccp_node = false, 
+	var ccp_node = false,
 		ccp_mode = false;
 
 	$(function() { $.jstree.SCROLLBAR_WIDTH = $.vakata.get_scrollbar_width(); });
@@ -378,8 +378,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 						this.clean_node(data.rslt.obj);
 					}, this))
 				.bind("load_node.jstree", $.proxy(function (e, data) {
-						// data.rslt.status 
-						if(data.rslt.obj === -1) { 
+						// data.rslt.status
+						if(data.rslt.obj === -1) {
 							// only detach for root (checkbox three-state will not work otherwise)
 							// also - if you could use async clean_node won't be such an issue
 							var ul = this.get_container_ul().detach();
@@ -404,10 +404,10 @@ Some static functions and variables, unless you know exactly what you are doing 
 							data.inst.correct_node(this);
 						});
 					}, this))
-				.bind("mousedown.jstree", $.proxy(function () { 
+				.bind("mousedown.jstree", $.proxy(function () {
 						$.jstree._focus(this.get_index());
 					}, this))
-				.bind("dblclick.jstree", function () { 
+				.bind("dblclick.jstree", function () {
 						if(document.selection && document.selection.empty) { document.selection.empty(); }
 						else { if(window.getSelection) { var sel = window.getSelection(); try { sel.removeAllRanges(); sel.collapse(); } catch (er) { } } }
 					})
@@ -417,8 +417,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 						this.toggle_node(e.target);
 					}, this));
 		},
-		__destruct : function () { 
-			
+		__destruct : function () {
+
 		},
 		/* Class: jstree */
 		/*
@@ -455,15 +455,15 @@ Some static functions and variables, unless you know exactly what you are doing 
 				data - the additional object to pass along with the event. By default _data.inst_ will be the current instance, so when you bind to the event, you can access the instance easily.
 				> $("div").bind("some-event.jstree", function (e, data) { data.inst.some_function(); });
 		*/
-		/* 
+		/*
 			Group: CORE options
 
 			Variable: config.core.strings
 			*mixed* used to store all localization strings. Default is _false_.
 
-			Example 1: 
+			Example 1:
 			>$("div").jstree({
-			>	core : { 
+			>	core : {
 			>		strings : function (s) {
 			>			if(s === "Loading ...") { s = "Please wait ..."; }
 			>			return s;
@@ -471,9 +471,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 			>	}
 			>});
 
-			Example 2: 
+			Example 2:
 			>$("div").jstree({
-			>	core : { 
+			>	core : {
 			>		strings : {
 			>			"Loading ..." : "Please wait ..."
 			>		}
@@ -483,17 +483,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 			See also:
 			<_get_string>
 		*/
-		defaults : { 
+		defaults : {
 			strings : false,
 			check_callback : true,
 			animation : 100
 		},
-		_fn : { 
-			/* 
+		_fn : {
+			/*
 				Group: CORE functions
 
 				Function: _get_string
-				Used to get the common string in the tree. 
+				Used to get the common string in the tree.
 
 				If <config.core.strings> is set to a function, that function is called with a single parameter (the needed string), the response is returned.
 
@@ -504,13 +504,13 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Parameters:
 					needed_string - *string* the needed string
 			*/
-			_get_string : function (s) { 
+			_get_string : function (s) {
 				var a = this.get_settings(true).core.strings;
 				if($.isFunction(a)) { return a.call(this, s); }
 				if(a && a[s]) { return a[s]; }
-				return s; 
+				return s;
 			},
-			/* 
+			/*
 				Function: init
 				Used internally. This function is called once the core plugin is constructed.
 
@@ -522,7 +522,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 
 				Parameters:
 					data.inst - the instance
-				
+
 				Example:
 				> $("div").bind("__loaded.jstree", function (e, data) { data.inst.do_something(); });
 
@@ -532,17 +532,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Parameters:
 					data.inst - the instance
 			*/
-			init : function () { 
+			init : function () {
 				this.data.core.original_container_html = this.get_container().find(" > ul > li").clone(true);
 				this.data.core.original_container_html.find("li").andSelf().contents().filter(function() { return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue)); }).remove();
 				this.get_container().html("<ul><li class='jstree-loading'><a href='#'>" + this._get_string("Loading ...") + "</a></li></ul>");
 				this.clean_node(-1);
 				this.data.core.li_height = this.get_container_ul().children("li:eq(0)").height() || 18;
-				this.load_node(-1, function () { 
+				this.load_node(-1, function () {
 					this.__trigger("__loaded");
 				});
 			},
-			/* 
+			/*
 				Function: lock
 				Used to lock the tree. When the tree is in a locked state, no functions can be called on the instance (except <is_locked> and <unlock>).
 				Additionally a _jstree-locked_ class is applied on the container.
@@ -558,16 +558,16 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - _null_
-				
+
 				Example:
 				> $("div").bind("lock.jstree", function (e, data) { data.inst.do_something(); });
 			*/
-			lock : function () { 
-				this.data.core.locked = true; 
-				this.get_container().addClass("jstree-locked"); 
-				this.__callback(); 
+			lock : function () {
+				this.data.core.locked = true;
+				this.get_container().addClass("jstree-locked");
+				this.__callback();
 			},
-			/* 
+			/*
 				Function: unlock
 				Used to unlock the tree. Instance can be used normally again. The _jstree-locked_ class is removed from the container.
 
@@ -582,44 +582,44 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - _null_
-				
+
 				Example:
 				> $("div").bind("unlock.jstree", function (e, data) { data.inst.do_something(); });
 			*/
-			unlock : function () { 
-				this.data.core.locked = false; 
-				this.get_container().removeClass("jstree-locked"); 
-				this.__callback(); 
+			unlock : function () {
+				this.data.core.locked = false;
+				this.get_container().removeClass("jstree-locked");
+				this.__callback();
 			},
-			/* 
+			/*
 				Function: is_locked
 				Used to get the locked status of the tree.
 
 				Returns:
 					locked - *boolean* _true_ if tree is locked, _false_ otherwise
 			*/
-			is_locked : function () { 
-				return this.data.core.locked; 
+			is_locked : function () {
+				return this.data.core.locked;
 			},
-			/* 
+			/*
 				Function: get_node
 				Get a hold of the LI node (which represents the jstree node).
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
-				
+
 				Returns:
 					jquery collection - node was found, the collection contains the LI node
 					-1 - the tree container was referenced
 					false - on failure (obj is not part of a tree, or does not exists in the DOM)
 			*/
-			get_node : function (obj) { 
-				var $obj = $(obj, this.get_container()); 
-				if($obj.is(".jstree") || obj === -1) { return -1; } 
-				$obj = $obj.closest("li", this.get_container()); 
-				return $obj.length ? $obj : false; 
+			get_node : function (obj) {
+				var $obj = $(obj, this.get_container());
+				if($obj.is(".jstree") || obj === -1) { return -1; }
+				$obj = $obj.closest("li", this.get_container());
+				return $obj.length ? $obj : false;
 			},
-			/* 
+			/*
 				Function: get_next
 				Get the next sibling of a node
 
@@ -641,7 +641,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				else if(obj.nextAll("li").size() > 0) { return obj.nextAll("li:eq(0)"); }
 				else { return obj.parentsUntil(".jstree","li").next("li").eq(0); }
 			},
-			/* 
+			/*
 				Function: get_prev
 				Get the previous sibling of a node
 
@@ -666,7 +666,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				else { var o = obj.parentsUntil(".jstree","li:eq(0)"); return o.length ? o : false; }
 			},
-			/* 
+			/*
 				Function: get_parent
 				Get the parent of a node
 
@@ -684,7 +684,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				var o = obj.parentsUntil(".jstree", "li:eq(0)");
 				return o.length ? o : -1;
 			},
-			/* 
+			/*
 				Function: get_children
 				Get all the children of a node
 
@@ -701,7 +701,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(!obj || !obj.length) { return false; }
 				return obj.find("> ul > li");
 			},
-			/* 
+			/*
 				Function: is_parent
 				Check if a node is a parent.
 
@@ -713,7 +713,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is not a valid node or has no children (leaf node)
 			*/
 			is_parent	: function (obj) { obj = this.get_node(obj); return obj && obj !== -1 && (obj.find("> ul > li:eq(0)").length || obj.hasClass("jstree-closed")); },
-			/* 
+			/*
 				Function: is_loaded
 				Check if a node is loaded.
 
@@ -725,7 +725,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is currently loading or is not a leaf, but has no children
 			*/
 			is_loaded	: function (obj) { obj = this.get_node(obj); return obj && ( (obj === -1 && !this.get_container().find("> ul > li.jstree-loading").length) || ( obj !== -1 && !obj.hasClass('jstree-loading') && (obj.find('> ul > li').length || obj.hasClass('jstree-leaf')) ) ); },
-			/* 
+			/*
 				Function: is_loading
 				Check if a node is currently loading.
 
@@ -737,7 +737,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is not currently loading
 			*/
 			is_loading	: function (obj) { obj = this.get_node(obj); return obj && ( (obj === -1 && this.get_container().find("> ul > li.jstree-loading").length) || (obj !== -1 && obj.hasClass("jstree-loading")) ); },
-			/* 
+			/*
 				Function: is_open
 				Check if a node is currently open.
 
@@ -749,7 +749,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is not currently open
 			*/
 			is_open		: function (obj) { obj = this.get_node(obj); return obj && obj !== -1 && obj.hasClass("jstree-open"); },
-			/* 
+			/*
 				Function: is_closed
 				Check if a node is currently closed.
 
@@ -761,7 +761,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is not currently closed
 			*/
 			is_closed	: function (obj) { obj = this.get_node(obj); return obj && obj !== -1 && obj.hasClass("jstree-closed"); },
-			/* 
+			/*
 				Function: is_leaf
 				Check if a node is a leaf node (has no children).
 
@@ -773,7 +773,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					false - _obj_ is not a leaf node
 			*/
 			is_leaf		: function (obj) { obj = this.get_node(obj); return obj && obj !== -1 && obj.hasClass("jstree-leaf"); },
-			/* 
+			/*
 				Function: load_node
 				Load the children of a node.
 
@@ -799,7 +799,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - *object* which contains two keys _obj_ (the loaded node) and _status_ - whether the node was loaded successfully.
-				
+
 				Example:
 				> $("div").bind("load_node.jstree", function (e, data) { if(data.rslt.status) { data.inst.open_node(data.rslt.obj); } });
 			*/
@@ -815,9 +815,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}, this));
 				return true;
 			},
-			/* 
+			/*
 				Function: _load_node
-				Load the children of a node, but as opposed to <load_node> does not change any visual properties or trigger events. This function is used in <load_node> internally. The idea is for data source plugins to overwrite this function. 
+				Load the children of a node, but as opposed to <load_node> does not change any visual properties or trigger events. This function is used in <load_node> internally. The idea is for data source plugins to overwrite this function.
 				This implementation (from the *core*) only uses markup found in the tree container, and does not load async.
 
 				Parameters:
@@ -831,7 +831,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				callback.call(null, true);
 			},
-			/* 
+			/*
 				Function: open_node
 				Open a node so that its children are visible. If the node is not loaded try loading it first.
 
@@ -839,7 +839,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
 					callback - a function to be executed in the tree's scope. Receives two arguments: _obj_ (the node being opened) and _status_ (a boolean indicating if the node was opened successfully).
 					animation - the duration in miliseconds of the slideDown animation. If not supplied the jQuery default is used. Please note that on IE6 a _0_ is enforced here due to performance issues.
-				
+
 				Triggers:
 					<open_node>, <__after_open>
 
@@ -851,11 +851,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - *object* which contains a single key: _obj_ (the opened node).
-				
+
 				Example:
-				> $("div").bind("open_node.jstree", function (e, data) { 
-				>   data.rslt.obj.find('> ul > .jstree-closed').each(function () { 
-				>     data.inst.open_node(this); 
+				> $("div").bind("open_node.jstree", function (e, data) {
+				>   data.rslt.obj.find('> ul > .jstree-closed').each(function () {
+				>     data.inst.open_node(this);
 				>   }
 				> });
 
@@ -865,21 +865,21 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Parameters:
 					data.inst - the instance
 					data.rslt - *object* which contains a single key: _obj_ (the opened node).
-				
+
 				Example:
-				> $("div").bind("__after_open.jstree", function (e, data) { 
-				>   data.rslt.obj.find('> ul > .jstree-closed').each(function () { 
-				>     data.inst.open_node(this); 
+				> $("div").bind("__after_open.jstree", function (e, data) {
+				>   data.rslt.obj.find('> ul > .jstree-closed').each(function () {
+				>     data.inst.open_node(this);
 				>   }
 				> });
 			*/
-			open_node : function (obj, callback, animation) { 
+			open_node : function (obj, callback, animation) {
 				obj = this.get_node(obj);
 				animation = (typeof animation).toLowerCase() === "undefined" ? this.get_settings().core.animation : animation;
 				if(obj === -1 || !obj || !obj.length) { return false; }
 				if(!this.is_closed(obj)) { if(callback) { callback.call(this, obj, false); } return false; }
 				if(!this.is_loaded(obj)) { // TODO: is_loading?
-					this.load_node(obj, function (o, ok) { 
+					this.load_node(obj, function (o, ok) {
 						return ok ? this.open_node(o, callback, animation) : callback ? callback.call(this, o, false) : false;
 					});
 				}
@@ -887,24 +887,24 @@ Some static functions and variables, unless you know exactly what you are doing 
 					var t = this;
 					obj
 						.children("ul").css("display","none").end()
-						.removeClass("jstree-closed").addClass("jstree-open") 
+						.removeClass("jstree-closed").addClass("jstree-open")
 						// .children("ins").text("-").end()
-						.children("ul").stop(true, true).slideDown( ($.jstree.IS_IE6 ? 0 : animation), function () { 
-								this.style.display = ""; 
-								t.__trigger("__after_open", { "rslt" : { "obj" : obj } }); 
-							}); 
+						.children("ul").stop(true, true).slideDown( ($.jstree.IS_IE6 ? 0 : animation), function () {
+								this.style.display = "";
+								t.__trigger("__after_open", { "rslt" : { "obj" : obj } });
+							});
 					if(callback) { callback.call(this, obj, true); }
 					this.__callback({ "obj" : obj });
 				}
 			},
-			/* 
+			/*
 				Function: close_node
 				Close a node so that its children are not visible.
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
 					animation - the duration in miliseconds of the slideDown animation. If not supplied the jQuery default is used. Please note that on IE6 a _0_ is enforced here due to performance issues.
-				
+
 				Triggers:
 					<close_node>, <__after_close>
 
@@ -916,9 +916,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - *object* which contains a single key: _obj_ (the closed node).
-				
+
 				Example:
-				> $("div").bind("close_node.jstree", function (e, data) { 
+				> $("div").bind("close_node.jstree", function (e, data) {
 				>   data.rslt.obj.children('ul').remove();
 				> });
 
@@ -928,13 +928,13 @@ Some static functions and variables, unless you know exactly what you are doing 
 				Parameters:
 					data.inst - the instance
 					data.rslt - *object* which contains a single key: _obj_ (the opened node).
-				
+
 				Example:
-				> $("div").bind("__after_close.jstree", function (e, data) { 
+				> $("div").bind("__after_close.jstree", function (e, data) {
 				>   data.rslt.obj.children('ul').remove();
 				> });
 			*/
-			close_node : function (obj, animation) { 
+			close_node : function (obj, animation) {
 				obj = this.get_node(obj);
 				animation = (typeof animation).toLowerCase() === "undefined" ? this.get_settings().core.animation : animation;
 				if(!obj || !obj.length || !this.is_open(obj)) { return false; }
@@ -943,24 +943,24 @@ Some static functions and variables, unless you know exactly what you are doing 
 					.children("ul").attr("style","display:block !important").end()
 					.removeClass("jstree-open").addClass("jstree-closed")
 					// .children("ins").text("+").end()
-					.children("ul").stop(true, true).slideUp( ($.jstree.IS_IE6 ? 0 : animation), function () { 
-						this.style.display = ""; 
-						t.__trigger("__after_close", { "rslt" : { "obj" : obj } }); 
+					.children("ul").stop(true, true).slideUp( ($.jstree.IS_IE6 ? 0 : animation), function () {
+						this.style.display = "";
+						t.__trigger("__after_close", { "rslt" : { "obj" : obj } });
 					});
 				this.__callback({ "obj" : obj });
 			},
-			/* 
+			/*
 				Function: toggle_node
 				If a node is closed - open it, if it is open - close it.
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
 			*/
-			toggle_node : function (obj) { 
+			toggle_node : function (obj) {
 				if(this.is_closed(obj)) { return this.open_node(obj); }
 				if(this.is_open(obj)) { return this.close_node(obj); }
 			},
-			/* 
+			/*
 				Function: open_all
 				Open all nodes from a certain node down.
 
@@ -968,7 +968,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc. If _-1_ is used or is omitted all nodes in the tree are opened.
 					animation - the duration of the slideDown animation when opening the nodes. If not set _0_ is enforced for performance issues.
 					original_obj - used internally to keep track of the recursion - do not set manually!
-				
+
 				Triggers:
 					<open_all>
 
@@ -980,9 +980,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - *object* which contains a single key: _obj_ (the node used in the call).
-				
+
 				Example:
-				> $("div").bind("open_all.jstree", function (e, data) { 
+				> $("div").bind("open_all.jstree", function (e, data) {
 				>   alert('DONE');
 				> });
 			*/
@@ -992,25 +992,25 @@ Some static functions and variables, unless you know exactly what you are doing 
 				original_obj = original_obj || obj;
 				var _this = this;
 				obj = this.is_closed(obj) ? obj.find('li.jstree-closed').andSelf() : obj.find('li.jstree-closed');
-				obj.each(function () { 
+				obj.each(function () {
 					_this.open_node(
-						this, 
-						_this.is_loaded(this) ? 
-							false : 
-							function(obj) { this.open_all(obj, animation, original_obj); }, 
+						this,
+						_this.is_loaded(this) ?
+							false :
+							function(obj) { this.open_all(obj, animation, original_obj); },
 						animation || 0
-					); 
+					);
 				});
 				if(original_obj.find('li.jstree-closed').length === 0) { this.__callback({ "obj" : original_obj }); }
 			},
-			/* 
+			/*
 				Function: close_all
 				Close all nodes from a certain node down.
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc. If _-1_ is used or is omitted all nodes in the tree are closed.
 					animation - the duration of the slideDown animation when closing the nodes. If not set _0_ is enforced for performance issues.
-				
+
 				Triggers:
 					<close_all>
 
@@ -1022,9 +1022,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else).
 					data.rslt - *object* which contains a single key: _obj_ (the node used in the call).
-				
+
 				Example:
-				> $("div").bind("close_all.jstree", function (e, data) { 
+				> $("div").bind("close_all.jstree", function (e, data) {
 				>   alert('DONE');
 				> });
 			*/
@@ -1036,14 +1036,14 @@ Some static functions and variables, unless you know exactly what you are doing 
 				$obj.each(function () { _this.close_node(this, animation || 0); });
 				this.__callback({ "obj" : obj });
 			},
-			/* 
+			/*
 				Function: clean_node
-				This function converts inserted nodes to the required by jsTree format. It takes care of converting a simple unodreder list to the internally used markup. 
+				This function converts inserted nodes to the required by jsTree format. It takes care of converting a simple unodreder list to the internally used markup.
 				The core calls this function automatically when new data arrives (by binding to the <load_node> event).
 				Each plugin may override this function to include its own source, but keep in mind to do it like that:
 				> clean_node : function(obj) {
 				>  obj = this.__call_old();
-				>  obj.each(function () { 
+				>  obj.each(function () {
 				>    // do your stuff here
 				>  });
 				> }
@@ -1066,7 +1066,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					if(d && d.opened) { delete d.opened; }
 					if(d && d.closed) { delete d.closed; }
 					t.removeClass("jstree-open jstree-closed jstree-leaf jstree-last");
-					if(!t.children("a").length) { 
+					if(!t.children("a").length) {
 						// allow for text and HTML markup inside the nodes
 						t.contents().filter(function() { return this.nodeType === 3 || this.tagName !== 'UL'; }).wrapAll('<a href="#"></a>');
 						// TODO: make this faster
@@ -1075,28 +1075,28 @@ Some static functions and variables, unless you know exactly what you are doing 
 					else {
 						if(!$.trim(t.children('a').attr('href'))) { t.children('a').attr("href","#"); }
 					}
-					if(!t.children("ins.jstree-ocl").length) { 
+					if(!t.children("ins.jstree-ocl").length) {
 						t.prepend("<ins class='jstree-icon jstree-ocl'>&#160;</ins>");
 					}
-					if(t.is(":last-child")) { 
-						t.addClass("jstree-last"); 
+					if(t.is(":last-child")) {
+						t.addClass("jstree-last");
 					}
 					switch(s) {
 						case 'leaf':
-							t.addClass('jstree-leaf'); 
+							t.addClass('jstree-leaf');
 							break;
 						case 'closed':
-							t.addClass('jstree-open'); 
+							t.addClass('jstree-open');
 							_this.close_node(t, 0);
 							break;
 						case 'open':
 							t.addClass('jstree-closed');
-							_this.open_node(t, false, 0); 
+							_this.open_node(t, false, 0);
 							break;
 					}
 				});
 			},
-			/* 
+			/*
 				Function: correct_node
 				This function corrects the open/closed/leaf state as data changes (as the user interacts with the tree).
 				The core calls this function automatically when a node is opened, deleted or moved.
@@ -1108,7 +1108,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					jQuery collection - the processed children of the original node.
 			*/
 			/* PROCESS SINGLE NODE (OR USE BOOLEAN single PARAM), CALL FROM CLEAN_NODE, LOSE THE EVENTS ABOVE */
-			correct_node : function (obj, deep) { 
+			correct_node : function (obj, deep) {
 				obj = this.get_node(obj);
 				if(!obj || (obj === -1 && !deep)) { return false; }
 				if(obj === -1) { obj = this.get_container().find('li'); }
@@ -1127,7 +1127,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				});
 				return obj;
 			},
-			/* 
+			/*
 				Function: scroll_to_node
 				This function scrolls the container to the desired node (if needed).
 
@@ -1140,17 +1140,17 @@ Some static functions and variables, unless you know exactly what you are doing 
 					obj = this.get_node(obj);
 					if(!obj || obj === -1 || !obj.length || !obj.is(":visible")) { return; }
 					t = obj.offset().top - this.get_container().offset().top;
-					if(t < 0) { 
-						c.scrollTop = c.scrollTop + t - 1; 
+					if(t < 0) {
+						c.scrollTop = c.scrollTop + t - 1;
 					}
-					if(t + this.data.core.li_height + (c.scrollWidth > c.offsetWidth ? $.jstree.SCROLLBAR_WIDTH : 0) > c.offsetHeight) { 
-						c.scrollTop = c.scrollTop + (t - c.offsetHeight + this.data.core.li_height + 1 + (c.scrollWidth > c.offsetWidth ? $.jstree.SCROLLBAR_WIDTH : 0)); 
+					if(t + this.data.core.li_height + (c.scrollWidth > c.offsetWidth ? $.jstree.SCROLLBAR_WIDTH : 0) > c.offsetHeight) {
+						c.scrollTop = c.scrollTop + (t - c.offsetHeight + this.data.core.li_height + 1 + (c.scrollWidth > c.offsetWidth ? $.jstree.SCROLLBAR_WIDTH : 0));
 					}
 				}
 			},
-			/* 
+			/*
 				Function: get_state
-				This function returns the current state of the tree (as collected from all active plugins). 
+				This function returns the current state of the tree (as collected from all active plugins).
 				Plugin authors: pay special attention to the way this function is extended for new plugins. In your plugin code write:
 				> get_state : function () {
 				>   var state = this.__call_old();
@@ -1166,18 +1166,18 @@ Some static functions and variables, unless you know exactly what you are doing 
 				this.get_container_ul().find('.jstree-open').each(function () { if(this.id) { state.open.push(this.id); } });
 				return state;
 			},
-			/* 
+			/*
 				Function: set_state
-				This function returns sets the state of the tree. 
+				This function returns sets the state of the tree.
 				Plugin authors: pay special attention to the way this function is extended for new plugins. In your plugin code write:
 				> set_state : function (state, callback) {
 				>   if(this.__call_old()) {
 				>     if(state.your-plugin-name) {
-				>       
+				>
 				>       // restore using `state.your-plugin-name`
 				>       // if you need some async activity so that you return to this bit of code
 				>       // do not delete state.your-plugin-name and return false (see core's function for example)
-				>       
+				>
 				>       delete state.your-plugin-name;
 				>       this.set_state(state, callback);
 				>       return false;
@@ -1208,39 +1208,39 @@ Some static functions and variables, unless you know exactly what you are doing 
 			set_state : function (state, callback) {
 				if(state) {
 					if($.isArray(state.open)) {
-						var res = true, 
+						var res = true,
 							t = this;
 						//this.close_all();
 						$.each(state.open.concat([]), function (i, v) {
 							v = document.getElementById(v);
-							if(v) { 
-								if(t.is_loaded(v)) { 
+							if(v) {
+								if(t.is_loaded(v)) {
 									if(t.is_closed(v)) {
-										t.open_node(v, false, 0); 
+										t.open_node(v, false, 0);
 									}
-									$.vakata.array_remove(state.open, i); 
+									$.vakata.array_remove(state.open, i);
 								}
-								else { 
+								else {
 									if(!t.is_loading(v)) {
-										t.open_node(v, $.proxy(function () { this.set_state(state); }, t), 0); 
+										t.open_node(v, $.proxy(function () { this.set_state(state); }, t), 0);
 									}
 									// there will be some async activity - so wait for it
-									res = false; 
+									res = false;
 								}
 							}
 						});
 						if(res) {
-							delete state.open; 
-							this.set_state(state, callback); 
+							delete state.open;
+							this.set_state(state, callback);
 						}
 						return false;
 					}
 					if(state.scroll) {
-						if(state.scroll && typeof state.scroll.left !== 'undefined') { 
-							this.get_container().scrollLeft(state.scroll.left); 
+						if(state.scroll && typeof state.scroll.left !== 'undefined') {
+							this.get_container().scrollLeft(state.scroll.left);
 						}
-						if(state.scroll && typeof state.scroll.top !== 'undefined') { 
-							this.get_container().scrollTop(state.scroll.top); 
+						if(state.scroll && typeof state.scroll.top !== 'undefined') {
+							this.get_container().scrollTop(state.scroll.top);
 						}
 						delete state.scroll;
 						delete state.open;
@@ -1256,9 +1256,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				return false;
 			},
-			/* 
+			/*
 				Function: refresh
-				This function saves the current state, reloads the complete tree and returns it to the saved state. 
+				This function saves the current state, reloads the complete tree and returns it to the saved state.
 
 				Triggers:
 					<refresh>
@@ -1271,16 +1271,16 @@ Some static functions and variables, unless you know exactly what you are doing 
 			*/
 			refresh : function () {
 				this.data.core.state = this.get_state();
-				this.load_node(-1, function (o, s) { 
+				this.load_node(-1, function (o, s) {
 					if(s) {
 						this.set_state($.extend(true, {}, this.data.core.state), function () { this.__trigger('refresh'); });
 					}
 					this.data.core.state = null;
 				});
 			},
-			/* 
+			/*
 				Function: get_text
-				This function returns the title of the node. 
+				This function returns the title of the node.
 
 				Parameters:
 					obj - *mixed* this is used as a jquery selector - can be jQuery object, DOM node, string, etc.
@@ -1296,7 +1296,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				obj.children(".jstree-icon").remove();
 				return obj[ remove_html ? 'text' : 'html' ]();
 			},
-			/* 
+			/*
 				Function: set_text
 				This function sets the title of the node. This is a low-level function, you'd be better off using <rename>.
 
@@ -1318,9 +1318,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a two keys: _obj_ (the node) and _val_ (the new title).
-				
+
 				Example:
-				> $("div").bind("set_text.jstree", function (e, data) { 
+				> $("div").bind("set_text.jstree", function (e, data) {
 				>   alert("Renamed to: " + data.rslt.val);
 				> });
 			*/
@@ -1333,7 +1333,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				this.__callback({ "obj" : obj, "text" : val });
 				return true;
 			},
-			/* 
+			/*
 				Function: parse_json
 				This function returns a jQuery node after parsing a JSON object (a LI node for single elements or an UL node for multiple). This function will use the default title from <jstree.config.core.strings> if none is specified.
 
@@ -1378,7 +1378,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(node.data && !$.isEmptyObject(node.data)) { li.data(node.data); }
 				if(
 					node.children === true ||
-					$.isArray(node.children) || 
+					$.isArray(node.children) ||
 					(li.data('jstree') && $.isArray(li.data('jstree').children))
 				) {
 					if(!li.data('jstree')) {
@@ -1395,7 +1395,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				return li;
 			},
-			/* 
+			/*
 				Function: get_json
 				This function returns the whole tree (or a single node) in JSON format.
 				Each plugin may override this function to include its own source, but keep in mind to do it like that:
@@ -1441,12 +1441,12 @@ Some static functions and variables, unless you know exactly what you are doing 
 					v = $.trim(v.replace(/\bjstree[^ ]*/ig,'').replace(/\s+$/ig," "));
 					if(v.length) { a_attr[i] = v; }
 				});
-				r = { 
-					'title'		: this.get_text(obj), 
-					'data'		: $.extend(true, {}, obj.data() || {}), 
-					'children'	: false, 
-					'li_attr'	: li_attr, 
-					'a_attr'	: a_attr 
+				r = {
+					'title'		: this.get_text(obj),
+					'data'		: $.extend(true, {}, obj.data() || {}),
+					'children'	: false,
+					'li_attr'	: li_attr,
+					'a_attr'	: a_attr
 				};
 
 				if(!r.data.jstree) { r.data.jstree = {}; }
@@ -1463,7 +1463,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				}
 				return r;
 			},
-			/* 
+			/*
 				Function: create_node
 				This function creates a new node.
 
@@ -1488,9 +1488,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a three keys: _obj_ (the node), _parent_ (the parent) and _position_ which is the numerical index.
-				
+
 				Example:
-				> $("div").bind("create_node.jstree", function (e, data) { 
+				> $("div").bind("create_node.jstree", function (e, data) {
 				>   alert("Created `" + data.inst.get_text(data.rslt.obj) + "` inside `" + (data.rslt.parent === -1 ? 'the main container' : data.inst.get_text(data.rslt.parent)) + "` at index " + data.rslt.position);
 				> });
 			*/
@@ -1499,8 +1499,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				pos = typeof pos === "undefined" ? "last" : pos;
 
 				if(par !== -1 && !par.length) { return false; }
-				if(!pos.match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) { 
-					return this.load_node(par, function () { this.create_node(par, node, pos, callback, true); }); 
+				if(!pos.match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
+					return this.load_node(par, function () { this.create_node(par, node, pos, callback, true); });
 				}
 
 				var li = this.parse_json(node),
@@ -1511,13 +1511,13 @@ Some static functions and variables, unless you know exactly what you are doing 
 					if(pos === "after") { pos = "last"; }
 				}
 				switch(pos) {
-					case "before": 
+					case "before":
 						pos = par.index();
 						par = this.get_parent(par);
 						break;
-					case "after" : 
+					case "after" :
 						pos = par.index() + 1;
-						par = this.get_parent(par); 
+						par = this.get_parent(par);
 						break;
 					case "inside":
 					case "first":
@@ -1537,8 +1537,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(tmp.children("ul").children("li").eq(pos).length) {
 					tmp.children("ul").children("li").eq(pos).before(li);
 				}
-				else { 
-					tmp.children("ul").append(li); 
+				else {
+					tmp.children("ul").append(li);
 				}
 				this.correct_node(par, true);
 				if(callback) { callback.call(this, li); }
@@ -1564,9 +1564,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a three keys: _obj_ (the node), _title_ (the new title), _old_ (the old title)
-				
+
 				Example:
-				> $("div").bind("rename_node.jstree", function (e, data) { 
+				> $("div").bind("rename_node.jstree", function (e, data) {
 				>   alert("Node rename from `" + data.rslt.old + "` to `" + data.rslt.title "`");
 				> });
 			*/
@@ -1575,8 +1575,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				var old = this.get_text(obj);
 				if(!this.check("rename_node", obj, this.get_parent(obj), val)) { return false; }
 				if(obj && obj.length) {
-					this.set_text(obj, val); // .apply(this, Array.prototype.slice.call(arguments)) 
-					this.__callback({ "obj" : obj, "title" : val, "old" : old }); 
+					this.set_text(obj, val); // .apply(this, Array.prototype.slice.call(arguments))
+					this.__callback({ "obj" : obj, "title" : val, "old" : old });
 				}
 			},
 			/*
@@ -1600,16 +1600,16 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a three keys: _obj_ (the removed node), _prev_ (the previous sibling of the removed node), _parent_ (the parent of the removed node)
-				
+
 				Example:
-				> $("div").bind("delete_node.jstree", function (e, data) { 
+				> $("div").bind("delete_node.jstree", function (e, data) {
 				>   alert("Node deleted!");
 				> });
 			*/
 			delete_node : function (obj) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
-				var par = this.get_parent(obj), 
+				var par = this.get_parent(obj),
 					pre = this.get_prev(obj);
 				if(!this.check("delete_node", obj, par, obj.index())) { return false; }
 				obj = obj.detach();
@@ -1620,11 +1620,11 @@ Some static functions and variables, unless you know exactly what you are doing 
 			},
 			/*
 				Function: check
-				This function checks if a structure modification is valid. 
+				This function checks if a structure modification is valid.
 
 				Parameters:
 					chk - *string* what are we checking (copy_node, move_node, rename_node, create_node, delete_node)
-					obj - *mixed* the node. 
+					obj - *mixed* the node.
 					par - *mixed* the parent (if dealing with a move or copy - the new parent).
 					pos - *mixed* the index among the parent's children (or the new name if dealing with a rename)
 					is_copy - *boolean* is this a copy or a move call
@@ -1635,14 +1635,14 @@ Some static functions and variables, unless you know exactly what you are doing 
 			check : function (chk, obj, par, pos) {
 				var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj,
 					chc = this.get_settings().core.check_callback;
-				if(chc === false || ($.isFunction(chc) && chc.call(this, chk, obj, par, pos) === false)) { 
+				if(chc === false || ($.isFunction(chc) && chc.call(this, chk, obj, par, pos) === false)) {
 					return false;
 				}
 				tmp = tmp === -1 ? this.get_container().data('jstree') : tmp.data('jstree');
 				if(tmp && tmp.functions && tmp.functions[chk]) {
 					tmp = tmp.functions[chk];
-					if($.isFunction(tmp)) { 
-						tmp = tmp.call(this, chk, obj, par, pos); 
+					if($.isFunction(tmp)) {
+						tmp = tmp.call(this, chk, obj, par, pos);
 					}
 					if(tmp === false) {
 						return false;
@@ -1659,8 +1659,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 						if(tmp.length && tmp.index(obj) !== -1 && (pos === obj.index() || pos === obj.index() + 1)) {
 							return false;
 						}
-						if(par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) { 
-							return false; 
+						if(par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) {
+							return false;
 						}
 						break;
 					case "copy_node":
@@ -1696,9 +1696,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a five keys: _obj_ (the node), _parent_ (the new parent) and _position_ which is the numerical index, _old_parent_ (the old parent) and is_multi (a boolean indicating if the node is coming from another tree instance)
-				
+
 				Example:
-				> $("div").bind("move_node.jstree", function (e, data) { 
+				> $("div").bind("move_node.jstree", function (e, data) {
 				>   alert("Moved `" + data.inst.get_text(data.rslt.obj) + "` inside `" + (data.rslt.parent === -1 ? 'the main container' : data.inst.get_text(data.rslt.parent)) + "` at index " + data.rslt.position);
 				> });
 			*/
@@ -1709,8 +1709,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 
 				if(!obj || obj === -1 || !obj.length) { return false; }
 				if(par !== -1 && !par.length) { return false; }
-				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) { 
-					return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); }); 
+				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
+					return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); });
 				}
 
 				var old_par = this.get_parent(obj),
@@ -1724,10 +1724,10 @@ Some static functions and variables, unless you know exactly what you are doing 
 					if(pos === "after") { pos = "last"; }
 				}
 				switch(pos) {
-					case "before": 
+					case "before":
 						pos = par.index();
 						break;
-					case "after" : 
+					case "after" :
 						pos = par.index() + 1;
 						break;
 					case "inside":
@@ -1747,8 +1747,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(par.children("ul").children("li").eq(pos).length) {
 					par.children("ul").children("li").eq(pos).before(obj);
 				}
-				else { 
-					par.children("ul").append(obj); 
+				else {
+					par.children("ul").append(obj);
 				}
 
 				if(is_multi) { // if multitree - clean the node recursively - remove all icons, and call deep clean_node
@@ -1787,9 +1787,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 					data.args - *array* the arguments passed to the function
 					data.plugin - *string* the function's plugin (here it will be _"core"_ but if the function is extended it may be something else)
 					data.rslt - *object* which contains a five keys: _obj_ (the node), _parent_ (the new parent) and _position_ which is the numerical index, _original_ (the original object), is_multi (a boolean indicating if the node is coming from another tree instance, _old_instance_ (the source instance) and _new_instance_ (the receiving instance))
-				
+
 				Example:
-				> $("div").bind("copy_node.jstree", function (e, data) { 
+				> $("div").bind("copy_node.jstree", function (e, data) {
 				>   alert("Copied `" + data.inst.get_text(data.rslt.original) + "` inside `" + (data.rslt.parent === -1 ? 'the main container' : data.inst.get_text(data.rslt.parent)) + "` at index " + data.rslt.position);
 				> });
 			*/
@@ -1800,8 +1800,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 
 				if(!obj || obj === -1 || !obj.length) { return false; }
 				if(par !== -1 && !par.length) { return false; }
-				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) { 
-					return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true); }); 
+				if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
+					return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true); });
 				}
 				var org_obj = obj,
 					old_par = this.get_parent(obj),
@@ -1820,10 +1820,10 @@ Some static functions and variables, unless you know exactly what you are doing 
 					if(pos === "after") { pos = "last"; }
 				}
 				switch(pos) {
-					case "before": 
+					case "before":
 						pos = par.index();
 						break;
-					case "after" : 
+					case "after" :
 						pos = par.index() + 1;
 						break;
 					case "inside":
@@ -1844,8 +1844,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(par.children("ul").children("li").eq(pos).length) {
 					par.children("ul").children("li").eq(pos).before(obj);
 				}
-				else { 
-					par.children("ul").append(obj); 
+				else {
+					par.children("ul").append(obj);
 				}
 				if(is_multi) { // if multitree - clean the node recursively - remove all icons, and call deep clean_node
 					obj.find('.jstree-icon, .jstree-ocl').remove();
@@ -1874,7 +1874,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			can_paste : function () {
 				return ccp_mode !== false && ccp_node !== false;
 			},
-			paste : function (obj) { 
+			paste : function (obj) {
 				obj = this.get_node(obj);
 				if(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }
 				this[ccp_mode](ccp_node, obj);
@@ -1886,7 +1886,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			edit : function (obj, default_text) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
-				obj.parentsUntil(".jstree",".jstree-closed").each($.proxy(function (i, v) { 
+				obj.parentsUntil(".jstree",".jstree-closed").each($.proxy(function (i, v) {
 					this.open_node(v, false, 0);
 				}, this));
 				var rtl = this.data.core.rtl,
@@ -1899,7 +1899,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					t  = typeof default_text === 'string' ? default_text : this.get_text(obj),
 					h1 = $("<div />", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo("body"),
 					h2 = obj.css("position","relative").append(
-						$("<input />", { 
+						$("<input />", {
 							"value" : t,
 							"class" : "jstree-rename-input",
 							// "size" : t.length,
@@ -1951,40 +1951,40 @@ Some static functions and variables, unless you know exactly what you are doing 
 			}
 		}
 	});
-	
+
 	// add core CSS
 	$(function() {
-		var css_string = '' + 
-				'.jstree ul, .jstree li { display:block; margin:0 0 0 0; padding:0 0 0 0; list-style-type:none; } ' + 
-				'.jstree li { display:block; min-height:18px; line-height:18px; white-space:nowrap; margin-left:18px; min-width:18px; } ' + 
-				'.jstree-rtl li { margin-left:0; margin-right:18px; } ' + 
-				'.jstree > ul > li { margin-left:0px; } ' + 
-				'.jstree-rtl > ul > li { margin-right:0px; } ' + 
-				'.jstree .jstree-icon { display:inline-block; text-decoration:none; margin:0; padding:0; vertical-align:top; } ' + 
-				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:default; vertical-align:top; } ' + 
-				'.jstree a { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; padding:1px 2px; margin:0; } ' + 
-				'.jstree a:focus { outline: none; } ' + 
-				'li.jstree-open > ul { display:block; } ' + 
+		var css_string = '' +
+				'.jstree ul, .jstree li { display:block; margin:0 0 0 0; padding:0 0 0 0; list-style-type:none; } ' +
+				'.jstree li { display:block; min-height:18px; line-height:18px; white-space:nowrap; margin-left:18px; min-width:18px; } ' +
+				'.jstree-rtl li { margin-left:0; margin-right:18px; } ' +
+				'.jstree > ul > li { margin-left:0px; } ' +
+				'.jstree-rtl > ul > li { margin-right:0px; } ' +
+				'.jstree .jstree-icon { display:inline-block; text-decoration:none; margin:0; padding:0; vertical-align:top; } ' +
+				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:default; vertical-align:top; } ' +
+				'.jstree a { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; padding:1px 2px; margin:0; } ' +
+				'.jstree a:focus { outline: none; } ' +
+				'li.jstree-open > ul { display:block; } ' +
 				'li.jstree-closed > ul { display:none; } ';
 		// Correct IE 6 (does not support the > CSS selector)
-		if($.jstree.IS_IE6) { 
+		if($.jstree.IS_IE6) {
 			try { document.execCommand("BackgroundImageCache", false, true); } catch (err) { } // prevents flickers
-			css_string += '' + 
-				'.jstree li { height:18px; margin-left:0; margin-right:0; } ' + 
-				'.jstree li li { margin-left:18px; } ' + 
-				'.jstree-rtl li li { margin-left:0px; margin-right:18px; } ' + 
-				'li.jstree-open ul { display:block; } ' + 
-				'li.jstree-closed ul { display:none !important; } ' + 
+			css_string += '' +
+				'.jstree li { height:18px; margin-left:0; margin-right:0; } ' +
+				'.jstree li li { margin-left:18px; } ' +
+				'.jstree-rtl li li { margin-left:0px; margin-right:18px; } ' +
+				'li.jstree-open ul { display:block; } ' +
+				'li.jstree-closed ul { display:none !important; } ' +
 				'.jstree li a { display:inline; border-width:0 !important; padding:0px 2px !important; } ';
 		}
 		// Correct IE 7 (shifts anchor nodes onhover)
-		if($.jstree.IS_IE7) { 
+		if($.jstree.IS_IE7) {
 			css_string += '.jstree li a { border-width:0 !important; padding:0px 2px !important; } ';
 		}
 		// Correct ff2 lack of display:inline-block
 		if($.jstree.IS_FF2) {
-			css_string += '' + 
-				'.jstree .jstree-icon { display:-moz-inline-box; } ' + 
+			css_string += '' +
+				'.jstree .jstree-icon { display:-moz-inline-box; } ' +
 				'.jstree li { line-height:12px; } ' + // WHY??
 				'.jstree a { display:-moz-inline-box; } ';
 				/* за темите

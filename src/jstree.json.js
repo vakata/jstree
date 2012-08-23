@@ -1,4 +1,4 @@
-/* File: jstree.json.js 
+/* File: jstree.json.js
 This plugin makes it possible for jstree to use JSON data sources.
 */
 /* Group: jstree json plugin */
@@ -16,11 +16,11 @@ This plugin makes it possible for jstree to use JSON data sources.
 		},
 		defaults : {
 			data	: false,
-			ajax	: false, 
+			ajax	: false,
 			progressive_render : false, // get_json, data on each node
 			progressive_unload : false
 		},
-		_fn : { 
+		_fn : {
 			parse_json : function (node) {
 				var s = this.get_settings(true).json;
 				if($.isArray(node.children)) {
@@ -60,7 +60,7 @@ This plugin makes it possible for jstree to use JSON data sources.
 						obj.data('jstree').children = null;
 						return callback.call(this, this._append_json_data(obj, d));
 					// no settings
-					case (!s.data && !s.ajax): 
+					case (!s.data && !s.ajax):
 						throw "Neither data nor ajax settings supplied.";
 					// data is function
 					case ($.isFunction(s.data)):
@@ -72,14 +72,14 @@ This plugin makes it possible for jstree to use JSON data sources.
 						return callback.call(this, this._append_json_data(obj, s.data));
 					// data is not set, ajax is set, or both are set, but we are dealing with a normal node
 					case ((!s.data && !!s.ajax) || (!!s.data && !!s.ajax && obj !== -1)):
-						s.ajax.success = $.proxy(function (d, t, x) { 
+						s.ajax.success = $.proxy(function (d, t, x) {
 							var s = this.get_settings().json.ajax;
 							if($.isFunction(s.success)) {
 								d = s.success.call(this, d, t, x) || d;
 							}
 							callback.call(this, this._append_json_data(obj, d));
 						}, this);
-						s.ajax.error = $.proxy(function (x, t, e) { 
+						s.ajax.error = $.proxy(function (x, t, e) {
 							var s = this.get_settings().json.ajax;
 							if($.isFunction(s.error)) {
 								s.error.call(this, x, t, e);

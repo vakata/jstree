@@ -1,4 +1,4 @@
-/* File: jstree.contextmenu.js 
+/* File: jstree.contextmenu.js
 Enables a rightclick contextmenu.
 */
 /* Group: jstree sort plugin */
@@ -24,17 +24,17 @@ Enables a rightclick contextmenu.
 				this._hide_contextmenu();
 			}
 		},
-		defaults : { 
-			select_node : true, 
+		defaults : {
+			select_node : true,
 			show_at_node : true,
-			items : function (o) { // Could be an object directly 
+			items : function (o) { // Could be an object directly
 				// TODO: in "_disabled" call this._check()
-				return { 
+				return {
 					"create" : {
 						"separator_before"	: false,
 						"separator_after"	: true,
 						"label"				: "Create",
-						"action"			: function (data) { 
+						"action"			: function (data) {
 							var inst = $.jstree._reference(data.reference),
 								obj = inst.get_node(data.reference);
 							inst.create_node(obj, {}, "last", function (new_node) {
@@ -46,7 +46,7 @@ Enables a rightclick contextmenu.
 						"separator_before"	: false,
 						"separator_after"	: false,
 						"label"				: "Rename",
-						"action"			: function (data) { 
+						"action"			: function (data) {
 							var inst = $.jstree._reference(data.reference),
 								obj = inst.get_node(data.reference);
 							inst.edit(obj);
@@ -72,12 +72,12 @@ Enables a rightclick contextmenu.
 						"separator_after"	: false,
 						"label"				: "Edit",
 						"action"			: false,
-						"submenu" : { 
+						"submenu" : {
 							"cut" : {
 								"separator_before"	: false,
 								"separator_after"	: false,
 								"label"				: "Cut",
-								"action"			: function (data) { 
+								"action"			: function (data) {
 									var inst = $.jstree._reference(data.reference),
 										obj = inst.get_node(data.reference);
 									if(this.data.ui && inst.is_selected(obj)) {
@@ -91,7 +91,7 @@ Enables a rightclick contextmenu.
 								"icon"				: false,
 								"separator_after"	: false,
 								"label"				: "Copy",
-								"action"			: function (data) { 
+								"action"			: function (data) {
 									var inst = $.jstree._reference(data.reference),
 										obj = inst.get_node(data.reference);
 									if(this.data.ui && inst.is_selected(obj)) {
@@ -106,7 +106,7 @@ Enables a rightclick contextmenu.
 								"_disabled"			: !(this.can_paste()),
 								"separator_after"	: false,
 								"label"				: "Paste",
-								"action"			: function (data) { 
+								"action"			: function (data) {
 									var inst = $.jstree._reference(data.reference),
 										obj = inst.get_node(data.reference);
 									inst.paste(obj);
@@ -137,7 +137,7 @@ Enables a rightclick contextmenu.
 				i = obj.data("jstree") && obj.data("jstree").contextmenu ? obj.data("jstree").contextmenu : s.items;
 				if($.isFunction(i)) { i = i.call(this, obj); }
 
-				$(document).one("context_show.vakata", $.proxy(function (e, data) { 
+				$(document).one("context_show.vakata", $.proxy(function (e, data) {
 					var cls = 'jstree-contextmenu';
 					if(this.data.themes.theme) {
 						cls += ' jstree-' + this.data.themes.theme + '-contextmenu';

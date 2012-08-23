@@ -5,11 +5,11 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 (function ($) {
 	var themes_loaded = [];
 	/*
-		Group: $.jstree. 
+		Group: $.jstree.
 
 		Variable: $.jstree.THEMES_DIR
-		The location of all themes, this is used when setting a theme without supplying an URL (only by name). 
-		Default is _false_. If left as _false_ the path will be autodetected when the DOM is ready. 
+		The location of all themes, this is used when setting a theme without supplying an URL (only by name).
+		Default is _false_. If left as _false_ the path will be autodetected when the DOM is ready.
 		The location of _jstree.js_ is used for the autodetection.
 		Normally you won't need to modify this (provided you leave the _themes_ folder in the same folder as _jquery.jstree.js_ and do not rename the file).
 		If you decide to move the folder or rename the file, but still want to load themes by name, simply set this to the new location of the _themes_ folder.
@@ -23,11 +23,11 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 			this.get_container()
 				.bind("__construct.jstree", $.proxy(function () {
 						var s = this.get_settings(true).themes;
-						this.data.themes.dots	= s.dots; 
-						this.data.themes.icons	= s.icons; 
+						this.data.themes.dots	= s.dots;
+						this.data.themes.icons	= s.icons;
 
-						if(s.url === false && s.theme === false) { 
-							s.theme = this.data.core.rtl ? 'default-rtl' : 'default'; 
+						if(s.url === false && s.theme === false) {
+							s.theme = this.data.core.rtl ? 'default-rtl' : 'default';
 						}
 						this.set_theme(s.theme, s.url, s.no_load);
 					}, this))
@@ -55,8 +55,8 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 			Variable: config.themes.icons
 			*boolean* whether to show icons or not. Default is _true_.
 		*/
-		defaults : { 
-			theme	: false, 
+		defaults : {
+			theme	: false,
 			url		: false,
 			no_load	: false,
 			dots	: true,
@@ -72,7 +72,7 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 				Parameters:
 					theme_name - the name of the theme to apply
 					theme_url - the URL of the stylesheet - leave this blank for autodetect
-					
+
 				Example:
 				>// Set the theme and autodetect the location
 				>$("#div1").jstree("set_theme","classic");
@@ -101,17 +101,17 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 			hide_icons		: function () { this.data.themes.icons = false; this.get_container().children("ul").addClass("jstree-no-icons"); },
 			toggle_icons	: function () { if(this.data.themes.icons) { this.hide_icons(); } else { this.show_icons(); } },
 
-			set_icon : function (obj, icon) { 
+			set_icon : function (obj, icon) {
 				obj = this.get_node(obj);
 				if(!obj || obj === -1 || !obj.length) { return false; }
 				obj = obj.find("> a > .jstree-themeicon");
-				if(icon === false) { 
+				if(icon === false) {
 					this.hide_icon(obj);
 				}
-				else if(icon.indexOf("/") === -1) { 
+				else if(icon.indexOf("/") === -1) {
 					obj.addClass(icon).attr("rel",icon);
 				}
-				else { 
+				else {
 					obj.css("background", "url('" + icon + "') center center no-repeat").attr("rel",icon);
 				}
 				return true;
@@ -143,7 +143,7 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 				return obj.each(function () {
 					var o = $(this),
 						d = o.data("jstree");
-					if(!o.find("> a > ins.jstree-themeicon").length) { 
+					if(!o.find("> a > ins.jstree-themeicon").length) {
 						o.children("a").prepend("<ins class='jstree-icon jstree-themeicon'>&#160;</ins>");
 					}
 					if(d && typeof d.icon !== 'undefined') {
@@ -181,8 +181,8 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 				var r = this.__call_old(), i;
 				if(is_callback) {
 					i = this.get_icon(obj);
-					if(typeof i !== 'undefined' && i !== null) { 
-						r.data.jstree.icon = i; 
+					if(typeof i !== 'undefined' && i !== null) {
+						r.data.jstree.icon = i;
 					}
 				}
 				return r;
@@ -192,24 +192,24 @@ Controls the looks of jstree, without this plugin you will get a functional tree
 	$(function () {
 		// autodetect themes path
 		if($.jstree.THEMES_DIR === false) {
-			$("script").each(function () { 
-				if(this.src.toString().match(/jstree[^\/]*?\.js(\?.*)?$/)) { 
-					$.jstree.THEMES_DIR = this.src.toString().replace(/jstree[^\/]*?\.js(\?.*)?$/, "") + 'themes/'; 
-					return false; 
+			$("script").each(function () {
+				if(this.src.toString().match(/jstree[^\/]*?\.js(\?.*)?$/)) {
+					$.jstree.THEMES_DIR = this.src.toString().replace(/jstree[^\/]*?\.js(\?.*)?$/, "") + 'themes/';
+					return false;
 				}
 			});
 		}
 		if($.jstree.THEMES_DIR === false) { $.jstree.THEMES_DIR = "themes/"; }
 		// add themes specific CSS
-		var css_string = '' + 
-				'.jstree a { text-decoration:none; } ' + 
-				'.jstree a > .jstree-themeicon { height:16px; width:16px; margin-right:3px; } ' + 
-				'.jstree-rtl a > .jstree-themeicon { margin-left:3px; margin-right:0; } ' + 
-				'.jstree .jstree-no-icons .jstree-themeicon, .jstree .jstree-themeicon-hidden { display:none; } '; 
+		var css_string = '' +
+				'.jstree a { text-decoration:none; } ' +
+				'.jstree a > .jstree-themeicon { height:16px; width:16px; margin-right:3px; } ' +
+				'.jstree-rtl a > .jstree-themeicon { margin-left:3px; margin-right:0; } ' +
+				'.jstree .jstree-no-icons .jstree-themeicon, .jstree .jstree-themeicon-hidden { display:none; } ';
 		// Correct IE 6 (does not support the > CSS selector)
-		if($.jstree.IS_IE6) { 
-			css_string += '' + 
-				'.jstree li a .jstree-themeicon { height:16px; width:16px; margin-right:3px; } ' + 
+		if($.jstree.IS_IE6) {
+			css_string += '' +
+				'.jstree li a .jstree-themeicon { height:16px; width:16px; margin-right:3px; } ' +
 				'.jstree-rtl li a .jstree-themeicon { margin-right:0px; margin-left:3px; } ';
 		}
 		// the default stylesheet

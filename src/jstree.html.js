@@ -1,4 +1,4 @@
-/* File: jstree.html.js 
+/* File: jstree.html.js
 This plugin makes it possible for jstree to use HTML data sources (other than the container's initial HTML).
 */
 /* Group: jstree html plugin */
@@ -8,7 +8,7 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 			data	: false,
 			ajax	: false
 		},
-		_fn : { 
+		_fn : {
 			_append_html_data : function (dom, data) {
 				data = $(data);
 				if(!data || !data.length || !data.is('ul, li')) { return false; }
@@ -27,7 +27,7 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 
 				switch(!0) {
 					// no settings - user original html
-					case (!s.data && !s.ajax): 
+					case (!s.data && !s.ajax):
 						if(obj === -1) {
 							this._append_html_data(-1, this.data.core.original_container_html.clone(true));
 						}
@@ -42,14 +42,14 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 						return callback.call(this, this._append_html_data(obj, s.data));
 					// data is not set, ajax is set, or both are set, but we are dealing with a normal node
 					case ((!s.data && !!s.ajax) || (!!s.data && !!s.ajax && obj !== -1)):
-						s.ajax.success = $.proxy(function (d, t, x) { 
+						s.ajax.success = $.proxy(function (d, t, x) {
 							var s = this.get_settings().html.ajax;
 							if($.isFunction(s.success)) {
 								d = s.success.call(this, d, t, x) || d;
 							}
 							callback.call(this, this._append_html_data(obj, d));
 						}, this);
-						s.ajax.error = $.proxy(function (x, t, e) { 
+						s.ajax.error = $.proxy(function (x, t, e) {
 							var s = this.get_settings().html.ajax;
 							if($.isFunction(s.error)) {
 								s.error.call(this, x, t, e);
