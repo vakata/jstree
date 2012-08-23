@@ -2,6 +2,7 @@
 This plugin makes it possible for jstree to use JSON data sources.
 */
 /* Group: jstree json plugin */
+/*global console */
 (function ($) {
 	$.jstree.plugin("json", {
 		__construct : function () {
@@ -39,7 +40,7 @@ This plugin makes it possible for jstree to use JSON data sources.
 				data = this.parse_json(data);
 				if(!data || !dom.length) { return false; }
 				if(!dom.children('ul').length) { dom.append('<ul />'); }
-				dom.children('ul').empty().append(data.children('li'));
+				dom.children('ul').empty().append(data.is('li') ? data : data.children('li'));
 				return true;
 			},
 			_load_node : function (obj, callback) {
