@@ -20,7 +20,7 @@ This plugin enables state saving between reloads.
 		},
 		defaults : {
 			key		: 'jstree', // pass unique name to work with many trees
-			events	: 'select_node.jstree open_node.jstree close_node.jstree deselect_node.jstree deselect_all.jstree'
+			events	: 'select_node.jstree open_node.jstree close_node.jstree deselect_node.jstree deselect_all.jstree check_node.jstree uncheck_node.jstree uncheck_all.jstree'
 		},
 		_fn : {
 			save_state : function () {

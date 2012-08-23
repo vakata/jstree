@@ -4108,27 +4108,28 @@ Adds checkboxes to the tree.
 			*/
 			check_node : function (obj) {
 				obj = this.get_node(obj);
-				obj.find(' > a > .jstree-checkbox').removeClass('jstree-unchecked jstree-undetermined').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('undermined', false);
+				obj.find(' > a > .jstree-checkbox').removeClass('jstree-unchecked jstree-undetermined').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('indeterminate', false);
 				this.checkbox_repair(obj);
+				this.__callback({ "obj" : obj });
 			},
 			uncheck_node : function (obj) {
 				obj = this.get_node(obj);
-				obj.find(' > a > .jstree-checkbox').removeClass('jstree-checked jstree-undetermined').addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('undermined', false);
+				obj.find(' > a > .jstree-checkbox').removeClass('jstree-checked jstree-undetermined').addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('indeterminate', false);
 				this.checkbox_repair(obj);
+				this.__callback({ "obj" : obj });
 			},
 			toggle_check : function (obj) {
 				obj = obj.find(' > a > .jstree-checkbox').removeClass('jstree-undetermined').toggleClass('jstree-checked');
 				if(!obj.hasClass('jstree-checked')) {
-					obj.addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('undermined', false);
+					this.uncheck_node();
 				}
 				else {
-					obj.children(':checkbox').prop('checked', true).prop('undermined', false);
+					this.check_node();
 				}
-				this.checkbox_repair(this.get_node(obj));
 			},
 			uncheck_all : function (context) {
 				var ret = context ? $(context).find(".jstree-checked").closest('li') : this.get_container().find(".jstree-checked").closest('li');
-				ret.children(".jstree-checkbox").removeClass("jstree-checked jstree-undetermined").addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('undermined', false);
+				ret.children(".jstree-checkbox").removeClass("jstree-checked jstree-undetermined").addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('indeterminate', false);
 				this.__callback({ "obj" : ret });
 			},
 
@@ -4157,10 +4158,10 @@ Adds checkboxes to the tree.
 				}
 
 				if(c.hasClass('jstree-checked')) {
-					obj.find('.jstree-checkbox').removeClass('jstree-undetermined jstree-unchecked').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('undermined', false);
+					obj.find('.jstree-checkbox').removeClass('jstree-undetermined jstree-unchecked').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('indeterminate', false);
 				}
 				if(c.hasClass('jstree-unchecked')) {
-					obj.find('.jstree-checkbox').removeClass('jstree-undetermined jstree-checked').addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('undermined', false);
+					obj.find('.jstree-checkbox').removeClass('jstree-undetermined jstree-checked').addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('indeterminate', false);
 				}
 
 				while(fix_up) {
@@ -4178,13 +4179,13 @@ Adds checkboxes to the tree.
 					if(su === st) {
 						c = obj.find(' > a > .jstree-checkbox');
 						if(c.hasClass('jstree-unchecked')) { return; }
-						c.removeClass('jstree-undetermined jstree-checked').addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('undermined', false);
+						c.removeClass('jstree-undetermined jstree-checked').addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('indeterminate', false);
 						continue;
 					}
 					if(sc === st) {
 						c = obj.find(' > a > .jstree-checkbox');
 						if(c.hasClass('jstree-checked')) { return; }
-						c.removeClass('jstree-undetermined jstree-unchecked').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('undermined', false);
+						c.removeClass('jstree-undetermined jstree-unchecked').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('indeterminate', false);
 						continue;
 					}
 					obj.parentsUntil(".jstree", "li").andSelf().find(' > a > .jstree-checkbox').removeClass('jstree-checked jstree-unchecked').addClass('jstree-undetermined').children(':checkbox').prop('checked', false).prop('undetermined', true);
@@ -4206,8 +4207,8 @@ Adds checkboxes to the tree.
 			},
 			get_state : function () {
 				var state = this.__call_old();
-				state.checked = [];
-				this.get_container().find('.jstree-checked').closest('li').each(function () { if(this.id) { state.checked.push(this.id); } });
+				state.checkbox = [];
+				this.get_container().find('.jstree-checked').closest('li').each(function () { if(this.id) { state.checkbox.push(this.id); } });
 				return state;
 			},
 			set_state : function (state, callback) {
@@ -5179,7 +5180,7 @@ This plugin enables state saving between reloads.
 		},
 		defaults : {
 			key		: 'jstree', // pass unique name to work with many trees
-			events	: 'select_node.jstree open_node.jstree close_node.jstree deselect_node.jstree deselect_all.jstree'
+			events	: 'select_node.jstree open_node.jstree close_node.jstree deselect_node.jstree deselect_all.jstree check_node.jstree uncheck_node.jstree uncheck_all.jstree'
 		},
 		_fn : {
 			save_state : function () {
