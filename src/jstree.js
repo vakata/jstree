@@ -98,7 +98,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(!data) { data = {}; }
 				if(typeof ev === "string") { ev = ev.replace(".jstree","") + ".jstree"; }
 				data.inst = this;
-				this.get_container().triggerHandler(ev, data);
+				return this.get_container().triggerHandler(ev, data);
 			};
 			instances[i] = this;
 			$.each(t, function (j, val) { if(plugins[val]) { plugins[val].__construct.apply(instances[i]); } });

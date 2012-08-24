@@ -1,4 +1,4 @@
-/*! jstree - v1.0.0 - 2012-08-23
+/*! jstree - v1.0.0 - 2012-08-24
 * http://jstree.com
 * Copyright (c) 2012 Ivan Bozhanov; Licensed MIT, GPL */
 
@@ -2172,7 +2172,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(!data) { data = {}; }
 				if(typeof ev === "string") { ev = ev.replace(".jstree","") + ".jstree"; }
 				data.inst = this;
-				this.get_container().triggerHandler(ev, data);
+				return this.get_container().triggerHandler(ev, data);
 			};
 			instances[i] = this;
 			$.each(t, function (j, val) { if(plugins[val]) { plugins[val].__construct.apply(instances[i]); } });
@@ -4826,7 +4826,6 @@ This plugin makes it possible for jstree to use JSON data sources.
 				data = this.parse_json(data);
 				if(!data || !dom.length) { return false; }
 				if(!dom.children('ul').length) { dom.append('<ul />'); }
-				console.log(data);
 				dom.children('ul').empty().append(data.is('li') ? data : data.children('li'));
 				return true;
 			},
@@ -5963,3 +5962,14 @@ This plugin makes it possible for jstree to use XML data sources.
 	$.jstree.defaults.plugins.push("xml");
 })(jQuery);
 //*/
+	(function ($) {
+		$.jstree.plugin("z_no_clean", {
+			_fn : {
+				clean_node : function (obj) {
+					return false;
+				}
+			}
+		});
+		// include the no_clean plugin by default
+		$.jstree.defaults.plugins.push("z_no_clean");
+	})(jQuery);
