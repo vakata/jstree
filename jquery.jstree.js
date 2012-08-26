@@ -13,7 +13,7 @@
  */
 
 /*jslint browser: true, onevar: true, undef: true, bitwise: true, strict: true */
-/*global window : false, clearInterval: false, clearTimeout: false, document: false, setInterval: false, setTimeout: false, jQuery: false, navigator: false, XSLTProcessor: false, DOMParser: false, XMLSerializer: false*/
+/*global window : false, clearInterval: false, clearTimeout: false, document: false, setInterval: false, setTimeout: false, jQuery: false, navigator: false, XSLTProcessor: false, DOMParser: false, XMLSerializer: false, ActiveXObject: false */
 
 "use strict";
 
@@ -2992,49 +2992,37 @@
  */
 (function ($) {
 	$.vakata.xslt = function (xml, xsl, callback) {
-		var rs = "", xm, xs, processor, support;
-		// TODO: IE9 no XSLTProcessor, no document.recalc
-		if(document.recalc) {
-			xm = document.createElement('xml');
-			xs = document.createElement('xml');
-			xm.innerHTML = xml;
-			xs.innerHTML = xsl;
-			$("body").append(xm).append(xs);
-			setTimeout( (function (xm, xs, callback) {
-				return function () {
-					callback.call(null, xm.transformNode(xs.XMLDocument));
-					setTimeout( (function (xm, xs) { return function () { $(xm).remove(); $(xs).remove(); }; })(xm, xs), 200);
-				};
-			})(xm, xs, callback), 100);
-			return true;
-		}
-		if(typeof window.DOMParser !== "undefined" && typeof window.XMLHttpRequest !== "undefined" && typeof window.XSLTProcessor === "undefined") {
-			xml = new DOMParser().parseFromString(xml, "text/xml");
-			xsl = new DOMParser().parseFromString(xsl, "text/xml");
-			// alert(xml.transformNode());
-			// callback.call(null, new XMLSerializer().serializeToString(rs));
-			
-		}
-		if(typeof window.DOMParser !== "undefined" && typeof window.XMLHttpRequest !== "undefined" && typeof window.XSLTProcessor !== "undefined") {
-			processor = new XSLTProcessor();
-			support = $.isFunction(processor.transformDocument) ? (typeof window.XMLSerializer !== "undefined") : true;
-			if(!support) { return false; }
-			xml = new DOMParser().parseFromString(xml, "text/xml");
-			xsl = new DOMParser().parseFromString(xsl, "text/xml");
-			if($.isFunction(processor.transformDocument)) {
-				rs = document.implementation.createDocument("", "", null);
-				processor.transformDocument(xml, xsl, rs, null);
-				callback.call(null, new XMLSerializer().serializeToString(rs));
-				return true;
+		var r = false, p, q, s;
+		// IE9
+		if(r === false && window.ActiveXObject) {
+			try {
+				r = new ActiveXObject("Msxml2.XSLTemplate");
+				q = new ActiveXObject("Msxml2.DOMDocument");
+				q.loadXML(xml);
+				s = new ActiveXObject("Msxml2.FreeThreadedDOMDocument");
+				s.loadXML(xsl);
+				r.stylesheet = s;
+				p = r.createProcessor();
+				p.input = q;
+				p.transform();
+				r = p.output;
 			}
-			else {
-				processor.importStylesheet(xsl);
-				rs = processor.transformToFragment(xml, document);
-				callback.call(null, $("<div />").append(rs).html());
-				return true;
-			}
+			catch (e) { }
 		}
-		return false;
+		xml = $.parseXML(xml);
+		xsl = $.parseXML(xsl);
+		// FF, Chrome
+		if(r === false && typeof (XSLTProcessor) !== "undefined") {
+			p = new XSLTProcessor();
+			p.importStylesheet(xsl);
+			r = p.transformToFragment(xml, document);
+			r = $('<div />').append(r).html();
+		}
+		// OLD IE
+		if(r === false && typeof (xml.transformNode) !== "undefined") {
+			r = xml.transformNode(xsl);
+		}
+		callback.call(null, r);
 	};
 	var xsl = {
 		'nest' : '<' + '?xml version="1.0" encoding="utf-8" ?>' + 
