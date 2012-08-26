@@ -1,4 +1,4 @@
-/*! jstree - v1.0.0 - 2012-08-24
+/*! jstree - v1.0.0 - 2012-08-26
 * http://jstree.com
 * Copyright (c) 2012 Ivan Bozhanov; Licensed MIT, GPL */
 
@@ -4322,7 +4322,7 @@ Enables a rightclick contextmenu.
 						"action"			: function (data) {
 							var inst = $.jstree._reference(data.reference),
 								obj = inst.get_node(data.reference);
-							if(this.data.ui && inst.is_selected(obj)) {
+							if(inst.data.ui && inst.is_selected(obj)) {
 								obj = inst.get_selected();
 							}
 							inst.delete_node(obj);
@@ -5628,6 +5628,7 @@ Does not allow the same name amongst siblings (still a bit experimental).
 (function ($) {
 	$.jstree.plugin("unique", {
 		// TODO: think about an option to work with HTML or not?
+		// add callback - to handle errors and for example types
 		_fn : {
 			check : function (chk, obj, par, pos) {
 				if(!this.__call_old()) { return false; }

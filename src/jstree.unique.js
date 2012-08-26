@@ -5,6 +5,7 @@ Does not allow the same name amongst siblings (still a bit experimental).
 (function ($) {
 	$.jstree.plugin("unique", {
 		// TODO: think about an option to work with HTML or not?
+		// add callback - to handle errors and for example types
 		_fn : {
 			check : function (chk, obj, par, pos) {
 				if(!this.__call_old()) { return false; }

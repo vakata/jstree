@@ -1062,7 +1062,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				return obj.each(function () {
 					var t = $(this),
 						d = t.data("jstree"),
-						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length ? "closed" : "leaf";
+						// is_ajax -> return this.get_settings().core.is_ajax || this.data.ajax;
+						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length ? "closed" : "leaf"; // replace with t.find('>ul>li').length || (this.is_ajax() && !t.children('ul').length)
 					if(d && d.opened) { delete d.opened; }
 					if(d && d.closed) { delete d.closed; }
 					t.removeClass("jstree-open jstree-closed jstree-leaf jstree-last");
