@@ -1295,7 +1295,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(!obj || obj === -1 || !obj.length) { return false; }
 				obj = obj.children("a:eq(0)").clone();
 				obj.children(".jstree-icon").remove();
-				return obj[ remove_html ? 'text' : 'html' ]();
+				obj = obj[ remove_html ? 'text' : 'html' ]();
+				obj = $('<div />')[ remove_html ? 'text' : 'html' ](obj);
+				return obj.html();
 			},
 			/*
 				Function: set_text

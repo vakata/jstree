@@ -1,4 +1,4 @@
-/*! jstree - v1.0.0 - 2012-08-26
+/*! jstree - v1.0.0 - 2012-08-30
 * http://jstree.com
 * Copyright (c) 2012 Ivan Bozhanov; Licensed MIT, GPL */
 
@@ -3136,7 +3136,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 				return obj.each(function () {
 					var t = $(this),
 						d = t.data("jstree"),
-						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length ? "closed" : "leaf";
+						// is_ajax -> return this.get_settings().core.is_ajax || this.data.ajax;
+						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length ? "closed" : "leaf"; // replace with t.find('>ul>li').length || (this.is_ajax() && !t.children('ul').length)
 					if(d && d.opened) { delete d.opened; }
 					if(d && d.closed) { delete d.closed; }
 					t.removeClass("jstree-open jstree-closed jstree-leaf jstree-last");
@@ -3368,7 +3369,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 				if(!obj || obj === -1 || !obj.length) { return false; }
 				obj = obj.children("a:eq(0)").clone();
 				obj.children(".jstree-icon").remove();
-				return obj[ remove_html ? 'text' : 'html' ]();
+				obj = obj[ remove_html ? 'text' : 'html' ]();
+				obj = $('<div />')[ remove_html ? 'text' : 'html' ](obj);
+				return obj.html();
 			},
 			/*
 				Function: set_text
