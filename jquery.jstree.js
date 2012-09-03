@@ -3398,12 +3398,26 @@
  * DOES NOT WORK WITH JSON PROGRESSIVE RENDER
  */
 (function ($) {
-	$.expr[':'].jstree_contains = function(a,i,m){
-		return (a.textContent || a.innerText || "").toLowerCase().indexOf(m[3].toLowerCase())>=0;
-	};
-	$.expr[':'].jstree_title_contains = function(a,i,m) {
-		return (a.getAttribute("title") || "").toLowerCase().indexOf(m[3].toLowerCase())>=0;
-	};
+	if($().jquery.split('.')[1] >= 8) {
+		$.expr[':'].jstree_contains = $.expr.createPseudo(function(search) {
+			return function(a) {
+				return (a.textContent || a.innerText || "").toLowerCase().indexOf(search.toLowerCase())>=0;
+			};
+		});
+		$.expr[':'].jstree_title_contains = $.expr.createPseudo(function(search) {
+			return function(a) {
+				return (a.getAttribute("title") || "").toLowerCase().indexOf(search.toLowerCase())>=0;
+			};
+		});
+	}
+	else {
+		$.expr[':'].jstree_contains = function(a,i,m){
+			return (a.textContent || a.innerText || "").toLowerCase().indexOf(m[3].toLowerCase())>=0;
+		};
+		$.expr[':'].jstree_title_contains = function(a,i,m) {
+			return (a.getAttribute("title") || "").toLowerCase().indexOf(m[3].toLowerCase())>=0;
+		};
+	}
 	$.jstree.plugin("search", {
 		__init : function () {
 			this.data.search.str = "";
