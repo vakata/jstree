@@ -1,4 +1,4 @@
-/*! jstree - v1.0.0 - 2012-08-30
+/*! jstree - v1.0.0 - 2012-09-11
 * http://jstree.com
 * Copyright (c) 2012 Ivan Bozhanov; Licensed MIT, GPL */
 
@@ -2485,7 +2485,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 						if(document.selection && document.selection.empty) { document.selection.empty(); }
 						else { if(window.getSelection) { var sel = window.getSelection(); try { sel.removeAllRanges(); sel.collapse(); } catch (er) { } } }
 					})
-				.delegate("li > ins", "click.jstree", $.proxy(function (e) {
+				.delegate(".jstree-ocl", "click.jstree", $.proxy(function (e) {
 						// var trgt = $(e.target);
 						// if(trgt.is("ins") && e.pageY - trgt.offset().top < this.data.core.li_height) { this.toggle_node(trgt); }
 						this.toggle_node(e.target);
@@ -4032,13 +4032,14 @@ Some static functions and variables, unless you know exactly what you are doing 
 	// add core CSS
 	$(function() {
 		var css_string = '' +
+				'.jstree * { -webkit-box-sizing:content-box; -moz-box-sizing:content-box; box-sizing:content-box; }' +
 				'.jstree ul, .jstree li { display:block; margin:0 0 0 0; padding:0 0 0 0; list-style-type:none; } ' +
 				'.jstree li { display:block; min-height:18px; line-height:18px; white-space:nowrap; margin-left:18px; min-width:18px; } ' +
 				'.jstree-rtl li { margin-left:0; margin-right:18px; } ' +
 				'.jstree > ul > li { margin-left:0px; } ' +
 				'.jstree-rtl > ul > li { margin-right:0px; } ' +
 				'.jstree .jstree-icon { display:inline-block; text-decoration:none; margin:0; padding:0; vertical-align:top; } ' +
-				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:default; vertical-align:top; } ' +
+				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:pointer; vertical-align:top; } ' +
 				'.jstree a { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; padding:1px 2px; margin:0; } ' +
 				'.jstree a:focus { outline: none; } ' +
 				'li.jstree-open > ul { display:block; } ' +
@@ -4791,7 +4792,6 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 This plugin makes it possible for jstree to use JSON data sources.
 */
 /* Group: jstree json plugin */
-/*global console */
 (function ($) {
 	$.jstree.plugin("json", {
 		__construct : function () {
@@ -5435,14 +5435,22 @@ This plugin enables selecting, deselecting and hovering tree items.
 			this.data.ui.last_selected = false;
 
 			this.get_container() // TODO: configurable event (click/dblclick/etc)
-				.delegate("a", "click.jstree", $.proxy(function (e) {
+				.delegate("a", "click.jstree", $.proxy(function (e, data) {
 						e.preventDefault();
 						e.currentTarget.blur();
-						var s			= this.get_settings(true).ui,
-							obj			= this.get_node(e.currentTarget),
+						var s = this.get_settings(true).ui;
+						if(data) {
+							if(s.select_multiple_modifier !== "on" && s.select_multiple_modifier !== false && data[s.select_multiple_modifier + 'Key']) {
+								e[s.select_multiple_modifier + 'Key'] = data[s.select_multiple_modifier + 'Key'];
+							}
+							if(s.select_range_modifier !== "on" && s.select_range_modifier !== false && data[s.select_range_modifier + 'Key']) {
+								e[s.select_range_modifier + 'Key'] = data[s.select_range_modifier + 'Key'];
+							}
+						}
+						var obj			= this.get_node(e.currentTarget),
 							is_selected	= this.is_selected(obj),
 							is_multiple	= s.select_multiple_modifier === "on" || (s.select_multiple_modifier !== false && e && e[s.select_multiple_modifier + "Key"]),
-							is_range	= s.select_multiple_modifier === "on" || (s.select_range_modifier !== false && e && e[s.select_range_modifier + "Key"] && this.data.ui.last_selected && this.data.ui.last_selected[0] !== obj[0] && this.data.ui.last_selected.parent()[0] === obj.parent()[0]);
+							is_range	= s.select_range_modifier === "on" || (s.select_range_modifier !== false && e && e[s.select_range_modifier + "Key"] && this.data.ui.last_selected && this.data.ui.last_selected[0] !== obj[0] && this.data.ui.last_selected.parent()[0] === obj.parent()[0]);
 
 						switch(!0) {
 							case (is_range && this.data.ui.last_selected !== false):
@@ -5583,7 +5591,7 @@ This plugin enables selecting, deselecting and hovering tree items.
 						d = t.data("jstree");
 					t.find('.jstree-clicked').removeClass('jstree-clicked');
 					if(d && d.selected) {
-						_this.select_node(t);
+						setTimeout(function () { _this.select_node(t); }, 0);
 						delete d.selected;
 					}
 				});
@@ -5661,8 +5669,98 @@ Does not allow the same name amongst siblings (still a bit experimental).
 /*
  * jsTree wholerow plugin
  * Makes select and hover work on the entire width of the node
- * MAY BE HEAVY IN LARGE DOM
  */
+(function ($) {
+	$.jstree.plugin("wholerow", {
+		__construct : function () {
+			// do not continue if UI plugin is unavailable
+			if(!this.data.ui) {
+				throw "jsTree wholerow: jsTree UI plugin not included.";
+			}
+			// remove dots if themes plugin is loaded
+			if(this.data.themes) {
+				this.get_container().bind('set_state.jstree', $.proxy(function () {
+					this.hide_dots();
+				}, this));
+			}
+			this.get_container()
+				.bind("__ready.jstree", $.proxy(function () {
+						var t = this;
+						$(function () {
+							t.get_container_ul().addClass('jstree-wholerow-ul');
+							$.vakata.css.add_sheet({
+								str : '.jstree-' + t.get_index() + ' .jstree-wholerow { height:' + t.data.core.li_height + 'px; }',
+								title : "jstree"
+							});
+						});
+					}, this))
+				.bind("deselect_all.jstree", $.proxy(function (e, data) {
+						this.get_container().find('.jstree-wholerow-clicked').removeClass('jstree-wholerow-clicked');
+					}, this))
+				.bind("select_node.jstree deselect_node.jstree ", $.proxy(function (e, data) {
+						data.rslt.obj.each(function () {
+							$(this).children('.jstree-wholerow')[ e.type === 'select_node' ? 'addClass' : 'removeClass' ]('jstree-wholerow-clicked');
+						});
+					}, this))
+				.bind("hover_node.jstree dehover_node.jstree", $.proxy(function (e, data) {
+						this.get_container().find('.jstree-wholerow-hovered').removeClass('jstree-wholerow-hovered');
+						if(e.type === "hover_node") {
+							data.rslt.obj.each(function () {
+								$(this).children('.jstree-wholerow').addClass('jstree-wholerow-hovered');
+							});
+						}
+					}, this))
+				.delegate(".jstree-wholerow", "click.jstree", function (e) {
+						e.stopImmediatePropagation();
+						$(e.currentTarget).closest("li").children("a:eq(0)").trigger('click',e);
+					})
+				.delegate(".jstree-leaf > .jstree-ocl", "click.jstree", $.proxy(function (e) {
+						e.stopImmediatePropagation();
+						$(e.currentTarget).closest("li").children("a:eq(0)").trigger('click',e);
+					}, this))
+				.delegate("li", "mouseover.jstree", $.proxy(function (e) {
+						e.stopImmediatePropagation();
+						if($(e.currentTarget).closest('li').children(".jstree-hovered, .jstree-clicked").length) {
+							return false;
+						}
+						this.hover_node(e.currentTarget);
+						return false;
+					}, this))
+				.delegate("li", "mouseleave.jstree", $.proxy(function (e) {
+						this.dehover_node(e.currentTarget);
+					}, this));
+		},
+		defaults : {
+		},
+		__destroy : function () {
+			this.get_container().find(".jstree-wholerow").remove();
+		},
+		_fn : {
+			clean_node : function(obj) {
+				obj = this.__call_old();
+				var t = this;
+				return obj.each(function () {
+					var o = $(this);
+					if(!o.find("> .jstree-wholerow").length) {
+						o.prepend("<div class='jstree-wholerow' style='position:absolute;' unselectable='on'>&#160;</div>");
+					}
+				});
+			}
+		}
+	});
+	$(function () {
+		$.vakata.css.add_sheet({
+			str : '' +
+				'.jstree .jstree-wholerow-ul { position:relative; display:inline-block; min-width:100%; }' +
+				'.jstree-wholerow-ul li > a, .jstree-wholerow-ul li > ins { position:relative; }' +
+				'.jstree-wholerow-ul .jstree-wholerow { width:100%; cursor:pointer; position:absolute; left:0; user-select:none;-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; }',
+			title : "jstree"
+		});
+	});
+	// include the wholerow plugin by default
+	$.jstree.defaults.plugins.push("wholerow");
+})(jQuery);
+/*
 (function ($) {
 	$.jstree.plugin("wholerow", {
 		__construct : function () {
@@ -5780,7 +5878,7 @@ Does not allow the same name amongst siblings (still a bit experimental).
 	// include the selection plugin by default
 	$.jstree.defaults.plugins.push("wholerow");
 })(jQuery);
-//*/
+*/
 /* File: jstree.xml.js
 This plugin makes it possible for jstree to use XML data sources.
 */

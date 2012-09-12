@@ -411,7 +411,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 						if(document.selection && document.selection.empty) { document.selection.empty(); }
 						else { if(window.getSelection) { var sel = window.getSelection(); try { sel.removeAllRanges(); sel.collapse(); } catch (er) { } } }
 					})
-				.delegate("li > ins", "click.jstree", $.proxy(function (e) {
+				.delegate(".jstree-ocl", "click.jstree", $.proxy(function (e) {
 						// var trgt = $(e.target);
 						// if(trgt.is("ins") && e.pageY - trgt.offset().top < this.data.core.li_height) { this.toggle_node(trgt); }
 						this.toggle_node(e.target);
@@ -1958,13 +1958,14 @@ Some static functions and variables, unless you know exactly what you are doing 
 	// add core CSS
 	$(function() {
 		var css_string = '' +
+				'.jstree * { -webkit-box-sizing:content-box; -moz-box-sizing:content-box; box-sizing:content-box; }' +
 				'.jstree ul, .jstree li { display:block; margin:0 0 0 0; padding:0 0 0 0; list-style-type:none; } ' +
 				'.jstree li { display:block; min-height:18px; line-height:18px; white-space:nowrap; margin-left:18px; min-width:18px; } ' +
 				'.jstree-rtl li { margin-left:0; margin-right:18px; } ' +
 				'.jstree > ul > li { margin-left:0px; } ' +
 				'.jstree-rtl > ul > li { margin-right:0px; } ' +
 				'.jstree .jstree-icon { display:inline-block; text-decoration:none; margin:0; padding:0; vertical-align:top; } ' +
-				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:default; vertical-align:top; } ' +
+				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:pointer; vertical-align:top; } ' +
 				'.jstree a { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; padding:1px 2px; margin:0; } ' +
 				'.jstree a:focus { outline: none; } ' +
 				'li.jstree-open > ul { display:block; } ' +

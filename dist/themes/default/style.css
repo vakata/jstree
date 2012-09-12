@@ -17,12 +17,18 @@
 .jstree-default .jstree-clicked { background:#beebff; border:1px solid #99defd; padding:0 2px 0 1px; border-radius:2px; }
 .jstree-default a .jstree-themeicon { background-position:-56px -19px; }
 
-.jstree-default.jstree-focused { background:#ffffee; }
+/*.jstree-default.jstree-focused { background:#ffffee; }*/
 
 .jstree-default .jstree-no-dots li, 
 .jstree-default .jstree-no-dots .jstree-leaf > .jstree-ocl { background:transparent; }
 .jstree-default .jstree-no-dots .jstree-open > .jstree-ocl { background-position:-18px 0; }
 .jstree-default .jstree-no-dots .jstree-closed > .jstree-ocl { background-position:0 0; }
+
+.jstree-default > .jstree-wholerow-ul .jstree-hovered, 
+.jstree-default > .jstree-wholerow-ul .jstree-clicked { background:transparent; border:0; padding:1px 2px; border-radius:0; }
+
+.jstree-default > .jstree-wholerow-ul .jstree-wholerow-hovered { background:#e7f4f9; }
+.jstree-default > .jstree-wholerow-ul .jstree-wholerow-clicked { background:#beebff; }
 
 .jstree-default .jstree-no-icons a .jstree-themeicon { display:none; }
 

@@ -2,7 +2,6 @@
 This plugin makes it possible for jstree to use JSON data sources.
 */
 /* Group: jstree json plugin */
-/*global console */
 (function ($) {
 	$.jstree.plugin("json", {
 		__construct : function () {

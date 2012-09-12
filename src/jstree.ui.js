@@ -10,14 +10,22 @@ This plugin enables selecting, deselecting and hovering tree items.
 			this.data.ui.last_selected = false;
 
 			this.get_container() // TODO: configurable event (click/dblclick/etc)
-				.delegate("a", "click.jstree", $.proxy(function (e) {
+				.delegate("a", "click.jstree", $.proxy(function (e, data) {
 						e.preventDefault();
 						e.currentTarget.blur();
-						var s			= this.get_settings(true).ui,
-							obj			= this.get_node(e.currentTarget),
+						var s = this.get_settings(true).ui;
+						if(data) {
+							if(s.select_multiple_modifier !== "on" && s.select_multiple_modifier !== false && data[s.select_multiple_modifier + 'Key']) {
+								e[s.select_multiple_modifier + 'Key'] = data[s.select_multiple_modifier + 'Key'];
+							}
+							if(s.select_range_modifier !== "on" && s.select_range_modifier !== false && data[s.select_range_modifier + 'Key']) {
+								e[s.select_range_modifier + 'Key'] = data[s.select_range_modifier + 'Key'];
+							}
+						}
+						var obj			= this.get_node(e.currentTarget),
 							is_selected	= this.is_selected(obj),
 							is_multiple	= s.select_multiple_modifier === "on" || (s.select_multiple_modifier !== false && e && e[s.select_multiple_modifier + "Key"]),
-							is_range	= s.select_multiple_modifier === "on" || (s.select_range_modifier !== false && e && e[s.select_range_modifier + "Key"] && this.data.ui.last_selected && this.data.ui.last_selected[0] !== obj[0] && this.data.ui.last_selected.parent()[0] === obj.parent()[0]);
+							is_range	= s.select_range_modifier === "on" || (s.select_range_modifier !== false && e && e[s.select_range_modifier + "Key"] && this.data.ui.last_selected && this.data.ui.last_selected[0] !== obj[0] && this.data.ui.last_selected.parent()[0] === obj.parent()[0]);
 
 						switch(!0) {
 							case (is_range && this.data.ui.last_selected !== false):
@@ -158,7 +166,7 @@ This plugin enables selecting, deselecting and hovering tree items.
 						d = t.data("jstree");
 					t.find('.jstree-clicked').removeClass('jstree-clicked');
 					if(d && d.selected) {
-						_this.select_node(t);
+						setTimeout(function () { _this.select_node(t); }, 0);
 						delete d.selected;
 					}
 				});
