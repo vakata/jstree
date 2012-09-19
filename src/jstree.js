@@ -1959,7 +1959,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 	$(function() {
 		var css_string = '' +
 				'.jstree * { -webkit-box-sizing:content-box; -moz-box-sizing:content-box; box-sizing:content-box; }' +
-				'.jstree ul, .jstree li { display:block; margin:0 0 0 0; padding:0 0 0 0; list-style-type:none; } ' +
+				'.jstree ul, .jstree li { display:block; margin:0 0 0 0; padding:0 0 0 0; list-style-type:none; list-style-image: none; } ' +
 				'.jstree li { display:block; min-height:18px; line-height:18px; white-space:nowrap; margin-left:18px; min-width:18px; } ' +
 				'.jstree-rtl li { margin-left:0; margin-right:18px; } ' +
 				'.jstree > ul > li { margin-left:0px; } ' +
