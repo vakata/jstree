@@ -363,6 +363,8 @@ Some static functions and variables, unless you know exactly what you are doing 
 			if(this.data.core.rtl) { this.get_container().addClass("jstree-rtl"); }
 			this.data.core.ready = false;
 
+			if($.support.touch) { this.get_container().addTouch(); }
+
 			this.get_container()
 				.bind("__construct.jstree", $.proxy(function () {
 						// defer, so that events bound AFTER creating the instance (like __ready) are still handled
@@ -379,19 +381,21 @@ Some static functions and variables, unless you know exactly what you are doing 
 					}, this))
 				.bind("load_node.jstree", $.proxy(function (e, data) {
 						// data.rslt.status
-						if(data.rslt.obj === -1) {
-							// only detach for root (checkbox three-state will not work otherwise)
-							// also - if you could use async clean_node won't be such an issue
-							var ul = this.get_container_ul().detach();
-							this.clean_node(ul.children('li'));
-							this.get_container().prepend(ul);
-						}
-						else {
-							this.clean_node(data.rslt.obj.find('> ul > li'));
-						}
-						if(!this.data.core.ready && !this.get_container_ul().find('.jstree-loading:eq(0)').length) {
-							this.data.core.ready = true;
-							this.__trigger("__ready");
+						if(data.rslt.status) {
+							if(data.rslt.obj === -1) {
+								// only detach for root (checkbox three-state will not work otherwise)
+								// also - if you could use async clean_node won't be such an issue
+								var ul = this.get_container_ul().detach();
+								this.clean_node(ul.children('li'));
+								this.get_container().prepend(ul);
+							}
+							else {
+								this.clean_node(data.rslt.obj.find('> ul > li'));
+							}
+							if(!this.data.core.ready && !this.get_container_ul().find('.jstree-loading:eq(0)').length) {
+								this.data.core.ready = true;
+								this.__trigger("__ready");
+							}
 						}
 					}, this))
 				.bind("__loaded.jstree", $.proxy(function (e, data) {
