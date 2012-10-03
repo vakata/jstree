@@ -1369,7 +1369,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					});
 					return ul;
 				}
-                var nodeId = (+new Date()).toString(16) + (((1+Math.random())*0x10000)|0).toString(16).substring(1); // generate a unique id
+                var nodeId = $.vakata.uniqueId();
 				if(typeof node === "undefined") { node = {}; }
 				if(typeof node === "string") { node = { "title" : node }; }
 				if(!node.li_attr) { node.li_attr = { 'role': 'treeitem', 'aria-labelledby': nodeId}; }

@@ -61,6 +61,22 @@ Output:
 })(jQuery);
 
 /*
+ Function: $.vakata.uniqueId
+ Generates an unique Id.
+
+ Input:
+ > var id = $.vakata.uniqueId();
+
+ Output:
+ > 13a27a4bcd6f1f1
+ */
+(function ($) {
+    $.vakata.uniqueId = function() {
+        return (+new Date()).toString(16) + (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    };
+})(jQuery);
+
+/*
 Function: $.vakata.array_unique
 Returns only the unique items from an array.
 
