@@ -48,7 +48,7 @@ This plugin makes it possible for jstree to use JSON data sources.
 				obj = this.get_node(obj);
 				if(!obj) { return false; }
 
-				switch(!0) {
+				switch(true) {
 					// root node with data
 					case (obj === -1 && this.get_container().data('jstree') && $.isArray(this.get_container().data('jstree').children)):
 						d = this.get_container().data('jstree').children;

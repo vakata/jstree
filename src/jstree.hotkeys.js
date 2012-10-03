@@ -115,6 +115,10 @@ Enables keyboard shortcuts. Depends on jQuery.hotkeys (included in vakata.js).
 				if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").click(); }
 				return true;
 			},
+            "return" : function () {
+                if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").click(); }
+                return true;
+            },
 			"ctrl+space" : function (event) {
 				event.type = "click";
 				if(this.data.ui.hovered) { this.data.ui.hovered.children("a:eq(0)").trigger(event); }

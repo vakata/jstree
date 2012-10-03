@@ -535,7 +535,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			init : function () {
 				this.data.core.original_container_html = this.get_container().find(" > ul > li").clone(true);
 				this.data.core.original_container_html.find("li").andSelf().contents().filter(function() { return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue)); }).remove();
-				this.get_container().html("<ul><li class='jstree-loading'><a href='#'>" + this._get_string("Loading ...") + "</a></li></ul>");
+				this.get_container().html("<ul role='tree'><li class='jstree-loading' role='treeitem' aria-busy='true' aria-labelledby='node-loading'><a id='node-loading' href='#'>" + this._get_string("Loading ...") + "</a></li></ul>");
 				this.clean_node(-1);
 				this.data.core.li_height = this.get_container_ul().children("li:eq(0)").height() || 18;
 				this.load_node(-1, function () {
@@ -806,7 +806,6 @@ Some static functions and variables, unless you know exactly what you are doing 
 			load_node	: function (obj, callback) {
 				obj = this.get_node(obj);
 				if(!obj) { callback.call(this, obj, false); return false; }
-				// if(this.is_loading(obj)) { return true; }
 				if(obj !== -1) { obj.addClass("jstree-loading"); }
 				this._load_node(obj, $.proxy(function (status) {
 					if(obj !== -1) { obj.removeClass("jstree-loading"); }
@@ -888,7 +887,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					obj
 						.children("ul").css("display","none").end()
 						.removeClass("jstree-closed").addClass("jstree-open")
-						// .children("ins").text("-").end()
+                        .attr('aria-expanded', true)
 						.children("ul").stop(true, true).slideDown( ($.jstree.IS_IE6 ? 0 : animation), function () {
 								this.style.display = "";
 								t.__trigger("__after_open", { "rslt" : { "obj" : obj } });
@@ -941,8 +940,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				var t = this;
 				obj
 					.children("ul").attr("style","display:block !important").end()
-					.removeClass("jstree-open").addClass("jstree-closed")
-					// .children("ins").text("+").end()
+					.removeClass("jstree-open").addClass("jstree-closed").attr('aria-expanded', false)
 					.children("ul").stop(true, true).slideUp( ($.jstree.IS_IE6 ? 0 : animation), function () {
 						this.style.display = "";
 						t.__trigger("__after_close", { "rslt" : { "obj" : obj } });
@@ -1087,11 +1085,13 @@ Some static functions and variables, unless you know exactly what you are doing 
 							t.addClass('jstree-leaf');
 							break;
 						case 'closed':
-							t.addClass('jstree-open');
+							t.addClass('jstree-open')
+                            .attr('aria-expanded', true);
 							_this.close_node(t, 0);
 							break;
 						case 'open':
-							t.addClass('jstree-closed');
+							t.addClass('jstree-closed')
+                            .attr('aria-expanded', false);
 							_this.open_node(t, false, 0);
 							break;
 					}
@@ -1118,10 +1118,10 @@ Some static functions and variables, unless you know exactly what you are doing 
 					var obj = $(this);
 					switch(!0) {
 						case obj.hasClass("jstree-open") && !obj.find("> ul > li").length:
-							obj.removeClass("jstree-open").addClass("jstree-leaf").children("ul").remove(); // children("ins").html("&#160;").end()
+							obj.removeClass("jstree-open").attr('aria-expanded', false).addClass("jstree-leaf").children("ul").remove(); // children("ins").html("&#160;").end()
 							break;
 						case obj.hasClass("jstree-leaf") && !!obj.find("> ul > li").length:
-							obj.removeClass("jstree-leaf").addClass("jstree-closed"); //.children("ins").html("+");
+							obj.removeClass("jstree-leaf").addClass("jstree-closed").attr('aria-expanded', false); //.children("ins").html("+");
 							break;
 					}
 					obj[obj.is(":last-child") ? 'addClass' : 'removeClass']("jstree-last");
@@ -1308,7 +1308,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					val - *string* the new title of the node (can be HTMl too)
 
 				Returns:
-					boolean - was the rename successfull
+					boolean - was the rename successful
 
 				Triggers:
 					<set_text>
@@ -1360,24 +1360,25 @@ Some static functions and variables, unless you know exactly what you are doing 
 			*/
 			parse_json : function (node) {
 				var li, a, ul, t;
+                ul	= $("<ul />");
+                ul.attr('role', 'group');
 				if($.isArray(node)) {
-					ul	= $("<ul />");
 					t	= this;
 					$.each(node, function (i, v) {
 						ul.append(t.parse_json(v));
 					});
 					return ul;
 				}
+                var nodeId = (+new Date()).toString(16) + (((1+Math.random())*0x10000)|0).toString(16).substring(1); // generate a unique id
 				if(typeof node === "undefined") { node = {}; }
 				if(typeof node === "string") { node = { "title" : node }; }
-				if(!node.li_attr) { node.li_attr = {}; }
-				if(!node.a_attr) { node.a_attr = {}; }
+				if(!node.li_attr) { node.li_attr = { 'role': 'treeitem', 'aria-labelledby': nodeId}; }
+				if(!node.a_attr) { node.a_attr = { 'id': nodeId }; }
 				if(!node.a_attr.href) { node.a_attr.href = '#'; }
 				if(!node.title) { node.title = this._get_string("New node"); }
 
 				li	= $("<li />").attr(node.li_attr);
 				a	= $("<a />").attr(node.a_attr).html(node.title);
-				ul	= $("<ul />");
 				if(node.data && !$.isEmptyObject(node.data)) { li.data(node.data); }
 				if(
 					node.children === true ||
@@ -1776,7 +1777,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					is_loaded - used internally when a node needs to be loaded - do not pass this
 
 				Returns:
-					boolean - indicating if the move was successfull (may return _undefined_ if the parent node is not yet loaded, but will move the node)
+					boolean - indicating if the move was successful (may return _undefined_ if the parent node is not yet loaded, but will move the node)
 
 
 				Triggers:
@@ -1991,9 +1992,6 @@ Some static functions and variables, unless you know exactly what you are doing 
 				'.jstree .jstree-icon { display:-moz-inline-box; } ' +
 				'.jstree li { line-height:12px; } ' + // WHY??
 				'.jstree a { display:-moz-inline-box; } ';
-				/* за темите
-				'.jstree .jstree-no-icons .jstree-checkbox { display:-moz-inline-stack !important; } ';
-				*/
 		}
 		// the default stylesheet
 		$.vakata.css.add_sheet({ str : css_string, title : "jstree" });
