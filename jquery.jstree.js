@@ -2849,13 +2849,13 @@
 				}
 				else {
 					if(state) { 
-						coll = obj.find("li").andSelf();
+						coll = obj.find("li").andSelf(); //all
 						if(!coll.filter(".jstree-checked, .jstree-undetermined").length) { return false; }
 						coll.removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked"); 
 						if(rc) { coll.children(":checkbox").prop("checked", false); }
 					}
 					else { 
-						coll = obj.find("li").andSelf();
+						coll = obj.find("li:visible").andSelf(); // only visible
 						if(!coll.filter(".jstree-unchecked, .jstree-undetermined").length) { return false; }
 						coll.removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked"); 
 						if(rc) { coll.children(":checkbox").prop("checked", true); }
