@@ -1,7 +1,6 @@
 /* File: jstree.themes.js
 Controls the looks of jstree, without this plugin you will get a functional tree, but it will look just like an ordinary UL list
 */
-
 (function ($) {
 	var themes_loaded = [];
 	/*

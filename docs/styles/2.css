@@ -6,11 +6,11 @@ p { text-indent:0; margin-bottom:1em; }
 .MTitle .MSubTitle { visibility:hidden; }
 .ContentPage #Content, .IndexPage #Index { border:0; margin-left:200px !important; }
 .MEntry { padding:0 0; }
-.MEntry a { padding:5px 16px 5px 4px; text-align:right; -moz-border-radius:5px 0 0 5px; margin:0 !important; color:#ccc !important; display:block; }
+.MEntry a { padding:5px 16px 5px 4px; text-align:right; border-radius:5px 0 0 5px; margin:0 !important; color:#ccc !important; display:block; text-shadow:1px 1px 0px black; }
 .MGroup a { color:white !important; padding-top:12px !important; padding-bottom:2px !important; }
 .MGroupContent .MEntry a { color:#ccc !important; padding-right:24px !important; padding-top:5px !important; padding-bottom:5px !important; }
 .MGroup div { padding:0; }
-#MSelected { border:0; -moz-border-radius:5px 0 0 5px !important; margin:0; background:white; padding:5px 24px 5px 8px !important; text-align:right !important; }
+#MSelected { border:0; border-radius:5px 0 0 5px !important; margin:0; background:white; padding:5px 24px 5px 8px !important; text-align:right !important; }
 #Menu { width:180px !important; padding-left:20px !important; }
 .MFile, .MText, .MLink, .MIndex { margin:0 !important; padding:0 !important; }
 .SBorder { -moz-border-radius:0 !important; }
@@ -34,3 +34,5 @@ table.Prototype { display:none !important; }
 .MGroup { margin-left:0; }
 #Footer { margin:5px 20px 0 200px !important; text-align:center !important; padding:10px 0; }
 .CBody ul { margin:0em 5ex 2em 5ex; }
+#MSearchPanel { display:none !important; }
+#Content h1.CTitle { font-family:Georgia, serif; font-style:italic; border-bottom:1px solid !important; padding-top:30px !important; padding-left:20px; }

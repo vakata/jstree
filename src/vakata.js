@@ -1321,7 +1321,7 @@ Functions needed to encode/decode JSON. Based on the jQuery JSON Plugin.
 Group: Cookie
 A copy of the jQuery cookie plugin.
 */
-(function ($) {
+(function ($, document, undefined) {
 	/*
 		Function: $.vakata.cookie
 		A function for getting and setting cookies.
@@ -1332,33 +1332,58 @@ A copy of the jQuery cookie plugin.
 		Returns:
 			string - the encoded data
 	*/
-	$.vakata.cookie = function (key, value, options) {
-		var days, t, result, decode;
-		if (arguments.length > 1 && String(value) !== "[object Object]") {
-			options = $.extend({}, options);
-			if(value === null || value === undefined) { options.expires = -1; }
-			if(typeof options.expires === 'number') { days = options.expires; t = options.expires = new Date(); t.setDate(t.getDate() + days); }
-			value = String(value);
+	var raw		= function (s) { return s; },
+		decoded	= function (s) { return decodeURIComponent(s.replace(/\+/g, ' ')); };
+	var config = $.vakata.cookie = function (key, value, options) {
+		// write
+		if (value !== undefined) {
+			options = $.extend({}, config.defaults, options);
+
+			if (value === null) {
+				options.expires = -1;
+			}
+
+			if (typeof options.expires === 'number') {
+				var days = options.expires, t = options.expires = new Date();
+				t.setDate(t.getDate() + days);
+			}
+
+			value = config.json ? $.vakata.json.encode(value) : String(value);
+
 			return (document.cookie = [
-				encodeURIComponent(key), '=',
-				options.raw ? value : encodeURIComponent(value),
-				options.expires ? '; expires=' + options.expires.toUTCString() : '',
-				options.path ? '; path=' + options.path : '',
-				options.domain ? '; domain=' + options.domain : '',
-				options.secure ? '; secure' : ''
+				encodeURIComponent(key), '=', config.raw ? value : encodeURIComponent(value),
+				options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+				options.path    ? '; path=' + options.path : '',
+				options.domain  ? '; domain=' + options.domain : '',
+				options.secure  ? '; secure' : ''
 			].join(''));
 		}
-		options = value || {};
-		decode = options.raw ? function (s) { return s; } : decodeURIComponent;
-		return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null;
+		// read
+		var decode = config.raw ? raw : decoded;
+		var cookies = document.cookie.split('; ');
+		for (var i = 0, l = cookies.length; i < l; i++) {
+			var parts = cookies[i].split('=');
+			if (decode(parts.shift()) === key) {
+				var cookie = decode(parts.join('='));
+				return config.json ? $.vakata.json.decode(cookie) : cookie;
+			}
+		}
+		return null;
 	};
-})(jQuery);
+	config.defaults = {};
+	$.vakata.removeCookie = function (key, options) {
+		if ($.cookie(key) !== null) {
+			$.cookie(key, null, options);
+			return true;
+		}
+		return false;
+	};
+})(jQuery, document);
 
 /*
 Group: LocalStorage
 Functions for dealing with localStorage with fallback to userData or cookies. A slight modification of jstorage.
 */
-
 (function ($) {
 	var _storage = {},
 		_storage_service = {jStorage:"{}"},
@@ -1510,9 +1535,9 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 	$.vakata.storage = {
 		/*
 			Variable: $.vakata.storage.version
-			*string* the version of jstorage used
+			*string* the version of jstorage used HEAVILY MODIFIED
 		*/
-		version: "0.1.6.1",
+		version: "0.3.0",
 		/*
 			Function: $.vakata.storage.set
 			Set a key to a value
@@ -1524,10 +1549,16 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 			Returns:
 				_value_
 		*/
-		set : function (key, value) {
+		set : function (key, value, ttl) {
 			_checkKey(key);
+			if(typeof value === "object") {
+				value = json_decode(json_encode(value));
+			}
 			_storage[key] = value;
 			_save();
+			if(ttl && parseInt(ttl, 10)) {
+				$.vakata.storage.setTTL(key, parseInt(ttl, 10));
+			}
 			return value;
 		},
 		/*
@@ -1596,6 +1627,15 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 			}
 			return false;
 		},
+		getTTL: function(key){
+			var curtime = +new Date(), ttl;
+			_checkKey(key);
+			if(key in _storage && _storage.__jstorage_meta.TTL && _storage.__jstorage_meta.TTL[key]) {
+				ttl = _storage.__jstorage_meta.TTL[key] - curtime;
+				return ttl || 0;
+			}
+			return 0;
+		},
 
 		/*
 			Function: $.vakata.storage.flush
@@ -1618,9 +1658,7 @@ Functions for dealing with localStorage with fallback to userData or cookies. A 
 				*object*
 		*/
 		storageObj : function(){
-			function F() {}
-			F.prototype = _storage;
-			return new F();
+			return $.extend(true, {}, _storage);
 		},
 		/*
 			Function: $.vakata.storage.index
@@ -1712,7 +1750,7 @@ Modifies time elements to a more human readable value. Taken from: https://githu
 		*/
 		parse : function (date, compareTo) {
 			// remove the timezone (always use gmdate on server side)
-			date = new Date(date.replace(/-/g,"/").replace(/[TZ]/g," ").replace(/\+\d\d\:\d\d$/,''));
+			date = new Date(date.replace(/-/g,"/").replace(/[TZ]/g," ").replace(/\+\d\d\:\d\d$/,'').replace(/\+\d\d\d\d$/,''));
 			compareTo = compareTo || new Date();
 			var lang		= $.vakata.pretty_date.lang,
 				formats		= [

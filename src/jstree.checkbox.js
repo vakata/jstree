@@ -48,10 +48,10 @@ Adds checkboxes to the tree.
 			toggle_check : function (obj) {
 				obj = obj.find(' > a > .jstree-checkbox').removeClass('jstree-undetermined').toggleClass('jstree-checked');
 				if(!obj.hasClass('jstree-checked')) {
-					this.uncheck_node();
+					this.uncheck_node(obj);
 				}
 				else {
-					this.check_node();
+					this.check_node(obj);
 				}
 			},
 			uncheck_all : function (context) {

@@ -19,15 +19,20 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://jstree.com/blob/master/LICENSE-MIT"
+      "url": "https://github.com/vakata/jstree/blob/v.1.0/LICENSE-MIT"
     },
     {
       "type": "GPL",
-      "url": "http://jstree.com/blob/master/LICENSE-GPL"
+      "url": "https://github.com/vakata/jstree/blob/v.1.0/LICENSE-GPL"
     }
   ],
-  "dependencies": {
-    "jquery": "~1.7"
-  },
-  "keywords": []
+  "keywords": [],
+  "devDependencies": {
+    "grunt": "~0.4.0rc4",
+    "grunt-contrib-uglify": "~0.1.0",
+    "grunt-contrib-jshint": "~0.1.0",
+    "grunt-contrib-concat": "~0.1.1",
+    "grunt-contrib-copy": "~0.3.2",
+    "grunt-contrib-qunit": "~0.1.0"
+  }
 }
