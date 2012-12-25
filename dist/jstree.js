@@ -2229,8 +2229,6 @@ Some static functions and variables, unless you know exactly what you are doing 
 			return this;
 		},
 		/*
-			Group: $.jstree.
-
 			Function: $.jstree.__destruct
 				Destroys an instance, and also clears `jstree-` prefixed classes and all events in the `jstree` namespace
 
@@ -4156,7 +4154,8 @@ Adds checkboxes to the tree.
 					}, this));
 		},
 		defaults : {
-			three_state : true
+			three_state : true,
+			name : 'jstree[]'
 		},
 		_fn : {
 			/*
@@ -4256,7 +4255,7 @@ Adds checkboxes to the tree.
 					var o = $(this),
 						d = o.data("jstree");
 					o.find(" > a > .jstree-checkbox").remove();
-					o.children("a").prepend("<ins class='jstree-icon jstree-checkbox " + (d && d.checkbox && d.checkbox.checked === true ? 'jstree-checked' : '') + ( (d && d.checkbox && d.checkbox.checked === false) || !t.get_settings(true).checkbox.three_state ? 'jstree-unchecked' : '') + " '><input class='jstree-check' type='checkbox' " + (d && d.checkbox && d.checkbox.checked ? ' checked="checked" ' : '') + " name='" + (d && d.checkbox && typeof d.checkbox.name !== 'undefined' ? d.checkbox.name : 'jstree[]') + "' value='" + (d && d.checkbox && typeof d.checkbox.value !== 'undefined' ? d.checkbox.value : o.attr('id')) + "' /></ins>");
+					o.children("a").prepend("<ins class='jstree-icon jstree-checkbox " + (d && d.checkbox && d.checkbox.checked === true ? 'jstree-checked' : '') + ( (d && d.checkbox && d.checkbox.checked === false) || !t.get_settings(true).checkbox.three_state ? 'jstree-unchecked' : '') + " '><input class='jstree-check' type='checkbox' " + (d && d.checkbox && d.checkbox.checked ? ' checked="checked" ' : '') + " name='" + (d && d.checkbox && typeof d.checkbox.name !== 'undefined' ? d.checkbox.name : t.get_settings(true).checkbox.name) + "' value='" + (d && d.checkbox && typeof d.checkbox.value !== 'undefined' ? d.checkbox.value : o.attr('id')) + "' /></ins>");
 				});
 				t.checkbox_repair(obj);
 				return obj;
