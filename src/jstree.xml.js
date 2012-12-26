@@ -91,8 +91,13 @@ This plugin makes it possible for jstree to use XML data sources.
 				data = $.vakata.xslt(data, xsl[this.get_settings().xml.xsl]);
 				if(data === false) { return false; }
 				data = $(data);
-				if(!data || !data.length || !data.is('ul, li')) { return false; }
 				dom = this.get_node(dom);
+				if(!data || !data.length || !data.is('ul, li')) {
+					if(dom && dom !== -1 && dom.is('li')) {
+						dom.removeClass('jstree-closed').addClass('jstree-leaf').children('ul').remove();
+					}
+					return true;
+				}
 				if(dom === -1) { dom = this.get_container(); }
 				if(!dom.length) { return false; }
 				if(!dom.children('ul').length) { dom.append('<ul />'); }

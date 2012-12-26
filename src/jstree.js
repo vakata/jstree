@@ -384,11 +384,15 @@ Some static functions and variables, unless you know exactly what you are doing 
 								// only detach for root (checkbox three-state will not work otherwise)
 								// also - if you could use async clean_node won't be such an issue
 								var ul = this.get_container_ul().detach();
-								this.clean_node(ul.children('li'));
+								if(ul.children('li').length) {
+									this.clean_node(ul.children('li'));
+								}
 								this.get_container().prepend(ul);
 							}
 							else {
-								this.clean_node(data.rslt.obj.find('> ul > li'));
+								if(data.rslt.obj.find('> ul > li').length) {
+									this.clean_node(data.rslt.obj.find('> ul > li'));
+								}
 							}
 							if(!this.data.core.ready && !this.get_container_ul().find('.jstree-loading:eq(0)').length) {
 								this.data.core.ready = true;
@@ -1065,7 +1069,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					var t = $(this),
 						d = t.data("jstree"),
 						// is_ajax -> return this.get_settings().core.is_ajax || this.data.ajax;
-						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length ? "closed" : "leaf"; // replace with t.find('>ul>li').length || (this.is_ajax() && !t.children('ul').length)
+						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length || (d && d.children) ? "closed" : "leaf"; // replace with t.find('>ul>li').length || (this.is_ajax() && !t.children('ul').length)
 					if(d && d.opened) { delete d.opened; }
 					if(d && d.closed) { delete d.closed; }
 					t.removeClass("jstree-open jstree-closed jstree-leaf jstree-last");
@@ -1362,6 +1366,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 			*/
 			parse_json : function (node) {
 				var li, a, ul, t;
+				if(node === null || ($.isArray(node) && node.length === 0)) {
+					return false;
+				}
 				if($.isArray(node)) {
 					ul	= $("<ul />");
 					t	= this;

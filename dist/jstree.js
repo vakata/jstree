@@ -2506,11 +2506,15 @@ Some static functions and variables, unless you know exactly what you are doing 
 								// only detach for root (checkbox three-state will not work otherwise)
 								// also - if you could use async clean_node won't be such an issue
 								var ul = this.get_container_ul().detach();
-								this.clean_node(ul.children('li'));
+								if(ul.children('li').length) {
+									this.clean_node(ul.children('li'));
+								}
 								this.get_container().prepend(ul);
 							}
 							else {
-								this.clean_node(data.rslt.obj.find('> ul > li'));
+								if(data.rslt.obj.find('> ul > li').length) {
+									this.clean_node(data.rslt.obj.find('> ul > li'));
+								}
 							}
 							if(!this.data.core.ready && !this.get_container_ul().find('.jstree-loading:eq(0)').length) {
 								this.data.core.ready = true;
@@ -3187,7 +3191,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					var t = $(this),
 						d = t.data("jstree"),
 						// is_ajax -> return this.get_settings().core.is_ajax || this.data.ajax;
-						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length ? "closed" : "leaf"; // replace with t.find('>ul>li').length || (this.is_ajax() && !t.children('ul').length)
+						s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length || (d && d.children) ? "closed" : "leaf"; // replace with t.find('>ul>li').length || (this.is_ajax() && !t.children('ul').length)
 					if(d && d.opened) { delete d.opened; }
 					if(d && d.closed) { delete d.closed; }
 					t.removeClass("jstree-open jstree-closed jstree-leaf jstree-last");
@@ -3484,6 +3488,9 @@ Some static functions and variables, unless you know exactly what you are doing 
 			*/
 			parse_json : function (node) {
 				var li, a, ul, t;
+				if(node === null || ($.isArray(node) && node.length === 0)) {
+					return false;
+				}
 				if($.isArray(node)) {
 					ul	= $("<ul />");
 					t	= this;
@@ -4783,8 +4790,13 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 		_fn : {
 			_append_html_data : function (dom, data) {
 				data = $(data);
-				if(!data || !data.length || !data.is('ul, li')) { return false; }
 				dom = this.get_node(dom);
+				if(!data || !data.length || !data.is('ul, li')) {
+					if(dom && dom !== -1 && dom.is('li')) {
+						dom.removeClass('jstree-closed').addClass('jstree-leaf').children('ul').remove();
+					}
+					return true;
+				}
 				if(dom === -1) { dom = this.get_container(); }
 				if(!dom.length) { return false; }
 				if(!dom.children('ul').length) { dom.append('<ul />'); }
@@ -4878,7 +4890,13 @@ This plugin makes it possible for jstree to use JSON data sources.
 				dom = this.get_node(dom);
 				if(dom === -1) { dom = this.get_container(); }
 				data = this.parse_json(data);
-				if(!data || !dom.length) { return false; }
+				if(!dom.length) { return false; }
+				if(!data) {
+					if(dom && dom.is('li')) {
+						dom.removeClass('jstree-closed').addClass('jstree-leaf').children('ul').remove();
+					}
+					return true;
+				}
 				if(!dom.children('ul').length) { dom.append('<ul />'); }
 				dom.children('ul').empty().append(data.is('li') ? data : data.children('li'));
 				return true;
@@ -6022,8 +6040,13 @@ This plugin makes it possible for jstree to use XML data sources.
 				data = $.vakata.xslt(data, xsl[this.get_settings().xml.xsl]);
 				if(data === false) { return false; }
 				data = $(data);
-				if(!data || !data.length || !data.is('ul, li')) { return false; }
 				dom = this.get_node(dom);
+				if(!data || !data.length || !data.is('ul, li')) {
+					if(dom && dom !== -1 && dom.is('li')) {
+						dom.removeClass('jstree-closed').addClass('jstree-leaf').children('ul').remove();
+					}
+					return true;
+				}
 				if(dom === -1) { dom = this.get_container(); }
 				if(!dom.length) { return false; }
 				if(!dom.children('ul').length) { dom.append('<ul />'); }
