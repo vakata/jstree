@@ -162,8 +162,8 @@ Adds checkboxes to the tree.
 					i = obj.find('> a > ins > :checkbox');
 					r.data.jstree.checkbox = {};
 					r.data.jstree.checkbox.checked = i.parent().hasClass('jstree-checked');
-					if(i.attr('name') !== 'jstree[]') { r.data.checkbox.name = i.attr('name'); }
-					if(i.val() !== obj.attr('id')) { r.data.checkbox.value = i.val(); }
+					if(i.attr('name') !== 'jstree[]') { r.data.jstree.checkbox.name = i.attr('name'); }
+					if(i.val() !== obj.attr('id')) { r.data.jstree.checkbox.value = i.val(); }
 				}
 				return r;
 			}
