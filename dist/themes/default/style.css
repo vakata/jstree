@@ -36,7 +36,7 @@
 
 .jstree-default .jstree-no-checkboxes .jstree-checkbox { display:none !important; }
 
-.jstree-default .jstree-check { display:none; }
+.jstree-default .jstree-check { display:none !important; }
 .jstree-default .jstree-checkbox { background-position:-2px -19px; }
 .jstree-default .jstree-checked { background-position:-38px -19px; }
 .jstree-default .jstree-undetermined { background-position:-20px -19px; }

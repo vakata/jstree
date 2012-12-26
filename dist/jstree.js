@@ -5778,6 +5778,12 @@ Does not allow the same name amongst siblings (still a bit experimental).
 							});
 						}
 					}, this))
+				.delegate(".jstree-wholerow", "contextmenu.jstree", $.proxy(function (e) {
+						if(typeof this.data.contextmenu !== 'undefined') {
+							e.preventDefault();
+							$(e.currentTarget).closest("li").children("a:eq(0)").trigger('contextmenu',e);
+						}
+					}, this))
 				.delegate(".jstree-wholerow", "click.jstree", function (e) {
 						e.stopImmediatePropagation();
 						$(e.currentTarget).closest("li").children("a:eq(0)").trigger('click',e);
