@@ -128,7 +128,7 @@ This plugin enables selecting, deselecting and hovering tree items.
 				if(!keep_old_selection) { this.deselect_all(); }
 				i = (obj.index() < start_node.index());
 				start_node.addClass("jstree-last-selected");
-				obj = obj[ i ? "nextUntil" : "prevUntil" ](".jstree-last-selected").andSelf().add(".jstree-last-selected");
+				obj = obj[ i ? "nextUntil" : "prevUntil" ](".jstree-last-selected").addBack().add(".jstree-last-selected");
 				start_node.removeClass("jstree-last-selected");
 				if(!i) { obj = obj.vakata_reverse(); }
 				if(!obj.length) { return false; }

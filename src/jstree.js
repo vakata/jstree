@@ -43,19 +43,19 @@ Some static functions and variables, unless you know exactly what you are doing 
 			Variable: $.jstree.IS_IE6
 				*boolean* indicating if the client is running Internet Explorer 6
 		*/
-		IS_IE6 : (jQuery.browser.msie && parseInt(jQuery.browser.version,10) === 6),
+		IS_IE6 : ($.vakata.browser.msie && parseInt($.vakata.browser.version,10) === 6),
 
 		/*
 			Variable: $.jstree.IS_IE7
 				*boolean* indicating if the client is running Internet Explorer 7
 		*/
-		IS_IE7 : (jQuery.browser.msie && parseInt(jQuery.browser.version,10) === 6),
+		IS_IE7 : ($.vakata.browser.msie && parseInt($.vakata.browser.version,10) === 6),
 
 		/*
 			Variable: $.jstree.IS_FF2
 				*boolean* indicating if the client is running Firefox 2
 		*/
-		IS_FF2 : (jQuery.browser.mozilla && parseFloat(jQuery.browser.version,10) < 1.9),
+		IS_FF2 : ($.vakata.browser.mozilla && parseFloat($.vakata.browser.version,10) < 1.9),
 
 		/*
 			Function: $.jstree.__construct
@@ -140,7 +140,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				.undelegate(".jstree")
 				.removeData("jstree_instance_id")
 				.find("[class^='jstree']")
-					.andSelf()
+					.addBack()
 					.attr("class", function () { return this.className.replace(/jstree[^ ]*|$/ig,''); });
 			$(document)
 				.unbind(".jstree-" + n)
@@ -540,7 +540,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			*/
 			init : function () {
 				this.data.core.original_container_html = this.get_container().find(" > ul > li").clone(true);
-				this.data.core.original_container_html.find("li").andSelf().contents().filter(function() { return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue)); }).remove();
+				this.data.core.original_container_html.find("li").addBack().contents().filter(function() { return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue)); }).remove();
 				this.get_container().html("<ul><li class='jstree-loading'><a href='#'>" + this._get_string("Loading ...") + "</a></li></ul>");
 				this.clean_node(-1);
 				this.data.core.li_height = this.get_container_ul().children("li:eq(0)").height() || 18;
@@ -997,7 +997,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				obj = !obj || obj === -1 ? this.get_container_ul() : obj;
 				original_obj = original_obj || obj;
 				var _this = this;
-				obj = this.is_closed(obj) ? obj.find('li.jstree-closed').andSelf() : obj.find('li.jstree-closed');
+				obj = this.is_closed(obj) ? obj.find('li.jstree-closed').addBack() : obj.find('li.jstree-closed');
 				obj.each(function () {
 					_this.open_node(
 						this,
@@ -1038,7 +1038,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				obj = obj ? this._get_node(obj) : -1;
 				var $obj = !obj || obj === -1 ? this.get_container_ul() : obj,
 					_this = this;
-				$obj = this.is_open($obj) ? $obj.find('li.jstree-open').andSelf() : $obj.find('li.jstree-open');
+				$obj = this.is_open($obj) ? $obj.find('li.jstree-open').addBack() : $obj.find('li.jstree-open');
 				$obj.each(function () { _this.close_node(this, animation || 0); });
 				this.__callback({ "obj" : obj });
 			},
@@ -1063,7 +1063,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			clean_node : function (obj) {
 				// DETACH maybe inside the "load_node" function? But what about animations, etc?
 				obj = this.get_node(obj);
-				obj = !obj || obj === -1 ? this.get_container().find("li") : obj.find("li").andSelf();
+				obj = !obj || obj === -1 ? this.get_container().find("li") : obj.find("li").addBack();
 				var _this = this;
 				return obj.each(function () {
 					var t = $(this),
@@ -1119,7 +1119,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				obj = this.get_node(obj);
 				if(!obj || (obj === -1 && !deep)) { return false; }
 				if(obj === -1) { obj = this.get_container().find('li'); }
-				else { obj = deep ? obj.find('li').andSelf() : obj; }
+				else { obj = deep ? obj.find('li').addBack() : obj; }
 				obj.each(function () {
 					var obj = $(this);
 					switch(!0) {
@@ -1671,7 +1671,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 						if(tmp.length && tmp.index(obj) !== -1 && (pos === obj.index() || pos === obj.index() + 1)) {
 							return false;
 						}
-						if(par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) {
+						if(par !== -1 && par.parentsUntil('.jstree', 'li').addBack().index(obj) !== -1) {
 							return false;
 						}
 						break;
@@ -1823,7 +1823,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					is_multi = (old_ins.get_index() !== new_ins.get_index());
 
 				obj = obj.clone(true);
-				obj.find("*[id]").andSelf().each(function () {
+				obj.find("*[id]").addBack().each(function () {
 					if(this.id) { this.id = "copy_" + this.id; }
 				});
 				if(new_par === -1) {

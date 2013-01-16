@@ -165,7 +165,7 @@
 				obj = !obj || obj === -1 ? this.get_container().find("> ul > li") : this.get_node(obj);
 				if(obj === false) { return; } // added for removing root nodes
 				obj.each(function () {
-					$(this).find("li").andSelf().each(function () {
+					$(this).find("li").addBack().each(function () {
 						var $t = $(this);
 						if($t.children(".jstree-wholerow-span").length) { return true; }
 						$t.prepend("<span class='jstree-wholerow-span' style='width:" + ($t.parentsUntil(".jstree","li").length * 18) + "px;'>&#160;</span>");

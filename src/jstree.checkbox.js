@@ -116,7 +116,7 @@ Adds checkboxes to the tree.
 						c.removeClass('jstree-undetermined jstree-unchecked').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('indeterminate', false);
 						continue;
 					}
-					obj.parentsUntil(".jstree", "li").andSelf().find(' > a > .jstree-checkbox').removeClass('jstree-checked jstree-unchecked').addClass('jstree-undetermined').children(':checkbox').prop('checked', false).prop('undetermined', true);
+					obj.parentsUntil(".jstree", "li").addBack().find(' > a > .jstree-checkbox').removeClass('jstree-checked jstree-unchecked').addClass('jstree-undetermined').children(':checkbox').prop('checked', false).prop('undetermined', true);
 					return;
 				}
 			},

@@ -504,7 +504,7 @@ Functions needed to drag'n'drop elements
 			vakata_dnd.scroll_l = 0;
 			vakata_dnd.scroll_e = false;
 			var p = $(e.target)
-				.parentsUntil("body").andSelf().vakata_reverse()
+				.parentsUntil("body").addBack().vakata_reverse()
 				.filter(function () {
 					return	(/^auto|scroll$/).test($(this).css("overflow")) &&
 							(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);
@@ -1139,13 +1139,13 @@ Functions needed to show a custom context menu.
 
 				$(this)
 					.siblings().find("ul").hide().end().end()
-					.parentsUntil(".vakata-context", "li").andSelf().addClass("vakata-context-hover");
+					.parentsUntil(".vakata-context", "li").addBack().addClass("vakata-context-hover");
 				$.vakata.context._show_submenu(this);
 			})
 			// тестово - дали не натоварва?
 			.delegate("li", "mouseleave", function (e) {
 				if($.contains(this, e.relatedTarget)) { return; }
-				$(this).find(".vakata-context-hover").andSelf().removeClass("vakata-context-hover");
+				$(this).find(".vakata-context-hover").addBack().removeClass("vakata-context-hover");
 			})
 			.bind("mouseleave", function (e) {
 				$(this).find(".vakata-context-hover").removeClass("vakata-context-hover");
@@ -1183,8 +1183,8 @@ Functions needed to show a custom context menu.
 			$(document)
 				.bind("keydown", "up", function (e) {
 					if(vakata_context.is_visible) {
-						var o = vakata_context.element.find("ul:visible").andSelf().last().children(".vakata-context-hover").removeClass("vakata-context-hover").prevAll("li:not(.vakata-context-separator)").first();
-						if(!o.length) { o = vakata_context.element.find("ul:visible").andSelf().last().children("li:not(.vakata-context-separator)").last(); }
+						var o = vakata_context.element.find("ul:visible").addBack().last().children(".vakata-context-hover").removeClass("vakata-context-hover").prevAll("li:not(.vakata-context-separator)").first();
+						if(!o.length) { o = vakata_context.element.find("ul:visible").addBack().last().children("li:not(.vakata-context-separator)").last(); }
 						o.addClass("vakata-context-hover");
 						e.stopImmediatePropagation();
 						e.preventDefault();
@@ -1192,8 +1192,8 @@ Functions needed to show a custom context menu.
 				})
 				.bind("keydown", "down", function (e) {
 					if(vakata_context.is_visible) {
-						var o = vakata_context.element.find("ul:visible").andSelf().last().children(".vakata-context-hover").removeClass("vakata-context-hover").nextAll("li:not(.vakata-context-separator)").first();
-						if(!o.length) { o = vakata_context.element.find("ul:visible").andSelf().last().children("li:not(.vakata-context-separator)").first(); }
+						var o = vakata_context.element.find("ul:visible").addBack().last().children(".vakata-context-hover").removeClass("vakata-context-hover").nextAll("li:not(.vakata-context-separator)").first();
+						if(!o.length) { o = vakata_context.element.find("ul:visible").addBack().last().children("li:not(.vakata-context-separator)").first(); }
 						o.addClass("vakata-context-hover");
 						e.stopImmediatePropagation();
 						e.preventDefault();
@@ -2119,4 +2119,35 @@ Selection related functions
 		}
 		return _return;
 	};
+})(jQuery);
+
+
+(function ($) {
+	var browser = {},
+		b_match = function(ua) {
+			ua = ua.toLowerCase();
+
+			var match =	/(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+						/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+						/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+						/(msie) ([\w.]+)/.exec( ua ) ||
+						ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+						[];
+			return {
+				browser: match[1] || "",
+				version: match[2] || "0"
+			};
+		},
+		matched = b_match(navigator.userAgent);
+	if(matched.browser) {
+		browser[ matched.browser ] = true;
+		browser.version = matched.version;
+	}
+	if(browser.chrome) {
+		browser.webkit = true;
+	}
+	else if(browser.webkit) {
+		browser.safari = true;
+	}
+	$.vakata.browser = browser;
 })(jQuery);

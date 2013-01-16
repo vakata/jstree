@@ -504,7 +504,7 @@ Functions needed to drag'n'drop elements
 			vakata_dnd.scroll_l = 0;
 			vakata_dnd.scroll_e = false;
 			var p = $(e.target)
-				.parentsUntil("body").andSelf().vakata_reverse()
+				.parentsUntil("body").addBack().vakata_reverse()
 				.filter(function () {
 					return	(/^auto|scroll$/).test($(this).css("overflow")) &&
 							(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);
@@ -1139,13 +1139,13 @@ Functions needed to show a custom context menu.
 
 				$(this)
 					.siblings().find("ul").hide().end().end()
-					.parentsUntil(".vakata-context", "li").andSelf().addClass("vakata-context-hover");
+					.parentsUntil(".vakata-context", "li").addBack().addClass("vakata-context-hover");
 				$.vakata.context._show_submenu(this);
 			})
 			// тестово - дали не натоварва?
 			.delegate("li", "mouseleave", function (e) {
 				if($.contains(this, e.relatedTarget)) { return; }
-				$(this).find(".vakata-context-hover").andSelf().removeClass("vakata-context-hover");
+				$(this).find(".vakata-context-hover").addBack().removeClass("vakata-context-hover");
 			})
 			.bind("mouseleave", function (e) {
 				$(this).find(".vakata-context-hover").removeClass("vakata-context-hover");
@@ -1183,8 +1183,8 @@ Functions needed to show a custom context menu.
 			$(document)
 				.bind("keydown", "up", function (e) {
 					if(vakata_context.is_visible) {
-						var o = vakata_context.element.find("ul:visible").andSelf().last().children(".vakata-context-hover").removeClass("vakata-context-hover").prevAll("li:not(.vakata-context-separator)").first();
-						if(!o.length) { o = vakata_context.element.find("ul:visible").andSelf().last().children("li:not(.vakata-context-separator)").last(); }
+						var o = vakata_context.element.find("ul:visible").addBack().last().children(".vakata-context-hover").removeClass("vakata-context-hover").prevAll("li:not(.vakata-context-separator)").first();
+						if(!o.length) { o = vakata_context.element.find("ul:visible").addBack().last().children("li:not(.vakata-context-separator)").last(); }
 						o.addClass("vakata-context-hover");
 						e.stopImmediatePropagation();
 						e.preventDefault();
@@ -1192,8 +1192,8 @@ Functions needed to show a custom context menu.
 				})
 				.bind("keydown", "down", function (e) {
 					if(vakata_context.is_visible) {
-						var o = vakata_context.element.find("ul:visible").andSelf().last().children(".vakata-context-hover").removeClass("vakata-context-hover").nextAll("li:not(.vakata-context-separator)").first();
-						if(!o.length) { o = vakata_context.element.find("ul:visible").andSelf().last().children("li:not(.vakata-context-separator)").first(); }
+						var o = vakata_context.element.find("ul:visible").addBack().last().children(".vakata-context-hover").removeClass("vakata-context-hover").nextAll("li:not(.vakata-context-separator)").first();
+						if(!o.length) { o = vakata_context.element.find("ul:visible").addBack().last().children("li:not(.vakata-context-separator)").first(); }
 						o.addClass("vakata-context-hover");
 						e.stopImmediatePropagation();
 						e.preventDefault();
@@ -2120,6 +2120,37 @@ Selection related functions
 		return _return;
 	};
 })(jQuery);
+
+
+(function ($) {
+	var browser = {},
+		b_match = function(ua) {
+			ua = ua.toLowerCase();
+
+			var match =	/(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+						/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+						/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+						/(msie) ([\w.]+)/.exec( ua ) ||
+						ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+						[];
+			return {
+				browser: match[1] || "",
+				version: match[2] || "0"
+			};
+		},
+		matched = b_match(navigator.userAgent);
+	if(matched.browser) {
+		browser[ matched.browser ] = true;
+		browser.version = matched.version;
+	}
+	if(browser.chrome) {
+		browser.webkit = true;
+	}
+	else if(browser.webkit) {
+		browser.safari = true;
+	}
+	$.vakata.browser = browser;
+})(jQuery);
 /*
  * jsTree 1.0.0
  * http://jstree.com/
@@ -2165,19 +2196,19 @@ Some static functions and variables, unless you know exactly what you are doing 
 			Variable: $.jstree.IS_IE6
 				*boolean* indicating if the client is running Internet Explorer 6
 		*/
-		IS_IE6 : (jQuery.browser.msie && parseInt(jQuery.browser.version,10) === 6),
+		IS_IE6 : ($.vakata.browser.msie && parseInt($.vakata.browser.version,10) === 6),
 
 		/*
 			Variable: $.jstree.IS_IE7
 				*boolean* indicating if the client is running Internet Explorer 7
 		*/
-		IS_IE7 : (jQuery.browser.msie && parseInt(jQuery.browser.version,10) === 6),
+		IS_IE7 : ($.vakata.browser.msie && parseInt($.vakata.browser.version,10) === 6),
 
 		/*
 			Variable: $.jstree.IS_FF2
 				*boolean* indicating if the client is running Firefox 2
 		*/
-		IS_FF2 : (jQuery.browser.mozilla && parseFloat(jQuery.browser.version,10) < 1.9),
+		IS_FF2 : ($.vakata.browser.mozilla && parseFloat($.vakata.browser.version,10) < 1.9),
 
 		/*
 			Function: $.jstree.__construct
@@ -2262,7 +2293,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				.undelegate(".jstree")
 				.removeData("jstree_instance_id")
 				.find("[class^='jstree']")
-					.andSelf()
+					.addBack()
 					.attr("class", function () { return this.className.replace(/jstree[^ ]*|$/ig,''); });
 			$(document)
 				.unbind(".jstree-" + n)
@@ -2662,7 +2693,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			*/
 			init : function () {
 				this.data.core.original_container_html = this.get_container().find(" > ul > li").clone(true);
-				this.data.core.original_container_html.find("li").andSelf().contents().filter(function() { return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue)); }).remove();
+				this.data.core.original_container_html.find("li").addBack().contents().filter(function() { return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue)); }).remove();
 				this.get_container().html("<ul><li class='jstree-loading'><a href='#'>" + this._get_string("Loading ...") + "</a></li></ul>");
 				this.clean_node(-1);
 				this.data.core.li_height = this.get_container_ul().children("li:eq(0)").height() || 18;
@@ -3119,7 +3150,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				obj = !obj || obj === -1 ? this.get_container_ul() : obj;
 				original_obj = original_obj || obj;
 				var _this = this;
-				obj = this.is_closed(obj) ? obj.find('li.jstree-closed').andSelf() : obj.find('li.jstree-closed');
+				obj = this.is_closed(obj) ? obj.find('li.jstree-closed').addBack() : obj.find('li.jstree-closed');
 				obj.each(function () {
 					_this.open_node(
 						this,
@@ -3160,7 +3191,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				obj = obj ? this._get_node(obj) : -1;
 				var $obj = !obj || obj === -1 ? this.get_container_ul() : obj,
 					_this = this;
-				$obj = this.is_open($obj) ? $obj.find('li.jstree-open').andSelf() : $obj.find('li.jstree-open');
+				$obj = this.is_open($obj) ? $obj.find('li.jstree-open').addBack() : $obj.find('li.jstree-open');
 				$obj.each(function () { _this.close_node(this, animation || 0); });
 				this.__callback({ "obj" : obj });
 			},
@@ -3185,7 +3216,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 			clean_node : function (obj) {
 				// DETACH maybe inside the "load_node" function? But what about animations, etc?
 				obj = this.get_node(obj);
-				obj = !obj || obj === -1 ? this.get_container().find("li") : obj.find("li").andSelf();
+				obj = !obj || obj === -1 ? this.get_container().find("li") : obj.find("li").addBack();
 				var _this = this;
 				return obj.each(function () {
 					var t = $(this),
@@ -3241,7 +3272,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 				obj = this.get_node(obj);
 				if(!obj || (obj === -1 && !deep)) { return false; }
 				if(obj === -1) { obj = this.get_container().find('li'); }
-				else { obj = deep ? obj.find('li').andSelf() : obj; }
+				else { obj = deep ? obj.find('li').addBack() : obj; }
 				obj.each(function () {
 					var obj = $(this);
 					switch(!0) {
@@ -3793,7 +3824,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 						if(tmp.length && tmp.index(obj) !== -1 && (pos === obj.index() || pos === obj.index() + 1)) {
 							return false;
 						}
-						if(par !== -1 && par.parentsUntil('.jstree', 'li').andSelf().index(obj) !== -1) {
+						if(par !== -1 && par.parentsUntil('.jstree', 'li').addBack().index(obj) !== -1) {
 							return false;
 						}
 						break;
@@ -3945,7 +3976,7 @@ Some static functions and variables, unless you know exactly what you are doing 
 					is_multi = (old_ins.get_index() !== new_ins.get_index());
 
 				obj = obj.clone(true);
-				obj.find("*[id]").andSelf().each(function () {
+				obj.find("*[id]").addBack().each(function () {
 					if(this.id) { this.id = "copy_" + this.id; }
 				});
 				if(new_par === -1) {
@@ -4250,7 +4281,7 @@ Adds checkboxes to the tree.
 						c.removeClass('jstree-undetermined jstree-unchecked').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('indeterminate', false);
 						continue;
 					}
-					obj.parentsUntil(".jstree", "li").andSelf().find(' > a > .jstree-checkbox').removeClass('jstree-checked jstree-unchecked').addClass('jstree-undetermined').children(':checkbox').prop('checked', false).prop('undetermined', true);
+					obj.parentsUntil(".jstree", "li").addBack().find(' > a > .jstree-checkbox').removeClass('jstree-checked jstree-unchecked').addClass('jstree-undetermined').children(':checkbox').prop('checked', false).prop('undetermined', true);
 					return;
 				}
 			},
@@ -4486,7 +4517,7 @@ Enables drag'n'drop.
 		__construct : function () {
 			this.get_container()
 				.delegate('a', 'mousedown', $.proxy(function (e) {
-					var obj = this.get_node(e.target);
+					var obj = this.get_node(e.target); // TODO: how about multiple
 					if(obj && obj !== -1 && obj.length && e.which === 1) { // TODO: think about e.which
 						this.get_container().trigger('mousedown.jstree');
 						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : obj }, '<div id="jstree-dnd" class="' + (this.data.themes ? 'jstree-' + this.get_theme() : '') + '"><ins class="jstree-icon jstree-er">&#160;</ins>' + this.get_text(e.currentTarget, true) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
@@ -5115,7 +5146,7 @@ Searches the tree using a string. DOES NOT WORK WITH JSON PROGRESSIVE RENDER!
 				this.get_container()
 					.bind("search.jstree", function (e, data) {
 						$(this).children("ul").find("li").hide().removeClass("jstree-last");
-						data.rslt.nodes.parentsUntil(".jstree").andSelf().show()
+						data.rslt.nodes.parentsUntil(".jstree").addBack().show()
 							.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
 					})
 					.bind("clear_search.jstree", function () {
@@ -5621,7 +5652,7 @@ This plugin enables selecting, deselecting and hovering tree items.
 				if(!keep_old_selection) { this.deselect_all(); }
 				i = (obj.index() < start_node.index());
 				start_node.addClass("jstree-last-selected");
-				obj = obj[ i ? "nextUntil" : "prevUntil" ](".jstree-last-selected").andSelf().add(".jstree-last-selected");
+				obj = obj[ i ? "nextUntil" : "prevUntil" ](".jstree-last-selected").addBack().add(".jstree-last-selected");
 				start_node.removeClass("jstree-last-selected");
 				if(!i) { obj = obj.vakata_reverse(); }
 				if(!obj.length) { return false; }
@@ -5707,7 +5738,7 @@ Does not allow the same name amongst siblings (still a bit experimental).
 (function ($) {
 	$.jstree.plugin("unique", {
 		// TODO: think about an option to work with HTML or not?
-		// add callback - to handle errors and for example types
+		// TODO: add callback - to handle errors and for example types
 		_fn : {
 			check : function (chk, obj, par, pos) {
 				if(!this.__call_old()) { return false; }
@@ -5901,7 +5932,7 @@ Does not allow the same name amongst siblings (still a bit experimental).
 				obj = !obj || obj === -1 ? this.get_container().find("> ul > li") : this.get_node(obj);
 				if(obj === false) { return; } // added for removing root nodes
 				obj.each(function () {
-					$(this).find("li").andSelf().each(function () {
+					$(this).find("li").addBack().each(function () {
 						var $t = $(this);
 						if($t.children(".jstree-wholerow-span").length) { return true; }
 						$t.prepend("<span class='jstree-wholerow-span' style='width:" + ($t.parentsUntil(".jstree","li").length * 18) + "px;'>&#160;</span>");
