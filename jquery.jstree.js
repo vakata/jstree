@@ -578,7 +578,13 @@
 			},
 			_get_prev		: function (obj, strict) {
 				obj = this._get_node(obj);
-				if(obj === -1) { return this.get_container().find("> ul > li:last-of-type"); }
+				if(obj === -1) {
+				  if($().jquery.match(/1[.]9/)) {
+				    return this.get_container().find("> ul > li:last-of-type");
+				  } else {
+				    return this.get_container().find("> ul > li:last-child");
+				  }
+			  }
 				if(!obj.length) { return false; }
 				if(strict) { return (obj.prevAll("li").length > 0) ? obj.prevAll("li:eq(0)") : false; }
 
@@ -701,8 +707,9 @@
 			clean_node	: function (obj) {
 				obj = obj && obj != -1 ? $(obj) : this.get_container_ul();
 				obj = obj.is("li") ? obj.find("li").andSelf() : obj.find("li");
+				var tmpSelector = $().jquery.match(/1[.]9/) ? "li:last-of-type" : "li:last-child";
 				obj.removeClass("jstree-last")
-					.filter("li:last-of-type").addClass("jstree-last").end()
+					.filter(tmpSelector).addClass("jstree-last").end()
 					.filter(":has(li)")
 						.not(".jstree-open").removeClass("jstree-leaf").addClass("jstree-closed");
 				obj.not(".jstree-open, .jstree-closed").addClass("jstree-leaf").children("ul").remove();
