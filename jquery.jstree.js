@@ -578,7 +578,7 @@
 			},
 			_get_prev		: function (obj, strict) {
 				obj = this._get_node(obj);
-				if(obj === -1) { return this.get_container().find("> ul > li:last-child"); }
+				if(obj === -1) { return this.get_container().find("> ul > li:last-of-type"); }
 				if(!obj.length) { return false; }
 				if(strict) { return (obj.prevAll("li").length > 0) ? obj.prevAll("li:eq(0)") : false; }
 
@@ -702,7 +702,7 @@
 				obj = obj && obj != -1 ? $(obj) : this.get_container_ul();
 				obj = obj.is("li") ? obj.find("li").andSelf() : obj.find("li");
 				obj.removeClass("jstree-last")
-					.filter("li:last-child").addClass("jstree-last").end()
+					.filter("li:last-of-type").addClass("jstree-last").end()
 					.filter(":has(li)")
 						.not(".jstree-open").removeClass("jstree-leaf").addClass("jstree-closed");
 				obj.not(".jstree-open, .jstree-closed").addClass("jstree-leaf").children("ul").remove();
