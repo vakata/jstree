@@ -35,9 +35,11 @@ Output:
 })(jQuery);
 
 (function ($) {
-	jQuery.expr[':'].vakata_icontains = function(a,i,m){
-		return (a.textContent || a.innerText || "").toLowerCase().indexOf(m[3].toLowerCase())>=0;
-	};
+	$.expr[':'].vakata_icontains = $.expr.createPseudo(function(search) {
+		return function(a) {
+			return (a.textContent || a.innerText || "").toLowerCase().indexOf(search.toLowerCase())>=0;
+		};
+	});
 })(jQuery);
 
 /*
