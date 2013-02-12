@@ -626,9 +626,21 @@ A function used to do XSLT transformations.
 		>}, some_object);
 	*/
 	$.vakata.xslt = function (xml, xsl) {
-		var r = false, p, q, s;
-		// IE9
-		if(r === false && window.ActiveXObject) {
+		var r = false, p, q, s, xm = $.parseXML(xml), xs = $.parseXML(xsl);
+
+		// FF, Chrome, IE10
+		if(typeof (XSLTProcessor) !== "undefined") {
+			p = new XSLTProcessor();
+			p.importStylesheet(xs);
+			r = p.transformToFragment(xm, document);
+			return $('<div />').append(r).html();
+		}
+		// OLD IE
+		if(typeof (xm.transformNode) !== "undefined") {
+			return xm.transformNode(xs);
+		}
+		// IE9, IE10
+		if(window.ActiveXObject) {
 			try {
 				r = new ActiveXObject("Msxml2.XSLTemplate");
 				q = new ActiveXObject("Msxml2.DOMDocument");
@@ -642,19 +654,6 @@ A function used to do XSLT transformations.
 				r = p.output;
 			}
 			catch (e) { }
-		}
-		xml = $.parseXML(xml);
-		xsl = $.parseXML(xsl);
-		// FF, Chrome
-		if(r === false && typeof (XSLTProcessor) !== "undefined") {
-			p = new XSLTProcessor();
-			p.importStylesheet(xsl);
-			r = p.transformToFragment(xml, document);
-			r = $('<div />').append(r).html();
-		}
-		// OLD IE
-		if(r === false && typeof (xml.transformNode) !== "undefined") {
-			r = xml.transformNode(xsl);
 		}
 		return r;
 	};
