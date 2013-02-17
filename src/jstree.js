@@ -25,7 +25,6 @@
 		ccp_mode = false,
 		themes_loaded = [];
 
-	// jquery object / function / selector
 	$.jstree = {
 		version : '2.0.0-alpha',
 		defaults : {
