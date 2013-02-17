@@ -105,11 +105,11 @@
 	};
 	$.jstree.core.prototype = {
 		plugin : function (deco, opts) {
-			var child = $.jstree.plugins[deco];
-			if(child) {
+			var Child = $.jstree.plugins[deco];
+			if(Child) {
 				this._data[deco] = {};
-				child.prototype = this;
-				return new child(opts, this);
+				Child.prototype = this;
+				return new Child(opts, this);
 			}
 			return this;
 		},

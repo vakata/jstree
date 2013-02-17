@@ -2,6 +2,7 @@
 This plugin makes it possible for jstree to use XML data sources.
 */
 /* Group: jstree xml plugin */
+/*global ActiveXObject, XSLTProcessor */
 (function ($) {
 	var xsl = {
 		'nest' : '' +

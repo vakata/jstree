@@ -20,15 +20,16 @@ Limits the children count, valid children and depth of nodes by using types or e
 			this.element.on('load_node.jstree', $.proxy(function (e, data) {
 				if(this.settings.rules.check_max_depth) {
 					var o = data.node === -1 ? this.element : data.node,
-						t = this;
+						t = this,
+						f = function () {
+							if(t.apply_max_depth(this)) {
+								o = o.not(this);
+							}
+						};
 					if(!this.apply_max_depth(o)) {
 						while(o.length) {
 							o = o.find("> ul > li");
-							o.each(function () {
-								if(t.apply_max_depth(this)) {
-									o = o.not(this);
-								}
-							});
+							o.each(f);
 						}
 					}
 				}
@@ -41,25 +42,27 @@ Limits the children count, valid children and depth of nodes by using types or e
 			}
 			obj = obj === -1 ? this.element : obj;
 			var d = obj.data('jstree'),
-				t = {};
-			if(d && typeof d.max_depth !== 'undefined' && d.max_depth != -1) {
+				t = {},
+				f1 = function () {
+					t = $(this).data('jstree') || {};
+					t.max_depth = 0;
+					$(this).data('jstree', t);
+				},
+				f2 = function () {
+					t = $(this).data('jstree') || {};
+					t.max_depth = t.max_depth && t.max_depth !== -1 ? Math.min(t.max_depth, d) : d;
+					$(this).data('jstree', t);
+				};
+			if(d && typeof d.max_depth !== 'undefined' && d.max_depth !== -1) {
 				d = d.max_depth;
 				while(obj.length > 0) {
 					obj = obj.find("> ul > li");
 					d = Math.max(d - 1, 0);
 					if(d === 0) {
-						obj.find('li').addBack().each(function () {
-							t = $(this).data('jstree') || {};
-							t.max_depth = 0;
-							$(this).data('jstree', t);
-						});
+						obj.find('li').addBack().each(f1);
 						break;
 					}
-					obj.each(function () {
-						t = $(this).data('jstree') || {};
-						t.max_depth = t.max_depth && t.max_depth != -1 ? Math.min(t.max_depth, d) : d;
-						$(this).data('jstree', t);
-					});
+					obj.each(f2);
 				}
 				return true;
 			}
