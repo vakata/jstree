@@ -79,112 +79,147 @@ This plugin makes it possible for jstree to use XML data sources.
 			.replace(/'/g, '&apos;');
 	};
 
+	$.jstree.defaults.xml = {
+		xsl		: "flat",
+		data	: false,
+		ajax	: false
+	};
 
-	$.jstree.plugin("xml", {
-		defaults : {
-			xsl		: "flat",
-			data	: false,
-			ajax	: false
-		},
-		_fn : {
-			_append_xml_data : function (dom, data) {
-				data = $.vakata.xslt(data, xsl[this.get_settings().xml.xsl]);
-				if(data === false) { return false; }
-				data = $(data);
-				dom = this.get_node(dom);
-				if(!data || !data.length || !data.is('ul, li')) {
-					if(dom && dom !== -1 && dom.is('li')) {
-						dom.removeClass('jstree-closed').addClass('jstree-leaf').children('ul').remove();
-					}
-					return true;
+	$.jstree.plugins.xml = function (options, parent) {
+		this._append_xml_data = function (dom, data) {
+			data = $.vakata.xslt(data, xsl[this.settings.xml.xsl]);
+			if(data === false) { return false; }
+			data = $(data);
+			dom = this.get_node(dom);
+			if(!data || !data.length || !data.is('ul, li')) {
+				if(dom && dom !== -1 && dom.is('li')) {
+					dom.removeClass('jstree-closed').addClass('jstree-leaf').children('ul').remove();
 				}
-				if(dom === -1) { dom = this.get_container(); }
-				if(!dom.length) { return false; }
-				if(!dom.children('ul').length) { dom.append('<ul />'); }
-				dom.children('ul').empty().append(data.is('ul') ? data.children('li') : data);
 				return true;
-			},
-			_load_node : function (obj, callback) {
-				var d = false,
-					s = this.get_settings().xml;
-				obj = this.get_node(obj);
-				if(!obj) { return false; }
-				switch(!0) {
-					// data is function
-					case ($.isFunction(s.data)):
-						return s.data.call(this, obj, $.proxy(function (d) {
-							return callback.call(this, this._append_xml_data(obj, d));
-						}, this));
-					// data is set, ajax is not set, or both are set, but we are dealing with root node
-					case ((!!s.data && !s.ajax) || (!!s.data && !!s.ajax && obj === -1)):
-						return callback.call(this, this._append_xml_data(obj, s.data));
-					// data is not set, ajax is set, or both are set, but we are dealing with a normal node
-					case ((!s.data && !!s.ajax) || (!!s.data && !!s.ajax && obj !== -1)):
-						s.ajax.success = $.proxy(function (d, t, x) {
-							var s = this.get_settings().xml.ajax;
-							if($.isFunction(s.success)) {
-								d = s.success.call(this, d, t, x) || d;
-							}
-							callback.call(this, this._append_xml_data(obj, d));
-						}, this);
-						s.ajax.error = $.proxy(function (x, t, e) {
-							var s = this.get_settings().xml.ajax;
-							if($.isFunction(s.error)) {
-								s.error.call(this, x, t, e);
-							}
-							callback.call(this, false);
-						}, this);
-						if(!s.ajax.dataType) { s.ajax.dataType = "xml"; }
-						if($.isFunction(s.ajax.url))	{ s.ajax.url	= s.ajax.url.call(this, obj); }
-						if($.isFunction(s.ajax.data))	{ s.ajax.data	= s.ajax.data.call(this, obj); }
-						return $.ajax(s.ajax);
-				}
-			},
-			get_xml : function (mode, obj, is_callback) {
-				var r = '';
-				if(!mode) { mode = 'flat'; }
-				if(typeof is_callback === 'undefined') {
-					obj = this.get_json(obj);
-					$.each(obj, $.proxy(function (i, v) {
-						r += this.get_xml(mode, v, true);
-					}, this));
-					return '' +
-						'<' + '?xml version="1.0" encoding="utf-8" ?>' +
-						'<root>' + r + '</root>';
-				}
-				r += '<item';
-				if(mode === 'flat' && is_callback !== true) {
-					r += ' parent_id="' + escape_xml(is_callback) + '"';
-				}
-				if(obj.data && !$.isEmptyObject(obj.data)) {
-					$.each(obj.data, function (i, v) {
-						if(!$.isEmptyObject(v)) {
-							r += ' data-' + i + '="' + escape_xml($.vakata.json.encode(v)) + '"';
-						}
-					});
-				}
-				$.each(obj.li_attr, function (i, v) {
-					r += ' ' + i + '="' + escape_xml(v) + '"';
-				});
-				r += '>';
-				r += '<content';
-				$.each(obj.a_attr, function (i, v) {
-					r += ' ' + i + '="' + escape_xml(v) + '"';
-				});
-				r += '><![CDATA[' + obj.title + ']]></content>';
-
-				if(mode === 'flat') { r += '</item>'; }
-				if(obj.children) {
-					$.each(obj.children, $.proxy(function (i, v) {
-						r += this.get_xml(mode, v, obj.li_attr && obj.li_attr.id ? obj.li_attr.id : true);
-					}, this));
-				}
-				if(mode === 'nest') { r += '</item>'; }
-				return r;
 			}
-		}
-	});
+			if(dom === -1) { dom = this.element; }
+			if(!dom.length) { return false; }
+			if(!dom.children('ul').length) { dom.append('<ul />'); }
+			dom.children('ul').empty().append(data.is('ul') ? data.children('li') : data);
+			return true;
+		};
+		this._load_node = function (obj, callback) {
+			var d = false,
+				s = $.extend(true, {}, this.settings.xml);
+			obj = this.get_node(obj);
+			if(!obj) { return false; }
+			switch(!0) {
+				// no settings - use parent
+				case (!s.data && !s.ajax):
+					return parent._load_node.call(this, obj, callback);
+				// data is function
+				case ($.isFunction(s.data)):
+					return s.data.call(this, obj, $.proxy(function (d) {
+						return callback.call(this, this._append_xml_data(obj, d));
+					}, this));
+				// data is set, ajax is not set, or both are set, but we are dealing with root node
+				case ((!!s.data && !s.ajax) || (!!s.data && !!s.ajax && obj === -1)):
+					return callback.call(this, this._append_xml_data(obj, s.data));
+				// data is not set, ajax is set, or both are set, but we are dealing with a normal node
+				case ((!s.data && !!s.ajax) || (!!s.data && !!s.ajax && obj !== -1)):
+					s.ajax.success = $.proxy(function (d, t, x) {
+						var s = this.settings.xml.ajax;
+						if($.isFunction(s.success)) {
+							d = s.success.call(this, d, t, x) || d;
+						}
+						callback.call(this, this._append_xml_data(obj, d));
+					}, this);
+					s.ajax.error = $.proxy(function (x, t, e) {
+						var s = this.settings.xml.ajax;
+						if($.isFunction(s.error)) {
+							s.error.call(this, x, t, e);
+						}
+						callback.call(this, false);
+					}, this);
+					if(!s.ajax.dataType) { s.ajax.dataType = "xml"; }
+					if($.isFunction(s.ajax.url))	{ s.ajax.url	= s.ajax.url.call(this, obj); }
+					if($.isFunction(s.ajax.data))	{ s.ajax.data	= s.ajax.data.call(this, obj); }
+					return $.ajax(s.ajax);
+			}
+		};
+		this.get_xml = function (mode, obj, is_callback) {
+			var r = '';
+			if(!mode) { mode = 'flat'; }
+			if(typeof is_callback === 'undefined') {
+				obj = this.get_json(obj);
+				$.each(obj, $.proxy(function (i, v) {
+					r += this.get_xml(mode, v, true);
+				}, this));
+				return '' +
+					'<' + '?xml version="1.0" encoding="utf-8" ?>' +
+					'<root>' + r + '</root>';
+			}
+			r += '<item';
+			if(mode === 'flat' && is_callback !== true) {
+				r += ' parent_id="' + escape_xml(is_callback) + '"';
+			}
+			if(obj.data && !$.isEmptyObject(obj.data)) {
+				$.each(obj.data, function (i, v) {
+					if(!$.isEmptyObject(v)) {
+						r += ' data-' + i + '="' + escape_xml($.vakata.json.encode(v)) + '"';
+					}
+				});
+			}
+			$.each(obj.li_attr, function (i, v) {
+				r += ' ' + i + '="' + escape_xml(v) + '"';
+			});
+			r += '>';
+			r += '<content';
+			$.each(obj.a_attr, function (i, v) {
+				r += ' ' + i + '="' + escape_xml(v) + '"';
+			});
+			r += '><![CDATA[' + obj.title + ']]></content>';
+
+			if(mode === 'flat') { r += '</item>'; }
+			if(obj.children) {
+				$.each(obj.children, $.proxy(function (i, v) {
+					r += this.get_xml(mode, v, obj.li_attr && obj.li_attr.id ? obj.li_attr.id : true);
+				}, this));
+			}
+			if(mode === 'nest') { r += '</item>'; }
+			return r;
+		};
+	};
+
 	// include the html plugin by default
 	$.jstree.defaults.plugins.push("xml");
+
+	// helpers
+	$.vakata.xslt = function (xml, xsl) {
+		var r = false, p, q, s, xm = $.parseXML(xml), xs = $.parseXML(xsl);
+
+		// FF, Chrome, IE10
+		if(typeof (XSLTProcessor) !== "undefined") {
+			p = new XSLTProcessor();
+			p.importStylesheet(xs);
+			r = p.transformToFragment(xm, document);
+			return $('<div />').append(r).html();
+		}
+		// OLD IE
+		if(typeof (xm.transformNode) !== "undefined") {
+			return xm.transformNode(xs);
+		}
+		// IE9, IE10
+		if(window.ActiveXObject) {
+			try {
+				r = new ActiveXObject("Msxml2.XSLTemplate");
+				q = new ActiveXObject("Msxml2.DOMDocument");
+				q.loadXML(xml);
+				s = new ActiveXObject("Msxml2.FreeThreadedDOMDocument");
+				s.loadXML(xsl);
+				r.stylesheet = s;
+				p = r.createProcessor();
+				p.input = q;
+				p.transform();
+				r = p.output;
+			}
+			catch (e) { }
+		}
+		return r;
+	};
 })(jQuery);
-//*/

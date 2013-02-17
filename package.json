@@ -1,8 +1,8 @@
 {
   "name": "jstree",
-  "title": "jstree",
+  "title": "jsTree",
   "description": "Tree view for jQuery",
-  "version": "1.0.0",
+  "version": "2.0.0-alpha",
   "homepage": "http://jstree.com",
   "author": {
     "name": "Ivan Bozhanov",
@@ -19,11 +19,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/vakata/jstree/blob/v.1.0/LICENSE-MIT"
-    },
-    {
-      "type": "GPL",
-      "url": "https://github.com/vakata/jstree/blob/v.1.0/LICENSE-GPL"
+      "url": "https://github.com/vakata/jstree/blob/master/LICENSE-MIT"
     }
   ],
   "keywords": [],

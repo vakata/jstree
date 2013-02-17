@@ -2,189 +2,154 @@
 Adds checkboxes to the tree.
 */
 (function ($) {
-	$.jstree.plugin("checkbox", {
-		__construct : function () {
-			this.get_container()
-				.bind("__construct.jstree", $.proxy(function () {
-						// TODO: on move/copy - clean new location and parents
-					}, this))
-				.bind("move_node.jstree, copy_node.jstree", function (e, data) {
-						if(data.rslt.old_instance && data.rslt.old_parent && $.isFunction(data.rslt.old_instance.checkbox_repair)) {
-							data.rslt.old_instance.checkbox_repair(data.rslt.old_parent);
-						}
-						if(data.rslt.new_instance && $.isFunction(data.rslt.new_instance.checkbox_repair)) {
-							data.rslt.new_instance.checkbox_repair(data.rslt.parent);
-						}
-					})
-				.bind("delete_node.jstree", function (e, data) {
-						this.checkbox_repair(data.rslt.parent);
-					})
-				.delegate("a", "click.jstree", $.proxy(function (e) {
-						e.preventDefault();
-						e.currentTarget.blur();
-						var obj = this.get_node(e.currentTarget);
-						this.toggle_check(obj);
-					}, this));
-		},
-		defaults : {
-			three_state : true,
-			name : 'jstree[]'
-		},
-		_fn : {
-			/*
-				Group: CHECKBOX functions
-			*/
-			check_node : function (obj) {
-				obj = this.get_node(obj);
-				obj.find(' > a > .jstree-checkbox').removeClass('jstree-unchecked jstree-undetermined').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('indeterminate', false);
-				this.checkbox_repair(obj);
-				this.__callback({ "obj" : obj });
-			},
-			uncheck_node : function (obj) {
-				obj = this.get_node(obj);
-				obj.find(' > a > .jstree-checkbox').removeClass('jstree-checked jstree-undetermined').addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('indeterminate', false);
-				this.checkbox_repair(obj);
-				this.__callback({ "obj" : obj });
-			},
-			toggle_check : function (obj) {
-				obj = obj.find(' > a > .jstree-checkbox').removeClass('jstree-undetermined').toggleClass('jstree-checked');
-				if(!obj.hasClass('jstree-checked')) {
-					this.uncheck_node(obj);
+	$.jstree.defaults.checkbox = {
+		three_state : true,
+		whole_node : false,
+		keep_selected_style : true
+	};
+
+	$.jstree.plugins.checkbox = function (options, parent) {
+		this.bind = function () {
+			parent.bind.call(this);
+
+			if(!this.settings.checkbox.keep_selected_style) {
+				this.element.addClass('jstree-checkbox-no-clicked');
+			}
+
+			if(this.settings.checkbox.three_state) {
+				this.element
+					.on('changed.jstree', $.proxy(function (e, data) {
+							var action = data.action || '',
+								node = false,
+								change = false;
+							switch(action) {
+								case 'select_node':
+									node = data.node.parent();
+									data.node.find('.jstree-anchor:not(.jstree-clicked)').each($.proxy(function (i,v) {
+										change = true;
+										this.select_node(v, true);
+									}, this)).end().find('.jstree-undetermined').removeClass('jstree-undetermined');
+									break;
+								case 'deselect_node':
+									node = data.node.parent();
+									data.node.find('.jstree-clicked').each($.proxy(function (i,v) {
+										change = true;
+										this.deselect_node(v, true);
+									}, this)).end().find('.jstree-undetermined').removeClass('jstree-undetermined');
+									break;
+								case 'deselect_all':
+									this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
+									break;
+								case 'delete_node':
+									node = data.parent;
+									break;
+								default:
+									break;
+							}
+							if(node && this.check_up(node)) {
+								change = true;
+							}
+							if(change) {
+								this.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : this._data.core.selected });
+							}
+						}, this))
+					.on('move_node.jstree copy_node.jstree', $.proxy(function (e, data) {
+							if(data.old_instance && data.old_instance.check_up && data.old_instance.check_up(data.old_parent)) {
+								data.old_instance.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : data.old_instance._data.core.selected });
+							}
+							if(data.new_instance && data.new_instance.check_up && data.new_instance.check_up(data.parent)) {
+								data.new_instance.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : data.new_instance._data.core.selected });
+							}
+						}, this));
+			}
+		};
+		this.clean_node = function(obj) {
+			obj = parent.clean_node.call(this, obj);
+			var t = this;
+			obj = obj.each(function () {
+				var o = $(this).children('a');
+				if(!o.children(".jstree-checkbox").length) {
+					o.prepend("<i class='jstree-icon jstree-checkbox'></i>");
 				}
-				else {
-					this.check_node(obj);
+			});
+			return obj;
+		};
+		this.activate_node = function (obj, e) {
+			if(this.settings.checkbox.whole_node || $(e.target).hasClass('jstree-checkbox')) {
+				e.ctrlKey = true;
+			}
+			parent.activate_node.call(this, obj, e);
+		};
+		this.check_up = function (obj) {
+			if(!this.settings.checkbox.three_state) { return false; }
+			obj = this.get_node(obj);
+			if(obj === -1 || !obj || !obj.length) { return false; }
+
+			var state = 0,
+				has_children = obj.find('> ul > li').length > 0,
+				all_checked = has_children && obj.find('> ul > li').not(this._data.core.selected).length === 0,
+				none_checked = has_children && obj.find('.jstree-clicked').length === 0;
+
+			if(!state && this.is_selected(obj)) { state = 1; }
+			if(!state && obj.find('> a > .jstree-undetermined').length) { state = 2; }
+
+			// if no children
+			if(!has_children) {
+				if(state === 2) {
+					obj.find('.jstree-undetermined').removeClass('jstree-undetermined');
 				}
-			},
-			uncheck_all : function (context) {
-				var ret = context ? $(context).find(".jstree-checked").closest('li') : this.get_container().find(".jstree-checked").closest('li');
-				ret.children(".jstree-checkbox").removeClass("jstree-checked jstree-undetermined").addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('indeterminate', false);
-				this.__callback({ "obj" : ret });
-			},
-
-			checkbox_repair : function (obj) {
-				if(!this.get_settings(true).checkbox.three_state) { return false; }
-
-				if(!obj || obj === -1) {
-					obj = this.get_container_ul().children('li');
+				return false;
+			}
+			// if all checked children
+			if(all_checked) {
+				if(state !== 1) {
+					obj.find('.jstree-undetermined').removeClass('jstree-undetermined');
+					this.select_node(obj, true);
+					this.check_up(obj.parent());
 				}
-				if(obj.length > 1) {
-					obj.each($.proxy(function (i, d) {
-						this.checkbox_repair($(d));
-					}, this));
-					return;
+				return true;
+			}
+			// if none children checked
+			if(none_checked) {
+				if(state === 2) {
+					obj.find('.jstree-undetermined').removeClass('jstree-undetermined');
+					this.check_up(obj.parent());
+					return false;
 				}
-
-				var c = obj.find(' > a > .jstree-checkbox'),
-					fix_up = true,
-					p, st, sc, su, si;
-
-				if(!c.hasClass('jstree-checked') && !c.hasClass('jstree-unchecked')) {
-					p = this.get_parent(obj);
-					if(p && p !== -1 && p.length && p.find('> a > .jstree-checked').length) { c.addClass('jstree-checked'); }
-					else { c.addClass('jstree-unchecked'); }
-					fix_up = false;
-				}
-
-				if(c.hasClass('jstree-checked')) {
-					obj.find('.jstree-checkbox').removeClass('jstree-undetermined jstree-unchecked').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('indeterminate', false);
-				}
-				if(c.hasClass('jstree-unchecked')) {
-					obj.find('.jstree-checkbox').removeClass('jstree-undetermined jstree-checked').addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('indeterminate', false);
-				}
-
-				while(fix_up) {
-					obj = this.get_parent(obj);
-					if(!obj || obj === -1 || !obj.length) { return; }
-
-					st = obj.find(' > ul > li');
-					sc = st.find(' > a > .jstree-checked').length;
-					su = st.find(' > a > .jstree-unchecked').length;
-					si = st.find(' > a > .jstree-undetermined').length;
-					st = st.length;
-
-					if(sc + su + si < st) { return; }
-
-					if(su === st) {
-						c = obj.find(' > a > .jstree-checkbox');
-						if(c.hasClass('jstree-unchecked')) { return; }
-						c.removeClass('jstree-undetermined jstree-checked').addClass('jstree-unchecked').children(':checkbox').prop('checked', false).prop('indeterminate', false);
-						continue;
-					}
-					if(sc === st) {
-						c = obj.find(' > a > .jstree-checkbox');
-						if(c.hasClass('jstree-checked')) { return; }
-						c.removeClass('jstree-undetermined jstree-unchecked').addClass('jstree-checked').children(':checkbox').prop('checked', true).prop('indeterminate', false);
-						continue;
-					}
-					obj.parentsUntil(".jstree", "li").addBack().find(' > a > .jstree-checkbox').removeClass('jstree-checked jstree-unchecked').addClass('jstree-undetermined').children(':checkbox').prop('checked', false).prop('undetermined', true);
-					return;
-				}
-			},
-
-			clean_node : function(obj) {
-				obj = this.__call_old();
-				var t = this;
-				obj = obj.each(function () {
-					var o = $(this),
-						d = o.data("jstree");
-					o.find(" > a > .jstree-checkbox").remove();
-					o.children("a").prepend("<ins class='jstree-icon jstree-checkbox " + (d && d.checkbox && d.checkbox.checked === true ? 'jstree-checked' : '') + ( (d && d.checkbox && d.checkbox.checked === false) || !t.get_settings(true).checkbox.three_state ? 'jstree-unchecked' : '') + " '><input class='jstree-check' type='checkbox' " + (d && d.checkbox && d.checkbox.checked ? ' checked="checked" ' : '') + " name='" + (d && d.checkbox && typeof d.checkbox.name !== 'undefined' ? d.checkbox.name : t.get_settings(true).checkbox.name) + "' value='" + (d && d.checkbox && typeof d.checkbox.value !== 'undefined' ? d.checkbox.value : o.attr('id')) + "' /></ins>");
-				});
-				t.checkbox_repair(obj);
-				return obj;
-			},
-			get_state : function () {
-				var state = this.__call_old();
-				state.checkbox = [];
-				this.get_container().find('.jstree-checked').closest('li').each(function () { if(this.id) { state.checkbox.push(this.id); } });
-				return state;
-			},
-			set_state : function (state, callback) {
-				if(this.__call_old()) {
-					if(state.checkbox) {
-						var _this = this;
-						this.uncheck_all();
-						$.each(state.checkbox, function (i, v) {
-							_this.check_node(document.getElementById(v));
-						});
-						this.checkbox_repair();
-						delete state.checkbox;
-						this.set_state(state, callback);
-						return false;
-					}
+				if(state === 1) {
+					this.deselect_node(obj, true);
+					this.check_up(obj.parent());
 					return true;
 				}
 				return false;
-			},
-			get_json : function (obj, is_callback) {
-				var r = this.__call_old(), i;
-				if(is_callback) {
-					i = obj.find('> a > ins > :checkbox');
-					r.data.jstree.checkbox = {};
-					r.data.jstree.checkbox.checked = i.parent().hasClass('jstree-checked');
-					if(i.attr('name') !== 'jstree[]') { r.data.jstree.checkbox.name = i.attr('name'); }
-					if(i.val() !== obj.attr('id')) { r.data.jstree.checkbox.value = i.val(); }
-				}
-				return r;
 			}
-		}
-	});
+			// some children are checked and state is checked
+			if(state === 1) {
+				obj.find('> a > .jstree-checkbox').addClass('jstree-undetermined');
+				this.deselect_node(obj, true);
+				this.check_up(obj.parent());
+				return true;
+			}
+			// some children are checked and state is unchecked
+			if(state === 0) {
+				obj.find('> a > .jstree-checkbox').addClass('jstree-undetermined');
+			}
+			return false;
+		};
+	};
+
 	$(function () {
 		// add checkbox specific CSS
 		var css_string = '' +
-				'.jstree a > .jstree-checkbox { height:16px; width:16px; margin-right:1px; } ' +
-				'.jstree-rtl a > .jstree-checkbox { margin-right:0; margin-left:1px; } ' +
-				'.jstree .jstree-check { margin:0; padding:0; border:0; display:inline; vertical-align:text-bottom; } ';
-		// Correct IE 6 (does not support the > CSS selector)
-		if($.jstree.IS_IE6) {
-			css_string += '' +
-				'.jstree li a .jstree-checkbox { height:16px; width:16px; background:transparent; margin-right:1px; } ' +
-				'.jstree-rtl li a .jstree-checkbox { margin-right:0; margin-left:1px; } ';
-		}
+				'.jstree-anchor > .jstree-checkbox { height:16px; width:16px; margin-right:1px; } ' +
+				'.jstree-rtl .jstree-anchor > .jstree-checkbox { margin-right:0; margin-left:1px; } ';
 		// the default stylesheet
-		$.vakata.css.add_sheet({ str : css_string, title : "jstree" });
+		if(!$.jstree.no_css) {
+			$('head').append('<style type="text/css">' + css_string + '</style>');
+		}
+
 	});
+
 	// include the checkbox plugin by default
 	$.jstree.defaults.plugins.push("checkbox");
 })(jQuery);
-//*/

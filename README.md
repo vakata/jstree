@@ -1,8 +1,3 @@
-# Please use [the stable version][stable] until the docs for v.1.0.0 are ready.
-[stable]: http://github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip
-Older releases can be found on [google code][older]
-[older]: http://code.google.com/p/jstree/downloads/list
-
 # jstree
 
 Tree view for jQuery. 
@@ -16,13 +11,13 @@ A list of useful pages:
 ## Getting Started
 Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/vakata/jstree/v.1.0/dist/jstree.min.js
-[max]: https://raw.github.com/vakata/jstree/v.1.0/dist/jstree.js
+[min]: https://raw.github.com/vakata/jstree/master/dist/jstree.min.js
+[max]: https://raw.github.com/vakata/jstree/master/dist/jstree.js
 
 ###In your web page:
 
 ```
-<script src="libs/jquery/jquery.js"></script>
+<script src="libs/jquery.js"></script>
 <script src="dist/jstree.min.js"></script>
 <script>
 jQuery(function($) {
@@ -74,9 +69,11 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 _Also, please don't edit files in the "dist" subdirectory as they are generated via grunt. You'll find source code in the "src" subdirectory!_
 
 ## License
-Copyright (c) 2012 Ivan Bozhanov (http://vakata.com) 
+Copyright (c) 2013 Ivan Bozhanov (http://vakata.com) 
 
-Licensed under the MIT, GPL licenses.
+Licensed under the MIT license.
 
  - http://www.opensource.org/licenses/mit-license.php
- - http://www.gnu.org/licenses/gpl.html
+
+Older releases can be found on [google code][older]
+[older]: http://code.google.com/p/jstree/downloads/list
