@@ -21,12 +21,7 @@ Download the [production version][min] or the [development version][max].
 <script src="dist/jstree.min.js"></script>
 <script>
 jQuery(function($) {
-  $('#container').jstree(
-    /* put optional options for each plugin here, will extend the defaults */
-    core : { /* core options go here */ },
-    /* specify which plugins you want, you may omit this too */
-    plugins : [ "themes", "html_data", "some-other-plugin" ]
-  );
+  $('#container').jstree();
 });
 </script>
 ```
@@ -35,11 +30,11 @@ jQuery(function($) {
 
 ```
 /* METHOD ONE */
-jQuery("some-selector-to-container-node-here")
+jQuery("#container")
   .jstree("operation_name" [, argument_1, argument_2, ...]);
 
 /* METHOD TWO */
-jQuery.jstree._reference(needle)
+jQuery.jstree.reference(needle)
   .operation_name([ argument_1, argument_2, ...]);
 ```
 
@@ -47,12 +42,12 @@ jQuery.jstree._reference(needle)
 jsTree uses events to notify of any changes. All events fire on the tree container in the _jstree_ namespace and are named after the function that triggered them.
 
 ```
-jQuery("some-container")
-  .jstree({ /* configuration here */ })
-  .bind("__ready.jstree", function (event, data) {
+jQuery("#container")
+  .bind("ready.jstree", function (event, data) {
     alert("TREE IS LOADED");
     /* note the second parameter, read the docs on each event for its value */
   })
+  .jstree({ /* configuration here */ });
 ```
 
 ###Data:
