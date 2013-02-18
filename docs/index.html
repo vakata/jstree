@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>jsTree API documentation</title>
+
+	<link rel="stylesheet" href="./bootstrap.min.css" />
+	<!--[if lt IE 7]><meta http-equiv="imagetoolbar" content="false" /><![endif]-->
+	<style>
+	html, body { background:#ebebeb; }
+	.container { width:100%; background:white; margin:20px auto; border-radius:5px; box-shadow:0 0 4px silver; max-width:1200px; min-width:320px; }
+	.item { margin:20px; }
+	h2 { font-family:Georgia, serif; }
+	h3 { margin:0px 20px -10px 20px; font-family:Georgia, serif; padding-top:20px; border-top:1px dotted silver; }
+	.docs { padding-top:10px; width:50%; }
+	.code { float:right; width:45%; }
+	.code pre { overflow:auto; }
+	</style>
+</head>
+<body>
+	<div class="container" role="main">
+
+	</div>
+
+	<script src="./jquery.1.9.1.min.js"></script>
+	<script>
+	$(function () {
+		var container = $('.container');
+		$.getJSON('./jstree.json', function (data) {
+			var first = true;
+			$.each(data, function (i, v) {
+				if(first) {
+					container.append('<div style="text-align:center;" class="item clearfix">' + v.description.full + '</div>');
+					first = false;
+					return true;
+				}
+				if(v.ignore) {
+					return true;
+				}
+				if(!v.code) {
+					v.code = '';
+				}
+				if(v.code.indexOf('\n') > 0) {
+					var l = v.code.split('\n')[1].split('\t').length - 1;
+					v.code = new Array(l).join('\t') + v.code;
+					v.code = v.code.replace(new RegExp('^\t{'+(l-1)+'}','mg'), '');
+				}
+				v.code = v.code.replace(/\t/g,'  ')
+				container.append('<div class="item clearfix"><div class="code"><pre>' + v.code + '</pre></div><div class="docs">' + v.description.full + '</div><div>');
+				//container.append(v.description.full);
+			});
+			$('.docs > h3').each(function () {
+				$(this).closest('.item').before($(this));
+			});
+		});
+	});
+	</script>
+</body>
+</html>
