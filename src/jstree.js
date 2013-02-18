@@ -1,15 +1,13 @@
-/*
- * jsTree 2.0.0-alpha
+/**
+ * ## jsTree 2.0.0-alpha ##
  * http://jstree.com/
  *
- * Copyright (c) 2013 Ivan Bozhanov (vakata.com)
+ * Copyright (c) 2013 Ivan Bozhanov (http://vakata.com)
  *
  * Licensed same as jquery - under the terms of the MIT License
  *   http://www.opensource.org/licenses/mit-license.php
  *
  */
-
-/*global jQuery, window, document, setTimeout, setInterval, clearTimeout, clearInterval, console */
 (function ($) {
 	"use strict";
 
@@ -24,41 +22,87 @@
 		ccp_mode = false,
 		themes_loaded = [];
 
+	/**
+	 * ### Static $.jstree object
+	 *
+	 * `$.jstree` holds all jstree related functions and variables
+	 *
+	 * * `version` the jstree version in use
+	 * * `plugins` stores all loaded jstree plugins
+	 * * `defaults` holds the core & plugin's defaults
+	 *
+	 */
 	$.jstree = {
 		version : '2.0.0-alpha',
 		defaults : {
 			plugins : []
 		},
-		plugins : {},
-		create : function (el, options) {
-			// create the new core
-			var tmp = new $.jstree.core(++instance_counter);
-			// extend options with the defaults
-			options = $.extend(true, {}, $.jstree.defaults, options);
-			// each option key except 'core' represents a plugin to be loaded
-			$.each(options.plugins, function (i, k) {
-				if(i !== 'core') {
-					// decorate the object with the plugin
-					tmp = tmp.plugin(k, options[k]);
-				}
-			});
-			// initialize the tree
-			tmp.init(el, options);
-			// return the instance
-			return tmp;
-		},
-		core : function (id) {
-			this._id = id;
-			this._data = {
-				'core' : {
-					'themes' : {}
-				}
-			};
-		},
-		reference : function (needle) {
-			return $(needle).closest('.jstree').data('jstree');
-		}
+		plugins : {}
 	};
+	/**
+	 * `$.jstree.create()` creates a jstree instance
+	 *
+	 * __Parameters__
+	 *
+	 * * `el` - the element to create the instance in
+	 * * `options` - options for the instance, extends `$.jstree.defaults`
+	 *
+	 * __Returns__
+	 * the new jstree instance
+	 */
+	$.jstree.create = function (el, options) {
+		var tmp = new $.jstree.core(++instance_counter);
+		options = $.extend(true, {}, $.jstree.defaults, options);
+		$.each(options.plugins, function (i, k) {
+			if(i !== 'core') {
+				tmp = tmp.plugin(k, options[k]);
+			}
+		});
+		tmp.init(el, options);
+		return tmp;
+	};
+	/**
+	 * `$.jstree.core()` the actual empty class.
+	 *
+	 * Used internally -  to create an instance use either:
+	 *
+	 * * `$.jstree.create(element, options)` or
+	 * * `$(selector).jstree(options)`
+	 *
+	 * __Parameters__
+	 *
+	 * * `id` - the instance index - passed internally
+	 */
+	$.jstree.core = function (id) {
+		this._id = id;
+		this._data = {
+			'core' : {
+				'themes' : {}
+			}
+		};
+	};
+	/**
+	 * `$.jstree.reference()` get an instance by some selector.
+	 *
+	 * __Parameters__
+	 *
+	 * * `needle` - a DOM element / jQuery object to search by.
+	 */
+	$.jstree.reference = function (needle) {
+		return $(needle).closest('.jstree').data('jstree');
+	};
+	/**
+	 * ### jQuery $().jstree method
+	 *
+	 * `$(selector).jstree()` is used to create an instance on the selector or to invoke a command on a instance. `Uses $.jstree.create()` internally.
+	 *
+	 * __Examples__
+	 *
+	 *	$('#container').jstree();
+	 *	$('#container').jstree({ option : value });
+	 *	$('#container').jstree('open_node', '#branch_1');
+	 *
+	 */
 	$.fn.jstree = function (arg) {
 		// check for string argument
 		var is_method = (typeof arg === 'string'),
@@ -78,14 +122,31 @@
 		// if there was a method call with a valid return value - return that, otherwise continue the chain
 		return result !== null && typeof result !== 'undefined' ? result : this;
 	};
-	// :jstree pseudo selector to find all elements with instances
+	/**
+	 * ### jQuery :jstree pseudo selector
+	 *
+	 * `$(':jstree')` is used to find elements containing an instance
+	 *
+	 * __Examples__
+	 *
+	 *	$('div:jstree').each(function () {
+	 *		$(this).jstree('destroy');
+	 *	});
+	 *
+	 */
 	$.expr[':'].jstree = $.expr.createPseudo(function(search) {
 		return function(a) {
 			return $(a).hasClass('jstree') && typeof ($(a).data('jstree')) !== 'undefined';
 		};
 	});
 
-	// CORE
+	/**
+	 * ### jsTree core settings
+	 *
+	 * `$.jstree.defaults.core` stores all defaults for the core.
+	 *
+	 * * `string` should be an object or a function ...
+	 */
 	$.jstree.defaults.core = {
 		strings			: false,
 		check_callback	: true,
@@ -101,7 +162,22 @@
 		},
 		base_height		: false
 	};
+
+	/**
+	 * ### jsTree core methods
+	 */
 	$.jstree.core.prototype = {
+		/**
+		 * `plugin()` is used to decorate an instance with a plugin. Used internally in `$.jstree.create()`.
+		 *
+		 * __Parameters__
+		 *
+		 * * `deco` - the decorator to use
+		 * * `options` - options for the decorator, extends `$.jstree.defaults`
+		 *
+		 * __Returns__
+		 * the decorated jstree instance
+		 */
 		plugin : function (deco, opts) {
 			var Child = $.jstree.plugins[deco];
 			if(Child) {

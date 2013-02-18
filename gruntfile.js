@@ -50,11 +50,19 @@ module.exports = function(grunt) {
         'globals' : {
           'console' : true,
           'jQuery' : true,
-          'browser' : true
+          'browser' : true,
+          'XSLTProcessor' : true,
+          'ActiveXObject' : true
         }
       },
       beforeconcat: ['src/**/*.js'],
       afterconcat: ['dist/<%= pkg.name %>.js']
+    },
+    dox: {
+      files: {
+        src: ['src/*.js'],
+        dest: 'docs'
+      }
     }
   });
 
@@ -64,7 +72,35 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-qunit');
 
+
+  grunt.registerMultiTask('dox', 'Generate dox output ', function() {
+    
+    var exec = require('child_process').exec,
+        path = require('path'),
+        done = this.async(),
+        doxPath = path.resolve(__dirname),
+        formatter = [doxPath, 'node_modules', '.bin', 'dox'].join(path.sep),
+        str = grunt.file.read('dist/jstree.js');
+
+    str = str.replace(/^\s+\*/mg,'*');
+    str = str.replace(/^\s+\/\/ .*$/mg,'');
+    grunt.file.write('dist/jstree.dox.js', str);
+
+    exec(formatter + ' < "dist/jstree.dox.js" > "docs/jstree.json"', {maxBuffer: 5000*1024}, function(error, stout, sterr){
+      if (error) {
+        grunt.log.error(formatter);
+        grunt.log.error("WARN: "+ error);
+        grunt.file.delete('dist/jstree.dox.js');
+      }
+      if (!error) {
+        grunt.log.writeln('dist/jstree.js doxxed.');
+        grunt.file.delete('dist/jstree.dox.js');
+        done();
+      }
+    });
+  });
+
   // Default task.
-  grunt.registerTask('default', ['jshint:beforeconcat','concat','jshint:afterconcat','copy','uglify','qunit' ]);
+  grunt.registerTask('default', ['jshint:beforeconcat','concat','jshint:afterconcat','copy','uglify','qunit','dox']);
 
 };
