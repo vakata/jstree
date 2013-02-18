@@ -55,19 +55,7 @@ module.exports = function(grunt) {
       },
       beforeconcat: ['src/**/*.js'],
       afterconcat: ['dist/<%= pkg.name %>.js']
-    }/*,
-    yuidoc: {
-      compile: {
-        name: '<%= pkg.name %>',
-        description: '<%= pkg.description %>',
-        version: '<%= pkg.version %>',
-        url: '<%= pkg.homepage %>',
-        options: {
-          paths: './src/',
-          outdir: './docs/'
-        }
-      }
-    }*/
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -75,8 +63,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-qunit');
-  //grunt.loadNpmTasks('grunt-contrib-yuidoc');
+
   // Default task.
-  grunt.registerTask('default', ['jshint:beforeconcat','concat','jshint:afterconcat','copy','uglify','qunit' /*,'yuidoc'*/ ]);
+  grunt.registerTask('default', ['jshint:beforeconcat','concat','jshint:afterconcat','copy','uglify','qunit' ]);
 
 };

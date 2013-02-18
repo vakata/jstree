@@ -1,12 +1,11 @@
 /*
- * jsTree 2.0.0
+ * jsTree 2.0.0-alpha
  * http://jstree.com/
  *
  * Copyright (c) 2013 Ivan Bozhanov (vakata.com)
  *
- * Licensed same as jquery - under the terms of either the MIT License or the GPL Version 2 License
+ * Licensed same as jquery - under the terms of the MIT License
  *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
  *
  */
 
