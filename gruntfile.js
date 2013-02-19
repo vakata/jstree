@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     copy: {
       dist : {
         files : {
-          'dist/themes/' : 'src/themes/**'
+          'dist/themes/default/' : 'src/themes/default/**'
         }
       }
     },
