@@ -17,6 +17,7 @@
 	.docs { padding-top:10px; width:50%; }
 	.code { float:right; width:45%; }
 	.code pre { overflow:auto; }
+	code.selected { background:#DD1144; border-color:#DD1144; color:white; }
 	</style>
 </head>
 <body>
@@ -69,9 +70,10 @@
 				to = setTimeout(function () {
 					var s = $.trim($('#q').val().replace(/[^a-z0-9_.]+/i,''));
 					$('.alert').remove();
+					$('.selected').removeClass('selected');
 					if(s.length) {
 						$('.item:gt(0), h3').hide();
-						var i = $('.docs code:icontains("' + s + '")').closest('.item');
+						var i = $('.docs code:icontains("' + s + '")').addClass('selected').closest('.item');
 						i.show().prev('h3').show();
 						if(i.length == 0) {
 							$('.container').append('<div class="alert alert-error" style="margin:20px; text-align:center; padding:20px;">No methods or properties matching `' + s + '`</div>');
