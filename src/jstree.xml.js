@@ -1,3 +1,6 @@
+/**
+ * ### XML data plugin
+ */
 (function ($) {
 	var xsl = {
 		'nest' : '' +

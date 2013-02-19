@@ -1,3 +1,6 @@
+/**
+ * ### Search plugin
+ */
 (function ($) {
 	$.jstree.defaults.search = {
 		ajax : false,

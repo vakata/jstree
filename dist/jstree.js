@@ -1508,7 +1508,7 @@
 })(jQuery);
 
 
-/*
+/*!
  * jstree sample plugin
 
 // wrap in IIFE and pass jQuery as $
@@ -1606,9 +1606,9 @@
 })(jQuery);
 //*/
 
-/* File: jstree.checkbox.js
-Adds checkboxes to the tree.
-*/
+/**
+ * ### Checkbox plugin
+ */
 (function ($) {
 	$.jstree.defaults.checkbox = {
 		three_state : true,
@@ -1762,10 +1762,9 @@ Adds checkboxes to the tree.
 	$.jstree.defaults.plugins.push("checkbox");
 })(jQuery);
 
-/* File: jstree.contextmenu.js
-Enables a rightclick contextmenu.
-*/
-/* Group: jstree sort plugin */
+/**
+ * ### Contextmenu plugin
+ */
 (function ($) {
 	$.jstree.defaults.contextmenu = {
 		select_node : true,
@@ -2228,11 +2227,9 @@ Enables a rightclick contextmenu.
 
 	$.jstree.defaults.plugins.push("contextmenu");
 })(jQuery);
-/* File: jstree.dnd.js
-Enables drag'n'drop.
-*/
-/* Group: jstree drag'n'drop plugin */
-
+/**
+ * ### Drag'n'drop plugin
+ */
 (function ($) {
 	$.jstree.defaults.dnd = {
 		copy_modifier : 'ctrl',
@@ -2582,10 +2579,9 @@ Enables drag'n'drop.
 	};
 })(jQuery);
 
-/* File: jstree.html.js
-This plugin makes it possible for jstree to use HTML data sources (other than the container's initial HTML).
-*/
-/* Group: jstree html plugin */
+/**
+ * ### HTML data plugin
+ */
 (function ($) {
 	$.jstree.defaults.html = {
 		data	: false,
@@ -2652,10 +2648,9 @@ This plugin makes it possible for jstree to use HTML data sources (other than th
 	// include the html plugin by default
 	$.jstree.defaults.plugins.push("html");
 })(jQuery);
-/* File: jstree.json.js
-This plugin makes it possible for jstree to use JSON data sources.
-*/
-/* Group: jstree json plugin */
+/**
+ * ### JSON data plugin
+ */
 (function ($) {
 	$.jstree.defaults.json = {
 		data	: false,
@@ -2760,10 +2755,9 @@ This plugin makes it possible for jstree to use JSON data sources.
 	// include the json plugin by default
 	$.jstree.defaults.plugins.push("json");
 })(jQuery);
-/* File: jstree.rules.js
-Limits the children count, valid children and depth of nodes by using types or embedded data.
-*/
-/* Group: jstree rules plugin */
+/**
+ * ### Rules plugin
+ */
 (function ($) {
 	var last_depth_node = false,
 		last_depth_value = 0;
@@ -2939,6 +2933,9 @@ Limits the children count, valid children and depth of nodes by using types or e
 	// include the rules plugin by default
 	$.jstree.defaults.plugins.push("rules");
 })(jQuery);
+/**
+ * ### Search plugin
+ */
 (function ($) {
 	$.jstree.defaults.search = {
 		ajax : false,
@@ -3065,10 +3062,9 @@ Limits the children count, valid children and depth of nodes by using types or e
 	$.jstree.defaults.plugins.push("search");
 })(jQuery);
 
-/* File: jstree.sort.js
-Sorts items alphabetically (or using any other function)
-*/
-/* Group: jstree sort plugin */
+/**
+ * ### Sort plugin
+ */
 (function ($) {
 	$.jstree.defaults.sort = function (a, b) {
 		return this.get_text(a, true) > this.get_text(b, true) ? 1 : -1;
@@ -3106,10 +3102,9 @@ Sorts items alphabetically (or using any other function)
 	// include the sort plugin by default
 	$.jstree.defaults.plugins.push("sort");
 })(jQuery);
-/* File: jstree.state.js
-This plugin enables state saving between reloads.
-*/
-/* Group: jstree state plugin */
+/**
+ * ### State plugin
+ */
 (function ($) {
 	var to = false;
 
@@ -3518,10 +3513,9 @@ This plugin enables state saving between reloads.
 	_init();
 })(jQuery);
 
-/* File: jstree.unique.js
-Does not allow the same name amongst siblings (still a bit experimental).
-*/
-/* Group: jstree drag'n'drop plugin */
+/**
+ * ### Unique plugin
+ */
 (function ($) {
 	$.jstree.plugins.unique = function (options, parent) {
 		// TODO: think about an option to work with HTML or not?
@@ -3551,9 +3545,8 @@ Does not allow the same name amongst siblings (still a bit experimental).
 	$.jstree.defaults.plugins.push("unique");
 })(jQuery);
 
-/*
- * jsTree wholerow plugin
- * Makes select and hover work on the entire width of the node
+/**
+ * ### Wholerow plugin
  */
 (function ($) {
 	$.jstree.plugins.wholerow = function (options, parent) {
@@ -3638,6 +3631,9 @@ Does not allow the same name amongst siblings (still a bit experimental).
 	// $.jstree.defaults.plugins.push("wholerow");
 })(jQuery);
 
+/**
+ * ### XML data plugin
+ */
 (function ($) {
 	var xsl = {
 		'nest' : '' +

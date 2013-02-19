@@ -1,8 +1,6 @@
-/* File: jstree.dnd.js
-Enables drag'n'drop.
-*/
-/* Group: jstree drag'n'drop plugin */
-
+/**
+ * ### Drag'n'drop plugin
+ */
 (function ($) {
 	$.jstree.defaults.dnd = {
 		copy_modifier : 'ctrl',

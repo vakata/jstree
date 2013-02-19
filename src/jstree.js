@@ -1508,7 +1508,7 @@
 })(jQuery);
 
 
-/*
+/*!
  * jstree sample plugin
 
 // wrap in IIFE and pass jQuery as $

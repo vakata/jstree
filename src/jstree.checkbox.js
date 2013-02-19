@@ -1,6 +1,6 @@
-/* File: jstree.checkbox.js
-Adds checkboxes to the tree.
-*/
+/**
+ * ### Checkbox plugin
+ */
 (function ($) {
 	$.jstree.defaults.checkbox = {
 		three_state : true,

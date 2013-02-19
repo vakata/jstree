@@ -1,7 +1,6 @@
-/* File: jstree.contextmenu.js
-Enables a rightclick contextmenu.
-*/
-/* Group: jstree sort plugin */
+/**
+ * ### Contextmenu plugin
+ */
 (function ($) {
 	$.jstree.defaults.contextmenu = {
 		select_node : true,

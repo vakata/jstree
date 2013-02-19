@@ -1,7 +1,6 @@
-/* File: jstree.sort.js
-Sorts items alphabetically (or using any other function)
-*/
-/* Group: jstree sort plugin */
+/**
+ * ### Sort plugin
+ */
 (function ($) {
 	$.jstree.defaults.sort = function (a, b) {
 		return this.get_text(a, true) > this.get_text(b, true) ? 1 : -1;

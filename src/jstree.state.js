@@ -1,7 +1,6 @@
-/* File: jstree.state.js
-This plugin enables state saving between reloads.
-*/
-/* Group: jstree state plugin */
+/**
+ * ### State plugin
+ */
 (function ($) {
 	var to = false;
 

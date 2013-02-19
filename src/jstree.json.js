@@ -1,7 +1,6 @@
-/* File: jstree.json.js
-This plugin makes it possible for jstree to use JSON data sources.
-*/
-/* Group: jstree json plugin */
+/**
+ * ### JSON data plugin
+ */
 (function ($) {
 	$.jstree.defaults.json = {
 		data	: false,

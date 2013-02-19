@@ -1,7 +1,6 @@
-/* File: jstree.html.js
-This plugin makes it possible for jstree to use HTML data sources (other than the container's initial HTML).
-*/
-/* Group: jstree html plugin */
+/**
+ * ### HTML data plugin
+ */
 (function ($) {
 	$.jstree.defaults.html = {
 		data	: false,

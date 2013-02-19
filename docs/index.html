@@ -6,6 +6,7 @@
 	<title>jsTree API documentation</title>
 
 	<link rel="stylesheet" href="./bootstrap.min.css" />
+	<link rel="stylesheet" href="./default.css" />
 	<!--[if lt IE 7]><meta http-equiv="imagetoolbar" content="false" /><![endif]-->
 	<style>
 	html, body { background:#ebebeb; }
@@ -18,6 +19,7 @@
 	.code { float:right; width:45%; }
 	.code pre { overflow:auto; }
 	code.selected { background:#DD1144; border-color:#DD1144; color:white; }
+	pre code { background:transparent; }
 	</style>
 </head>
 <body>
@@ -26,6 +28,7 @@
 	</div>
 
 	<script src="./jquery.1.9.1.min.js"></script>
+	<script src="./highlight.pack.js"></script>
 	<script>
 	$.expr[':'].icontains = $.expr.createPseudo(function(search) {
 		return function(a) {
@@ -42,25 +45,40 @@
 					first = false;
 					return true;
 				}
-				if(v.ignore) {
-					return true;
+				if(!v.ignore) {
+					if(!v.code) {
+						v.code = '';
+					}
+					if(v.code.indexOf('\n') > 0) {
+						var l = v.code.split('\n')[1].split('\t').length - 1;
+						v.code = new Array(l).join('\t') + v.code;
+						v.code = v.code.replace(new RegExp('^\t{'+(l-1)+'}','mg'), '');
+					}
+					v.code = v.code.replace(/\t/g,'  ')
+					container.append('<div class="item clearfix"><div class="code"><pre><code>' + v.code + '</code></pre></div><div class="docs">' + v.description.full + '</div><div>');
 				}
-				if(!v.code) {
-					v.code = '';
-				}
-				if(v.code.indexOf('\n') > 0) {
-					var l = v.code.split('\n')[1].split('\t').length - 1;
-					v.code = new Array(l).join('\t') + v.code;
-					v.code = v.code.replace(new RegExp('^\t{'+(l-1)+'}','mg'), '');
-				}
-				v.code = v.code.replace(/\t/g,'  ')
-				container.append('<div class="item clearfix"><div class="code"><pre>' + v.code + '</pre></div><div class="docs">' + v.description.full + '</div><div>');
 				//container.append(v.description.full);
 			});
 			$('.docs > h3').each(function () {
 				$(this).closest('.item').before($(this));
 			});
-			$('.item:eq(0)').append('<div class="input-append"><input class="search" id="q" value="" placeholder="Begin typing to search" type="text" /><button class="btn" type="button" id="cls" onclick="$(this).prev().val(\'\').keypress();" title="Clear search">&times;</button></div>');
+			$('.item:eq(0)').append('<div class="input-append" style="transition: box-shadow 0.2s linear 0s; width:260px; text-align:center; border-radius:0 0 10px 10px; margin:0 auto; margin-left:-140px; left:50%; top:220px; position:absolute; padding:10px; background:white;"><input class="search" id="q" value="" placeholder="Begin typing to search" type="text" /><button class="btn" type="button" id="cls" onclick="$(this).prev().val(\'\').keypress();" title="Clear search">&times;</button></div>').css('paddingBottom', '60px');
+			var q = $('#q').parent(),
+				t = q.offset().top,
+				d = $(document);
+			q.data('fixed', false);
+			d.bind('scroll', function () {
+				if(d.scrollTop() > t) {
+					if(q.data('fixed') === false) {
+						q.css({'position':'fixed', 'top':'0', 'boxShadow':'0 0 5px gray'}).data('fixed', true);
+					}
+				}
+				else {
+					if(q.data('fixed') === true) {
+						q.css({'position':'absolute', 'top':'220px', 'boxShadow':'none'}).data('fixed', false);
+					}
+				}
+			});
 			var to = false;
 			if(document.location.hash && document.location.hash.length) {
 				$('#q').val(document.location.hash.replace(/^#/,''));
@@ -87,6 +105,7 @@
 					document.location.hash = s;
 				});
 			}).select().keypress();
+			$('pre').each(function () { hljs.highlightBlock(this); });
 		});
 	});
 	</script>

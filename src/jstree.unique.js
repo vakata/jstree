@@ -1,7 +1,6 @@
-/* File: jstree.unique.js
-Does not allow the same name amongst siblings (still a bit experimental).
-*/
-/* Group: jstree drag'n'drop plugin */
+/**
+ * ### Unique plugin
+ */
 (function ($) {
 	$.jstree.plugins.unique = function (options, parent) {
 		// TODO: think about an option to work with HTML or not?

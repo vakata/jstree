@@ -1,7 +1,6 @@
-/* File: jstree.rules.js
-Limits the children count, valid children and depth of nodes by using types or embedded data.
-*/
-/* Group: jstree rules plugin */
+/**
+ * ### Rules plugin
+ */
 (function ($) {
 	var last_depth_node = false,
 		last_depth_value = 0;

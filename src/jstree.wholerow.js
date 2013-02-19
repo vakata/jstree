@@ -1,6 +1,5 @@
-/*
- * jsTree wholerow plugin
- * Makes select and hover work on the entire width of the node
+/**
+ * ### Wholerow plugin
  */
 (function ($) {
 	$.jstree.plugins.wholerow = function (options, parent) {
