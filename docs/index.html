@@ -9,6 +9,7 @@
 	<!--[if lt IE 7]><meta http-equiv="imagetoolbar" content="false" /><![endif]-->
 	<style>
 	html, body { background:#ebebeb; }
+	html { overflow-y:scroll; }
 	.container { width:100%; background:white; margin:20px auto; border-radius:5px; box-shadow:0 0 4px silver; max-width:1200px; min-width:320px; }
 	.item { margin:20px; }
 	h2 { font-family:Georgia, serif; }
@@ -25,6 +26,11 @@
 
 	<script src="./jquery.1.9.1.min.js"></script>
 	<script>
+	$.expr[':'].icontains = $.expr.createPseudo(function(search) {
+		return function(a) {
+			return (a.textContent || a.innerText || "").toLowerCase().indexOf(search.toLowerCase())>=0;
+		};
+	});
 	$(function () {
 		var container = $('.container');
 		$.getJSON('./jstree.json', function (data) {
@@ -53,6 +59,32 @@
 			$('.docs > h3').each(function () {
 				$(this).closest('.item').before($(this));
 			});
+			$('.item:eq(0)').append('<div class="input-append"><input class="search" id="q" value="" placeholder="Begin typing to search" type="text" /><button class="btn" type="button" id="cls" onclick="$(this).prev().val(\'\').keypress();" title="Clear search">&times;</button></div>');
+			var to = false;
+			if(document.location.hash && document.location.hash.length) {
+				$('#q').val(document.location.hash.replace(/^#/,''));
+			}
+			$('#q').on('keypress', function () {
+				if(to) { clearTimeout(to); }
+				to = setTimeout(function () {
+					var s = $.trim($('#q').val().replace(/[^a-z0-9_.]+/i,''));
+					$('.alert').remove();
+					if(s.length) {
+						$('.item:gt(0), h3').hide();
+						var i = $('.docs code:icontains("' + s + '")').closest('.item');
+						i.show().prev('h3').show();
+						if(i.length == 0) {
+							$('.container').append('<div class="alert alert-error" style="margin:20px; text-align:center; padding:20px;">No methods or properties matching `' + s + '`</div>');
+						}
+						$('#cls').prop('disabled', false);
+					}
+					else {
+						$('.item, h3').show();
+						$('#cls').prop('disabled', true);
+					}
+					document.location.hash = s;
+				});
+			}).select().keypress();
 		});
 	});
 	</script>
