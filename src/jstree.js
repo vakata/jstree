@@ -155,7 +155,7 @@
 		strings			: false,
 		check_callback	: true,
 		animation		: 100,
-		aria_roles		: true,
+		aria_roles		: false,
 		multiple		: true,
 		themes			: {
 			name			: false,
@@ -206,10 +206,11 @@
 			this._data.core.selected = $();
 
 			this.bind();
+			this.trigger("init");
 
 			this._data.core.original_container_html = this.element.find(" > ul > li").clone(true);
 			this._data.core.original_container_html.find("li").addBack().contents().filter(function() { return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue)); }).remove();
-			this.element.html("<ul><li class='jstree-loading'><a href='#'>" + this.get_string("Loading ...") + "</a></li></ul>");
+			this.element.html("<"+"ul><"+"li class='jstree-loading'><"+"a class='jstree-anchor' href='#'>" + this.get_string("Loading ...") + "</a></li></ul>");
 			this.clean_node(-1);
 			this._data.core.li_height = this.settings.base_height || this.get_container_ul().children("li:eq(0)").height() || 18;
 			this.load_node(-1, function () {
@@ -312,10 +313,6 @@
 									this.clean_node(ul.children('li'));
 								}
 								this.element.prepend(ul);
-								if(this.settings.core.aria_roles) {
-									this.element.find('ul').attr('role','group');
-									this.element.find('li').attr('role','treeitem');
-								}
 							}
 							else {
 								if(data.node.find('> ul > li').length) {
@@ -339,7 +336,7 @@
 						});
 					}, this))
 				// THEME RELATED
-				.on("ready.jstree", $.proxy(function () {
+				.on("init.jstree", $.proxy(function () {
 						var s = this.settings.core.themes;
 						this._data.core.themes.dots		= s.dots;
 						this._data.core.themes.icons	= s.icons;
@@ -683,6 +680,9 @@
 			obj = !obj || obj === -1 ? this.element.find("li") : obj.find("li").addBack();
 			// test placing this here
 			obj.find('.jstree-clicked').removeClass('jstree-clicked');
+			if(this.settings.core.aria_roles) {
+				obj.attr('role','treeitem').parent().attr('role','group');
+			}
 			var _this = this;
 			return obj.each(function () {
 				var t = $(this),
@@ -707,7 +707,7 @@
 				if(!t.children("i.jstree-ocl").length) {
 					t.prepend("<i class='jstree-icon jstree-ocl'>&#160;</i>");
 				}
-				if(t.is(":last-child")) {
+				if(!t.next().length) {
 					t.addClass("jstree-last");
 				}
 				switch(s) {
@@ -754,7 +754,7 @@
 						obj.removeClass("jstree-leaf").addClass("jstree-closed"); //.children("ins").html("+");
 						break;
 				}
-				obj[obj.is(":last-child") ? 'addClass' : 'removeClass']("jstree-last");
+				obj[obj.next().length === 0 ? 'addClass' : 'removeClass']("jstree-last");
 			});
 			return obj;
 		},
@@ -1337,7 +1337,7 @@
 				theme_url = dir + '/' + theme_name + '/style.css';
 			}
 			if(theme_url && $.inArray(theme_url, themes_loaded) === -1) {
-				$('head').append('<link rel="stylesheet" href="' + theme_url + '" type="text/css" />');
+				$('head').append('<'+'link rel="stylesheet" href="' + theme_url + '" type="text/css" />');
 				themes_loaded.push(theme_url);
 			}
 			if(this._data.core.themes.name) {

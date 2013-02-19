@@ -1,5 +1,7 @@
 # jstree
 
+## VERSION 2.0.0-ALPHA - NOT PRODUCTION READY
+
 Tree view for jQuery. 
 
 A list of useful pages:
@@ -14,7 +16,7 @@ Download the [production version][min] or the [development version][max].
 [min]: https://raw.github.com/vakata/jstree/master/dist/jstree.min.js
 [max]: https://raw.github.com/vakata/jstree/master/dist/jstree.js
 
-###In your web page:
+### In your web page:
 
 ```
 <script src="libs/jquery.js"></script>
