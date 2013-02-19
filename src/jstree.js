@@ -51,8 +51,12 @@
 	 * the new jstree instance
 	 */
 	$.jstree.create = function (el, options) {
-		var tmp = new $.jstree.core(++instance_counter);
+		var tmp = new $.jstree.core(++instance_counter),
+			opt = options;
 		options = $.extend(true, {}, $.jstree.defaults, options);
+		if(opt.plugins) {
+			options.plugins = opt.plugins;
+		}
 		$.each(options.plugins, function (i, k) {
 			if(i !== 'core') {
 				tmp = tmp.plugin(k, options[k]);
@@ -345,7 +349,7 @@
 						}
 						this.set_theme(s.name, s.url);
 					}, this))
-				.on('construct.jstree ready.jstree loaded.jstree', $.proxy(function () {
+				.on('ready.jstree loaded.jstree', $.proxy(function () {
 						this[ this._data.core.themes.dots ? "show_dots" : "hide_dots" ]();
 						this[ this._data.core.themes.icons ? "show_icons" : "hide_icons" ]();
 					}, this))
@@ -677,25 +681,29 @@
 			// DETACH maybe inside the "load_node" function? But what about animations, etc?
 			obj = this.get_node(obj);
 			obj = !obj || obj === -1 ? this.element.find("li") : obj.find("li").addBack();
+			// test placing this here
+			obj.find('.jstree-clicked').removeClass('jstree-clicked');
 			var _this = this;
 			return obj.each(function () {
 				var t = $(this),
+					a = t.children('a'),
 					d = t.data("jstree"),
 					// is_ajax -> return this.settings.core.is_ajax || this._data.ajax;
 					s = (d && d.opened) || t.hasClass("jstree-open") ? "open" : (d && d.closed) || t.children("ul").length || (d && d.children) ? "closed" : "leaf"; // replace with t.find('>ul>li').length || (this.is_ajax() && !t.children('ul').length)
 				if(d && d.opened) { delete d.opened; }
 				if(d && d.closed) { delete d.closed; }
 				t.removeClass("jstree-open jstree-closed jstree-leaf jstree-last");
-				if(!t.children("a").length) {
+				if(!a.length) {
 					// allow for text and HTML markup inside the nodes
 					t.contents().filter(function() { return this.nodeType === 3 || this.tagName !== 'UL'; }).wrapAll('<a href="#"></a>');
 					// TODO: make this faster
-					t.children('a').html(t.children('a').html().replace(/[\s\t\n]+$/,''));
+					a = t.children('a');
+					a.html(t.children('a').html().replace(/[\s\t\n]+$/,''));
 				}
 				else {
-					if(!$.trim(t.children('a').attr('href'))) { t.children('a').attr("href","#"); }
+					if(!$.trim(a.attr('href'))) { a.attr("href","#"); }
 				}
-				t.children('a').addClass('jstree-anchor');
+				a.addClass('jstree-anchor');
 				if(!t.children("i.jstree-ocl").length) {
 					t.prepend("<i class='jstree-icon jstree-ocl'>&#160;</i>");
 				}
@@ -716,15 +724,15 @@
 						break;
 				}
 				// theme part
-				if(!t.find("> a > i.jstree-themeicon").length) {
-					t.children("a").prepend("<i class='jstree-icon jstree-themeicon'>&#160;</i>");
+				if(!a.children(".jstree-themeicon").length) {
+					a.prepend("<i class='jstree-icon jstree-themeicon'>&#160;</i>");
 				}
 				if(d && typeof d.icon !== 'undefined') {
 					_this.set_icon(t, d.icon);
 					delete d.icon;
 				}
 				// selected part
-				t.find('.jstree-clicked').removeClass('jstree-clicked');
+				// t.find('.jstree-clicked').removeClass('jstree-clicked');
 				if(d && d.selected) {
 					setTimeout(function () { _this.select_node(t); }, 0);
 					delete d.selected;
