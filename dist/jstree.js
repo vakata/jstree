@@ -219,7 +219,16 @@
 			}
 			return this;
 		},
-
+		/**
+		 * `init()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `par`
+		 *
+		 * __Returns__
+		 *
+		 */
 		init : function (el, options) {
 			this.element = $(el).addClass('jstree jstree-' + this._id);
 			this.settings = options;
@@ -245,10 +254,16 @@
 				this.trigger("loaded");
 			});
 		},
+		/**
+		 * `destroy()`
+		 */
 		destroy : function () {
 			this.element.unbind("destroyed", this.teardown);
 			this.teardown();
 		},
+		/**
+		 * `teardown()`
+		 */
 		teardown : function () {
 			this.unbind();
 			this.element
@@ -259,6 +274,9 @@
 					.attr("class", function () { return this.className.replace(/jstree[^ ]*|$/ig,''); });
 			this.element = null;
 		},
+		/**
+		 * `bind()`
+		 */
 		bind : function () {
 			if($.support.touch) {
 				this.element.addTouch();
@@ -399,10 +417,21 @@
 						this.dehover_node(e.currentTarget);
 					}, this));
 		},
+		/**
+		 * `unbind()`
+		 */
 		unbind : function () {
 			this.element.off('.jstree');
 			$(document).off('.jstree-' + this._id);
 		},
+		/**
+		 * `trigger()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `ev`
+		 * * `data`
+		 */
 		trigger : function (ev, data) {
 			if(!data) {
 				data = {};
@@ -410,18 +439,50 @@
 			data.instance = this;
 			this.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);
 		},
+		/**
+		 * `get_container()`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_container : function () {
 			return this.element;
 		},
+		/**
+		 * `get_container_ul()`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_container_ul : function () {
 			return this.element.children("ul:eq(0)");
 		},
+		/**
+		 * `get_string()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `key`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_string : function (key) {
 			var a = this.settings.core.strings;
 			if($.isFunction(a)) { return a.call(this, key); }
 			if(a && a[key]) { return a[key]; }
 			return key;
 		},
+		/**
+		 * `get_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_node : function (obj) {
 			if(obj === -1) {
 				return -1;
@@ -433,6 +494,17 @@
 			obj = obj.closest("li", this.element);
 			return obj.length ? obj : false;
 		},
+		/**
+		 * `get_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `strict`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_next : function (obj, strict) {
 			obj = this.get_node(obj);
 			if(obj === -1) {
@@ -454,6 +526,17 @@
 				return obj.parentsUntil(".jstree","li").next("li").eq(0);
 			}
 		},
+		/**
+		 * `get_prev()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `strict`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_prev : function (obj, strict) {
 			obj = this.get_node(obj);
 			if(obj === -1) {
@@ -477,6 +560,16 @@
 				return o.length ? o : false;
 			}
 		},
+		/**
+		 * `get_parent()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_parent : function (obj) {
 			obj = this.get_node(obj);
 			if(obj === -1 || !obj || !obj.length) {
@@ -485,6 +578,16 @@
 			var o = obj.parentsUntil(".jstree", "li:eq(0)");
 			return o.length ? o : -1;
 		},
+		/**
+		 * `get_children()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_children : function (obj) {
 			obj = this.get_node(obj);
 			if(obj === -1) {
@@ -495,30 +598,101 @@
 			}
 			return obj.find("> ul > li");
 		},
+		/**
+		 * `is_parent()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		is_parent : function (obj) {
 			obj = this.get_node(obj);
 			return obj && obj !== -1 && (obj.find("> ul > li:eq(0)").length || obj.hasClass("jstree-closed"));
 		},
+		/**
+		 * `is_loaded()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		is_loaded : function (obj) {
 			obj = this.get_node(obj);
 			return obj && ( (obj === -1 && !this.element.find("> ul > li.jstree-loading").length) || ( obj !== -1 && !obj.hasClass('jstree-loading') && (obj.find('> ul > li').length || obj.hasClass('jstree-leaf')) ) );
 		},
+		/**
+		 * `is_loading()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		is_loading : function (obj) {
 			obj = this.get_node(obj);
 			return obj && ( (obj === -1 && this.element.find("> ul > li.jstree-loading").length) || (obj !== -1 && obj.hasClass("jstree-loading")) );
 		},
+		/**
+		 * `is_open()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		is_open : function (obj) {
 			obj = this.get_node(obj);
 			return obj && obj !== -1 && obj.hasClass("jstree-open");
 		},
+		/**
+		 * `is_closed()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		is_closed : function (obj) {
 			obj = this.get_node(obj);
 			return obj && obj !== -1 && obj.hasClass("jstree-closed");
 		},
+		/**
+		 * `is_leaf()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		is_leaf : function (obj) {
 			obj = this.get_node(obj);
 			return obj && obj !== -1 && obj.hasClass("jstree-leaf");
 		},
+		/**
+		 * `load_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `callback`
+		 *
+		 * __Returns__
+		 *
+		 */
 		load_node : function (obj, callback) {
 			obj = this.get_node(obj);
 			if(!obj) {
@@ -540,12 +714,35 @@
 			}, this));
 			return true;
 		},
+		/**
+		 * `_load_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `callback`
+		 *
+		 * __Returns__
+		 *
+		 */
 		_load_node : function (obj, callback) {
 			if(obj === -1) {
 				this.get_container_ul().empty().append(this._data.core.original_container_html.clone(true));
 			}
 			callback.call(null, true);
 		},
+		/**
+		 * `open_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `callback`
+		 * * `animation`
+		 *
+		 * __Returns__
+		 *
+		 */
 		open_node : function (obj, callback, animation) {
 			obj = this.get_node(obj);
 			if(obj === -1 || !obj || !obj.length) {
@@ -579,6 +776,17 @@
 				this.trigger('open_node', { "node" : obj });
 			}
 		},
+		/**
+		 * `close_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `animation`
+		 *
+		 * __Returns__
+		 *
+		 */
 		close_node : function (obj, animation) {
 			obj = this.get_node(obj);
 			if(!obj || !obj.length || !this.is_open(obj)) {
@@ -595,6 +803,16 @@
 				});
 			this.trigger('close_node',{ "node" : obj });
 		},
+		/**
+		 * `toggle_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		toggle_node : function (obj) {
 			if(this.is_closed(obj)) {
 				return this.open_node(obj);
@@ -603,6 +821,18 @@
 				return this.close_node(obj);
 			}
 		},
+		/**
+		 * `open_all()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `animation`
+		 * * `original_obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		open_all : function (obj, animation, original_obj) {
 			obj = obj ? this.get_node(obj) : -1;
 			obj = !obj || obj === -1 ? this.get_container_ul() : obj;
@@ -622,6 +852,17 @@
 				this.trigger('open_all', { "node" : original_obj });
 			}
 		},
+		/**
+		 * `close_all()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `animation`
+		 *
+		 * __Returns__
+		 *
+		 */
 		close_all : function (obj, animation) {
 			obj = obj ? this.get_node(obj) : -1;
 			var $obj = !obj || obj === -1 ? this.get_container_ul() : obj,
@@ -630,6 +871,17 @@
 			$obj.each(function () { _this.close_node(this, animation || 0); });
 			this.trigger('close_all', { "node" : obj });
 		},
+		/**
+		 * `activate_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `e`
+		 *
+		 * __Returns__
+		 *
+		 */
 		activate_node : function (obj, e) {
 			if(!this.settings.core.multiple || (!e.metaKey && !e.ctrlKey)) {
 				this.deselect_all(true);
@@ -645,6 +897,16 @@
 			}
 			this.trigger('activate_node', { 'node' : obj });
 		},
+		/**
+		 * `hover_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		hover_node : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj || !obj.length) {
@@ -653,6 +915,16 @@
 			obj.children('a').addClass('jstree-hovered');
 			this.trigger('hover_node', { 'node' : obj });
 		},
+		/**
+		 * `dehover_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		dehover_node : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj || !obj.length) {
@@ -661,6 +933,17 @@
 			obj.children('a').removeClass('jstree-hovered');
 			this.trigger('dehover_node', { 'node' : obj });
 		},
+		/**
+		 * `select_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `supress_event`
+		 *
+		 * __Returns__
+		 *
+		 */
 		select_node : function (obj, supress_event) {
 			obj = this.get_node(obj);
 			if(!obj || !obj.length) {
@@ -674,6 +957,17 @@
 				this.trigger('changed', { 'action' : 'select_node', 'node' : obj, 'selected' : this._data.core.selected });
 			}
 		},
+		/**
+		 * `deselect_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `supress_event`
+		 *
+		 * __Returns__
+		 *
+		 */
 		deselect_node : function (obj, supress_event) {
 			obj = this.get_node(obj);
 			if(!obj || !obj.length) {
@@ -685,6 +979,14 @@
 				this.trigger('changed', { 'action' : 'deselect_node', 'node' : obj, 'selected' : this._data.core.selected });
 			}
 		},
+		/**
+		 * `deselect_all()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `supress_event`
+		 *
+		 */
 		deselect_all : function (supress_event) {
 			this._data.core.selected = $();
 			this.trigger('deselect_all', { 'selected' : this._data.core.selected });
@@ -692,6 +994,16 @@
 				this.trigger('changed', { 'action' : 'deselect_all', 'selected' : this._data.core.selected });
 			}
 		},
+		/**
+		 * `is_selected()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		is_selected : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj || !obj.length) {
@@ -699,9 +1011,23 @@
 			}
 			return this._data.core.selected.index(obj) >= 0;
 		},
-		get_selected : function (obj) {
+		/**
+		 * `get_selected()`
+		 *
+		 * __Returns__
+		 *
+		 */
+		get_selected : function () {
 			return this._data.core.selected;
 		},
+		/**
+		 * `clean_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 */
 		clean_node : function (obj) {
 			// DETACH maybe inside the "load_node" function? But what about animations, etc?
 			obj = this.get_node(obj);
@@ -767,6 +1093,17 @@
 				}
 			});
 		},
+		/**
+		 * `correct_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `deep`
+		 *
+		 * __Returns__
+		 *
+		 */
 		correct_node : function (obj, deep) {
 			obj = this.get_node(obj);
 			if(!obj || (obj === -1 && !deep)) { return false; }
@@ -786,6 +1123,12 @@
 			});
 			return obj;
 		},
+		/**
+		 * `get_state()`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_state : function () {
 			var state	= {
 				'core' : {
@@ -806,6 +1149,17 @@
 			this._data.core.selected.each(function () { if(this.id) { state.core.selected.push(this.id); } });
 			return state;
 		},
+		/**
+		 * `set_state()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `state`
+		 * * `callback`
+		 *
+		 * __Returns__
+		 *
+		 */
 		set_state : function (state, callback) {
 			if(state) {
 				if(state.core) {
@@ -885,6 +1239,9 @@
 			}
 			return false;
 		},
+		/**
+		 * `refresh()`
+		 */
 		refresh : function () {
 			this._data.core.state = this.get_state();
 			this.load_node(-1, function (o, s) {
@@ -896,6 +1253,17 @@
 				this._data.core.state = null;
 			});
 		},
+		/**
+		 * `get_text()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `remove_html`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_text : function (obj, remove_html) {
 			obj = this.get_node(obj);
 			if(!obj || obj === -1 || !obj.length) { return false; }
@@ -905,6 +1273,17 @@
 			obj = $('<div />')[ remove_html ? 'text' : 'html' ](obj);
 			return obj.html();
 		},
+		/**
+		 * `set_text()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `val`
+		 *
+		 * __Returns__
+		 *
+		 */
 		set_text : function (obj, val) {
 			obj = this.get_node(obj);
 			if(!obj || obj === -1 || !obj.length) { return false; }
@@ -914,6 +1293,16 @@
 			this.trigger('set_text',{ "obj" : obj, "text" : val });
 			return true;
 		},
+		/**
+		 * `parse_json()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `node`
+		 *
+		 * __Returns__
+		 *
+		 */
 		parse_json : function (node) {
 			var li, a, ul, t;
 			if(node === null || ($.isArray(node) && node.length === 0)) {
@@ -957,6 +1346,17 @@
 			}
 			return li;
 		},
+		/**
+		 * `get_json()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `is_callback`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_json : function (obj, is_callback) {
 			obj = typeof obj !== 'undefined' ? this.get_node(obj) : false;
 			if(!is_callback) {
@@ -1009,6 +1409,20 @@
 			}
 			return r;
 		},
+		/**
+		 * `create_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `par`
+		 * * `node`
+		 * * `pos`
+		 * * `callback`
+		 * * `is_loaded`
+		 *
+		 * __Returns__
+		 *
+		 */
 		create_node : function (par, node, pos, callback, is_loaded) {
 			par = this.get_node(par);
 			pos = typeof pos === "undefined" ? "last" : pos;
@@ -1060,6 +1474,17 @@
 			this.trigger('create_node', { "node" : li, "parent" : par, "position" : li.index() });
 			return li;
 		},
+		/**
+		 * `rename_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `val`
+		 *
+		 * __Returns__
+		 *
+		 */
 		rename_node : function (obj, val) {
 			obj = this.get_node(obj);
 			var old = this.get_text(obj);
@@ -1069,6 +1494,16 @@
 				this.trigger('rename_node', { "node" : obj, "title" : val, "old" : old });
 			}
 		},
+		/**
+		 * `delete_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		delete_node : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj || obj === -1 || !obj.length) { return false; }
@@ -1088,6 +1523,19 @@
 			}
 			return obj;
 		},
+		/**
+		 * `check()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `chk`
+		 * * `obj`
+		 * * `par`
+		 * * `pos`
+		 *
+		 * __Returns__
+		 *
+		 */
 		check : function (chk, obj, par, pos) {
 			var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj,
 				chc = this.settings.core.check_callback;
@@ -1126,6 +1574,20 @@
 			}
 			return true;
 		},
+		/**
+		 * `move_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `par`
+		 * * `pos`
+		 * * `callback`
+		 * * `is_loaded`
+		 *
+		 * __Returns__
+		 *
+		 */
 		move_node : function (obj, par, pos, callback, is_loaded) {
 			obj = this.get_node(obj);
 			par = this.get_node(par);
@@ -1185,6 +1647,20 @@
 			this.trigger('move_node', { "node" : obj, "parent" : new_par, "position" : obj.index(), "old_parent" : old_par, "is_multi" : is_multi, 'old_instance' : old_ins, 'new_instance' : new_ins });
 			return true;
 		},
+		/**
+		 * `copy_node()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `par`
+		 * * `pos`
+		 * * `callback`
+		 * * `is_loaded`
+		 *
+		 * __Returns__
+		 *
+		 */
 		copy_node : function (obj, par, pos, callback, is_loaded) {
 			obj = this.get_node(obj);
 			par = this.get_node(par);
@@ -1248,6 +1724,16 @@
 			this.trigger('copy_node', { "node" : obj, "parent" : new_par, "old_parent" : old_par, "position" : obj.index(), "original" : org_obj, "is_multi" : is_multi, 'old_instance' : old_ins, 'new_instance' : new_ins });
 			return true;
 		},
+		/**
+		 * `cut()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		cut : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj || obj === -1 || !obj.length) { return false; }
@@ -1255,6 +1741,16 @@
 			ccp_mode = 'move_node';
 			this.trigger('cut', { "node" : obj });
 		},
+		/**
+		 * `copy()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		copy : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj || obj === -1 || !obj.length) { return false; }
@@ -1262,12 +1758,34 @@
 			ccp_mode = 'copy_node';
 			this.trigger('copy', { "node" : obj });
 		},
+		/**
+		 * `get_buffer()`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_buffer : function () {
 			return { 'mode' : ccp_mode, 'node' : ccp_node };
 		},
+		/**
+		 * `can_paste()`
+		 *
+		 * __Returns__
+		 *
+		 */
 		can_paste : function () {
 			return ccp_mode !== false && ccp_node !== false;
 		},
+		/**
+		 * `paste()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		paste : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }
@@ -1276,6 +1794,17 @@
 			ccp_node = false;
 			ccp_mode = false;
 		},
+		/**
+		 * `edit()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `default_text`
+		 *
+		 * __Returns__
+		 *
+		 */
 		edit : function (obj, default_text) {
 			obj = this.get_node(obj);
 			if(!obj || obj === -1 || !obj.length) { return false; }
@@ -1355,8 +1884,17 @@
 			h1.css(fn);
 			h2.css(fn).width(Math.min(h1.text("pW" + h2[0].value).width(),w))[0].select();
 		},
-
-		// theme related functions
+		/**
+		 * `set_theme()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `theme_name`
+		 * * `theme_url`
+		 *
+		 * __Returns__
+		 *
+		 */
 		set_theme : function (theme_name, theme_url) {
 			if(!theme_name) { return false; }
 			if(theme_url === true) {
@@ -1375,13 +1913,48 @@
 			this.element.addClass('jstree-' + theme_name);
 			this.trigger('set_theme', { 'theme' : theme_name });
 		},
+		/**
+		 * `get_theme()`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_theme : function () { return this._data.core.themes.name; },
+		/**
+		 * `show_dots()`
+		 */
 		show_dots : function () { this._data.core.themes.dots = true; this.get_container().children("ul").removeClass("jstree-no-dots"); },
+		/**
+		 * `hide_dots()`
+		 */
 		hide_dots : function () { this._data.core.themes.dots = false; this.get_container().children("ul").addClass("jstree-no-dots"); },
+		/**
+		 * `toggle_dots()`
+		 */
 		toggle_dots : function () { if(this._data.core.themes.dots) { this.hide_dots(); } else { this.show_dots(); } },
+		/**
+		 * `show_icons()`
+		 */
 		show_icons : function () { this._data.core.themes.icons = true; this.get_container().children("ul").removeClass("jstree-no-icons"); },
+		/**
+		 * `hide_icons()`
+		 */
 		hide_icons : function () { this._data.core.themes.icons = false; this.get_container().children("ul").addClass("jstree-no-icons"); },
+		/**
+		 * `toggle_icons()`
+		 */
 		toggle_icons : function () { if(this._data.core.themes.icons) { this.hide_icons(); } else { this.show_icons(); } },
+		/**
+		 * `set_icon()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 * * `icon`
+		 *
+		 * __Returns__
+		 *
+		 */
 		set_icon : function (obj, icon) {
 			obj = this.get_node(obj);
 			if(!obj || obj === -1 || !obj.length) { return false; }
@@ -1397,6 +1970,16 @@
 			}
 			return true;
 		},
+		/**
+		 * `get_icon()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		get_icon : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj || obj === -1 || !obj.length) { return null; }
@@ -1405,12 +1988,32 @@
 			obj = obj.attr("rel");
 			return (obj && obj.length) ? obj : null;
 		},
+		/**
+		 * `hide_icon()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		hide_icon : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj || obj === -1 || !obj.length) { return false; }
 			obj.find('> a > .jstree-themeicon').addClass('jstree-themeicon-hidden');
 			return true;
 		},
+		/**
+		 * `show_icon()`
+		 *
+		 * __Parameters__
+		 *
+		 * * `obj`
+		 *
+		 * __Returns__
+		 *
+		 */
 		show_icon : function (obj) {
 			obj = this.get_node(obj);
 			if(!obj || obj === -1 || !obj.length) { return false; }
@@ -1445,7 +2048,7 @@
 				'.jstree-rtl .jstree-anchor > .jstree-themeicon { margin-left:3px; margin-right:0; } ' +
 				'.jstree-no-icons .jstree-themeicon, .jstree-anchor > .jstree-themeicon-hidden { display:none; } ';
 		if(!$.jstree.no_css) {
-			$('head').append('<style type="text/css">' + css_string + '</style>');
+			$('head').append('<'+'style type="text/css">' + css_string + '<'+'/style>');
 		}
 	});
 

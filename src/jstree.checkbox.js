@@ -1,6 +1,7 @@
 /**
  * ### Checkbox plugin
  */
+// TODO: get undetermined from server too
 (function ($) {
 	$.jstree.defaults.checkbox = {
 		three_state : true,
@@ -65,14 +66,17 @@
 		};
 		this.clean_node = function(obj) {
 			obj = parent.clean_node.call(this, obj);
-			var t = this;
-			obj = obj.each(function () {
-				var o = $(this).children('a');
+			return obj.each(function () {
+				var t = $(this),
+					d = t.data('jstree'),
+					o = t.children('a');
 				if(!o.children(".jstree-checkbox").length) {
 					o.prepend("<i class='jstree-icon jstree-checkbox'></i>");
 				}
+				if(d && d.undetermined) {
+					o.children('.jstree-checkbox').addClass('jstree-undetermined');
+				}
 			});
-			return obj;
 		};
 		this.activate_node = function (obj, e) {
 			if(this.settings.checkbox.whole_node || $(e.target).hasClass('jstree-checkbox')) {
