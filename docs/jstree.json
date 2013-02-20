@@ -57,7 +57,7 @@
       "body": ""
     },
     "ignore": false,
-    "code": "$.fn.jstree = function (arg) {\r\n\t\tvar is_method = (typeof arg === 'string'),\n\t\t\targs = Array.prototype.slice.call(arguments, 1),\n\t\t\tresult = null;\n\t\tthis.each(function () {\r\n\t\t\tvar instance = $(this).data('jstree'),\n\t\t\t\tmethod = is_method && instance ? instance[arg] : null;\r\n\t\t\tresult = is_method && method ? method.apply(instance, args) : null;\r\n\t\t\tif(!instance) { $(this).data('jstree', new $.jstree.create(this, arg)); }\r\n\t\t\tif(result !== null && typeof result !== 'undefined') { return false; }\n\t\t});\r\n\t\treturn result !== null && typeof result !== 'undefined' ? result : this;\n\t};"
+    "code": "$.fn.jstree = function (arg) {\r\n\t\tvar is_method = (typeof arg === 'string'),\n\t\t\targs = Array.prototype.slice.call(arguments, 1),\n\t\t\tresult = null;\n\t\tthis.each(function () {\r\n\t\t\tvar instance = $(this).data('jstree'),\n\t\t\t\tmethod = is_method && instance ? instance[arg] : null;\r\n\t\t\tresult = is_method && method ?\n\t\t\t\tmethod.apply(instance, args) :\n\t\t\t\tnull;\r\n\t\t\tif(!instance) {\n\t\t\t\t$(this).data('jstree', new $.jstree.create(this, arg));\n\t\t\t}\r\n\t\t\tif(result !== null && typeof result !== 'undefined') {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t});\r\n\t\treturn result !== null && typeof result !== 'undefined' ?\n\t\t\tresult : this;\n\t};"
   },
   {
     "tags": [],
@@ -67,13 +67,13 @@
       "body": ""
     },
     "ignore": false,
-    "code": "$.expr[':'].jstree = $.expr.createPseudo(function(search) {\n\t\treturn function(a) {\n\t\t\treturn $(a).hasClass('jstree') && typeof ($(a).data('jstree')) !== 'undefined';\n\t\t};\n\t});"
+    "code": "$.expr[':'].jstree = $.expr.createPseudo(function(search) {\n\t\treturn function(a) {\n\t\t\treturn $(a).hasClass('jstree') &&\n\t\t\t\ttypeof ($(a).data('jstree')) !== 'undefined';\n\t\t};\n\t});"
   },
   {
     "tags": [],
     "description": {
-      "full": "<h3>jsTree core settings</h3>\n\n<p><code>$.jstree.defaults.core</code> stores all defaults for the core.</p>\n\n<ul>\n<li><code>string</code> should be an object or a function ...</li>\n</ul>",
-      "summary": "<h3>jsTree core settings</h3>\n\n<p><code>$.jstree.defaults.core</code> stores all defaults for the core.</p>\n\n<ul>\n<li><code>string</code> should be an object or a function ...</li>\n</ul>",
+      "full": "<h3>jsTree core settings</h3>\n\n<p><code>$.jstree.defaults.core</code> stores all defaults for the core.</p>\n\n<ul>\n<li><p><code>string</code> should be an object or a function:</p>\n\n<pre><code>// object\n{\n    'Loading ...' : 'Зареждане ...'\n    ...\n}\n\n\n// function\nfunction (key) {\n    switch(key) {\n        case 'Loading ...':\n            return 'Зареждане ...';\n    ...\n}\n</code></pre>\n\n<p>This setting is handled in the <code>get_string()</code> function, if no match is found, the key itself is used.</p></li>\n<li><p><code>check_callback</code> should either be a boolean or a function:</p></li>\n</ul>",
+      "summary": "<h3>jsTree core settings</h3>\n\n<p><code>$.jstree.defaults.core</code> stores all defaults for the core.</p>\n\n<ul>\n<li><p><code>string</code> should be an object or a function:</p>\n\n<pre><code>// object\n{\n    'Loading ...' : 'Зареждане ...'\n    ...\n}\n\n\n// function\nfunction (key) {\n    switch(key) {\n        case 'Loading ...':\n            return 'Зареждане ...';\n    ...\n}\n</code></pre>\n\n<p>This setting is handled in the <code>get_string()</code> function, if no match is found, the key itself is used.</p></li>\n<li><p><code>check_callback</code> should either be a boolean or a function:</p></li>\n</ul>",
       "body": ""
     },
     "ignore": false,
@@ -92,8 +92,8 @@
   {
     "tags": [],
     "description": {
-      "full": "<p><code>plugin()</code> is used to decorate an instance with a plugin. Used internally in <code>$.jstree.create()</code>.</p>\n\n<p><strong>Parameters</strong></p>\n\n<ul>\n<li><code>deco</code> - the decorator to use</li>\n<li><code>options</code> - options for the decorator, extends <code>$.jstree.defaults</code></li>\n</ul>\n\n<p><strong>Returns</strong><br />the decorated jstree instance</p>",
-      "summary": "<p><code>plugin()</code> is used to decorate an instance with a plugin. Used internally in <code>$.jstree.create()</code>.</p>\n\n<p><strong>Parameters</strong></p>\n\n<ul>\n<li><code>deco</code> - the decorator to use</li>\n<li><code>options</code> - options for the decorator, extends <code>$.jstree.defaults</code></li>\n</ul>\n\n<p><strong>Returns</strong><br />the decorated jstree instance</p>",
+      "full": "<p><code>plugin()</code> is used to decorate an instance with a plugin. Used internally in <code>$.jstree.create()</code>.</p>\n\n<p><strong>Parameters</strong></p>\n\n<ul>\n<li><code>deco</code> - the plugin to activate on the instance</li>\n<li><code>options</code> - options for the plugin</li>\n</ul>\n\n<p><strong>Returns</strong><br />the decorated jstree instance</p>\n\n<p><em>Plugin authors are better off reading the options from <code>this.settings.{plugin_name}</code> in the <code>.bind()</code> or <code>init()</code> function of their plugins.</em></p>",
+      "summary": "<p><code>plugin()</code> is used to decorate an instance with a plugin. Used internally in <code>$.jstree.create()</code>.</p>\n\n<p><strong>Parameters</strong></p>\n\n<ul>\n<li><code>deco</code> - the plugin to activate on the instance</li>\n<li><code>options</code> - options for the plugin</li>\n</ul>\n\n<p><strong>Returns</strong><br />the decorated jstree instance</p>\n\n<p><em>Plugin authors are better off reading the options from <code>this.settings.{plugin_name}</code> in the <code>.bind()</code> or <code>init()</code> function of their plugins.</em></p>",
       "body": ""
     },
     "ignore": false,

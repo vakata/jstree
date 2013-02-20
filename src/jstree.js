@@ -117,14 +117,21 @@
 			var instance = $(this).data('jstree'),
 				method = is_method && instance ? instance[arg] : null;
 			// if calling a method, and method is available - execute on the instance
-			result = is_method && method ? method.apply(instance, args) : null;
+			result = is_method && method ?
+				method.apply(instance, args) :
+				null;
 			// if there is no instance - create one
-			if(!instance) { $(this).data('jstree', new $.jstree.create(this, arg)); }
+			if(!instance) {
+				$(this).data('jstree', new $.jstree.create(this, arg));
+			}
 			// if there was a method call which returned a result - break and return the value
-			if(result !== null && typeof result !== 'undefined') { return false; }
+			if(result !== null && typeof result !== 'undefined') {
+				return false;
+			}
 		});
 		// if there was a method call with a valid return value - return that, otherwise continue the chain
-		return result !== null && typeof result !== 'undefined' ? result : this;
+		return result !== null && typeof result !== 'undefined' ?
+			result : this;
 	};
 	/**
 	 * ### jQuery :jstree pseudo selector
@@ -140,7 +147,8 @@
 	 */
 	$.expr[':'].jstree = $.expr.createPseudo(function(search) {
 		return function(a) {
-			return $(a).hasClass('jstree') && typeof ($(a).data('jstree')) !== 'undefined';
+			return $(a).hasClass('jstree') &&
+				typeof ($(a).data('jstree')) !== 'undefined';
 		};
 	});
 
@@ -149,7 +157,25 @@
 	 *
 	 * `$.jstree.defaults.core` stores all defaults for the core.
 	 *
-	 * * `string` should be an object or a function ...
+	 * * `string` should be an object or a function:
+	 *
+	 *		// object
+	 *		{
+	 *			'Loading ...' : 'Зареждане ...'
+	 *			...
+	 *		}
+	 *
+	 *		// function
+	 *		function (key) {
+	 *			switch(key) {
+	 *				case 'Loading ...':
+	 *					return 'Зареждане ...';
+	 *			...
+	 *		}
+	 *
+	 *	This setting is handled in the `get_string()` function, if no match is found, the key itself is used.
+	 *
+	 * * `check_callback` should either be a boolean or a function:
 	 */
 	$.jstree.defaults.core = {
 		strings			: false,
@@ -176,11 +202,13 @@
 		 *
 		 * __Parameters__
 		 *
-		 * * `deco` - the decorator to use
-		 * * `options` - options for the decorator, extends `$.jstree.defaults`
+		 * * `deco` - the plugin to activate on the instance
+		 * * `options` - options for the plugin
 		 *
 		 * __Returns__
 		 * the decorated jstree instance
+		 *
+		 * _Plugin authors are better off reading the options from `this.settings.{plugin_name}` in the `.bind()` or `init()` function of their plugins._
 		 */
 		plugin : function (deco, opts) {
 			var Child = $.jstree.plugins[deco];
