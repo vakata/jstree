@@ -101,7 +101,7 @@
 						t.show();
 						$('.item:gt(0), h3').not(t).hide();
 
-						$(document).scrollTop(0);
+						//$('body').animate({ 'scrollTop' : t.eq(0).offset().top }, 200);
 
 						if(t.length == 0) {
 							$('.container').append('<div class="alert alert-error" style="margin:20px; text-align:center; padding:20px;">No methods or properties matching `' + s + '`</div>');
@@ -113,7 +113,7 @@
 						$('#cls').prop('disabled', true);
 					}
 					document.location.hash = s;
-				});
+				}, 200);
 			}).select().keydown();
 			$('pre').each(function () { hljs.highlightBlock(this); });
 		});
