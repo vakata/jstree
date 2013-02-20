@@ -8,6 +8,7 @@
  *   http://www.opensource.org/licenses/mit-license.php
  *
  */
+// add disabled
 (function ($) {
 	"use strict";
 
@@ -1923,11 +1924,11 @@
 		/**
 		 * `show_dots()`
 		 */
-		show_dots : function () { this._data.core.themes.dots = true; this.get_container().children("ul").removeClass("jstree-no-dots"); },
+		show_dots : function () { this._data.core.themes.dots = true; this.element.children("ul").removeClass("jstree-no-dots"); },
 		/**
 		 * `hide_dots()`
 		 */
-		hide_dots : function () { this._data.core.themes.dots = false; this.get_container().children("ul").addClass("jstree-no-dots"); },
+		hide_dots : function () { this._data.core.themes.dots = false; this.element.children("ul").addClass("jstree-no-dots"); },
 		/**
 		 * `toggle_dots()`
 		 */
@@ -1935,11 +1936,11 @@
 		/**
 		 * `show_icons()`
 		 */
-		show_icons : function () { this._data.core.themes.icons = true; this.get_container().children("ul").removeClass("jstree-no-icons"); },
+		show_icons : function () { this._data.core.themes.icons = true; this.element.children("ul").removeClass("jstree-no-icons"); },
 		/**
 		 * `hide_icons()`
 		 */
-		hide_icons : function () { this._data.core.themes.icons = false; this.get_container().children("ul").addClass("jstree-no-icons"); },
+		hide_icons : function () { this._data.core.themes.icons = false; this.element.children("ul").addClass("jstree-no-icons"); },
 		/**
 		 * `toggle_icons()`
 		 */

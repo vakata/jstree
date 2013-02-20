@@ -6,7 +6,8 @@
 	$.jstree.defaults.checkbox = {
 		three_state : true,
 		whole_node : false,
-		keep_selected_style : true
+		keep_selected_style : true,
+		icons : true
 	};
 
 	$.jstree.plugins.checkbox = function (options, parent) {
@@ -19,6 +20,12 @@
 
 			if(this.settings.checkbox.three_state) {
 				this.element
+					.on("init.jstree", $.proxy(function () {
+							this._data.checkbox.icons = this.settings.checkbox.icons;
+						}, this))
+					.on('ready.jstree loaded.jstree', $.proxy(function () {
+							this[this._data.checkbox.icons ? 'show_checkboxes' : 'hide_checkboxes' ]();
+						}, this))
 					.on('changed.jstree', $.proxy(function (e, data) {
 							var action = data.action || '',
 								node = false,
@@ -74,9 +81,19 @@
 					o.prepend("<i class='jstree-icon jstree-checkbox'></i>");
 				}
 				if(d && d.undetermined) {
-					o.children('.jstree-checkbox').addClass('jstree-undetermined');
+					setTimeout(function () { o.children('.jstree-checkbox').addClass('jstree-undetermined'); }, 0);
+					delete d.undetermined;
 				}
 			});
+		};
+		this.get_json = function (obj, is_callback) {
+			var r = parent.get_json.call(this, obj, is_callback);
+			if(is_callback) {
+				if(obj.find('>.jstree-anchor>.jstree-undetermined').length) {
+					r.data.jstree.undetermined = true;
+				}
+			}
+			return r;
 		};
 		this.activate_node = function (obj, e) {
 			if(this.settings.checkbox.whole_node || $(e.target).hasClass('jstree-checkbox')) {
@@ -140,6 +157,18 @@
 			}
 			return false;
 		};
+		/**
+		 * `show_checkboxes()`
+		 */
+		this.show_checkboxes = function () { this._data.checkbox.icons = true; this.element.children("ul").removeClass("jstree-no-checkboxes"); };
+		/**
+		 * `hide_checkboxes()`
+		 */
+		this.hide_checkboxes = function () { this._data.checkbox.icons = false; this.element.children("ul").addClass("jstree-no-checkboxes"); };
+		/**
+		 * `toggle_checkboxes()`
+		 */
+		this.toggle_checkboxes = function () { if(this._data.checkbox.icons) { this.hide_checkboxes(); } else { this.show_checkboxes(); } };
 	};
 
 	$(function () {
