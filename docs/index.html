@@ -83,17 +83,27 @@
 			if(document.location.hash && document.location.hash.length) {
 				$('#q').val(document.location.hash.replace(/^#/,''));
 			}
-			$('#q').on('keypress', function () {
+			$('#q').on('keydown', function (e) {
+				//e.preventDefault();
 				if(to) { clearTimeout(to); }
 				to = setTimeout(function () {
 					var s = $.trim($('#q').val().replace(/[^a-z0-9_.]+/i,''));
 					$('.alert').remove();
 					$('.selected').removeClass('selected');
 					if(s.length) {
-						$('.item:gt(0), h3').hide();
-						var i = $('.docs code:icontains("' + s + '")').addClass('selected').closest('.item');
-						i.show().prev('h3').show();
-						if(i.length == 0) {
+						var i = $('.docs code:icontains("' + s + '")').addClass('selected').closest('.item'),
+							t = $();
+						
+						i.each(function () {
+							t = t.add($(this));
+							t = t.add($(this).prevAll('h3:eq(0)'));
+						});
+						t.show();
+						$('.item:gt(0), h3').not(t).hide();
+
+						$(document).scrollTop(0);
+
+						if(t.length == 0) {
 							$('.container').append('<div class="alert alert-error" style="margin:20px; text-align:center; padding:20px;">No methods or properties matching `' + s + '`</div>');
 						}
 						$('#cls').prop('disabled', false);
@@ -104,7 +114,7 @@
 					}
 					document.location.hash = s;
 				});
-			}).select().keypress();
+			}).select().keydown();
 			$('pre').each(function () { hljs.highlightBlock(this); });
 		});
 	});
