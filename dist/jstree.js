@@ -1144,11 +1144,11 @@
 				// selected part
 				// t.find('.jstree-clicked').removeClass('jstree-clicked');
 				if(d && d.selected) {
-					setTimeout(function () { _this.select_node(t); }, 0);
+					_this.select_node(t);
 					delete d.selected;
 				}
 				if(d && d.disabled) {
-					setTimeout(function () { _this.disable_node(t); }, 0);
+					_this.disable_node(t);
 					delete d.disabled;
 				}
 			});
@@ -2325,6 +2325,23 @@
 					.on('ready.jstree loaded.jstree', $.proxy(function () {
 							this[this._data.checkbox.icons ? 'show_checkboxes' : 'hide_checkboxes' ]();
 						}, this))
+					.on('open_node.jstree', $.proxy(function (e, data) {
+							if(data.node && data.node !== -1) {
+								var change = false;
+								if(this.is_selected(data.node)) {
+									data.node.find('.jstree-anchor:not(.jstree-clicked)').each($.proxy(function (i,v) {
+										change = true;
+										this.select_node(v, true);
+									}, this));
+								}
+								else {
+									change = this.check_up(data.node, true);
+								}
+								if(change) {
+									this.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : this._data.core.selected });
+								}
+							}
+						}, this))
 					.on('changed.jstree', $.proxy(function (e, data) {
 							var action = data.action || '',
 								node = false,
@@ -2380,7 +2397,7 @@
 					o.prepend("<i class='jstree-icon jstree-checkbox'></i>");
 				}
 				if(d && d.undetermined) {
-					setTimeout(function () { o.parentsUntil('.jstree', 'li').find('> .jstree-anchor > .jstree-checkbox').addClass('jstree-undetermined'); }, 0);
+					o.parentsUntil('.jstree', 'li').find('> .jstree-anchor > .jstree-checkbox').addClass('jstree-undetermined');
 					delete d.undetermined;
 				}
 			});
@@ -2408,7 +2425,7 @@
 			var state = 0,
 				has_children = obj.find('> ul > li').length > 0,
 				all_checked = has_children && obj.find('> ul > li').not(this._data.core.selected).length === 0,
-				none_checked = has_children && obj.find('.jstree-clicked, li > .jstree-anchor > .jstree-undetermined').length === 0;
+				none_checked = has_children && obj.find('li > .jstree-clicked, li > .jstree-anchor > .jstree-undetermined').length === 0;
 
 			if(!state && this.is_selected(obj)) { state = 1; }
 			if(!state && obj.find('> .jstree-anchor > .jstree-undetermined').length) { state = 2; }
@@ -3663,7 +3680,7 @@
 (function ($) {
 	$.jstree.defaults.search = {
 		ajax : false,
-		search_method : "vakata_icontains",
+		case_sensitive : false,
 		show_only_matches : true
 	};
 
@@ -3700,7 +3717,6 @@
 			var s = this.settings.search,
 				t = this;
 
-			// progressive render?
 			if(!skip_async && s.ajax !== false && this.get_container_ul().find("li.jstree-closed:not(:has(ul)):eq(0)").length > 0) {
 				s.ajax.success = $.proxy(function (d, t, x) {
 					var s = this.settings.search.ajax;
@@ -3736,18 +3752,47 @@
 				this.clear_search();
 			}
 			this._data.search.str = str;
-			this._data.search.res = this.element.find("a:" + (s.search_method) + "(" + str + ")");
+			this._data.search.res = this._search(str);
 
-			this._data.search.res.addClass("jstree-search").parent().parents(".jstree-closed").each(function () {
+			this._data.search.res.addClass("jstree-search").parent().parentsUntil(".jstree", ".jstree-closed").each(function () {
 				t.open_node(this, false, 0);
 			});
 			this.trigger('search', { nodes : this._data.search.res, str : str });
 		};
-		this.clear_search = function (str) {
+		this.clear_search = function () {
 			this._data.search.res.removeClass("jstree-search");
 			this.trigger('clear_search', { 'nodes' : this._data.search.res, str : this._data.search.str });
 			this._data.search.str = "";
 			this._data.search.res = $();
+		};
+		this._search = function (str) {
+			this._search_data();
+			return this.element.find(".jstree-anchor:" + (this.settings.search.case_sensitive ? 'contains' : 'vakata_icontains') + "(" + str + ")");
+		};
+		this._search_data = function (str, obj) {
+			if(this.settings.json && this.settings.json.progressive_render) {
+				var cs = this.settings.search.case_sensitive,
+					th = this;
+				str = cs ? str : str.toLowerCase();
+				if(!obj) {
+					obj = this.get_container_ul().find("li.jstree-closed:not(:has(ul))");
+				}
+				obj.each(function () {
+					var t = $(this),
+						d = t.data('jstree');
+					if(d && d.children && $.isArray(d.children)) {
+						$.each(d.children, function (i, v) {
+							v = typeof v === "string" ? v : v.title;
+							if(v) {
+								v = cs ? v : v.toLowerCase();
+								if(v.indexOf(str) !== -1) {
+									th.open_node(t, false, 0);
+								}
+							}
+						});
+					}
+				});
+			}
 		};
 		this._search_open = function (d, str) {
 			var res = true,
@@ -3834,7 +3879,8 @@
 
 	$.jstree.defaults.state = {
 		key		: 'jstree',
-		events	: 'changed.jstree open_node.jstree close_node.jstree'
+		events	: 'changed.jstree open_node.jstree close_node.jstree',
+		ttl		: false
 	};
 	$.jstree.plugins.state = function (options, parent) {
 		this.bind = function () {
@@ -3852,7 +3898,7 @@
 					}, this));
 		};
 		this.save_state = function () {
-			$.vakata.storage.set(this.settings.state.key, this.get_state());
+			$.vakata.storage.set(this.settings.state.key, this.get_state(), this.settings.state.ttl);
 		};
 		this.restore_state = function () {
 			var k = $.vakata.storage.get(this.settings.state.key);
@@ -3860,10 +3906,13 @@
 			if(!!k) { this.set_state(k); }
 			this.trigger('restore_state', { 'state' : k });
 		};
+		this.clear_state = function () {
+			return $.vakata.storage.del(this.settings.state.key);
+		};
 	};
 
 	// include the state plugin by default
-	$.jstree.defaults.plugins.push("state");
+	// $.jstree.defaults.plugins.push("state");
 })(jQuery);
 
 (function ($, document, undefined) {

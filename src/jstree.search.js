@@ -4,7 +4,7 @@
 (function ($) {
 	$.jstree.defaults.search = {
 		ajax : false,
-		search_method : "vakata_icontains",
+		case_sensitive : false,
 		show_only_matches : true
 	};
 
@@ -41,7 +41,6 @@
 			var s = this.settings.search,
 				t = this;
 
-			// progressive render?
 			if(!skip_async && s.ajax !== false && this.get_container_ul().find("li.jstree-closed:not(:has(ul)):eq(0)").length > 0) {
 				s.ajax.success = $.proxy(function (d, t, x) {
 					var s = this.settings.search.ajax;
@@ -77,18 +76,47 @@
 				this.clear_search();
 			}
 			this._data.search.str = str;
-			this._data.search.res = this.element.find("a:" + (s.search_method) + "(" + str + ")");
+			this._data.search.res = this._search(str);
 
-			this._data.search.res.addClass("jstree-search").parent().parents(".jstree-closed").each(function () {
+			this._data.search.res.addClass("jstree-search").parent().parentsUntil(".jstree", ".jstree-closed").each(function () {
 				t.open_node(this, false, 0);
 			});
 			this.trigger('search', { nodes : this._data.search.res, str : str });
 		};
-		this.clear_search = function (str) {
+		this.clear_search = function () {
 			this._data.search.res.removeClass("jstree-search");
 			this.trigger('clear_search', { 'nodes' : this._data.search.res, str : this._data.search.str });
 			this._data.search.str = "";
 			this._data.search.res = $();
+		};
+		this._search = function (str) {
+			this._search_data();
+			return this.element.find(".jstree-anchor:" + (this.settings.search.case_sensitive ? 'contains' : 'vakata_icontains') + "(" + str + ")");
+		};
+		this._search_data = function (str, obj) {
+			if(this.settings.json && this.settings.json.progressive_render) {
+				var cs = this.settings.search.case_sensitive,
+					th = this;
+				str = cs ? str : str.toLowerCase();
+				if(!obj) {
+					obj = this.get_container_ul().find("li.jstree-closed:not(:has(ul))");
+				}
+				obj.each(function () {
+					var t = $(this),
+						d = t.data('jstree');
+					if(d && d.children && $.isArray(d.children)) {
+						$.each(d.children, function (i, v) {
+							v = typeof v === "string" ? v : v.title;
+							if(v) {
+								v = cs ? v : v.toLowerCase();
+								if(v.indexOf(str) !== -1) {
+									th.open_node(t, false, 0);
+								}
+							}
+						});
+					}
+				});
+			}
 		};
 		this._search_open = function (d, str) {
 			var res = true,

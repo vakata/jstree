@@ -6,7 +6,8 @@
 
 	$.jstree.defaults.state = {
 		key		: 'jstree',
-		events	: 'changed.jstree open_node.jstree close_node.jstree'
+		events	: 'changed.jstree open_node.jstree close_node.jstree',
+		ttl		: false
 	};
 	$.jstree.plugins.state = function (options, parent) {
 		this.bind = function () {
@@ -24,7 +25,7 @@
 					}, this));
 		};
 		this.save_state = function () {
-			$.vakata.storage.set(this.settings.state.key, this.get_state());
+			$.vakata.storage.set(this.settings.state.key, this.get_state(), this.settings.state.ttl);
 		};
 		this.restore_state = function () {
 			var k = $.vakata.storage.get(this.settings.state.key);
@@ -32,10 +33,13 @@
 			if(!!k) { this.set_state(k); }
 			this.trigger('restore_state', { 'state' : k });
 		};
+		this.clear_state = function () {
+			return $.vakata.storage.del(this.settings.state.key);
+		};
 	};
 
 	// include the state plugin by default
-	$.jstree.defaults.plugins.push("state");
+	// $.jstree.defaults.plugins.push("state");
 })(jQuery);
 
 (function ($, document, undefined) {

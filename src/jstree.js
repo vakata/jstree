@@ -1144,11 +1144,11 @@
 				// selected part
 				// t.find('.jstree-clicked').removeClass('jstree-clicked');
 				if(d && d.selected) {
-					setTimeout(function () { _this.select_node(t); }, 0);
+					_this.select_node(t);
 					delete d.selected;
 				}
 				if(d && d.disabled) {
-					setTimeout(function () { _this.disable_node(t); }, 0);
+					_this.disable_node(t);
 					delete d.disabled;
 				}
 			});

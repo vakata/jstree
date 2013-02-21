@@ -26,6 +26,23 @@
 					.on('ready.jstree loaded.jstree', $.proxy(function () {
 							this[this._data.checkbox.icons ? 'show_checkboxes' : 'hide_checkboxes' ]();
 						}, this))
+					.on('open_node.jstree', $.proxy(function (e, data) {
+							if(data.node && data.node !== -1) {
+								var change = false;
+								if(this.is_selected(data.node)) {
+									data.node.find('.jstree-anchor:not(.jstree-clicked)').each($.proxy(function (i,v) {
+										change = true;
+										this.select_node(v, true);
+									}, this));
+								}
+								else {
+									change = this.check_up(data.node, true);
+								}
+								if(change) {
+									this.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : this._data.core.selected });
+								}
+							}
+						}, this))
 					.on('changed.jstree', $.proxy(function (e, data) {
 							var action = data.action || '',
 								node = false,
@@ -81,7 +98,7 @@
 					o.prepend("<i class='jstree-icon jstree-checkbox'></i>");
 				}
 				if(d && d.undetermined) {
-					setTimeout(function () { o.parentsUntil('.jstree', 'li').find('> .jstree-anchor > .jstree-checkbox').addClass('jstree-undetermined'); }, 0);
+					o.parentsUntil('.jstree', 'li').find('> .jstree-anchor > .jstree-checkbox').addClass('jstree-undetermined');
 					delete d.undetermined;
 				}
 			});
@@ -109,7 +126,7 @@
 			var state = 0,
 				has_children = obj.find('> ul > li').length > 0,
 				all_checked = has_children && obj.find('> ul > li').not(this._data.core.selected).length === 0,
-				none_checked = has_children && obj.find('.jstree-clicked, li > .jstree-anchor > .jstree-undetermined').length === 0;
+				none_checked = has_children && obj.find('li > .jstree-clicked, li > .jstree-anchor > .jstree-undetermined').length === 0;
 
 			if(!state && this.is_selected(obj)) { state = 1; }
 			if(!state && obj.find('> .jstree-anchor > .jstree-undetermined').length) { state = 2; }
