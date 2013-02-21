@@ -81,7 +81,7 @@
 					o.prepend("<i class='jstree-icon jstree-checkbox'></i>");
 				}
 				if(d && d.undetermined) {
-					setTimeout(function () { o.children('.jstree-checkbox').addClass('jstree-undetermined'); }, 0);
+					setTimeout(function () { o.parentsUntil('.jstree', 'li').find('> .jstree-anchor > .jstree-checkbox').addClass('jstree-undetermined'); }, 0);
 					delete d.undetermined;
 				}
 			});
@@ -109,10 +109,10 @@
 			var state = 0,
 				has_children = obj.find('> ul > li').length > 0,
 				all_checked = has_children && obj.find('> ul > li').not(this._data.core.selected).length === 0,
-				none_checked = has_children && obj.find('.jstree-clicked').length === 0;
+				none_checked = has_children && obj.find('.jstree-clicked, li > .jstree-anchor > .jstree-undetermined').length === 0;
 
 			if(!state && this.is_selected(obj)) { state = 1; }
-			if(!state && obj.find('> a > .jstree-undetermined').length) { state = 2; }
+			if(!state && obj.find('> .jstree-anchor > .jstree-undetermined').length) { state = 2; }
 
 			// if no children
 			if(!has_children) {
@@ -146,14 +146,14 @@
 			}
 			// some children are checked and state is checked
 			if(state === 1) {
-				obj.find('> a > .jstree-checkbox').addClass('jstree-undetermined');
+				obj.find('> .jstree-anchor > .jstree-checkbox').addClass('jstree-undetermined');
 				this.deselect_node(obj, true);
 				this.check_up(obj.parent());
 				return true;
 			}
 			// some children are checked and state is unchecked
 			if(state === 0) {
-				obj.find('> a > .jstree-checkbox').addClass('jstree-undetermined');
+				obj.find('> .jstree-anchor > .jstree-checkbox').addClass('jstree-undetermined');
 			}
 			return false;
 		};
