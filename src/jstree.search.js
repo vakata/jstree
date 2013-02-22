@@ -24,7 +24,7 @@
 								.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
 						}
 					})
-					.on("clear_search.jstree", function () {
+					.on("clear_search.jstree", function (e, data) {
 						if(data.nodes.length) {
 							$(this).children("ul").find("li").css("display","").end().end().jstree("correct_node", -1, true);
 						}

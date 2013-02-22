@@ -3681,17 +3681,10 @@
 	$.jstree.defaults.search = {
 		ajax : false,
 		case_sensitive : false,
-		show_only_matches : true
+		show_only_matches : false
 	};
 
 	$.jstree.plugins.search = function (options, parent) {
-		this.init = function (el, options) {
-			if(options.json) {
-				options.json.progressive_unload = false;
-				options.json.progressive_render = false;
-			}
-			parent.init.call(this, el, options);
-		};
 		this.bind = function () {
 			parent.bind.call(this);
 
@@ -3701,12 +3694,16 @@
 			if(this.settings.search.show_only_matches) {
 				this.element
 					.on("search.jstree", function (e, data) {
-						$(this).children("ul").find("li").hide().removeClass("jstree-last");
-						data.nodes.parentsUntil(".jstree").addBack().show()
-							.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
+						if(data.nodes.length) {
+							$(this).children("ul").find("li").hide().removeClass("jstree-last");
+							data.nodes.parentsUntil(".jstree").addBack().show()
+								.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
+						}
 					})
-					.on("clear_search.jstree", function () {
-						$(this).children("ul").find("li").css("display","").end().end().jstree("correct_node", -1, true);
+					.on("clear_search.jstree", function (e, data) {
+						if(data.nodes.length) {
+							$(this).children("ul").find("li").css("display","").end().end().jstree("correct_node", -1, true);
+						}
 					});
 			}
 		};
@@ -3770,9 +3767,8 @@
 
 			if(this.settings.json && this.settings.json.progressive_render) {
 				this.get_container_ul().find("li.jstree-closed:not(:has(ul))").each($.proxy(function (i, v) {
-					v = $(v).data('jstree');
-					if(this._search_data(str, v)) {
-						this.open_node(v, this._search_data_open, 0);
+					if(this._search_data(str, $(v).data('jstree'))) {
+						this.open_node(v, false, 0);
 					}
 				}, this));
 			}
@@ -3783,14 +3779,22 @@
 				return false;
 			}
 			var res = false;
-			$.each(d.children, function (i, v) {
+			$.each(d.children, $.proxy(function (i, v) {
 				var t = typeof v === "string" ? v : v.title,
 					u;
 				t = this.settings.search.case_sensitive ? t : t.toLowerCase();
 				u = t.indexOf(str) !== -1 || this._search_data(str, v);
-				if(u) { d.opened = true; }
+				if(u) {
+					if(!d.data) {
+						d.data = {};
+					}
+					if(!d.data.jstree) {
+						d.data.jstree = {};
+					}
+					d.data.jstree.opened = true;
+				}
 				res = res || u;
-			});
+			}, this));
 			return res;
 		};
 		this._search_open = function (d, str) {
