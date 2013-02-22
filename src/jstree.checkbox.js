@@ -27,7 +27,7 @@
 							this[this._data.checkbox.icons ? 'show_checkboxes' : 'hide_checkboxes' ]();
 						}, this))
 					.on('open_node.jstree', $.proxy(function (e, data) {
-							if(data.node && data.node !== -1) {
+							if(data.node && data.node !== -1 && this.settings.checkbox.three_state) {
 								var change = false;
 								if(this.is_selected(data.node)) {
 									data.node.find('.jstree-anchor:not(.jstree-clicked)').each($.proxy(function (i,v) {

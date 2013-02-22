@@ -2326,7 +2326,7 @@
 							this[this._data.checkbox.icons ? 'show_checkboxes' : 'hide_checkboxes' ]();
 						}, this))
 					.on('open_node.jstree', $.proxy(function (e, data) {
-							if(data.node && data.node !== -1) {
+							if(data.node && data.node !== -1 && this.settings.checkbox.three_state) {
 								var change = false;
 								if(this.is_selected(data.node)) {
 									data.node.find('.jstree-anchor:not(.jstree-clicked)').each($.proxy(function (i,v) {
@@ -3766,33 +3766,32 @@
 			this._data.search.res = $();
 		};
 		this._search = function (str) {
-			this._search_data();
+			str = this.settings.search.case_sensitive ? str : str.toLowerCase();
+
+			if(this.settings.json && this.settings.json.progressive_render) {
+				this.get_container_ul().find("li.jstree-closed:not(:has(ul))").each($.proxy(function (i, v) {
+					v = $(v).data('jstree');
+					if(this._search_data(str, v)) {
+						this.open_node(v, this._search_data_open, 0);
+					}
+				}, this));
+			}
 			return this.element.find(".jstree-anchor:" + (this.settings.search.case_sensitive ? 'contains' : 'vakata_icontains') + "(" + str + ")");
 		};
-		this._search_data = function (str, obj) {
-			if(this.settings.json && this.settings.json.progressive_render) {
-				var cs = this.settings.search.case_sensitive,
-					th = this;
-				str = cs ? str : str.toLowerCase();
-				if(!obj) {
-					obj = this.get_container_ul().find("li.jstree-closed:not(:has(ul))");
-				}
-				obj.each(function () {
-					var t = $(this),
-						d = t.data('jstree');
-					if(d && d.children && $.isArray(d.children)) {
-						$.each(d.children, function (i, v) {
-							v = typeof v === "string" ? v : v.title;
-							if(v) {
-								v = cs ? v : v.toLowerCase();
-								if(v.indexOf(str) !== -1) {
-									th.open_node(t, false, 0);
-								}
-							}
-						});
-					}
-				});
+		this._search_data = function (str, d) {
+			if(!d || !d.children || !$.isArray(d.children)) {
+				return false;
 			}
+			var res = false;
+			$.each(d.children, function (i, v) {
+				var t = typeof v === "string" ? v : v.title,
+					u;
+				t = this.settings.search.case_sensitive ? t : t.toLowerCase();
+				u = t.indexOf(str) !== -1 || this._search_data(str, v);
+				if(u) { d.opened = true; }
+				res = res || u;
+			});
+			return res;
 		};
 		this._search_open = function (d, str) {
 			var res = true,
