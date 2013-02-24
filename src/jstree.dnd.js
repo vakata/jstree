@@ -99,7 +99,7 @@
 										i = ref.parent().index() + 1;
 										break;
 								}
-								/*
+								/*!
 								// TODO: moving inside, but the node is not yet loaded?
 								// the check will work anyway, as when moving the node will be loaded first and checked again
 								if(v === 'i' && !ins.is_loaded(p)) { }

@@ -246,7 +246,12 @@
 			this.trigger("init");
 
 			this._data.core.original_container_html = this.element.find(" > ul > li").clone(true);
-			this._data.core.original_container_html.find("li").addBack().contents().filter(function() { return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue)); }).remove();
+			this._data.core.original_container_html
+				.find("li").addBack()
+				.contents().filter(function() {
+					return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue));
+				})
+				.remove();
 			this.element.html("<"+"ul><"+"li class='jstree-loading'><"+"a class='jstree-anchor' href='#'>" + this.get_string("Loading ...") + "</a></li></ul>");
 			this.clean_node(-1);
 			this._data.core.li_height = this.settings.base_height || this.get_container_ul().children("li:eq(0)").height() || 18;
@@ -1888,9 +1893,9 @@
 				w1 = oi.width() * oi.length,
 				w2 = ai.width() * ai.length,
 				t  = typeof default_text === 'string' ? default_text : this.get_text(obj),
-				h1 = $("<div />", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo("body"),
+				h1 = $("<"+"div />", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo("body"),
 				h2 = obj.css("position","relative").append(
-					$("<input />", {
+					$("<"+"input />", {
 						"value" : t,
 						"class" : "jstree-rename-input",
 						// "size" : t.length,

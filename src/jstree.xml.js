@@ -5,74 +5,74 @@
 	var xsl = {
 		'nest' : '' +
 			'<' + '?xml version="1.0" encoding="utf-8" ?>' +
-			'<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >' +
-			'<xsl:output method="html" encoding="utf-8" omit-xml-declaration="yes" standalone="no" indent="no" media-type="text/html" />' +
-			'<xsl:template match="/">' +
-			'	<xsl:call-template name="nodes">' +
-			'		<xsl:with-param name="node" select="/root" />' +
-			'	</xsl:call-template>' +
-			'</xsl:template>' +
-			'<xsl:template name="nodes">' +
-			'	<xsl:param name="node" />' +
-			'	<ul>' +
-			'	<xsl:for-each select="$node/item">' +
-			'		<xsl:variable name="children" select="count(./item) &gt; 0" />' +
-			'		<li>' +
-			'			<xsl:for-each select="@*"><xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute></xsl:for-each>' +
-			'			<a>' +
-			'				<xsl:for-each select="./content/@*"><xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute></xsl:for-each>' +
-			'				<xsl:copy-of select="./content/child::node()" />' +
-			'			</a>' +
-			'			<xsl:if test="$children"><xsl:call-template name="nodes"><xsl:with-param name="node" select="current()" /></xsl:call-template></xsl:if>' +
-			'		</li>' +
-			'	</xsl:for-each>' +
-			'	</ul>' +
-			'</xsl:template>' +
-			'</xsl:stylesheet>',
+			'<'+'xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >' +
+			'<'+'xsl:output method="html" encoding="utf-8" omit-xml-declaration="yes" standalone="no" indent="no" media-type="text/html" />' +
+			'<'+'xsl:template match="/">' +
+			'	<'+'xsl:call-template name="nodes">' +
+			'		<'+'xsl:with-param name="node" select="/root" />' +
+			'	<'+'/xsl:call-template>' +
+			'<'+'/xsl:template>' +
+			'<'+'xsl:template name="nodes">' +
+			'	<'+'xsl:param name="node" />' +
+			'	<'+'ul>' +
+			'	<'+'xsl:for-each select="$node/item">' +
+			'		<'+'xsl:variable name="children" select="count(./item) &gt; 0" />' +
+			'		<'+'li>' +
+			'			<'+'xsl:for-each select="@*"><'+'xsl:attribute name="{name()}"><'+'xsl:value-of select="." /><'+'/xsl:attribute><'+'/xsl:for-each>' +
+			'			<'+'a>' +
+			'				<'+'xsl:for-each select="./content/@*"><'+'xsl:attribute name="{name()}"><'+'xsl:value-of select="." /><'+'/xsl:attribute><'+'/xsl:for-each>' +
+			'				<'+'xsl:copy-of select="./content/child::node()" />' +
+			'			<'+'/a>' +
+			'			<'+'xsl:if test="$children"><'+'xsl:call-template name="nodes"><'+'xsl:with-param name="node" select="current()" /><'+'/xsl:call-template><'+'/xsl:if>' +
+			'		<'+'/li>' +
+			'	<'+'/xsl:for-each>' +
+			'	<'+'/ul>' +
+			'<'+'/xsl:template>' +
+			'<'+'/xsl:stylesheet>',
 		'flat' : '' +
 			'<' + '?xml version="1.0" encoding="utf-8" ?>' +
-			'<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >' +
-			'<xsl:output method="html" encoding="utf-8" omit-xml-declaration="yes" standalone="no" indent="no" media-type="text/xml" />' +
-			'<xsl:template match="/">' +
-			'	<ul>' +
-			'	<xsl:for-each select="//item[not(@parent_id) or @parent_id=0 or not(@parent_id = //item/@id)]">' + /* the last `or` may be removed */
-			'		<xsl:call-template name="nodes">' +
-			'			<xsl:with-param name="node" select="." />' +
-			'		</xsl:call-template>' +
-			'	</xsl:for-each>' +
-			'	</ul>' +
-			'</xsl:template>' +
-			'<xsl:template name="nodes">' +
-			'	<xsl:param name="node" />' +
-			'	<xsl:variable name="children" select="count(//item[@parent_id=$node/attribute::id]) &gt; 0" />' +
-			'	<li>' +
-			'		<xsl:for-each select="@*">' +
-			'			<xsl:if test="name() != \'parent_id\'">' +
-			'				<xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute>' +
-			'			</xsl:if>' +
-			'		</xsl:for-each>' +
-			'		<a>' +
-			'			<xsl:for-each select="./content/@*"><xsl:attribute name="{name()}"><xsl:value-of select="." /></xsl:attribute></xsl:for-each>' +
-			'			<xsl:copy-of select="./content/child::node()" />' +
-			'		</a>' +
-			'		<xsl:if test="$children">' +
-			'		<ul>' +
-			'			<xsl:for-each select="//item[@parent_id=$node/attribute::id]">' +
-			'				<xsl:call-template name="nodes">' +
-			'					<xsl:with-param name="node" select="." />' +
-			'				</xsl:call-template>' +
-			'			</xsl:for-each>' +
-			'		</ul>' +
-			'		</xsl:if>' +
-			'	</li>' +
-			'</xsl:template>' +
-			'</xsl:stylesheet>'
+			'<'+'xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >' +
+			'<'+'xsl:output method="html" encoding="utf-8" omit-xml-declaration="yes" standalone="no" indent="no" media-type="text/xml" />' +
+			'<'+'xsl:template match="/">' +
+			'	<'+'ul>' +
+			'	<'+'xsl:for-each select="//item[not(@parent_id) or @parent_id=0 or not(@parent_id = //item/@id)]">' + /* the last `or` may be removed */
+			'		<'+'xsl:call-template name="nodes">' +
+			'			<'+'xsl:with-param name="node" select="." />' +
+			'		<'+'/xsl:call-template>' +
+			'	<'+'/xsl:for-each>' +
+			'	<'+'/ul>' +
+			'<'+'/xsl:template>' +
+			'<'+'xsl:template name="nodes">' +
+			'	<'+'xsl:param name="node" />' +
+			'	<'+'xsl:variable name="children" select="count(//item[@parent_id=$node/attribute::id]) &gt; 0" />' +
+			'	<'+'li>' +
+			'		<'+'xsl:for-each select="@*">' +
+			'			<'+'xsl:if test="name() != \'parent_id\'">' +
+			'				<'+'xsl:attribute name="{name()}"><'+'xsl:value-of select="." /><'+'/xsl:attribute>' +
+			'			<'+'/xsl:if>' +
+			'		<'+'/xsl:for-each>' +
+			'		<'+'a>' +
+			'			<'+'xsl:for-each select="./content/@*"><'+'xsl:attribute name="{name()}"><'+'xsl:value-of select="." /><'+'/xsl:attribute><'+'/xsl:for-each>' +
+			'			<'+'xsl:copy-of select="./content/child::node()" />' +
+			'		<'+'/a>' +
+			'		<'+'xsl:if test="$children">' +
+			'		<'+'ul>' +
+			'			<'+'xsl:for-each select="//item[@parent_id=$node/attribute::id]">' +
+			'				<'+'xsl:call-template name="nodes">' +
+			'					<'+'xsl:with-param name="node" select="." />' +
+			'				<'+'/xsl:call-template>' +
+			'			<'+'/xsl:for-each>' +
+			'		<'+'/ul>' +
+			'		<'+'/xsl:if>' +
+			'	<'+'/li>' +
+			'<'+'/xsl:template>' +
+			'<'+'/xsl:stylesheet>'
 	},
 	escape_xml = function(string) {
 		return string
 			.toString()
 			.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
+			.replace(/<'+'/g, '&lt;')
 			.replace(/>/g, '&gt;')
 			.replace(/"/g, '&quot;')
 			.replace(/'/g, '&apos;');
@@ -98,7 +98,7 @@
 			}
 			if(dom === -1) { dom = this.element; }
 			if(!dom.length) { return false; }
-			if(!dom.children('ul').length) { dom.append('<ul />'); }
+			if(!dom.children('ul').length) { dom.append('<'+'ul />'); }
 			dom.children('ul').empty().append(data.is('ul') ? data.children('li') : data);
 			return true;
 		};
@@ -151,9 +151,9 @@
 				}, this));
 				return '' +
 					'<' + '?xml version="1.0" encoding="utf-8" ?>' +
-					'<root>' + r + '</root>';
+					'<'+'root>' + r + '<'+'/root>';
 			}
-			r += '<item';
+			r += '<'+'item';
 			if(mode === 'flat' && is_callback !== true) {
 				r += ' parent_id="' + escape_xml(is_callback) + '"';
 			}
@@ -168,19 +168,19 @@
 				r += ' ' + i + '="' + escape_xml(v) + '"';
 			});
 			r += '>';
-			r += '<content';
+			r += '<'+'content';
 			$.each(obj.a_attr, function (i, v) {
 				r += ' ' + i + '="' + escape_xml(v) + '"';
 			});
-			r += '><![CDATA[' + obj.title + ']]></content>';
+			r += '><'+'![CDATA[' + obj.title + ']]><'+'/content>';
 
-			if(mode === 'flat') { r += '</item>'; }
+			if(mode === 'flat') { r += '<'+'/item>'; }
 			if(obj.children) {
 				$.each(obj.children, $.proxy(function (i, v) {
 					r += this.get_xml(mode, v, obj.li_attr && obj.li_attr.id ? obj.li_attr.id : true);
 				}, this));
 			}
-			if(mode === 'nest') { r += '</item>'; }
+			if(mode === 'nest') { r += '<'+'/item>'; }
 			return r;
 		};
 	};
@@ -197,7 +197,7 @@
 			p = new XSLTProcessor();
 			p.importStylesheet(xs);
 			r = p.transformToFragment(xm, document);
-			return $('<div />').append(r).html();
+			return $('<'+'div />').append(r).html();
 		}
 		// OLD IE
 		if(typeof (xm.transformNode) !== "undefined") {

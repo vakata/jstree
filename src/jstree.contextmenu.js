@@ -191,32 +191,32 @@
 					sep = false,
 					tmp;
 
-				if(is_callback) { str += "<ul>"; }
+				if(is_callback) { str += "<"+"ul>"; }
 				$.each(o, function (i, val) {
 					if(!val) { return true; }
 					vakata_context.items.push(val);
 					if(!sep && val.separator_before) {
-						str += "<li class='vakata-context-separator'><a href='#' " + ($.vakata.context.settings.icons ? '' : 'style="margin-left:0px;"') + ">&#160;</a></li>";
+						str += "<"+"li class='vakata-context-separator'><"+"a href='#' " + ($.vakata.context.settings.icons ? '' : 'style="margin-left:0px;"') + ">&#160;<"+"/a><"+"/li>";
 					}
 					sep = false;
-					str += "<li class='" + (val._class || "") + (val._disabled ? " vakata-contextmenu-disabled " : "") + "'>";
-					str += "<a href='#' rel='" + (vakata_context.items.length - 1) + "'>";
+					str += "<"+"li class='" + (val._class || "") + (val._disabled ? " vakata-contextmenu-disabled " : "") + "'>";
+					str += "<"+"a href='#' rel='" + (vakata_context.items.length - 1) + "'>";
 					if($.vakata.context.settings.icons) {
-						str += "<ins ";
+						str += "<"+"ins ";
 						if(val.icon) {
 							if(val.icon.indexOf("/") !== -1)	{ str += " style='background:url(\"" + val.icon + "\") center center no-repeat' "; }
 							else								{ str += " class='" + val.icon + "' "; }
 						}
-						str += ">&#160;</ins><span>&#160;</span>";
+						str += ">&#160;<"+"/ins><"+"span>&#160;<"+"/span>";
 					}
-					str += val.label + "</a>";
+					str += val.label + "<"+"/a>";
 					if(val.submenu) {
 						tmp = $.vakata.context._parse(val.submenu, true);
 						if(tmp) { str += tmp; }
 					}
-					str += "</li>";
+					str += "<"+"/li>";
 					if(val.separator_after) {
-						str += "<li class='vakata-context-separator'><a href='#' " + ($.vakata.context.settings.icons ? '' : 'style="margin-left:0px;"') + ">&#160;</a></li>";
+						str += "<"+"li class='vakata-context-separator'><"+"a href='#' " + ($.vakata.context.settings.icons ? '' : 'style="margin-left:0px;"') + ">&#160;<"+"/a><"+"/li>";
 						sep = true;
 					}
 				});

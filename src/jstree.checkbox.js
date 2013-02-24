@@ -1,7 +1,6 @@
 /**
  * ### Checkbox plugin
  */
-// TODO: get undetermined from server too
 (function ($) {
 	$.jstree.defaults.checkbox = {
 		three_state : true,
@@ -95,7 +94,7 @@
 					d = t.data('jstree'),
 					o = t.children('a');
 				if(!o.children(".jstree-checkbox").length) {
-					o.prepend("<i class='jstree-icon jstree-checkbox'></i>");
+					o.prepend("<"+"i class='jstree-icon jstree-checkbox'><"+"/i>");
 				}
 				if(d && d.undetermined) {
 					o.parentsUntil('.jstree', 'li').find('> .jstree-anchor > .jstree-checkbox').addClass('jstree-undetermined');
