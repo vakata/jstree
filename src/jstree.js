@@ -396,10 +396,6 @@
 						this[ this._data.core.themes.dots ? "show_dots" : "hide_dots" ]();
 						this[ this._data.core.themes.icons ? "show_icons" : "hide_icons" ]();
 					}, this))
-				.on('changed.jstree', $.proxy(function (e, data) {
-						this.element.find('.jstree-clicked').removeClass('jstree-clicked');
-						data.selected.children('.jstree-anchor').addClass('jstree-clicked');
-					}, this))
 				.on('focus.jstree', '.jstree-anchor', $.proxy(function (e) {
 						$(e.currentTarget).mouseenter();
 					}, this))
@@ -1008,7 +1004,12 @@
 			this._data.core.selected = this._data.core.selected.add(obj);
 			var t = this;
 			obj.parents(".jstree-closed").each(function () { t.open_node(this, false, 0); });
+
+			this.element.find('.jstree-clicked').removeClass('jstree-clicked');
+			this._data.core.selected.children('.jstree-anchor').addClass('jstree-clicked');
+
 			this.trigger('select_node', { 'node' : obj, 'selected' : this._data.core.selected });
+
 			if(!supress_event) {
 				this.trigger('changed', { 'action' : 'select_node', 'node' : obj, 'selected' : this._data.core.selected });
 			}
@@ -1030,7 +1031,12 @@
 				return false;
 			}
 			this._data.core.selected = this._data.core.selected.not(obj);
+
+			this.element.find('.jstree-clicked').removeClass('jstree-clicked');
+			this._data.core.selected.children('.jstree-anchor').addClass('jstree-clicked');
+
 			this.trigger('deselect_node', { 'node' : obj, 'selected' : this._data.core.selected });
+
 			if(!supress_event) {
 				this.trigger('changed', { 'action' : 'deselect_node', 'node' : obj, 'selected' : this._data.core.selected });
 			}
@@ -1045,6 +1051,9 @@
 		 */
 		deselect_all : function (supress_event) {
 			this._data.core.selected = $();
+			
+			this.element.find('.jstree-clicked').removeClass('jstree-clicked');
+
 			this.trigger('deselect_all', { 'selected' : this._data.core.selected });
 			if(!supress_event) {
 				this.trigger('changed', { 'action' : 'deselect_all', 'selected' : this._data.core.selected });
