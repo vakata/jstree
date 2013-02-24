@@ -2614,14 +2614,14 @@
 					}, this))
 				.on("click.jstree", "a", $.proxy(function (e) {
 						if(this._data.contextmenu.visible) {
-							$.vakata.contextmenu.hide();
+							$.vakata.context.hide();
 						}
 					}, this));
 			$(document).on("context_hide.vakata", $.proxy(function () { this._data.contextmenu.visible = false; }, this));
 		};
 		this.teardown = function () {
 			if(this._data.contextmenu.visible) {
-				$.vakata.contextmenu.hide();
+				$.vakata.context.hide();
 			}
 			parent.teardown.call(this);
 		};
@@ -2982,7 +2982,7 @@
  */
 (function ($) {
 	$.jstree.defaults.dnd = {
-		copy_modifier : 'ctrl',
+		copy : true,
 		open_timeout : 500
 	};
 	$.jstree.plugins.dnd = function (options, parent) {
@@ -3029,12 +3029,12 @@
 					marker.attr('class', 'jstree-' + ins.get_theme());
 					data.helper
 						.children().attr('class', 'jstree-' + ins.get_theme())
-						.find('.jstree-copy:eq(0)')[ data.event[data.data.origin.settings.dnd.copy_modifier + "Key"] ? 'show' : 'hide' ]();
+						.find('.jstree-copy:eq(0)')[ data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'show' : 'hide' ]();
 
 
 					// if are hovering the container itself add a new root node
 					if(data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) {
-						if(ins.check( (data.event[data.data.origin.settings.dnd.copy_modifier + "Key"] ? "copy_node" : "move_node"), data.data.obj, -1, 'last')) {
+						if(ins.check( (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"), data.data.obj, -1, 'last')) {
 							lastmv = { 'ins' : ins, 'par' : -1, 'pos' : 'last' };
 							marker.hide();
 							data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');
@@ -3083,7 +3083,7 @@
 								// the check will work anyway, as when moving the node will be loaded first and checked again
 								if(v === 'i' && !ins.is_loaded(p)) { }
 								*/
-								if(ins.check((data.event[data.data.origin.settings.dnd.copy_modifier + "Key"] ? "copy_node" : "move_node"),data.data.obj, p, i)) {
+								if(ins.check(( data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"),data.data.obj, p, i)) {
 									if(v === 'i' && ref.parent().is('.jstree-closed') && ins.settings.dnd.open_timeout) {
 										opento = setTimeout((function (x, z) { return function () { x.open_node(z); }; })(ins, ref), ins.settings.dnd.open_timeout);
 									}
@@ -3113,14 +3113,14 @@
 				if(!data.data.jstree) { return; }
 				marker.hide();
 				if(lastmv) {
-					lastmv.ins[ data.event[data.data.origin.settings.dnd.copy_modifier + "Key"] ? 'copy_node' : 'move_node' ]
+					lastmv.ins[ data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ]
 						(data.data.obj, lastmv.par, lastmv.pos);
 				}
 			})
 			.bind('keyup keydown', function (e, data) {
 				data = $.vakata.dnd._get();
 				if(data.data && data.data.jstree) {
-					data.helper.find('.jstree-copy:eq(0)')[ e[data.data.origin.settings.dnd.copy_modifier + "Key"] ? 'show' : 'hide' ]();
+					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey) ? 'show' : 'hide' ]();
 				}
 			});
 

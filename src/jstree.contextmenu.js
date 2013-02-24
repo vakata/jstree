@@ -100,14 +100,14 @@
 					}, this))
 				.on("click.jstree", "a", $.proxy(function (e) {
 						if(this._data.contextmenu.visible) {
-							$.vakata.contextmenu.hide();
+							$.vakata.context.hide();
 						}
 					}, this));
 			$(document).on("context_hide.vakata", $.proxy(function () { this._data.contextmenu.visible = false; }, this));
 		};
 		this.teardown = function () {
 			if(this._data.contextmenu.visible) {
-				$.vakata.contextmenu.hide();
+				$.vakata.context.hide();
 			}
 			parent.teardown.call(this);
 		};
