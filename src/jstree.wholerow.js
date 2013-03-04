@@ -63,7 +63,7 @@
 			var t = this;
 			return obj.each(function () {
 				var o = $(this);
-				if(!o.find("> .jstree-wholerow").length) {
+				if(!o.children(".jstree-wholerow").length) {
 					o.prepend("<div class='jstree-wholerow' style='position:absolute; height:"+t._data.core.li_height+"px;' unselectable='on'>&#160;</div>");
 				}
 			});

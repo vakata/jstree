@@ -29,7 +29,7 @@
 			obj.append($.makeArray(obj.children("li")).sort($.proxy(s, t)));
 			obj.children('li').each(function () { t.correct_node(this, false); });
 			if(deep) {
-				obj.find("> li > ul").each(function() { t.sort($(this)); });
+				obj.children("li").children("ul").each(function() { t.sort($(this)); });
 				t.correct_node(obj.children('li'), true);
 			}
 		};

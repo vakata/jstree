@@ -5,7 +5,7 @@
 	$.jstree.defaults.search = {
 		ajax : false,
 		case_sensitive : false,
-		show_only_matches : false
+		show_only_matches : true
 	};
 
 	$.jstree.plugins.search = function (options, parent) {

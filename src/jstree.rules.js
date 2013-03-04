@@ -27,7 +27,7 @@
 						};
 					if(!this.apply_max_depth(o)) {
 						while(o.length) {
-							o = o.find("> ul > li");
+							o = o.children("ul").children("li");
 							o.each(f);
 						}
 					}
@@ -55,7 +55,7 @@
 			if(d && typeof d.max_depth !== 'undefined' && d.max_depth !== -1) {
 				d = d.max_depth;
 				while(obj.length > 0) {
-					obj = obj.find("> ul > li");
+					obj = obj.children("ul").children("li");
 					d = Math.max(d - 1, 0);
 					if(d === 0) {
 						obj.find('li').addBack().each(f1);
@@ -140,7 +140,7 @@
 					}
 					if(s.check_max_children) {
 						if(typeof r.max_children !== 'undefined' && r.max_children !== -1) {
-							if(par.find('> ul >  li').not( chk === 'move_node' ? obj : null ).length + obj.length > r.max_children) {
+							if(par.children("ul").children("li").not( chk === 'move_node' ? obj : null ).length + obj.length > r.max_children) {
 								return false;
 							}
 						}
@@ -163,7 +163,7 @@
 						d = 0;
 						do {
 							d ++;
-							obj = obj.find('> ul > li');
+							obj = obj.children("ul").children("li");
 						} while(obj.length && chk !== 'create_node');
 						if(r.max_depth - d < 0) { return false; }
 					}
