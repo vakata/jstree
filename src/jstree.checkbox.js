@@ -22,9 +22,10 @@
 					.on("init.jstree", $.proxy(function () {
 							this._data.checkbox.icons = this.settings.checkbox.icons;
 						}, this))
-					.on('ready.jstree loaded.jstree', $.proxy(function () {
+					.on('loaded.jstree', $.proxy(function () {
 							this[this._data.checkbox.icons ? 'show_checkboxes' : 'hide_checkboxes' ]();
-
+						}, this))
+					.on('ready.jstree', $.proxy(function () {
 							var change = false;
 							this.get_selected().each($.proxy(function (i,v) {
 								$(v).find('.jstree-anchor:not(.jstree-clicked)').each($.proxy(function (i,v) {
@@ -57,21 +58,38 @@
 					.on('changed.jstree', $.proxy(function (e, data) {
 							var action = data.action || '',
 								node = false,
-								change = false;
+								change = false,
+								tmp;
 							switch(action) {
 								case 'select_node':
 									node = data.node.parent();
+									tmp = data.node.find('.jstree-anchor:not(.jstree-clicked)');
+									if(tmp.length) {
+										change = true;
+										this.select_node(tmp, true, true);
+									}
+									data.node.find('.jstree-undetermined').removeClass('jstree-undetermined');
+									/*
 									data.node.find('.jstree-anchor:not(.jstree-clicked)').each($.proxy(function (i,v) {
 										change = true;
 										this.select_node(v, true, true);
 									}, this)).end().find('.jstree-undetermined').removeClass('jstree-undetermined');
+									*/
 									break;
 								case 'deselect_node':
 									node = data.node.parent();
+									tmp = data.node.find('.jstree-clicked');
+									if(tmp.length) {
+										change = true;
+										this.deselect_node(tmp, true);
+									}
+									data.node.find('.jstree-undetermined').removeClass('jstree-undetermined');
+									/*
 									data.node.find('.jstree-clicked').each($.proxy(function (i,v) {
 										change = true;
 										this.deselect_node(v, true);
 									}, this)).end().find('.jstree-undetermined').removeClass('jstree-undetermined');
+									*/
 									break;
 								case 'deselect_all':
 									this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');

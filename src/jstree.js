@@ -252,8 +252,7 @@
 					return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue));
 				})
 				.remove();
-			this.element.html("<"+"ul><"+"li class='jstree-loading'><"+"a class='jstree-anchor' href='#'>" + this.get_string("Loading ...") + "</a></li></ul>");
-			this.clean_node(-1);
+			this.element.html("<"+"ul><"+"li class='jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'>" + this.get_string("Loading ...") + "</a></li></ul>");
 			this._data.core.li_height = this.settings.base_height || this.get_container_ul().children("li:eq(0)").height() || 18;
 			this.load_node(-1, function () {
 				this.trigger("loaded");
@@ -397,7 +396,7 @@
 						}
 						this.set_theme(s.name, s.url);
 					}, this))
-				.on('ready.jstree loaded.jstree', $.proxy(function () {
+				.on('loaded.jstree', $.proxy(function () {
 						this[ this._data.core.themes.dots ? "show_dots" : "hide_dots" ]();
 						this[ this._data.core.themes.icons ? "show_icons" : "hide_icons" ]();
 					}, this))

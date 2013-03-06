@@ -48,8 +48,8 @@
 .jstree-default .jstree-disabled.jstree-hovered { border-color:transparent; background:transparent; }
 .jstree-default .jstree-disabled.jstree-clicked { border-color:#ccc; background:#efefef; }
 
-.jstree-default .jstree-anchor .jstree-undetermined { background-position:-20px -19px; }
-.jstree-default .jstree-anchor .jstree-undetermined:hover { background-position:-20px -37px; }
+.jstree-default .jstree-anchor > .jstree-undetermined { background-position:-20px -19px; }
+.jstree-default .jstree-anchor > .jstree-undetermined:hover { background-position:-20px -37px; }
 
 #jstree-dnd.jstree-default i { background:transparent; }
 #jstree-dnd.jstree-default .jstree-ok { background:url("d.png") -2px -53px no-repeat; }
@@ -67,5 +67,5 @@
 .jstree-rtl.jstree-default .jstree-clicked > .jstree-checkbox { background-position:-36px -19px; }
 .jstree-rtl.jstree-default .jstree-clicked > .jstree-checkbox:hover { background-position:-36px -37px; }
 
-.jstree-rtl.jstree-default .jstree-anchor .jstree-undetermined { background-position:-18px -19px; }
-.jstree-rtl.jstree-default .jstree-anchor .jstree-undetermined:hover { background-position:-18px -37px; }
+.jstree-rtl.jstree-default .jstree-anchor > .jstree-undetermined { background-position:-18px -19px; }
+.jstree-rtl.jstree-default .jstree-anchor > .jstree-undetermined:hover { background-position:-18px -37px; }
