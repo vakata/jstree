@@ -13,25 +13,30 @@
 		this.bind = function () {
 			parent.bind.call(this);
 
+			this.element
+				.on("init.jstree", $.proxy(function () {
+						this._data.checkbox.icons = this.settings.checkbox.icons;
+					}, this))
+				.on('loaded.jstree', $.proxy(function () {
+						this[this._data.checkbox.icons ? 'show_checkboxes' : 'hide_checkboxes' ]();
+					}, this));
 			if(!this.settings.checkbox.keep_selected_style) {
 				this.element.addClass('jstree-checkbox-no-clicked');
 			}
-
 			if(this.settings.checkbox.three_state) {
 				this.element
-					.on("init.jstree", $.proxy(function () {
-							this._data.checkbox.icons = this.settings.checkbox.icons;
-						}, this))
-					.on('loaded.jstree', $.proxy(function () {
-							this[this._data.checkbox.icons ? 'show_checkboxes' : 'hide_checkboxes' ]();
-						}, this))
 					.on('ready.jstree', $.proxy(function () {
-							var change = false;
-							this.get_selected().each($.proxy(function (i,v) {
-								$(v).find('.jstree-anchor:not(.jstree-clicked)').each($.proxy(function (i,v) {
-									change = true;
-									this.select_node(v, true, true);
-								}, this)).end().find('.jstree-undetermined').removeClass('jstree-undetermined');
+							var change = false,
+								nodes = this.get_selected(),
+								tmp = nodes
+										.find('.jstree-undetermined').removeClass('jstree-undetermined').end()
+										.find('.jstree-anchor:not(.jstree-clicked)');
+
+							if(tmp.length) {
+								change = true;
+								this.select_node(tmp, true, true);
+							}
+							nodes.each($.proxy(function (i,v) {
 								change = change || this.check_up($(v).parent());
 							}, this));
 							if(change) {
@@ -39,13 +44,13 @@
 							}
 						}, this))
 					.on('open_node.jstree', $.proxy(function (e, data) {
-							if(data.node && data.node !== -1 && this.settings.checkbox.three_state) {
-								var change = false;
+							if(data.node && data.node !== -1) {
+								var change = false, tmp;
 								if(this.is_selected(data.node)) {
-									data.node.find('.jstree-anchor:not(.jstree-clicked)').each($.proxy(function (i,v) {
-										change = true;
-										this.select_node(v, true, true);
-									}, this));
+									tmp = data.node.find('.jstree-anchor:not(.jstree-clicked)');
+									if(tmp.length) {
+										this.select_node(tmp, true, true);
+									}
 								}
 								else {
 									change = this.check_up(data.node, true);
