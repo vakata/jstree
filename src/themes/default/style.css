@@ -6,14 +6,14 @@
 .jstree-default li, 
 .jstree-default i { background-image:url("d.png"); background-repeat:no-repeat; background-color:transparent; }
 .jstree-default li { background-position:-90px 0; background-repeat:repeat-y; }
-.jstree-default li.jstree-last { background:transparent; }
+.jstree-default .jstree-last { background:transparent; }
 .jstree-default .jstree-open > .jstree-ocl { background-position:-72px 0; }
 .jstree-default .jstree-closed > .jstree-ocl { background-position:-54px 0; }
 .jstree-default .jstree-leaf > .jstree-ocl { background-position:-36px 0; }
-.jstree-default .jstree-loading > .jstree-ocl { background:url("throbber.gif") center center no-repeat !important; }
+.jstree-default .jstree-loading > .jstree-ocl { background:url("throbber.gif") center center no-repeat; }
 
-.jstree-default .jstree-hovered { background:#e7f4f9; border:1px solid #d8f0fa; padding:0 2px 0 1px; border-radius:2px; }
-.jstree-default .jstree-clicked { background:#beebff; border:1px solid #99defd; padding:0 2px 0 1px; border-radius:2px; }
+.jstree-default .jstree-hovered { background:#e7f4f9; border-radius:2px; box-shadow:inset 0 0 1px #ccc; }
+.jstree-default .jstree-clicked { background:#beebff; border-radius:2px; box-shadow:inset 0 0 1px #999; }
 
 .jstree-default .jstree-anchor > .jstree-themeicon { background-position:-56px -19px; }
 
@@ -58,8 +58,6 @@
 #jstree-marker.jstree-default { background:url("d.png") -41px -57px no-repeat !important; text-indent:-100px; }
 
 /* RTL PART */
-.jstree-rtl.jstree-default .jstree-hovered,
-.jstree-rtl.jstree-default .jstree-clicked { padding:0 1px 0 2px; }
 .jstree-rtl.jstree-default li { background-image:url("dots_rtl.gif"); background-position: 100% 0px; }
 
 .jstree-rtl.jstree-default .jstree-checkbox { background-position:0px -19px; margin-left:2px; }

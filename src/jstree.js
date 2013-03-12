@@ -2130,8 +2130,9 @@
 				'.jstree .jstree-ocl { width:18px; height:18px; text-align:center; line-height:18px; cursor:pointer; vertical-align:top; } ' +
 				'.jstree li.jstree-open > ul { display:block; } ' +
 				'.jstree li.jstree-closed > ul { display:none; } ' +
-				'.jstree-anchor { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; padding:1px 2px; margin:0; text-decoration:none; outline:0; } ' +
+				'.jstree-anchor { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; padding:1px 4px 1px 2px; margin:0; text-decoration:none; outline:0; } ' +
 				'.jstree-anchor > .jstree-themeicon { height:16px; width:16px; margin-right:3px; } ' +
+				'.jstree-rtl .jstree-anchor { padding:1px 2px 1px 4px; } ' +
 				'.jstree-rtl .jstree-anchor > .jstree-themeicon { margin-left:3px; margin-right:0; } ' +
 				'.jstree-no-icons .jstree-themeicon, .jstree-anchor > .jstree-themeicon-hidden { display:none; } ';
 		if(!$.jstree.no_css) {

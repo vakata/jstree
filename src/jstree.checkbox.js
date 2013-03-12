@@ -43,6 +43,9 @@
 								this.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : this._data.core.selected });
 							}
 						}, this))
+					.on('deselect_all.jstree', $.proxy(function (e, data) {
+							this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
+						}, this))
 					.on('open_node.jstree', $.proxy(function (e, data) {
 							if(data.node && data.node !== -1) {
 								var change = false, tmp;
