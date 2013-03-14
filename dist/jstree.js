@@ -2333,7 +2333,8 @@
 		three_state : true,
 		whole_node : false,
 		keep_selected_style : true,
-		icons : true
+		icons : true,
+		parse_data : true
 	};
 
 	$.jstree.plugins.checkbox = function (options, parent) {
@@ -2451,6 +2452,49 @@
 							}
 						}, this));
 			}
+		};
+		this._set_state = function (node) {
+			var i = 0, j = 0, c = 0, r = false;
+			if($.isArray(node)) {
+				for(i = 0, j = node.length; i < j; i++) {
+					node[i] = this._set_state(node[i]);
+				}
+				return node;
+			}
+			else {
+				if(typeof node === "undefined") { node = {}; }
+				if(typeof node === "string") { node = { "title" : node }; }
+				if(!node.data) { node.data = {}; }
+				if(!node.data.jstree) { node.data.jstree = {}; }
+				r = node.data.jstree;
+				if(r.selected || r.undetermined || r._checkboxed) { return node; }
+				r._checkboxed = true;
+
+				if(node.children && node.children.length) {
+					for(i = 0, j = node.children.length; i < j; i++) {
+						node.children[i] = this._set_state(node.children[i]);
+						r = node.children[i].data.jstree;
+						if(r.selected) { c += 2; }
+						else if(r.undetermined) { c += 1; }
+					}
+					if(c > 0) {
+						if(c === j * 2) {
+							node.data.jstree.selected = true;
+						}
+						else {
+							node.data.jstree.undetermined = true;
+						}
+					}
+				}
+				return node;
+			}
+		};
+		this.parse_json = function(data) {
+			var s = this.settings.checkbox;
+			if(s.parse_data && s.three_state && $.isArray(data)) {
+				data = this._set_state(data);
+			}
+			return parent.parse_json.call(this, data);
 		};
 		this.clean_node = function(obj) {
 			obj = parent.clean_node.call(this, obj);
