@@ -192,7 +192,8 @@
 		},
 		base_height		: false,
 		clean_loaded	: true,
-		correct_loaded	: true
+		correct_loaded	: true,
+		expand_selected_onload : true
 	};
 
 	/**
@@ -237,6 +238,7 @@
 			this.element.bind("destroyed", $.proxy(this.teardown, this));
 
 			this._data.core.ready = false;
+			this._data.core.loaded = false;
 			this._data.core.rtl = (this.element.css("direction") === "rtl");
 			this.element[this._data.core.rtl ? 'addClass' : 'removeClass']("jstree-rtl");
 			if(this.settings.core.aria_roles) {
@@ -256,9 +258,7 @@
 				.remove();
 			this.element.html("<"+"ul><"+"li class='jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'>" + this.get_string("Loading ...") + "</a></li></ul>");
 			this._data.core.li_height = this.settings.base_height || this.get_container_ul().children("li:eq(0)").height() || 18;
-			this.load_node(-1, function () {
-				this.trigger("loaded");
-			});
+			this.load_node(-1);
 		},
 		/**
 		 * `destroy()`
@@ -368,14 +368,28 @@
 									this.element.prepend(ul);
 								}
 								else {
+									var s = this._data.core.selected.length;
 									if(data.node.children("ul").children("li").length) {
 										this.clean_node(data.node.children("ul").children("li"));
 									}
+									if(this._data.core.ready && s !== this._data.core.selected.length) {
+										this.trigger('changed', { 'action' : 'clean_node', 'selected' : this._data.core.selected });
+									}
 								}
+							}
+							if(data.node === -1 && !this._data.core.loaded) {
+								this._data.core.loaded = true;
+								this.trigger("loaded");
 							}
 							if(!this._data.core.ready && !this.get_container_ul().find('.jstree-loading:eq(0)').length) {
 								this._data.core.ready = true;
-								this.trigger("ready.jstree");
+								if(this._data.core.selected.length) {
+									if(this.settings.core.expand_selected_onload) {
+										this._data.core.selected.parents(".jstree-closed").each($.proxy(function (i, v) { this.open_node(v, false, 0); }, this));
+									}
+									this.trigger('changed', { 'action' : 'ready', 'selected' : this._data.core.selected });
+								}
+								this.trigger("ready");
 							}
 						}
 					}, this))
@@ -440,12 +454,19 @@
 		 * * `ev`
 		 * * `data`
 		 */
-		trigger : function (ev, data) {
+		trigger : function (ev, data, wait) {
 			if(!data) {
 				data = {};
 			}
 			data.instance = this;
-			this.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);
+			if((typeof wait).toLowerCase() === 'number') {
+				setTimeout($.proxy(function () {
+					this.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);
+				}, this), wait);
+			}
+			else {
+				this.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);
+			}
 		},
 		/**
 		 * `get_container()`
@@ -804,7 +825,6 @@
 				var t = this;
 				if(!animation) {
 					obj[0].className = obj[0].className.replace('jstree-closed', 'jstree-open');
-					setTimeout(function () { t.trigger("after_open", { "node" : obj }); },0);
 				}
 				else {
 					obj
@@ -820,6 +840,9 @@
 					callback.call(this, obj, true);
 				}
 				this.trigger('open_node', { "node" : obj });
+				if(!animation) {
+					this.trigger("after_open", { "node" : obj });
+				}
 			}
 		},
 		/**
@@ -842,7 +865,6 @@
 			var t = this;
 			if(!animation) {
 				obj[0].className = obj[0].className.replace('jstree-open', 'jstree-closed');
-				setTimeout(function () { t.trigger("after_close", { "node" : obj }); },0);
 			}
 			else {
 				obj
@@ -854,6 +876,9 @@
 					});
 			}
 			this.trigger('close_node',{ "node" : obj });
+			if(!animation) {
+				this.trigger("after_close", { "node" : obj });
+			}
 		},
 		/**
 		 * `toggle_node()`
@@ -1107,11 +1132,11 @@
 		deselect_all : function (supress_event) {
 			this._data.core.selected = $();
 
-			this.element.find('.jstree-clicked').removeClass('jstree-clicked');
+			var obj = this.element.find('.jstree-clicked').removeClass('jstree-clicked');
 
-			this.trigger('deselect_all', { 'selected' : this._data.core.selected });
+			this.trigger('deselect_all', { 'selected' : this._data.core.selected, 'node' : obj });
 			if(!supress_event) {
-				this.trigger('changed', { 'action' : 'deselect_all', 'selected' : this._data.core.selected });
+				this.trigger('changed', { 'action' : 'deselect_all', 'selected' : this._data.core.selected, 'node' : obj });
 			}
 		},
 		/**
@@ -1189,7 +1214,7 @@
 						t.addClass('jstree-leaf');
 						break;
 					case 'closed':
-						t.addClass('jstree-open');
+						t.addClass('jstree-closed');
 						_this.close_node(t, 0);
 						break;
 					case 'open':
@@ -1205,10 +1230,8 @@
 					_this.set_icon(t, d.icon);
 					delete d.icon;
 				}
-				// selected part
-				// t.find('.jstree-clicked').removeClass('jstree-clicked');
 				if(d && d.selected) {
-					_this.select_node(t);
+					_this.select_node(t, true, true);
 					delete d.selected;
 				}
 				if(d && d.disabled) {
@@ -2407,24 +2430,35 @@
 							if(change) {
 								this.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : this._data.core.selected });
 							}
+							if(this.settings.json && this.settings.json.progressive_render && this.settings.checkbox.three_state) {
+								this.element
+									.on('deselect_all.jstree select_node.jstree deselect_node.jstree', $.proxy(function (e, data) {
+										data.node.filter('.jstree-closed').each($.proxy(function (i, v) {
+											var t = $(v),
+												d = t.data('jstree');
+											if(d && d.children && t.children('ul').length === 0) {
+												this._progressive_data_clean(d.children);
+											}
+										}, this));
+									}, this));
+							}
 						}, this))
 					.on('deselect_all.jstree', $.proxy(function (e, data) {
 							this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
 						}, this))
 					.on('open_node.jstree', $.proxy(function (e, data) {
 							if(data.node && data.node !== -1) {
-								var change = false, tmp;
+								var tmp;
 								if(this.is_selected(data.node)) {
-									tmp = data.node.find('.jstree-anchor:not(.jstree-clicked)');
+									tmp = data.node.find('.jstree-anchor').not('.jstree-clicked');
 									if(tmp.length) {
 										this.select_node(tmp, true, true);
 									}
 								}
 								else {
-									change = this.check_up(data.node, true);
-								}
-								if(change) {
-									this.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : this._data.core.selected });
+									if(this.check_up(data.node)) {
+										this.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : this._data.core.selected });
+									}
 								}
 							}
 						}, this))
@@ -2488,6 +2522,22 @@
 								data.new_instance.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : data.new_instance._data.core.selected });
 							}
 						}, this));
+			}
+		};
+		this._progressive_data_clean = function (data) {
+			if(!this.settings.checkbox.three_state) { return false; }
+			for(var i = 0, j = data.length; i < j; i++) {
+				if(data[i].data && data[i].data.jstree) {
+					if(data[i].data.jstree.selected) {
+						delete data[i].data.jstree.selected;
+					}
+					if(data[i].data.jstree.undetermined) {
+						delete data[i].data.jstree.undetermined;
+					}
+					if(data[i].children) {
+						this._progressive_data_clean(data[i].children);
+					}
+				}
 			}
 		};
 		this._set_state = function (node) {
@@ -3568,7 +3618,7 @@
 		};
 		this.parse_json = function (node) {
 			var s = this.settings.json;
-			if($.isArray(node.children)) {
+			if($.isArray(node.children) && (this._data.core.ready || !this.settings.core.expand_selected_onload || !this._has_selected(node.children))) {
 				if(s.progressive_render) {
 					if(!node.data) { node.data = {}; }
 					if(!node.data.jstree) { node.data.jstree = {}; }
@@ -3577,6 +3627,22 @@
 				}
 			}
 			return parent.parse_json.call(this, node);
+		};
+		this._has_selected = function (data) {
+			var r = false;
+			for(var i = 0, j = data.length; i < j; i++) {
+				if(data[i].data && data[i].data.jstree && data[i].data.jstree.selected) {
+					r = true;
+				}
+				else if(data[i].children) {
+					r = r || this._has_selected(data[i].children);
+				}
+				else {
+					r = false;
+				}
+				if(r === true) { break; }
+			}
+			return r;
 		};
 		this._append_json_data = function (dom, data) {
 			dom = this.get_node(dom);

@@ -26,7 +26,7 @@
 		};
 		this.parse_json = function (node) {
 			var s = this.settings.json;
-			if($.isArray(node.children)) {
+			if($.isArray(node.children) && (this._data.core.ready || !this.settings.core.expand_selected_onload || !this._has_selected(node.children))) {
 				if(s.progressive_render) {
 					if(!node.data) { node.data = {}; }
 					if(!node.data.jstree) { node.data.jstree = {}; }
@@ -35,6 +35,22 @@
 				}
 			}
 			return parent.parse_json.call(this, node);
+		};
+		this._has_selected = function (data) {
+			var r = false;
+			for(var i = 0, j = data.length; i < j; i++) {
+				if(data[i].data && data[i].data.jstree && data[i].data.jstree.selected) {
+					r = true;
+				}
+				else if(data[i].children) {
+					r = r || this._has_selected(data[i].children);
+				}
+				else {
+					r = false;
+				}
+				if(r === true) { break; }
+			}
+			return r;
 		};
 		this._append_json_data = function (dom, data) {
 			dom = this.get_node(dom);

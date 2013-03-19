@@ -43,24 +43,35 @@
 							if(change) {
 								this.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : this._data.core.selected });
 							}
+							if(this.settings.json && this.settings.json.progressive_render && this.settings.checkbox.three_state) {
+								this.element
+									.on('deselect_all.jstree select_node.jstree deselect_node.jstree', $.proxy(function (e, data) {
+										data.node.filter('.jstree-closed').each($.proxy(function (i, v) {
+											var t = $(v),
+												d = t.data('jstree');
+											if(d && d.children && t.children('ul').length === 0) {
+												this._progressive_data_clean(d.children);
+											}
+										}, this));
+									}, this));
+							}
 						}, this))
 					.on('deselect_all.jstree', $.proxy(function (e, data) {
 							this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
 						}, this))
 					.on('open_node.jstree', $.proxy(function (e, data) {
 							if(data.node && data.node !== -1) {
-								var change = false, tmp;
+								var tmp;
 								if(this.is_selected(data.node)) {
-									tmp = data.node.find('.jstree-anchor:not(.jstree-clicked)');
+									tmp = data.node.find('.jstree-anchor').not('.jstree-clicked');
 									if(tmp.length) {
 										this.select_node(tmp, true, true);
 									}
 								}
 								else {
-									change = this.check_up(data.node, true);
-								}
-								if(change) {
-									this.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : this._data.core.selected });
+									if(this.check_up(data.node)) {
+										this.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : this._data.core.selected });
+									}
 								}
 							}
 						}, this))
@@ -124,6 +135,22 @@
 								data.new_instance.trigger('changed', { 'action' : 'checkbox_three_state', 'selected' : data.new_instance._data.core.selected });
 							}
 						}, this));
+			}
+		};
+		this._progressive_data_clean = function (data) {
+			if(!this.settings.checkbox.three_state) { return false; }
+			for(var i = 0, j = data.length; i < j; i++) {
+				if(data[i].data && data[i].data.jstree) {
+					if(data[i].data.jstree.selected) {
+						delete data[i].data.jstree.selected;
+					}
+					if(data[i].data.jstree.undetermined) {
+						delete data[i].data.jstree.undetermined;
+					}
+					if(data[i].children) {
+						this._progressive_data_clean(data[i].children);
+					}
+				}
 			}
 		};
 		this._set_state = function (node) {
