@@ -50,7 +50,7 @@
 											var t = $(v),
 												d = t.data('jstree');
 											if(d && d.children && t.children('ul').length === 0) {
-												this._progressive_data_clean(d.children);
+												this._progressive_data_clean(d.children, e.type === 'select_node');
 											}
 										}, this));
 									}, this));
@@ -137,7 +137,7 @@
 						}, this));
 			}
 		};
-		this._progressive_data_clean = function (data) {
+		this._progressive_data_clean = function (data, is_select) {
 			if(!this.settings.checkbox.three_state) { return false; }
 			for(var i = 0, j = data.length; i < j; i++) {
 				if(data[i].data && data[i].data.jstree) {
@@ -148,7 +148,7 @@
 						delete data[i].data.jstree.undetermined;
 					}
 					if(data[i].children) {
-						this._progressive_data_clean(data[i].children);
+						this._progressive_data_clean(data[i].children, is_select);
 					}
 				}
 			}

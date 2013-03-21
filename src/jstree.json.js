@@ -17,7 +17,7 @@
 					this.element
 						.bind("after_close.jstree", $.proxy(function (e, data) {
 							var t = $(data.node);
-							if(this.settings.json.progressive_unload) {
+							if(this.settings.json.progressive_unload && t.find('.jstree-clicked:eq(0)').length === 0) {
 								t.data('jstree').children = this.get_json(t)[0].children;
 								t.children("ul").remove();
 							}
@@ -26,24 +26,22 @@
 		};
 		this.parse_json = function (node) {
 			var s = this.settings.json;
-			if($.isArray(node.children) && (this._data.core.ready || !this.settings.core.expand_selected_onload || !this._has_selected(node.children))) {
-				if(s.progressive_render) {
-					if(!node.data) { node.data = {}; }
-					if(!node.data.jstree) { node.data.jstree = {}; }
-					node.data.jstree.children = node.children;
-					node.children = true;
-				}
+			if(s.progressive_render && $.isArray(node.children) && !this._json_has_selected(node.children)) {
+				if(!node.data) { node.data = {}; }
+				if(!node.data.jstree) { node.data.jstree = {}; }
+				node.data.jstree.children = node.children;
+				node.children = true;
 			}
 			return parent.parse_json.call(this, node);
 		};
-		this._has_selected = function (data) {
+		this._json_has_selected = function (data) {
 			var r = false;
 			for(var i = 0, j = data.length; i < j; i++) {
 				if(data[i].data && data[i].data.jstree && data[i].data.jstree.selected) {
 					r = true;
 				}
 				else if(data[i].children) {
-					r = r || this._has_selected(data[i].children);
+					r = r || this._json_has_selected(data[i].children);
 				}
 				else {
 					r = false;

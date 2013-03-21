@@ -633,7 +633,8 @@
 			if(obj === -1 || !obj || !obj.length) {
 				return false;
 			}
-			var o = obj.parentNode.parentNode;
+			var o = obj[0].parentNode.parentNode;
+
 			return o.tagName === 'LI' ? $(o) : -1;
 		},
 		/**
