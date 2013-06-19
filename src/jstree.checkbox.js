@@ -203,10 +203,6 @@
 			settings = this.settings.checkbox;
 			var _this = this;
 
-//			this.element.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
-//        return true;
-//      }, this))
-      
 			return obj.each(function () {
 				var t = $(this),
 					d = t.data('jstree'),
