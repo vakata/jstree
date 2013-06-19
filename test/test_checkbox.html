@@ -66,6 +66,7 @@
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
             <li><a href="#global"><i class="icon-chevron-right"></i> Getting Started</a></li>
+            <li><a href="#options"><i class="icon-chevron-right"></i> Checkbox Options</a></li>
           </ul>
         </div>
         <div class="span9">
@@ -110,7 +111,7 @@
                     real_checkboxes : true,
                     real_checkboxes_names : function (n)
                     {
-                      return [("checkbox_" + (n[0].id)), n[0].id];
+                      return'checkbox_'+(n[0].id);
                     }
                   }
                   ,plugins : ["checkbox"]
@@ -152,7 +153,7 @@ jQuery("#demo1").jstree({
   });
 &lt;/script&gt;</pre>
   
-            <h3>Options</h3>
+            <h3 id="options">Options</h3>
             <p>Options can be passed directly to jstree via JavaScript.</p>
             <table class="table table-bordered table-striped">
               <thead>
@@ -173,7 +174,7 @@ jQuery("#demo1").jstree({
                <tr>
                  <td>real_checkboxes_names</td>
                  <td>function</td>
-                 <td><code>function(n){return [("c"+(n[0].id)),n[0].id]}</code></td>
+                 <td><code>function(n){return'c_'+(n[0].id)}</code></td>
                  <td>If real checkboxes are used this function is invoked in the current tree's scope for each new checkbox that is created. It receives a single argument - the node that will contain the checkbox. The function must return an array consisting of two values - the name for the checkbox and the value for the checkbox.</td>
                </tr>
               </tbody>
