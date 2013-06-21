@@ -7,7 +7,9 @@
 		whole_node : false,
 		keep_selected_style : true,
 		icons : true,
-		parse_data : true
+		parse_data : true,
+    real_checkboxes : false,
+    real_checkboxes_names : function(n){return'c_'+(n[0].id)}
 	};
 
 	$.jstree.plugins.checkbox = function (options, parent) {
@@ -27,12 +29,15 @@
 			if(this.settings.checkbox.three_state) {
 				this.element
 					.on('ready.jstree', $.proxy(function () {
+              clicked = this.element.find('.jstree-clicked');
+              if(clicked.length) {
+                this.select_node(clicked, true, true);
+              }
 							var change = false,
 								nodes = this.get_selected(),
 								tmp = nodes
 										.find('.jstree-undetermined').removeClass('jstree-undetermined').end()
 										.find('.jstree-anchor:not(.jstree-clicked)');
-
 							if(tmp.length) {
 								change = true;
 								this.select_node(tmp, true, true);
@@ -198,13 +203,20 @@
 		};
 		this.clean_node = function(obj) {
 			obj = parent.clean_node.call(this, obj);
+			settings = this.settings.checkbox;
 			var _this = this;
+
 			return obj.each(function () {
 				var t = $(this),
 					d = t.data('jstree'),
 					o = t.children('a');
 				if(!o.children("i.jstree-checkbox").length) {
 					o.prepend("<"+"i class='jstree-icon jstree-checkbox'><"+"/i>");
+				}
+  			if(settings.real_checkboxes) {
+          o.prepend('<'+'input type="hidden" name="'+ 
+              settings.real_checkboxes_names.apply(this, [o.parent()]) +
+              '" class="jstree-icon jstree-checkbox"/>');
 				}
 				if(d && d.undetermined) {
 					o.parentsUntil('.jstree', 'li').children("a.jstree-anchor").children("i.jstree-checkbox").addClass('jstree-undetermined');
@@ -227,6 +239,14 @@
 			}
 			parent.activate_node.call(this, obj, e);
 		};
+    this.select_node = function (obj, supress_event, prevent_open) {
+      $(obj).find('> input').val('true');
+      parent.select_node.call(this, obj, supress_event, prevent_open);
+    };
+    this.deselect_node = function (obj, supress_event) {
+      $(obj).find('> input').val('');
+      parent.deselect_node.call(this, obj, supress_event);
+    };
 		this.check_up = function (obj) {
 			if(!this.settings.checkbox.three_state) { return false; }
 			obj = this.get_node(obj);

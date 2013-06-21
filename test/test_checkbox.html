@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>jstree - Checkbox Plugin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="http://twitter.github.io/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="http://twitter.github.io/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="http://twitter.github.io/bootstrap/assets/css/docs.css" rel="stylesheet">
+    <link href="http://twitter.github.io/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://twitter.github.io/bootstrap/assets/js/html5shiv.js"></script>
+    <![endif]-->
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="./index.html">Bootstrap</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active">
+                <a href="http://www.jstree.com/">Home</a>
+              </li>
+              <li class="">
+                <a href="http://www.jstree.com/demo">Demos</a>
+              </li>
+              <li class="">
+                <a href="http://github.com/vakata/jstree">Github</a>
+              </li>
+              <li class="">
+                <a href="./test_checkbox.html">Checkbox</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <header class="jumbotron subhead" id="overview">
+      <div class="container">
+        <h1>jstree Checkbox</h1>
+        <p class="lead">Checkbox allows your tree to be used within a form.</p>
+      </div>
+    </header>
+    
+    <div class="container">
+
+      <!-- Docs nav
+      ================================================== -->
+      <div class="row">
+        <div class="span3 bs-docs-sidebar">
+          <ul class="nav nav-list bs-docs-sidenav affix-top">
+            <li><a href="#global"><i class="icon-chevron-right"></i> Getting Started</a></li>
+            <li><a href="#options"><i class="icon-chevron-right"></i> Checkbox Options</a></li>
+          </ul>
+        </div>
+        <div class="span9">
+  
+  
+  
+          <!-- Global Bootstrap settings
+          ================================================== -->
+          <section id="global">
+            <div class="page-header">
+              <h1>Getting Started</h1>
+            </div>
+  
+            <h3>The required HTML</h3>
+            <p>jstree handles all additional elements dynamically. However, you will need to start the tree structure with the following HTML.</p>
+            
+            <div class="bs-docs-example">
+              <div id="demo1" class="demo" style="height:100px;">
+                <ul>
+                  <li id="phtml_1">
+                    <a href="#">Root node 1</a>
+                    <ul>
+                      <li id="phtml_2">
+                        <a href="#" class="jstree-clicked">Child node 1</a>
+                      </li>
+                      <li id="phtml_3">
+                        <a href="#">Child node 2</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li id="phtml_4">
+                    <a href="#">Root node 2</a>
+                  </li>
+                </ul>
+              </div>
+              
+              <script src="../src/jstree.js"></script>
+              <script src="../src/jstree.checkbox.js"></script>
+              <script>
+              jQuery("#demo1").jstree({
+                  checkbox : {
+                    real_checkboxes : true,
+                    real_checkboxes_names : function (n)
+                    {
+                      return'checkbox_'+(n[0].id);
+                    }
+                  }
+                  ,plugins : ["checkbox"]
+                });
+              </script>
+            </div>
+            <pre class="prettyprint linenums">&lt;div id="demo1" class="demo" style="height:100px;"&gt;
+  &lt;ul&gt;
+    &lt;li id="phtml_1"&gt;
+      &lt;a href="#"&gt;Root node 1&lt;/a&gt;
+      &lt;ul&gt;
+        &lt;li id="phtml_2"&gt;
+          &lt;a href="#"&gt;Child node 1&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li id="phtml_3"&gt;
+          &lt;a href="#"&gt;Child node 2&lt;/a&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li id="phtml_4"&gt;
+      &lt;a href="#"&gt;Root node 2&lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"&gt;&lt;/script&gt;
+&lt;script src="../src/jstree.js"&gt;&lt;/script&gt;
+&lt;script src="../src/jstree.checkbox.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+jQuery("#demo1").jstree({
+    checkbox : {
+      real_checkboxes : true,
+      real_checkboxes_names : function (n)
+      {
+        return [("checkbox_" + (n[0].id)), n[0].id];
+      }
+    }
+    ,plugins : ["checkbox"]
+  });
+&lt;/script&gt;</pre>
+  
+            <h3 id="options">Options</h3>
+            <p>Options can be passed directly to jstree via JavaScript.</p>
+            <table class="table table-bordered table-striped">
+              <thead>
+               <tr>
+                 <th style="width: 100px;">Name</th>
+                 <th style="width: 50px;">type</th>
+                 <th style="width: 50px;">default</th>
+                 <th>description</th>
+               </tr>
+              </thead>
+              <tbody>
+               <tr>
+                 <td>real_checkboxes</td>
+                 <td>boolean</td>
+                 <td>false</td>
+                 <td>If set to <code>true</code> real hidden checkboxes will be created for each element, so if the tree is part of a form, checked nodes will be submitted automatically. By default the name of the checkbox is <code>"check_" + the ID of the LI element</code> and the value is 1, this can be changed using the <code>real_checkboxes_names</code> config option.</td>
+               </tr>
+               <tr>
+                 <td>real_checkboxes_names</td>
+                 <td>function</td>
+                 <td><code>function(n){return'c_'+(n[0].id)}</code></td>
+                 <td>If real checkboxes are used this function is invoked in the current tree's scope for each new checkbox that is created. It receives a single argument - the node that will contain the checkbox. The function must return an array consisting of two values - the name for the checkbox and the value for the checkbox.</td>
+               </tr>
+              </tbody>
+            </table>
+          </section>
+  
+        </div>
+      </div>
+  
+    </div>
+    
+    <script src="http://twitter.github.io/bootstrap/assets/js/bootstrap-affix.js"></script>
+    <script src="http://twitter.github.io/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
+    <script>
+    // make code pretty
+    window.prettyPrint && prettyPrint()
+    
+    var $window = jQuery(window)
+    
+    // side bar
+    setTimeout(function () {
+      jQuery('.bs-docs-sidenav').affix({
+        offset: {
+          top: function () { return $window.width() <= 980 ? 290 : 210 }
+        , bottom: 270
+        }
+      })
+    }, 100)
+    </script>
+  </body>
+</html>
