@@ -29,12 +29,15 @@
 			if(this.settings.checkbox.three_state) {
 				this.element
 					.on('ready.jstree', $.proxy(function () {
+              clicked = this.element.find('.jstree-clicked');
+              if(clicked.length) {
+                this.select_node(clicked, true, true);
+              }
 							var change = false,
 								nodes = this.get_selected(),
 								tmp = nodes
 										.find('.jstree-undetermined').removeClass('jstree-undetermined').end()
 										.find('.jstree-anchor:not(.jstree-clicked)');
-
 							if(tmp.length) {
 								change = true;
 								this.select_node(tmp, true, true);
