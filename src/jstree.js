@@ -1955,6 +1955,7 @@
 		 */
 		edit : function (obj, default_text) {
 			obj = this.get_node(obj);
+			obj.get(0).scrollIntoView(false);
 			if(!obj || obj === -1 || !obj.length) { return false; }
 			obj.parentsUntil(".jstree",".jstree-closed").each($.proxy(function (i, v) {
 				this.open_node(v, false, 0);
