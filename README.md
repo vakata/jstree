@@ -1,3 +1,13 @@
+********************************************************************
+********************************************************************
+
+# To publish jstree 3.0.0 [I need your opinion][help]
+[help]: https://groups.google.com/forum/#!topic/jstree/Yabg_OLPuvQ
+
+********************************************************************
+********************************************************************
+********************************************************************
+
 # Please use [the stable version][stable] until the docs for v.1.0.0 are ready.
 [stable]: http://github.com/downloads/vakata/jstree/jstree_pre1.0_fix_1.zip
 Older releases can be found on [google code][older]
