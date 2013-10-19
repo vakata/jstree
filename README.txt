@@ -1,3 +1,8 @@
+To publish jstree 3.0.0 I need your opinion:
+https://groups.google.com/forum/#!topic/jstree/Yabg_OLPuvQ
+
+********************************************************************
+
 jsTree pre1.0
 http://jstree.com/
 
