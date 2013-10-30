@@ -70,7 +70,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  //grunt.loadNpmTasks('grunt-contrib-qunit');
+  grunt.loadNpmTasks('grunt-contrib-qunit');
 
 
   grunt.registerMultiTask('dox', 'Generate dox output ', function() {
@@ -101,6 +101,6 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint:beforeconcat','concat','jshint:afterconcat','copy','uglify',/*'qunit',*/'dox']);
+  grunt.registerTask('default', ['jshint:beforeconcat','concat','jshint:afterconcat','copy','uglify','qunit','dox']);
 
 };

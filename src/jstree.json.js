@@ -34,6 +34,18 @@
 			}
 			return parent.parse_json.call(this, node);
 		};
+		this._get_progressive_nodes = function(context) {
+			if(!context) { context = this.element; }
+			var coll = $();
+			context.find('.jstree-closed').each($.proxy(function (i, v) {
+				var t = $(v),
+					d = t.data('jstree');
+				if(d && d.children && t.children('ul').length === 0) {
+					coll = coll.add(t);
+				}
+			}, this));
+			return coll;
+		};
 		this._json_has_selected = function (data) {
 			var r = false;
 			for(var i = 0, j = data.length; i < j; i++) {

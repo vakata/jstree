@@ -3627,6 +3627,18 @@
 			}
 			return parent.parse_json.call(this, node);
 		};
+		this._get_progressive_nodes = function(context) {
+			if(!context) { context = this.element; }
+			var coll = $();
+			context.find('.jstree-closed').each($.proxy(function (i, v) {
+				var t = $(v),
+					d = t.data('jstree');
+				if(d && d.children && t.children('ul').length === 0) {
+					coll = coll.add(t);
+				}
+			}, this));
+			return coll;
+		};
 		this._json_has_selected = function (data) {
 			var r = false;
 			for(var i = 0, j = data.length; i < j; i++) {
@@ -3911,6 +3923,19 @@
 				this.element
 					.on("search.jstree", function (e, data) {
 						if(data.nodes.length) {
+							$(this).find("li").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+							data.nodes.parentsUntil(".jstree").addBack().show()
+								.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
+						}
+					})
+					.on("clear_search.jstree", function (e, data) {
+						if(data.nodes.length) {
+							$(this).find("li").css("display","").filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+						}
+					});
+				/*
+					.on("search.jstree", function (e, data) {
+						if(data.nodes.length) {
 							$(this).children("ul").find("li").hide().removeClass("jstree-last");
 							data.nodes.parentsUntil(".jstree").addBack().show()
 								.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
@@ -3920,7 +3945,7 @@
 						if(data.nodes.length) {
 							$(this).children("ul").find("li").css("display","").end().end().jstree("correct_node", -1, true);
 						}
-					});
+					}); */
 			}
 		};
 		this.search = function (str, skip_async) {
@@ -4175,8 +4200,8 @@
 	};
 	config.defaults = {};
 	$.vakata.removeCookie = function (key, options) {
-		if ($.cookie(key) !== null) {
-			$.cookie(key, null, options);
+		if ($.vakata.cookie(key) !== null) {
+			$.vakata.cookie(key, null, options);
 			return true;
 		}
 		return false;

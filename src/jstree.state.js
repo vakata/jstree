@@ -83,8 +83,8 @@
 	};
 	config.defaults = {};
 	$.vakata.removeCookie = function (key, options) {
-		if ($.cookie(key) !== null) {
-			$.cookie(key, null, options);
+		if ($.vakata.cookie(key) !== null) {
+			$.vakata.cookie(key, null, options);
 			return true;
 		}
 		return false;
