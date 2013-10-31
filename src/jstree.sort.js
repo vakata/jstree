@@ -35,5 +35,5 @@
 	};
 
 	// include the sort plugin by default
-	$.jstree.defaults.plugins.push("sort");
+	// $.jstree.defaults.plugins.push("sort");
 })(jQuery);

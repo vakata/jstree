@@ -281,5 +281,5 @@
 	};
 
 	// include the checkbox plugin by default
-	//$.jstree.defaults.plugins.push("checkbox");
+	// $.jstree.defaults.plugins.push("checkbox");
 })(jQuery);

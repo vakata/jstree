@@ -17,7 +17,7 @@
 			this._data.search.dom = $();
 			this._data.search.res = [];
 
-			if(this.settings.search.show_only_matches || true) {
+			if(this.settings.search.show_only_matches) {
 				this.element
 					.on("search.jstree", function (e, data) {
 						if(data.nodes.length) {
@@ -116,7 +116,7 @@
 	};
 
 	// include the json plugin by default
-	$.jstree.defaults.plugins.push("search");
+	// $.jstree.defaults.plugins.push("search");
 })(jQuery);
 
 (function ($) {

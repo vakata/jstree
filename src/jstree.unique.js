@@ -28,5 +28,5 @@
 	};
 
 	// include the unique plugin by default
-	$.jstree.defaults.plugins.push("unique");
+	// $.jstree.defaults.plugins.push("unique");
 })(jQuery);

@@ -480,5 +480,5 @@
 				});
 		});
 	})($);
-	$.jstree.defaults.plugins.push("contextmenu");
+	// $.jstree.defaults.plugins.push("contextmenu");
 })(jQuery);

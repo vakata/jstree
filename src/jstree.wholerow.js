@@ -90,5 +90,5 @@
 		};
 	};
 	// include the wholerow plugin by default
-	//$.jstree.defaults.plugins.push("wholerow");
+	// $.jstree.defaults.plugins.push("wholerow");
 })(jQuery);

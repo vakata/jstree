@@ -160,7 +160,7 @@
 	});
 
 	// include the dnd plugin by default
-	$.jstree.defaults.plugins.push("dnd");
+	// $.jstree.defaults.plugins.push("dnd");
 })(jQuery);
 
 // helpers

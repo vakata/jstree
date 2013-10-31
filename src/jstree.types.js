@@ -104,5 +104,5 @@
 		};
 	};
 	// include the types plugin by default
-	$.jstree.defaults.plugins.push("types");
+	// $.jstree.defaults.plugins.push("types");
 })(jQuery);
