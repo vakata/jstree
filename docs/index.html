@@ -1,14 +1,51 @@
 <!DOCTYPE html>
-<html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<title>jsTree API documentation</title>
 
-	<link rel="stylesheet" href="./bootstrap.min.css" />
-	<link rel="stylesheet" href="./default.css" />
+	<link rel="stylesheet" href="./assets/bootstrap.min.css" />
+	<meta name="viewport" content="width=device-width" />
+	<meta name="robots" content="index,follow" />
+
+	<!--[if lt IE 9]><script src="./assets/html5.js"></script><script src="./assets/respond.js"></script><![endif]-->
 	<!--[if lt IE 7]><meta http-equiv="imagetoolbar" content="false" /><![endif]-->
+
 	<style>
+	html { overflow-y:scroll; background:#D9E3CB url('./assets/images/tree.png') left bottom fixed no-repeat; }
+	body { background:transparent; }
+	.container { min-width:320px; max-width:960px; }
+	#head { background:#333; border-bottom:4px solid #73796B; min-height:75px; }
+	#logo { margin:0; padding:0; height:60px; }
+	#logo a { display:block; margin:0 auto; height:100%; width:160px; overflow:hidden; text-indent:110%; white-space:nowrap; background:url('./assets/images/logo.png') left 5px no-repeat; }
+	#content { box-shadow:0 20px 0px 20px rgba(255,255,255,0.3); }
+	#menu { text-align:center; vertical-align:top; }
+	#menu > li { margin:0 0px 0 0; display:inline-block; float:none; }
+	#menu > li > a { border-radius:0; color:white; margin:12px 0 0 0; padding-top:8px; padding-bottom:8px; text-shadow:1px 1px 0 rgba(0,0,0,0.5); border-right:1px solid #666;
+		background:#a3b29e; 
+		background: -moz-linear-gradient(top, #a3b29e 0%, #6d7266 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a3b29e), color-stop(100%,#6d7266));
+		background: -webkit-linear-gradient(top, #a3b29e 0%,#6d7266 100%);
+		background: -o-linear-gradient(top, #a3b29e 0%,#6d7266 100%);
+		background: -ms-linear-gradient(top, #a3b29e 0%,#6d7266 100%);
+		background: linear-gradient(to bottom, #a3b29e 0%,#6d7266 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a3b29e', endColorstr='#6d7266',GradientType=0 );
+	}
+	#menu > li:first-child > a { border-radius:5px 0 0 5px; }
+	#menu > li:last-child > a { border-radius:0 5px 5px 0; border-right:0; }
+	#menu > li > a:hover { background:#73796B; }
+	#menu > .active > a,
+	#menu > .active > a:hover { background:#D9E3CB; box-shadow:inset 0 0 4px 1px #6d7266; color:black; text-shadow:1px 1px 0 rgba(255,255,255,0.5); }
+	#head form { margin:14px auto; max-width:240px; }
+	#head input { border-radius:10px; background:white url('./assets/images/find.png') 10px center no-repeat; padding-left:32px; }
+	.page { margin-top:-10px; background:white; border-radius:5px; box-shadow:0 0 10px rgba(0,0,0,0.7); padding-top:20px; padding-bottom:15px; }
+	h2 { margin:0 0 1em 0; padding:0 0 0.75em 0; text-align:center; color:#333; border-bottom:1px dotted #666; }
+
+	/*
 	html, body { height:100%; }
 	html { overflow-y:scroll; background:#D9E3CB url('./img/tree.png') left bottom fixed no-repeat; }
 	body { background:transparent; }
@@ -37,18 +74,111 @@
 		.head .logo { float:none; margin:0 auto 5px auto; }
 		.head h2 { height:auto; padding-bottom:0px; background-position:center 5px; text-align:center; line-height:24px; }
 	}
+	*/
 	</style>
 </head>
 <body>
-	<div class="container" role="main">
-		<div class="head"></div>
-		<div class="inner">
+	<header id="head">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-3 col-sm-12">
+					<h1 id="logo"><a href="http://jstree.com">jsTree - jQuery tree plugin</a></h1>
+				</div>
+				<div class="col-md-6 col-sm-6">
+					<nav>
+						<ul class="nav nav-pills" id="menu"></ul>
+					</nav>
+				</div>
+				<div class="col-md-3 col-sm-6">
+					<form role="search">
+						<input type="text" class="form-control" placeholder="API search" />
+					</form>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="container" id="content">
+		<div class="row page" id="basics" data-title="basics">
+			<div class="col-md-12">
+				<h2>Basics</h2>
+				asdf<br />asdf<br />asdf<br />asdf<br />
+			</div>
+		</div>
+		<div class="row page" id="demos" data-title="demos">
+			<div class="col-md-12">
+				<h2>Demos</h2>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p id="asdf">asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+			</div>
+		</div>
+		<div class="row page" id="plugins" data-title="plugins">
+			<div class="col-md-12">
+				<h2>Plugins</h2>
+				asdf<br />asdf<br />asdf<br />asdf<br />
+				<a href="#/demos/asdf">asdfasdf</a>
+			</div>
+		</div>
+		<div class="row page" id="api" data-title="API">
+			<div class="col-md-12">
+				<h2>API</h2>
+				asdf<br />asdf<br />asdf<br />asdf<br />
+			</div>
 		</div>
 	</div>
-
-	<script src="./jquery.1.9.1.min.js"></script>
-	<script src="./highlight.pack.js"></script>
+	<a class="hidden-xs hidden-sm" href="https://github.com/vakata/jstree"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png" alt="Fork me on GitHub"></a>
+	<script src="./../libs/jquery.js"></script>
 	<script>
+	$(function () {
+		$('#content').children('.page').hide().each(function () {
+			$('#menu').append('<li><a href="#/'+$(this).attr('id')+'">'+$(this).data('title')+'</a></li>');
+		});
+
+		$(window).on('hashchange', function () {
+			var h = document.location.hash ? document.location.hash.toString().replace('#','').split('/') : null,
+				p = h && h.length && h.length > 2 ? $('#' + h[2]) : null;
+			if(h && h.length && h.length > 1) {
+				$('#menu a').eq($('#content').children('.page').hide().filter('#' + h[1]).show().index()).blur().parent().siblings().removeClass('active').end().addClass('active');
+			}
+			if(p && p.length && p.closest('.page').is(':visible')) {
+				p[0].scrollIntoView();
+			}
+			else {
+				document.documentElement.scrollTop = 0;
+			}
+			if(!$('.page:visible').length) {
+				document.location.hash = $('#menu').find('a').eq(0).attr('href');
+			}
+		}).trigger('hashchange');
+
+		var to = false;
+		$(window).resize(function () {
+			if(to) { clearTimeout(to); }
+			to = setTimeout(function () {
+				$('.page').css('minHeight','0px').css('minHeight', ($(document).height() - $('#head').outerHeight()) + 'px');
+			});
+		}).resize();
+	});
+
+
 	$.expr[':'].icontains = $.expr.createPseudo(function(search) {
 		return function(a) {
 			return (a.textContent || a.innerText || "").toLowerCase().indexOf(search.toLowerCase())>=0;
@@ -57,6 +187,7 @@
 	$(function () {
 		var container = $('.inner');
 		$.getJSON('./jstree.json', function (data) {
+			return;
 			var first = true;
 			$.each(data, function (i, v) {
 				if(first) {
@@ -86,14 +217,14 @@
 				//https://github.com/vakata/jstree/archive/2.0.0-alpha.zip
 				var t = $(this),
 					a = t.text().replace(/jstree /ig,'');
-				t.html('<a href="http://jstree.com" class="logo" style="">&nbsp;</a><a class="btn btn-warning" href="https://github.com/vakata/jstree/archive/' + a + '.zip"><i class="icon-leaf"></i>&nbsp;&nbsp;Fork jsTree</a> <a class="btn btn-success" href="https://github.com/vakata/jstree/archive/' + a + '.zip"><i class="icon-download"></i>&nbsp;&nbsp;Download ' + a + '</a>');
+				t.html('<a href="http://jstree.com" class="logo" style="">&nbsp;</a>');
 			});
 			container.append('<div style="text-align:center; border-top:1px dotted silver;" class="item clearfix last">' + $('.first').html() + '</div>');
 			$('.first').html(' ');
 			$('.docs > h3').each(function () {
 				$(this).closest('.item').before($(this));
 			});
-			$('.item:eq(0)').append('<div class="input-append" style="transition: box-shadow 0.2s linear 0s; width:260px; text-align:center; border-radius:0 0 10px 10px; margin:0 auto; margin-left:-140px; left:50%; top:20px; position:absolute; padding:10px; background:white;"><input class="search" id="q" value="" placeholder="Begin typing to search" type="text" /><button class="btn" type="button" id="cls" onclick="$(this).prev().val(\'\').keypress();" title="Clear search">&times;</button></div>');
+			$('.item:eq(0)').append('<div class="input-append" style="transition: box-shadow 0.2s linear 0s; width:260px; text-align:center; border-radius:0 0 10px 10px; margin:0 auto; margin-left:-140px; left:50%; top:20px; position:absolute; padding:10px; background:white;"><input class="search input" id="q" value="" placeholder="Begin typing to search" type="text" /><button class="btn" type="button" id="cls" onclick="$(this).prev().val(\'\').keypress();" title="Clear search">&times;</button></div>');
 			var q = $('#q').parent(),
 				t = q.offset().top,
 				d = $(document);

@@ -1,8 +1,8 @@
 {
   "name": "jstree",
   "title": "jsTree",
-  "description": "Tree view for jQuery",
-  "version": "2.0.0-alpha",
+  "description": "jQuery tree plugin",
+  "version": "3.0.0-alpha",
   "homepage": "http://jstree.com",
   "author": {
     "name": "Ivan Bozhanov",
@@ -24,11 +24,12 @@
   ],
   "keywords": [],
   "devDependencies": {
-    "grunt": "~0.4.0rc4",
-    "grunt-contrib-uglify": "~0.1.0",
-    "grunt-contrib-jshint": "~0.1.0",
-    "grunt-contrib-concat": "~0.1.1",
-    "grunt-contrib-copy": "~0.3.2",
-    "dox": "~0.4.2"
+    "grunt": "~0.4.0",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-copy":   "*",
+    "grunt-contrib-cssmin": "*",
+    "dox": "~0.4.4"
   }
 }

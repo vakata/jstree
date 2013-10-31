@@ -30,10 +30,6 @@ module.exports = function(grunt) {
     qunit: {
       files: ['test/**/*.html']
     },
-    watch: {
-      files: '<config:lint.files>',
-      tasks: 'jshint qunit'
-    },
     jshint: {
       options: {
         'curly' : true,
@@ -58,6 +54,12 @@ module.exports = function(grunt) {
       beforeconcat: ['src/**/*.js'],
       afterconcat: ['dist/<%= pkg.name %>.js']
     },
+    cssmin: {
+        build: {
+            src: 'dist/themes/default/style.css',
+            dest: 'dist/themes/default/style.min.css'
+        }
+    },
     dox: {
       files: {
         src: ['src/*.js'],
@@ -70,6 +72,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-qunit');
 
 
@@ -79,28 +82,20 @@ module.exports = function(grunt) {
         path = require('path'),
         done = this.async(),
         doxPath = path.resolve(__dirname),
-        formatter = [doxPath, 'node_modules', '.bin', 'dox'].join(path.sep),
-        str = grunt.file.read('dist/jstree.js');
-
-    str = str.replace(/^\s+\*/mg,'*');
-    str = str.replace(/^\s+\/\/ .*$/mg,'');
-    grunt.file.write('dist/jstree.dox.js', str);
-
-    exec(formatter + ' < "dist/jstree.dox.js" > "docs/jstree.json"', {maxBuffer: 5000*1024}, function(error, stout, sterr){
+        formatter = [doxPath, 'node_modules', '.bin', 'dox'].join(path.sep);
+    exec(formatter + ' < "dist/jstree.js" > "docs/jstree.json"', {maxBuffer: 5000*1024}, function(error, stout, sterr){
       if (error) {
         grunt.log.error(formatter);
         grunt.log.error("WARN: "+ error);
-        grunt.file.delete('dist/jstree.dox.js');
       }
       if (!error) {
         grunt.log.writeln('dist/jstree.js doxxed.');
-        grunt.file.delete('dist/jstree.dox.js');
         done();
       }
     });
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint:beforeconcat','concat','jshint:afterconcat','copy','uglify','qunit','dox']);
+  grunt.registerTask('default', ['jshint:beforeconcat','concat','jshint:afterconcat','copy','uglify','qunit', 'cssmin', 'dox']);
 
 };

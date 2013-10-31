@@ -186,6 +186,7 @@
 				el.addEventListener("touchcancel", iPadTouchHandler, false);
 			});
 		}
+		return this;
 	};
 
 })(jQuery);

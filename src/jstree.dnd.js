@@ -6,16 +6,19 @@
 		copy : true,
 		open_timeout : 500
 	};
+	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
+	// TODO: drop somewhere else - maybe demo only?
 	$.jstree.plugins.dnd = function (options, parent) {
 		this.bind = function () {
 			parent.bind.call(this);
 
 			this.element
 				.on('mousedown', 'a', $.proxy(function (e) {
-					var obj = this.get_node(e.target); // TODO: how about multiple
-					if(obj && obj !== -1 && obj.length && e.which === 1) { // TODO: think about e.which
+					var obj = this.get_node(e.target),
+						mlt = this.is_selected(obj) ? this.get_selected().length : 1;
+					if(obj && obj.id && obj.id !== "#" && e.which === 1) {
 						this.element.trigger('mousedown.jstree');
-						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : obj }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + '"><i class="jstree-icon jstree-er"></i>' + this.get_text(e.currentTarget, true) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
+						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_selected() : [obj] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + '"><i class="jstree-icon jstree-er"></i>' + (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget, true)) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
 					}
 				}, this));
 		};
@@ -44,7 +47,7 @@
 					ref = false,
 					off = false,
 					rel = false,
-					l, t, h, p, i, o;
+					l, t, h, p, i, o, ok, t1, t2;
 				// if we are over an instance
 				if(ins && ins._data && ins._data.dnd) {
 					marker.attr('class', 'jstree-' + ins.get_theme());
@@ -55,8 +58,13 @@
 
 					// if are hovering the container itself add a new root node
 					if(data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) {
-						if(ins.check( (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"), data.data.obj, -1, 'last')) {
-							lastmv = { 'ins' : ins, 'par' : -1, 'pos' : 'last' };
+						ok = true;
+						for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
+							ok = ok && ins.check( (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"), data.data.nodes[t1], '#', 'last');
+							if(!ok) { break; }
+						}
+						if(ok) {
+							lastmv = { 'ins' : ins, 'par' : '#', 'pos' : 'last' };
 							marker.hide();
 							data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');
 							return;
@@ -94,7 +102,7 @@
 										break;
 									case 'a':
 										l = off.left - 6;
-										t = off.top - 5 + h + 2;
+										t = off.top - 5 + h + 0;
 										p = ins.get_parent(ref);
 										i = ref.parent().index() + 1;
 										break;
@@ -104,7 +112,12 @@
 								// the check will work anyway, as when moving the node will be loaded first and checked again
 								if(v === 'i' && !ins.is_loaded(p)) { }
 								*/
-								if(ins.check(( data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"),data.data.obj, p, i)) {
+								ok = true;
+								for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
+									ok = ok && ins.check(( data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"),data.data.nodes[t1], p, i);
+									if(!ok) { break; }
+								}
+								if(ok) {
 									if(v === 'i' && ref.parent().is('.jstree-closed') && ins.settings.dnd.open_timeout) {
 										opento = setTimeout((function (x, z) { return function () { x.open_node(z); }; })(ins, ref), ins.settings.dnd.open_timeout);
 									}
@@ -135,7 +148,7 @@
 				marker.hide();
 				if(lastmv) {
 					lastmv.ins[ data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ]
-						(data.data.obj, lastmv.par, lastmv.pos);
+						(data.data.nodes, lastmv.par, lastmv.pos);
 				}
 			})
 			.bind('keyup keydown', function (e, data) {
@@ -144,18 +157,6 @@
 					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey) ? 'show' : 'hide' ]();
 				}
 			});
-
-		// add DND CSS
-		var css_string = '' +
-				'#jstree-marker { position: absolute; top:0; left:0; margin:0; padding:0; border-right:0; border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:5px solid; width:0; height:0; font-size:0; line-height:0; _border-top-color:pink; _border-botton-color:pink; _filter:chroma(color=pink); } ' +
-				'#jstree-dnd { line-height:16px; margin:0; padding:4px; } ' +
-				'#jstree-dnd .jstree-icon, #jstree-dnd .jstree-copy { display:inline-block; text-decoration:none; margin:0 2px 0 0; padding:0; width:16px; height:16px; } ' +
-				'#jstree-dnd .jstree-ok { background:green; } ' +
-				'#jstree-dnd .jstree-er { background:red; } ' +
-				'#jstree-dnd .jstree-copy { margin:0 2px 0 2px; }';
-		if(!$.jstree.no_css) {
-			$('head').append('<style type="text/css">' + css_string + '</style>');
-		}
 	});
 
 	// include the dnd plugin by default

@@ -3,16 +3,17 @@
  */
 (function ($) {
 	$.jstree.plugins.unique = function (options, parent) {
-		// TODO: think about an option to work with HTML or not?
-		// TODO: add callback - to handle errors and for example types
 		this.check = function (chk, obj, par, pos) {
 			if(parent.check.call(this, chk, obj, par, pos) === false) { return false; }
-
-			par = par === -1 ? this.element : par;
-			var n = chk === "rename_node" ? $('<div />').html(pos).text() : this.get_text(obj, true),
+			obj = obj && obj.id ? obj : this.get_node(obj);
+			par = par && par.id ? par : this.get_node(par);
+			if(!par || !par.children) { return true; }
+			var n = chk === "rename_node" ? pos : obj.text,
 				c = [],
-				t = this;
-			par.children('ul').children('li').each(function () { c.push(t.get_text(this, true)); });
+				m = this._model.data;
+			for(var i = 0, j = par.children.length; i < j; i++) {
+				c.push(m[par.children[i]].text);
+			}
 			switch(chk) {
 				case "delete_node":
 					return true;
@@ -20,7 +21,7 @@
 				case "copy_node":
 					return ($.inArray(n, c) === -1);
 				case "move_node":
-					return (par.children('ul').children('li').index(obj) !== -1 || $.inArray(n, c) === -1);
+					return (obj.parent === par.id || $.inArray(n, c) === -1);
 			}
 			return true;
 		};

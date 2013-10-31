@@ -2,11 +2,18 @@
  * ### Wholerow plugin
  */
 (function ($) {
+	var div = document.createElement('DIV');
+	div.setAttribute('unselectable','on');
+	div.className = 'jstree-wholerow';
+	div.innerHTML = '&#160;';
 	$.jstree.plugins.wholerow = function (options, parent) {
 		this.bind = function () {
 			parent.bind.call(this);
 
 			this.element
+				.on('loading', $.proxy(function () {
+						div.style.height = this._data.core.li_height + 'px';
+					}, this))
 				.on('ready.jstree set_state.jstree', $.proxy(function () {
 						this.hide_dots();
 					}, this))
@@ -16,37 +23,48 @@
 				.on("deselect_all.jstree", $.proxy(function (e, data) {
 						this.element.find('.jstree-wholerow-clicked').removeClass('jstree-wholerow-clicked');
 					}, this))
-				.on("changed.jstree ", $.proxy(function (e, data) {
+				.on("changed.jstree", $.proxy(function (e, data) {
 						this.element.find('.jstree-wholerow-clicked').removeClass('jstree-wholerow-clicked');
-						data.selected.children('.jstree-wholerow').addClass('jstree-wholerow-clicked');
+						var tmp = false;
+						for(var i = 0, j = data.selected.length; i < j; i++) {
+							tmp = this.get_node(data.selected[i], true);
+							if(tmp && tmp.length) {
+								tmp.children('.jstree-wholerow').addClass('jstree-wholerow-clicked');
+							}
+						}
+					}, this))
+				.on("open_node.jstree", $.proxy(function (e, data) {
+						this.get_node(data.node, true).find('.jstree-clicked').parent().children('.jstree-wholerow').addClass('jstree-wholerow-clicked');
 					}, this))
 				.on("hover_node.jstree dehover_node.jstree", $.proxy(function (e, data) {
 						this.element.find('.jstree-wholerow-hovered').removeClass('jstree-wholerow-hovered');
 						if(e.type === "hover_node") {
-							data.node.each(function () {
+							this.get_node(data.node, true).each(function () {
 								$(this).children('.jstree-wholerow').addClass('jstree-wholerow-hovered');
 							});
 						}
 					}, this))
 				.on("contextmenu.jstree", ".jstree-wholerow", $.proxy(function (e) {
-						if(typeof this._data.contextmenu !== 'undefined') {
+						//if(typeof this._data.contextmenu !== 'undefined') {
 							e.preventDefault();
 							$(e.currentTarget).closest("li").children("a:eq(0)").trigger('contextmenu',e);
-						}
+						//}
 					}, this))
 				.on("click.jstree", ".jstree-wholerow", function (e) {
 						e.stopImmediatePropagation();
-						$(e.currentTarget).closest("li").children("a:eq(0)").trigger('click',e);
+						var tmp = $.Event('click', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey });
+						$(e.currentTarget).closest("li").children("a:eq(0)").trigger(tmp).focus();
 					})
 				.on("click.jstree", ".jstree-leaf > .jstree-ocl", $.proxy(function (e) {
 						e.stopImmediatePropagation();
-						$(e.currentTarget).closest("li").children("a:eq(0)").trigger('click',e);
+						var tmp = $.Event('click', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey });
+						$(e.currentTarget).closest("li").children("a:eq(0)").trigger(tmp).focus();
 					}, this))
-				.on("mouseover.jstree", "li", $.proxy(function (e) {
+				.on("mouseover.jstree", ".jstree-wholerow, .jstree-icon", $.proxy(function (e) {
 						e.stopImmediatePropagation();
-						if($(e.currentTarget).closest('li').children(".jstree-hovered, .jstree-clicked").length) {
-							return false;
-						}
+						//if($(e.currentTarget).closest('li').children(".jstree-clicked").length) {
+						//	return false;
+						//}
 						this.hover_node(e.currentTarget);
 						return false;
 					}, this))
@@ -55,31 +73,22 @@
 					}, this));
 		};
 		this.teardown = function () {
-			this.element.find(".jstree-wholerow").remove();
-			parent.teardown.call(this);
-		},
-		this.clean_node = function(obj) {
-			obj = parent.clean_node.call(this, obj);
-			var t = this;
-			return obj.each(function () {
-				var o = $(this);
-				if(!o.children(".jstree-wholerow").length) {
-					o.prepend("<div class='jstree-wholerow' style='position:absolute; height:"+t._data.core.li_height+"px;' unselectable='on'>&#160;</div>");
-				}
-			});
+			if(this.settings.wholerow) {
+				this.element.find(".jstree-wholerow").remove();
+				parent.teardown.call(this);
+			}
+		};
+		this.redraw_node = function(obj, deep, callback) {
+			obj = parent.redraw_node.call(this, obj, deep, callback);
+			if(obj) {
+				var tmp = div.cloneNode(true);
+				//tmp.style.height = this._data.core.li_height + 'px';
+				if($.inArray(obj.id, this._data.core.selected) !== -1) { tmp.className += ' jstree-wholerow-clicked'; }
+				obj.insertBefore(tmp, obj.childNodes[0]);
+			}
+			return obj;
 		};
 	};
-
-	$(function () {
-		var css_string = '' +
-				'.jstree .jstree-wholerow-ul { position:relative; display:inline-block; min-width:100%; }' +
-				'.jstree-wholerow-ul li > a, .jstree-wholerow-ul li > i { position:relative; }' +
-				'.jstree-wholerow-ul .jstree-wholerow { width:100%; cursor:pointer; position:absolute; left:0; user-select:none;-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; }';
-		if(!$.jstree.no_css) {
-			$('head').append('<style type="text/css">' + css_string + '</style>');
-		}
-	});
-
 	// include the wholerow plugin by default
-	// $.jstree.defaults.plugins.push("wholerow");
+	//$.jstree.defaults.plugins.push("wholerow");
 })(jQuery);

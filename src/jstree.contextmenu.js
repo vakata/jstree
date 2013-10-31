@@ -1,16 +1,17 @@
 /**
  * ### Contextmenu plugin
  */
+// TODO: move logic outside of function + check multiple move
 (function ($) {
 	$.jstree.defaults.contextmenu = {
 		select_node : true,
 		show_at_node : true,
 		items : function (o) { // Could be an object directly
-			// TODO: in "_disabled" call this._check()
 			return {
 				"create" : {
 					"separator_before"	: false,
 					"separator_after"	: true,
+					"_disabled"			: false, //(this.check("create_node", data.reference, {}, "last")),
 					"label"				: "Create",
 					"action"			: function (data) {
 						var inst = $.jstree.reference(data.reference),
@@ -23,6 +24,7 @@
 				"rename" : {
 					"separator_before"	: false,
 					"separator_after"	: false,
+					"_disabled"			: false, //(this.check("rename_node", data.reference, this.get_parent(data.reference), "")),
 					"label"				: "Rename",
 					"action"			: function (data) {
 						var inst = $.jstree.reference(data.reference),
@@ -34,11 +36,17 @@
 					"separator_before"	: false,
 					"icon"				: false,
 					"separator_after"	: false,
+					"_disabled"			: false, //(this.check("delete_node", data.reference, this.get_parent(data.reference), "")),
 					"label"				: "Delete",
 					"action"			: function (data) {
 						var inst = $.jstree.reference(data.reference),
 							obj = inst.get_node(data.reference);
-						inst.delete_node(obj);
+						if(inst.is_selected(obj)) {
+							inst.delete_node(inst.get_selected());
+						}
+						else {
+							inst.delete_node(obj);
+						}
 					}
 				},
 				"ccp" : {
@@ -55,7 +63,12 @@
 							"action"			: function (data) {
 								var inst = $.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
-								inst.cut(obj);
+								if(inst.is_selected(obj)) {
+									inst.cut(inst.get_selected());
+								}
+								else {
+									inst.cut(obj);
+								}
 							}
 						},
 						"copy" : {
@@ -66,7 +79,12 @@
 							"action"			: function (data) {
 								var inst = $.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
-								inst.copy(obj);
+								if(inst.is_selected(obj)) {
+									inst.copy(inst.get_selected());
+								}
+								else {
+									inst.copy(obj);
+								}
 							}
 						},
 						"paste" : {
@@ -114,8 +132,10 @@
 
 		this.show_contextmenu = function (obj, x, y) {
 			obj = this.get_node(obj);
+			if(!obj || obj.id === '#') { return false; }
 			var s = this.settings.contextmenu,
-				a = obj.children("a:visible:eq(0)"),
+				d = this.get_node(obj, true),
+				a = d.children(".jstree-anchor"),
 				o = false,
 				i = false;
 			if(s.show_at_node || typeof x === "undefined" || typeof y === "undefined") {
@@ -123,12 +143,12 @@
 				x = o.left;
 				y = o.top + this._data.core.li_height;
 			}
-			if(!this.is_selected(obj)) {
+			if(this.settings.contextmenu.select_node && !this.is_selected(obj)) {
 				this.deselect_all();
 				this.select_node(obj);
 			}
 
-			i = obj.data("jstree") && obj.data("jstree").contextmenu ? obj.data("jstree").contextmenu : s.items;
+			i = s.items;
 			if($.isFunction(i)) { i = i.call(this, obj); }
 
 			$(document).one("context_show.vakata", $.proxy(function (e, data) {
@@ -460,6 +480,5 @@
 				});
 		});
 	})($);
-
 	$.jstree.defaults.plugins.push("contextmenu");
 })(jQuery);
