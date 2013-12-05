@@ -1,76 +1,70 @@
 # jstree
 
-## VERSION 2.0.0-ALPHA - NOT PRODUCTION READY
-
-Tree view for jQuery. 
-
-A list of useful pages:
-
- - http://www.jstree.com/
- - http://www.jstree.com/demo
- - http://www.jstree.com/documentation
+[jsTree][jstree] is a tree view for jQuery (depends on 1.9.1 or later). 
+It is absolutely free (MIT licence) and supports all modern browsers and IE from version 8 up. 
+jsTree can display trees by parsing HTML or JSON and supports AJAX, it is themeable and easy to configure and customize. Events are fired when the user interacts with the tree. Other notable features are inline editing, drag'n'drop support, fuzzy searching (with optional server side calls), tri-state checkbox support, configurable node types, AMD compatibility, easily extendable via plugins.
+[jstree]: http://www.jstree.com/
 
 ## Getting Started
-Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/vakata/jstree/master/dist/jstree.min.js
-[max]: https://raw.github.com/vakata/jstree/master/dist/jstree.js
-
-### In your web page:
+Download or checkout the latest copy and include the scripts and styles in your web page. Then create an instance (in this case using the inline HTML).
 
 ```
-<script src="libs/jquery.js"></script>
+<link rel="stylesheet" href="dist/themes/default/style.min.css" />
+<script src="dist/libs/jquery.js"></script>
 <script src="dist/jstree.min.js"></script>
 <script>
-jQuery(function($) {
-  $('#container').jstree();
+$(function() {
+  $('#container').jstree(/* optional config object here */);
+});
+</script>
+<div id="container">
+  <ul>
+    <li>Root node
+      <ul>
+        <li id="child_node">Child node</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+```
+
+Listen for changes on the tree using events:
+
+```
+<script>
+$(function () {
+  $('#container').on('changed.jstree', function (e, data) {
+    console.log(data.selected);
+  });
 });
 </script>
 ```
 
-###Interacting with the tree:
+And interact with the tree:
 
 ```
-/* METHOD ONE */
-jQuery("#container")
-  .jstree("operation_name" [, argument_1, argument_2, ...]);
-
-/* METHOD TWO */
-jQuery.jstree.reference(needle)
-  .operation_name([ argument_1, argument_2, ...]);
+<script>
+$(function () {
+	$('#container').jstree(true).select_node('child_node');
+});
+</script>
 ```
 
-###Events:
-jsTree uses events to notify of any changes. All events fire on the tree container in the _jstree_ namespace and are named after the function that triggered them.
-
-```
-jQuery("#container")
-  .bind("ready.jstree", function (event, data) {
-    alert("TREE IS LOADED");
-    /* note the second parameter, read the docs on each event for its value */
-  })
-  .jstree({ /* configuration here */ });
-```
-
-###Data:
-
-TODO: a step by step guide to: HTML (no data plugin), HTML with plugin + AJAX, JSON, JSON + AJAX, XML, XML + AJAX, explain progressive render / unload
-
-###States:
-
-TODO: explain about passing states along with the data and the special data-jstree- attributes.
+For a complete list of configuration options, events and available functions refer to the [documentation][docs] and [demos][demo].
+[docs]: http://jstree.com/docs
+[demo]: http://jstree.com/demo
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [grunt](https://github.com/cowboy/grunt).
 
-_Also, please don't edit files in the "dist" subdirectory as they are generated via grunt. You'll find source code in the "src" subdirectory!_
+_Please do NOT edit files in the "dist" subdirectory as they are generated via grunt. You'll find source code in the "src" subdirectory!_
+
+If you want to you can always [donate a small amount][paypal] to help the development of jstree.
+[paypal]: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=paypal@vakata.com&currency_code=USD&amount=&return=http://jstree.com/donation&item_name=Buy+me+a+coffee+for+jsTree
 
 ## License
-Copyright (c) 2013 Ivan Bozhanov (http://vakata.com) 
+Copyright (c) 2014 Ivan Bozhanov (http://vakata.com) 
 
-Licensed under the MIT license.
-
- - http://www.opensource.org/licenses/mit-license.php
-
-Older releases can be found on [google code][older]
-[older]: http://code.google.com/p/jstree/downloads/list
+Licensed under the [MIT license][mit].
+[mit]: http://www.opensource.org/licenses/mit-license.php

@@ -1,11 +1,58 @@
 /**
  * ### Contextmenu plugin
+ *
+ * Shows a context menu when a node is right-clicked.
  */
 // TODO: move logic outside of function + check multiple move
-(function ($) {
+/*globals jQuery, define, exports, require, document */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.contextmenu', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.contextmenu) { return; }
+
+	/**
+	 * stores all defaults for the contextmenu plugin
+	 * @name $.jstree.defaults.contextmenu
+	 * @plugin contextmenu
+	 */
 	$.jstree.defaults.contextmenu = {
+		/**
+		 * a boolean indicating if the node should be selected when the context menu is invoked on it. Defaults to `true`.
+		 * @name $.jstree.defaults.contextmenu.select_node
+		 * @plugin contextmenu
+		 */
 		select_node : true,
+		/**
+		 * a boolean indicating if the menu should be shown aligned with the node. Defaults to `true`, otherwise the mouse coordinates are used.
+		 * @name $.jstree.defaults.contextmenu.show_at_node
+		 * @plugin contextmenu
+		 */
 		show_at_node : true,
+		/**
+		 * an object of actions, or a function that accepts a node and returns an object of actions available for that node.
+		 * 
+		 * Each action consists of a key (a unique name) and a value which is an object with the following properties:
+		 * 
+		 * * `separator_before` - a boolean indicating if there should be a separator before this item
+		 * * `separator_after` - a boolean indicating if there should be a separator after this item
+		 * * `_disabled` - a boolean indicating if this action should be disabled
+		 * * `label` - a string - the name of the action
+		 * * `action` - a function to be executed if this item is chosen
+		 * 
+		 * @name $.jstree.defaults.contextmenu.items
+		 * @plugin contextmenu
+		 */
 		items : function (o) { // Could be an object directly
 			return {
 				"create" : {
@@ -130,6 +177,15 @@
 			parent.teardown.call(this);
 		};
 
+		/**
+		 * show the context menu for a node
+		 * @name show_contextmenu(obj [, x, y])
+		 * @param {mixed} obj the node
+		 * @param {Number} x the x-coordinate relative to the document to show the menu at
+		 * @param {Number} y the y-coordinate relative to the document to show the menu at
+		 * @plugin contextmenu
+		 * @trigger show_contextmenu.jstree
+		 */
 		this.show_contextmenu = function (obj, x, y) {
 			obj = this.get_node(obj);
 			if(!obj || obj.id === '#') { return false; }
@@ -138,7 +194,7 @@
 				a = d.children(".jstree-anchor"),
 				o = false,
 				i = false;
-			if(s.show_at_node || typeof x === "undefined" || typeof y === "undefined") {
+			if(s.show_at_node || x === undefined || y === undefined) {
 				o = a.offset();
 				x = o.left;
 				y = o.top + this._data.core.li_height;
@@ -157,6 +213,15 @@
 			}, this));
 			this._data.contextmenu.visible = true;
 			$.vakata.context.show(a, { 'x' : x, 'y' : y }, i);
+			/**
+			 * triggered when the contextmenu is shown for a node
+			 * @event
+			 * @name show_contextmenu.jstree
+			 * @param {Object} node the node
+			 * @param {Number} x the x-coordinate of the menu relative to the document
+			 * @param {Number} y the y-coordinate of the menu relative to the document
+			 * @plugin contextmenu
+			 */
 			this.trigger('show_contextmenu', { "node" : obj, "x" : x, "y" : y });
 		};
 	};
@@ -268,10 +333,11 @@
 				e.show();
 			},
 			show : function (reference, position, data) {
+				var o, e, x, y, w, h, dw, dh, cond = true;
 				if(vakata_context.element && vakata_context.element.length) {
 					vakata_context.element.width('');
 				}
-				switch(!0) {
+				switch(cond) {
 					case (!position && !reference):
 						return false;
 					case (!!position && !!reference):
@@ -281,7 +347,7 @@
 						break;
 					case (!position && !!reference):
 						vakata_context.reference	= reference;
-						var o = reference.offset();
+						o = reference.offset();
 						vakata_context.position_x	= o.left + reference.outerHeight();
 						vakata_context.position_y	= o.top;
 						break;
@@ -297,13 +363,13 @@
 					vakata_context.element.html(vakata_context.html);
 				}
 				if(vakata_context.items.length) {
-					var e = vakata_context.element,
-						x = vakata_context.position_x,
-						y = vakata_context.position_y,
-						w = e.width(),
-						h = e.height(),
-						dw = $(window).width() + $(window).scrollLeft(),
-						dh = $(window).height() + $(window).scrollTop();
+					e = vakata_context.element;
+					x = vakata_context.position_x;
+					y = vakata_context.position_y;
+					w = e.width();
+					h = e.height();
+					dw = $(window).width() + $(window).scrollLeft();
+					dh = $(window).height() + $(window).scrollTop();
 					if(right_to_left) {
 						x -= e.outerWidth();
 						if(x < $(window).scrollLeft() + 20) {
@@ -336,8 +402,7 @@
 		$(function () {
 			right_to_left = $("body").css("direction") === "rtl";
 			var to			= false,
-				css_string	= '' +
-				'.vakata-context { display:none; _width:1px; } ' +
+				css_string	= '.vakata-context { display:none; _width:1px; } ' +
 				'.vakata-context, ' +
 				'.vakata-context ul { margin:0; padding:2px; position:absolute; background:#f5f5f5; border:1px solid #979797; ' +
 				'	-moz-box-shadow:5px 5px 4px -4px #666666; -webkit-box-shadow:2px 2px 2px #999999; box-shadow:2px 2px 2px #999999; }'  +
@@ -358,17 +423,14 @@
 				'	-moz-box-shadow:0 0 0 transparent; -webkit-box-shadow:0 0 0 transparent; box-shadow:0 0 0 transparent; ' +
 				'	-moz-border-radius:0; -webkit-border-radius:0; border-radius:0; }' +
 				'.vakata-context li.vakata-contextmenu-disabled a, .vakata-context li.vakata-contextmenu-disabled a:hover { color:silver; background-color:transparent; border:0; box-shadow:0 0 0; }' +
-				'' +
 				'.vakata-context li a ins { text-decoration:none; display:inline-block; width:2.4em; height:2.4em; background:transparent; margin:0 0 0 -2em; } ' +
 				'.vakata-context li a span { display:inline-block; width:1px; height:2.4em; background:white; margin:0 0.5em 0 0; border-left:1px solid #e2e3e3; _overflow:hidden; } ' +
-				'' +
 				'.vakata-context-rtl ul { left:auto; right:100%; margin-left:auto; margin-right:-4px; } ' +
 				'.vakata-context-rtl li a.vakata-context-parent { background-image:url("data:image/gif;base64,R0lGODlhCwAHAIAAACgoKP///yH5BAEAAAEALAAAAAALAAcAAAINjI+AC7rWHIsPtmoxLAA7"); background-position:left center; background-repeat:no-repeat; } ' +
 				'.vakata-context-rtl li.vakata-context-separator a { margin:0 2.4em 0 0; border-left:0; border-right:1px solid #e2e3e3;} ' +
 				'.vakata-context-rtl li.vakata-context-left ul { right:auto; left:100%; margin-left:-4px; margin-right:auto; } ' +
 				'.vakata-context-rtl li a ins { margin:0 -2em 0 0; } ' +
-				'.vakata-context-rtl li a span { margin:0 0 0 0.5em; border-left-color:white; background:#e2e3e3; } ' +
-				'';
+				'.vakata-context-rtl li a span { margin:0 0 0 0.5em; border-left-color:white; background:#e2e3e3; } ';
 			if(!$.jstree.no_css) {
 				$('head').append('<style type="text/css">' + css_string + '</style>');
 			}
@@ -403,7 +465,7 @@
 						to = setTimeout(
 							(function (t) {
 								return function () { $.vakata.context.hide(); };
-							})(this), $.vakata.context.settings.hide_onmouseleave);
+							}(this)), $.vakata.context.settings.hide_onmouseleave);
 					}
 				})
 				.on("click", "a", function (e) {
@@ -479,6 +541,6 @@
 					vakata_context.element.find("ul").hide().end();
 				});
 		});
-	})($);
+	}($));
 	// $.jstree.defaults.plugins.push("contextmenu");
-})(jQuery);
+}));

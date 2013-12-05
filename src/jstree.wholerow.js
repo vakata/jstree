@@ -1,7 +1,25 @@
 /**
  * ### Wholerow plugin
+ *
+ * Makes each node appear block level. Making selection easier. May cause slow down for large trees in old browsers.
  */
-(function ($) {
+/*globals jQuery, define, exports, require */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.wholerow', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.wholerow) { return; }
+
 	var div = document.createElement('DIV');
 	div.setAttribute('unselectable','on');
 	div.className = 'jstree-wholerow';
@@ -25,8 +43,8 @@
 					}, this))
 				.on("changed.jstree", $.proxy(function (e, data) {
 						this.element.find('.jstree-wholerow-clicked').removeClass('jstree-wholerow-clicked');
-						var tmp = false;
-						for(var i = 0, j = data.selected.length; i < j; i++) {
+						var tmp = false, i, j;
+						for(i = 0, j = data.selected.length; i < j; i++) {
 							tmp = this.get_node(data.selected[i], true);
 							if(tmp && tmp.length) {
 								tmp.children('.jstree-wholerow').addClass('jstree-wholerow-clicked');
@@ -91,4 +109,4 @@
 	};
 	// include the wholerow plugin by default
 	// $.jstree.defaults.plugins.push("wholerow");
-})(jQuery);
+}));

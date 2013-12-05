@@ -1,13 +1,58 @@
 /**
  * ### Checkbox plugin
+ *
+ * This plugin renders checkbox icons in front of each node, making multiple selection much easier. 
+ * It also supports tri-state behavior, meaning that if a node has a few of it's children checked it will be rendered as undetermined, and state will be propagated up.
  */
-(function ($) {
+// TODO: undetermined state from the server
+/*globals jQuery, define, exports, require, document */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.checkbox', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.checkbox) { return; }
+
 	var _i = document.createElement('I');
 	_i.className = 'jstree-icon jstree-checkbox';
+	/**
+	 * stores all defaults for the checkbox plugin
+	 * @name $.jstree.defaults.checkbox
+	 * @plugin checkbox
+	 */
 	$.jstree.defaults.checkbox = {
+		/**
+		 * a boolean indicating if checkboxes should be visible (can be changed at a later time using `show_checkboxes()` and `hide_checkboxes`). Defaults to `true`.
+		 * @name $.jstree.defaults.checkbox.visible
+		 * @plugin checkbox
+		 */
 		visible				: true,
+		/**
+		 * a boolean indicating if checkboxes should cascade down and have an undetermined state. Defaults to `true`.
+		 * @name $.jstree.defaults.checkbox.three_state
+		 * @plugin checkbox
+		 */
 		three_state			: true,
+		/**
+		 * a boolean indicating if clicking anywhere on the node should act as clicking on the checkbox. Defaults to `true`.
+		 * @name $.jstree.defaults.checkbox.whole_node
+		 * @plugin checkbox
+		 */
 		whole_node			: true,
+		/**
+		 * a boolean indicating if the selected style of a node should be kept, or removed. Defaults to `true`.
+		 * @name $.jstree.defaults.checkbox.keep_selected_style
+		 * @plugin checkbox
+		 */
 		keep_selected_style	: true
 	};
 	$.jstree.plugins.checkbox = function (options, parent) {
@@ -33,7 +78,6 @@
 					.on('model.jstree', $.proxy(function (e, data) {
 							var m = this._model.data,
 								p = m[data.parent],
-								par = data.parent,
 								dpc = data.nodes,
 								chd = [],
 								c, i, j, k, l, tmp;
@@ -120,7 +164,6 @@
 						}, this))
 					.on('deselect_node.jstree', $.proxy(function (e, data) {
 							var obj = data.node,
-								m = this._model.data,
 								dom = this.get_node(obj, true),
 								i, j, tmp;
 							for(i = 0, j = obj.children_d.length; i < j; i++) {
@@ -228,6 +271,12 @@
 						}, this));
 			}
 		};
+		/**
+		 * set the undetermined state where and if necessary. Used internally.
+		 * @private
+		 * @name _undetermined()
+		 * @plugin checkbox
+		 */
 		this._undetermined = function () {
 			var i, j, m = this._model.data, s = this._data.core.selected, p = [];
 			for(i = 0, j = s.length; i < j; i++) {
@@ -267,19 +316,25 @@
 			return parent.activate_node.call(this, obj, e);
 		};
 		/**
-		 * `show_checkboxes()`
+		 * show the node checkbox icons
+		 * @name show_checkboxes()
+		 * @plugin checkbox
 		 */
 		this.show_checkboxes = function () { this._data.core.themes.checkboxes = true; this.element.children("ul").removeClass("jstree-no-checkboxes"); };
 		/**
-		 * `hide_checkboxes()`
+		 * hide the node checkbox icons
+		 * @name hide_checkboxes()
+		 * @plugin checkbox
 		 */
 		this.hide_checkboxes = function () { this._data.core.themes.checkboxes = false; this.element.children("ul").addClass("jstree-no-checkboxes"); };
 		/**
-		 * `toggle_checkboxes()`
+		 * toggle the node icons
+		 * @name toggle_checkboxes()
+		 * @plugin checkbox
 		 */
 		this.toggle_checkboxes = function () { if(this._data.core.themes.checkboxes) { this.hide_checkboxes(); } else { this.show_checkboxes(); } };
 	};
 
 	// include the checkbox plugin by default
 	// $.jstree.defaults.plugins.push("checkbox");
-})(jQuery);
+}));

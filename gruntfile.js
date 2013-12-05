@@ -14,13 +14,26 @@ module.exports = function(grunt) {
     copy: {
       dist : {
         files : [
-          { expand: true, cwd : 'src/themes/default/', src: ['*'], dest: 'dist/themes/default/' }
+          { expand: true, cwd : 'src/themes/default/', src: ['*.css','*.png','*.gif'], dest: 'dist/themes/default/' },
+          { expand: true, cwd : 'libs/', src: ['*'], dest: 'dist/libs/' }
         ]
       }
     },
     uglify: {
       options: {
-        banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> - (<%= _.pluck(pkg.licenses, "type").join(", ") %>) */\n'
+        banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> - (<%= _.pluck(pkg.licenses, "type").join(", ") %>) */\n',
+        preserveComments: false,
+        //sourceMap: "dist/jstree.min.map",
+        //sourceMappingURL: "jstree.min.map",
+        report: "min",
+        beautify: {
+                ascii_only: true
+        },
+        compress: {
+                hoist_funs: false,
+                loops: false,
+                unused: false
+        }
       },
       dist: {
         src: ['<%= concat.dist.dest %>'],
@@ -51,20 +64,53 @@ module.exports = function(grunt) {
           'ActiveXObject' : true
         }
       },
-      beforeconcat: ['src/**/*.js'],
+      beforeconcat: ['src/<%= pkg.name %>.js', 'src/<%= pkg.name %>.*.js'],
       afterconcat: ['dist/<%= pkg.name %>.js']
-    },
-    cssmin: {
-        build: {
-            src: 'dist/themes/default/style.css',
-            dest: 'dist/themes/default/style.min.css'
-        }
     },
     dox: {
       files: {
         src: ['src/*.js'],
         dest: 'docs'
       }
+    },
+    amd : {
+      files: {
+        src: ['dist/jstree.js'],
+        dest: 'dist/jstree.js'
+      }
+    },
+    less: {
+      production: {
+        options : {
+          cleancss : true,
+          compress : true
+        },
+        files: {
+          "dist/themes/default/style.min.css" : "src/themes/default/style.less"
+        }
+      },
+      development: {
+        files: {
+          "src/themes/default/style.css" : "src/themes/default/style.less",
+          "dist/themes/default/style.css" : "src/themes/default/style.less"
+        }
+      }
+    },
+    watch: {
+      js : {
+        files: ['src/**/*.js'],
+        tasks: ['js'],
+        options : {
+          atBegin : true
+        }
+      },
+      css : {
+        files: ['src/**/*.less','src/**/*.png','src/**/*.gif'],
+        tasks: ['css'],
+        options : {
+          atBegin : true
+        }
+      },
     }
   });
 
@@ -72,12 +118,31 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-qunit');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
+  grunt.registerMultiTask('amd', 'Clean up AMD', function () {
+    var s, d;
+    this.files.forEach(function (f) {
+      s = f.src;
+      d = f.dest;
+    });
+    grunt.file.copy(s, d, {
+      process: function (contents) {
+        contents = contents.replace(/\s*if\(\$\.jstree\.plugins\.[a-z]+\)\s*\{\s*return;\s*\}/ig, '');
+        contents = contents.replace(/\/\*globals[^\/]+\//ig, '');
+        contents = contents.replace(/\(function \(factory[\s\S]*?undefined/mig, '(function ($, undefined');
+        contents = contents.replace(/\}\)\);/g, '}(jQuery));');
+        //contents = contents.replace(/\(function \(factory[\s\S]*?undefined[^\n]+/mig, '');
+        //contents = contents.replace(/\}\)\);/g, '');
+        contents = contents.replace(/\s*("|')use strict("|');/g, '');
+        return grunt.file.read('src/intro.js') + contents + grunt.file.read('src/outro.js');
+      }
+    });
+  });
 
   grunt.registerMultiTask('dox', 'Generate dox output ', function() {
-    
     var exec = require('child_process').exec,
         path = require('path'),
         done = this.async(),
@@ -96,6 +161,8 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint:beforeconcat','concat','jshint:afterconcat','copy','uglify','qunit', 'cssmin', 'dox']);
+  grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy','uglify','less','qunit','dox']);
+  grunt.registerTask('js', ['concat','amd','uglify']);
+  grunt.registerTask('css', ['copy','less']);
 
 };

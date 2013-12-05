@@ -1,9 +1,42 @@
 /**
  * ### Drag'n'drop plugin
+ *
+ * Enables dragging and dropping of nodes in the tree, resulting in a move or copy operations.
  */
-(function ($) {
+/*globals jQuery, define, exports, require, document */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.dnd', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.dnd) { return; }
+
+	/**
+	 * stores all defaults for the drag'n'drop plugin
+	 * @name $.jstree.defaults.dnd
+	 * @plugin dnd
+	 */
 	$.jstree.defaults.dnd = {
+		/**
+		 * a boolean indicating if a copy should be possible while dragging (by pressint the meta key or Ctrl). Defaults to `true`.
+		 * @name $.jstree.defaults.dnd.copy
+		 * @plugin dnd
+		 */
 		copy : true,
+		/**
+		 * a number indicating how long a node should remain hovered while dragging to be opened. Defaults to `500`.
+		 * @name $.jstree.defaults.dnd.open_timeout
+		 * @plugin dnd
+		 */
 		open_timeout : 500
 	};
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
@@ -102,7 +135,7 @@
 										break;
 									case 'a':
 										l = off.left - 6;
-										t = off.top - 5 + h + 0;
+										t = off.top - 5 + h;
 										p = ins.get_parent(ref);
 										i = ref.parent().index() + 1;
 										break;
@@ -119,7 +152,7 @@
 								}
 								if(ok) {
 									if(v === 'i' && ref.parent().is('.jstree-closed') && ins.settings.dnd.open_timeout) {
-										opento = setTimeout((function (x, z) { return function () { x.open_node(z); }; })(ins, ref), ins.settings.dnd.open_timeout);
+										opento = setTimeout((function (x, z) { return function () { x.open_node(z); }; }(ins, ref)), ins.settings.dnd.open_timeout);
 									}
 									lastmv = { 'ins' : ins, 'par' : p, 'pos' : i };
 									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
@@ -147,8 +180,7 @@
 				if(!data.data.jstree) { return; }
 				marker.hide();
 				if(lastmv) {
-					lastmv.ins[ data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ]
-						(data.data.nodes, lastmv.par, lastmv.pos);
+					lastmv.ins[ data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ](data.data.nodes, lastmv.par, lastmv.pos);
 				}
 			})
 			.bind('keyup keydown', function (e, data) {
@@ -159,194 +191,194 @@
 			});
 	});
 
+	// helpers
+	(function ($) {
+		$.fn.vakata_reverse = [].reverse;
+		// private variable
+		var vakata_dnd = {
+			element	: false,
+			is_down	: false,
+			is_drag	: false,
+			helper	: false,
+			helper_w: 0,
+			data	: false,
+			init_x	: 0,
+			init_y	: 0,
+			scroll_l: 0,
+			scroll_t: 0,
+			scroll_e: false,
+			scroll_i: false
+		};
+		$.vakata.dnd = {
+			settings : {
+				scroll_speed		: 10,
+				scroll_proximity	: 20,
+				helper_left			: 5,
+				helper_top			: 10,
+				threshold			: 5
+			},
+			_trigger : function (event_name, e) {
+				var data = $.vakata.dnd._get();
+				data.event = e;
+				$(document).triggerHandler("dnd_" + event_name + ".vakata", data);
+			},
+			_get : function () {
+				return {
+					"data"		: vakata_dnd.data,
+					"element"	: vakata_dnd.element,
+					"helper"	: vakata_dnd.helper
+				};
+			},
+			_clean : function () {
+				if(vakata_dnd.helper) { vakata_dnd.helper.remove(); }
+				if(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }
+				vakata_dnd = {
+					element	: false,
+					is_down	: false,
+					is_drag	: false,
+					helper	: false,
+					helper_w: 0,
+					data	: false,
+					init_x	: 0,
+					init_y	: 0,
+					scroll_l: 0,
+					scroll_t: 0,
+					scroll_e: false,
+					scroll_i: false
+				};
+				$(document).unbind("mousemove",	$.vakata.dnd.drag);
+				$(document).unbind("mouseup",	$.vakata.dnd.stop);
+			},
+			_scroll : function (init_only) {
+				if(!vakata_dnd.scroll_e || (!vakata_dnd.scroll_l && !vakata_dnd.scroll_t)) {
+					if(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }
+					return false;
+				}
+				if(!vakata_dnd.scroll_i) {
+					vakata_dnd.scroll_i = setInterval($.vakata.dnd._scroll, 100);
+					return false;
+				}
+				if(init_only === true) { return false; }
+
+				var i = vakata_dnd.scroll_e.scrollTop(),
+					j = vakata_dnd.scroll_e.scrollLeft();
+				vakata_dnd.scroll_e.scrollTop(i + vakata_dnd.scroll_t * $.vakata.dnd.settings.scroll_speed);
+				vakata_dnd.scroll_e.scrollLeft(j + vakata_dnd.scroll_l * $.vakata.dnd.settings.scroll_speed);
+				if(i !== vakata_dnd.scroll_e.scrollTop() || j !== vakata_dnd.scroll_e.scrollLeft()) {
+					$.vakata.dnd._trigger("scroll", vakata_dnd.scroll_e);
+				}
+			},
+			start : function (e, data, html) {
+				if(vakata_dnd.is_drag) { $.vakata.dnd.stop({}); }
+				try {
+					e.currentTarget.unselectable = "on";
+					e.currentTarget.onselectstart = function() { return false; };
+					if(e.currentTarget.style) { e.currentTarget.style.MozUserSelect = "none"; }
+				} catch(ignore) { }
+				vakata_dnd.init_x	= e.pageX;
+				vakata_dnd.init_y	= e.pageY;
+				vakata_dnd.data		= data;
+				vakata_dnd.is_down	= true;
+				vakata_dnd.element	= e.currentTarget;
+				if(html !== false) {
+					vakata_dnd.helper = $("<div id='vakata-dnd'></div>").html(html).css({
+						"display"		: "block",
+						"margin"		: "0",
+						"padding"		: "0",
+						"position"		: "absolute",
+						"top"			: "-2000px",
+						"lineHeight"	: "16px",
+						"zIndex"		: "10000"
+					});
+				}
+				$(document).bind("mousemove", $.vakata.dnd.drag);
+				$(document).bind("mouseup", $.vakata.dnd.stop);
+				return false;
+			},
+			drag : function (e) {
+				if(!vakata_dnd.is_down) { return; }
+				if(!vakata_dnd.is_drag) {
+					if(
+						Math.abs(e.pageX - vakata_dnd.init_x) > $.vakata.dnd.settings.threshold ||
+						Math.abs(e.pageY - vakata_dnd.init_y) > $.vakata.dnd.settings.threshold
+					) {
+						if(vakata_dnd.helper) {
+							vakata_dnd.helper.appendTo("body");
+							vakata_dnd.helper_w = vakata_dnd.helper.outerWidth();
+						}
+						vakata_dnd.is_drag = true;
+						$.vakata.dnd._trigger("start", e);
+					}
+					else { return; }
+				}
+
+				var d  = false, w  = false,
+					dh = false, wh = false,
+					dw = false, ww = false,
+					dt = false, dl = false,
+					ht = false, hl = false;
+
+				vakata_dnd.scroll_t = 0;
+				vakata_dnd.scroll_l = 0;
+				vakata_dnd.scroll_e = false;
+				$(e.target)
+					.parentsUntil("body").addBack().vakata_reverse()
+					.filter(function () {
+						return	(/^auto|scroll$/).test($(this).css("overflow")) &&
+								(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);
+					})
+					.each(function () {
+						var t = $(this), o = t.offset();
+						if(this.scrollHeight > this.offsetHeight) {
+							if(o.top + t.height() - e.pageY < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_t = 1; }
+							if(e.pageY - o.top < $.vakata.dnd.settings.scroll_proximity)				{ vakata_dnd.scroll_t = -1; }
+						}
+						if(this.scrollWidth > this.offsetWidth) {
+							if(o.left + t.width() - e.pageX < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_l = 1; }
+							if(e.pageX - o.left < $.vakata.dnd.settings.scroll_proximity)				{ vakata_dnd.scroll_l = -1; }
+						}
+						if(vakata_dnd.scroll_t || vakata_dnd.scroll_l) {
+							vakata_dnd.scroll_e = $(this);
+							return false;
+						}
+					});
+
+				if(!vakata_dnd.scroll_e) {
+					d  = $(document); w = $(window);
+					dh = d.height(); wh = w.height();
+					dw = d.width(); ww = w.width();
+					dt = d.scrollTop(); dl = d.scrollLeft();
+					if(dh > wh && e.pageY - dt < $.vakata.dnd.settings.scroll_proximity)		{ vakata_dnd.scroll_t = -1;  }
+					if(dh > wh && wh - (e.pageY - dt) < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_t = 1; }
+					if(dw > ww && e.pageX - dl < $.vakata.dnd.settings.scroll_proximity)		{ vakata_dnd.scroll_l = -1; }
+					if(dw > ww && ww - (e.pageX - dl) < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_l = 1; }
+					if(vakata_dnd.scroll_t || vakata_dnd.scroll_l) {
+						vakata_dnd.scroll_e = d;
+					}
+				}
+				if(vakata_dnd.scroll_e) { $.vakata.dnd._scroll(true); }
+
+				if(vakata_dnd.helper) {
+					ht = parseInt(e.pageY + $.vakata.dnd.settings.helper_top, 10);
+					hl = parseInt(e.pageX + $.vakata.dnd.settings.helper_left, 10);
+					if(dh && ht + 25 > dh) { ht = dh - 50; }
+					if(dw && hl + vakata_dnd.helper_w > dw) { hl = dw - (vakata_dnd.helper_w + 2); }
+					vakata_dnd.helper.css({
+						left	: hl + "px",
+						top		: ht + "px"
+					});
+				}
+				$.vakata.dnd._trigger("move", e);
+			},
+			stop : function (e) {
+				if(vakata_dnd.is_drag) {
+					$.vakata.dnd._trigger("stop", e);
+				}
+				$.vakata.dnd._clean();
+			}
+		};
+	}(jQuery));
+
 	// include the dnd plugin by default
 	// $.jstree.defaults.plugins.push("dnd");
-})(jQuery);
-
-// helpers
-(function ($) {
-	$.fn.vakata_reverse = [].reverse;
-	// private variable
-	var vakata_dnd = {
-		element	: false,
-		is_down	: false,
-		is_drag	: false,
-		helper	: false,
-		helper_w: 0,
-		data	: false,
-		init_x	: 0,
-		init_y	: 0,
-		scroll_l: 0,
-		scroll_t: 0,
-		scroll_e: false,
-		scroll_i: false
-	};
-	$.vakata.dnd = {
-		settings : {
-			scroll_speed		: 10,
-			scroll_proximity	: 20,
-			helper_left			: 5,
-			helper_top			: 10,
-			threshold			: 5
-		},
-		_trigger : function (event_name, e) {
-			var data = $.vakata.dnd._get();
-			data.event = e;
-			$(document).triggerHandler("dnd_" + event_name + ".vakata", data);
-		},
-		_get : function () {
-			return {
-				"data"		: vakata_dnd.data,
-				"element"	: vakata_dnd.element,
-				"helper"	: vakata_dnd.helper
-			};
-		},
-		_clean : function () {
-			if(vakata_dnd.helper) { vakata_dnd.helper.remove(); }
-			if(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }
-			vakata_dnd = {
-				element	: false,
-				is_down	: false,
-				is_drag	: false,
-				helper	: false,
-				helper_w: 0,
-				data	: false,
-				init_x	: 0,
-				init_y	: 0,
-				scroll_l: 0,
-				scroll_t: 0,
-				scroll_e: false,
-				scroll_i: false
-			};
-			$(document).unbind("mousemove",	$.vakata.dnd.drag);
-			$(document).unbind("mouseup",	$.vakata.dnd.stop);
-		},
-		_scroll : function (init_only) {
-			if(!vakata_dnd.scroll_e || (!vakata_dnd.scroll_l && !vakata_dnd.scroll_t)) {
-				if(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }
-				return false;
-			}
-			if(!vakata_dnd.scroll_i) {
-				vakata_dnd.scroll_i = setInterval($.vakata.dnd._scroll, 100);
-				return false;
-			}
-			if(init_only === true) { return false; }
-
-			var i = vakata_dnd.scroll_e.scrollTop(),
-				j = vakata_dnd.scroll_e.scrollLeft();
-			vakata_dnd.scroll_e.scrollTop(i + vakata_dnd.scroll_t * $.vakata.dnd.settings.scroll_speed);
-			vakata_dnd.scroll_e.scrollLeft(j + vakata_dnd.scroll_l * $.vakata.dnd.settings.scroll_speed);
-			if(i !== vakata_dnd.scroll_e.scrollTop() || j !== vakata_dnd.scroll_e.scrollLeft()) {
-				$.vakata.dnd._trigger("scroll", vakata_dnd.scroll_e);
-			}
-		},
-		start : function (e, data, html) {
-			if(vakata_dnd.is_drag) { $.vakata.dnd.stop({}); }
-			try {
-				e.currentTarget.unselectable = "on";
-				e.currentTarget.onselectstart = function() { return false; };
-				if(e.currentTarget.style) { e.currentTarget.style.MozUserSelect = "none"; }
-			} catch(err) { }
-			vakata_dnd.init_x	= e.pageX;
-			vakata_dnd.init_y	= e.pageY;
-			vakata_dnd.data		= data;
-			vakata_dnd.is_down	= true;
-			vakata_dnd.element	= e.currentTarget;
-			if(html !== false) {
-				vakata_dnd.helper = $("<div id='vakata-dnd'></div>").html(html).css({
-					"display"		: "block",
-					"margin"		: "0",
-					"padding"		: "0",
-					"position"		: "absolute",
-					"top"			: "-2000px",
-					"lineHeight"	: "16px",
-					"zIndex"		: "10000"
-				});
-			}
-			$(document).bind("mousemove", $.vakata.dnd.drag);
-			$(document).bind("mouseup", $.vakata.dnd.stop);
-			return false;
-		},
-		drag : function (e) {
-			if(!vakata_dnd.is_down) { return; }
-			if(!vakata_dnd.is_drag) {
-				if(
-					Math.abs(e.pageX - vakata_dnd.init_x) > $.vakata.dnd.settings.threshold ||
-					Math.abs(e.pageY - vakata_dnd.init_y) > $.vakata.dnd.settings.threshold
-				) {
-					if(vakata_dnd.helper) {
-						vakata_dnd.helper.appendTo("body");
-						vakata_dnd.helper_w = vakata_dnd.helper.outerWidth();
-					}
-					vakata_dnd.is_drag = true;
-					$.vakata.dnd._trigger("start", e);
-				}
-				else { return; }
-			}
-
-			var d  = false, w  = false,
-				dh = false, wh = false,
-				dw = false, ww = false,
-				dt = false, dl = false,
-				ht = false, hl = false;
-
-			vakata_dnd.scroll_t = 0;
-			vakata_dnd.scroll_l = 0;
-			vakata_dnd.scroll_e = false;
-			var p = $(e.target)
-				.parentsUntil("body").addBack().vakata_reverse()
-				.filter(function () {
-					return	(/^auto|scroll$/).test($(this).css("overflow")) &&
-							(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);
-				})
-				.each(function () {
-					var t = $(this), o = t.offset();
-					if(this.scrollHeight > this.offsetHeight) {
-						if(o.top + t.height() - e.pageY < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_t = 1; }
-						if(e.pageY - o.top < $.vakata.dnd.settings.scroll_proximity)				{ vakata_dnd.scroll_t = -1; }
-					}
-					if(this.scrollWidth > this.offsetWidth) {
-						if(o.left + t.width() - e.pageX < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_l = 1; }
-						if(e.pageX - o.left < $.vakata.dnd.settings.scroll_proximity)				{ vakata_dnd.scroll_l = -1; }
-					}
-					if(vakata_dnd.scroll_t || vakata_dnd.scroll_l) {
-						vakata_dnd.scroll_e = $(this);
-						return false;
-					}
-				});
-
-			if(!vakata_dnd.scroll_e) {
-				d  = $(document); w = $(window);
-				dh = d.height(); wh = w.height();
-				dw = d.width(); ww = w.width();
-				dt = d.scrollTop(); dl = d.scrollLeft();
-				if(dh > wh && e.pageY - dt < $.vakata.dnd.settings.scroll_proximity)		{ vakata_dnd.scroll_t = -1;  }
-				if(dh > wh && wh - (e.pageY - dt) < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_t = 1; }
-				if(dw > ww && e.pageX - dl < $.vakata.dnd.settings.scroll_proximity)		{ vakata_dnd.scroll_l = -1; }
-				if(dw > ww && ww - (e.pageX - dl) < $.vakata.dnd.settings.scroll_proximity)	{ vakata_dnd.scroll_l = 1; }
-				if(vakata_dnd.scroll_t || vakata_dnd.scroll_l) {
-					vakata_dnd.scroll_e = d;
-				}
-			}
-			if(vakata_dnd.scroll_e) { $.vakata.dnd._scroll(true); }
-
-			if(vakata_dnd.helper) {
-				ht = parseInt(e.pageY + $.vakata.dnd.settings.helper_top, 10);
-				hl = parseInt(e.pageX + $.vakata.dnd.settings.helper_left, 10);
-				if(dh && ht + 25 > dh) { ht = dh - 50; }
-				if(dw && hl + vakata_dnd.helper_w > dw) { hl = dw - (vakata_dnd.helper_w + 2); }
-				vakata_dnd.helper.css({
-					left	: hl + "px",
-					top		: ht + "px"
-				});
-			}
-			$.vakata.dnd._trigger("move", e);
-		},
-		stop : function (e) {
-			if(vakata_dnd.is_drag) {
-				$.vakata.dnd._trigger("stop", e);
-			}
-			$.vakata.dnd._clean();
-		}
-	};
-})(jQuery);
+}));

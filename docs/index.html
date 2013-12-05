@@ -7,75 +7,13 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<title>jsTree API documentation</title>
-
-	<link rel="stylesheet" href="./assets/bootstrap.min.css" />
 	<meta name="viewport" content="width=device-width" />
-	<meta name="robots" content="index,follow" />
-
 	<!--[if lt IE 9]><script src="./assets/html5.js"></script><script src="./assets/respond.js"></script><![endif]-->
 	<!--[if lt IE 7]><meta http-equiv="imagetoolbar" content="false" /><![endif]-->
-
-	<style>
-	html { overflow-y:scroll; background:#D9E3CB url('./assets/images/tree.png') left bottom fixed no-repeat; }
-	body { background:transparent; }
-	.container { min-width:320px; max-width:960px; }
-	#head { background:#333; border-bottom:4px solid #73796B; min-height:75px; }
-	#logo { margin:0; padding:0; height:60px; }
-	#logo a { display:block; margin:0 auto; height:100%; width:160px; overflow:hidden; text-indent:110%; white-space:nowrap; background:url('./assets/images/logo.png') left 5px no-repeat; }
-	#content { box-shadow:0 20px 0px 20px rgba(255,255,255,0.3); }
-	#menu { text-align:center; vertical-align:top; }
-	#menu > li { margin:0 0px 0 0; display:inline-block; float:none; }
-	#menu > li > a { border-radius:0; color:white; margin:12px 0 0 0; padding-top:8px; padding-bottom:8px; text-shadow:1px 1px 0 rgba(0,0,0,0.5); border-right:1px solid #666;
-		background:#a3b29e; 
-		background: -moz-linear-gradient(top, #a3b29e 0%, #6d7266 100%);
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a3b29e), color-stop(100%,#6d7266));
-		background: -webkit-linear-gradient(top, #a3b29e 0%,#6d7266 100%);
-		background: -o-linear-gradient(top, #a3b29e 0%,#6d7266 100%);
-		background: -ms-linear-gradient(top, #a3b29e 0%,#6d7266 100%);
-		background: linear-gradient(to bottom, #a3b29e 0%,#6d7266 100%);
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a3b29e', endColorstr='#6d7266',GradientType=0 );
-	}
-	#menu > li:first-child > a { border-radius:5px 0 0 5px; }
-	#menu > li:last-child > a { border-radius:0 5px 5px 0; border-right:0; }
-	#menu > li > a:hover { background:#73796B; }
-	#menu > .active > a,
-	#menu > .active > a:hover { background:#D9E3CB; box-shadow:inset 0 0 4px 1px #6d7266; color:black; text-shadow:1px 1px 0 rgba(255,255,255,0.5); }
-	#head form { margin:14px auto; max-width:240px; }
-	#head input { border-radius:10px; background:white url('./assets/images/find.png') 10px center no-repeat; padding-left:32px; }
-	.page { margin-top:-10px; background:white; border-radius:5px; box-shadow:0 0 10px rgba(0,0,0,0.7); padding-top:20px; padding-bottom:15px; }
-	h2 { margin:0 0 1em 0; padding:0 0 0.75em 0; text-align:center; color:#333; border-bottom:1px dotted #666; }
-
-	/*
-	html, body { height:100%; }
-	html { overflow-y:scroll; background:#D9E3CB url('./img/tree.png') left bottom fixed no-repeat; }
-	body { background:transparent; }
-	.container { width:100%; background:white; background:rgba(255,255,255,0.4); margin:0px auto; max-width:1020px; min-width:320px; min-height:100%; }
-	.inner { background:white; border-radius:5px; box-shadow:0 0 5px rgba(0,0,0,0.5); margin:60px 20px 20px 20px; position:relative; }
-	.item { margin:0px; margin:0 0 0px 0; padding:20px; }
-	.first { padding-bottom : 60px; }
-	h2 { font-family:Georgia, serif; }
-	h3 { margin:20px 0px -10px 0px; font-family:Georgia, serif; padding:20px; border-top:1px dotted silver; }
-	.docs { padding-top:10px; width:48%; }
-	.code { float:right; width:50%; }
-	.code pre { overflow:auto; }
-	code.selected { background:#DD1144; border-color:#DD1144; color:white; }
-	pre code { background:transparent; }
-	.head { background:#333; position:absolute; top:0; left:0; width:100%; height:75px; border-bottom:4px solid #73796B; }
-	.head h2 { background:url('./img/logo.png') 20px 3px no-repeat; margin:0 auto; height:75px; line-height:50px; text-align:right; max-width:960px; min-width:280px; font-weight:normal; font-family:Tahoma; padding:0 20px; }
-	.head h2 a { margin-left:8px; margin-bottom:8px; }
-	.head .logo { float:left; height:65px; width:160px; text-decoration:none; margin:0; display:block; }
-	@media (max-width: 600px) {
-		.inner { margin:0; }
-		.code { display:none; }
-		.docs { width:auto; }
-		.first { padding-bottom:0 !important; }
-		.input-append { display:none; }
-		.head { position:static; height:auto; width:auto; }
-		.head .logo { float:none; margin:0 auto 5px auto; }
-		.head h2 { height:auto; padding-bottom:0px; background-position:center 5px; text-align:center; line-height:24px; }
-	}
-	*/
-	</style>
+	<meta name="robots" content="index,follow" />
+	<link rel="stylesheet" href="./assets/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="./../dist/themes/default/style.min.css" />
+	<link rel="stylesheet" href="./assets/docs.css" />
 </head>
 <body>
 	<header id="head">
@@ -86,207 +24,500 @@
 				</div>
 				<div class="col-md-6 col-sm-6">
 					<nav>
-						<ul class="nav nav-pills" id="menu"></ul>
+						<ul class="nav nav-pills" id="menu"><li><a href="/docs"><i class="glyphicon glyphicon-home"></i> Home</a></li><li><a href="/demo"><i class="glyphicon glyphicon-flash"></i> Demo</a></li><li><a href="/api"><i class="glyphicon glyphicon-cog"></i> API</a></li></ul>
 					</nav>
 				</div>
 				<div class="col-md-3 col-sm-6">
 					<form role="search">
-						<input type="text" class="form-control" placeholder="API search" />
+						<input type="text" id="srch" class="form-control" placeholder="API search" />
 					</form>
 				</div>
 			</div>
 		</div>
 	</header>
 	<div class="container" id="content">
-		<div class="row page" id="basics" data-title="basics">
-			<div class="col-md-12">
-				<h2>Basics</h2>
-				asdf<br />asdf<br />asdf<br />asdf<br />
+		<div class="row page" id="docs">
+			<div class="col-md-12" style="">
+				<h3><i class="glyphicon glyphicon-leaf"></i> What is jsTree?</h3>
+				<div class="row">
+					<div class="col-md-8">
+						<p>jsTree is <strong>jquery plugin</strong>, that provides <strong>interactive trees</strong>. It is absolutely <strong>free</strong>, <a href="https://github.com/vakata/jstree/">open source</a> and distributed under the <a href="http://www.opensource.org/licenses/mit-license.php">MIT license</a>. jsTree is easily extendable, themable and configurable, it supports <strong>HTML &amp; JSON data sources and AJAX loading</strong>.</p>
+						<p>jsTree functions properly in either box-model (content-box or border-box), can be loaded as an AMD module, and has a built in mobile theme for responsive design, that can easily by customized. It uses jQuery's event system, so binding callbacks on various events in the tree is familiar and easy.</p>
+						<p>Just a few of the features worth noting:</p>
+						<ul class="features list-unstyled list-inline">
+							<li><i class="glyphicon glyphicon-ok"></i> drag &amp; drop support</li>
+							<li><i class="glyphicon glyphicon-ok"></i> keyboard navigation</li>
+							<li><i class="glyphicon glyphicon-ok"></i> inline edit, create and delete</li>
+							<li><i class="glyphicon glyphicon-ok"></i> tri-state checkboxes</li>
+							<li><i class="glyphicon glyphicon-ok"></i> fuzzy searching</li>
+							<li><i class="glyphicon glyphicon-ok"></i> customizable node types</li>
+						</ul>
+						<p id="main-buttons">
+							<img src="./assets/images/browsers.png" style="max-width:100%; max-height:36px;" alt="" /><br /><small>All modern browsers are supported, as well as IE8</small><br /><br />
+							<a href="https://github.com/vakata/jstree/archive/master.zip" class="btn btn-success"><i class="glyphicon glyphicon-download"></i>&nbsp;&nbsp;Download</a>
+							<a href="https://groups.google.com/forum/#!forum/jstree" class="btn btn-warning"><i class="glyphicon glyphicon-comment"></i>&nbsp;&nbsp;Discuss</a>
+							<a href="https://github.com/vakata/jstree/issues?state=open" class="btn btn-danger"><i class="glyphicon glyphicon-exclamation-sign"></i>&nbsp;&nbsp;Report bugs</a>
+							<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=paypal@vakata.com&currency_code=USD&amount=&return=http://jstree.com/donation&item_name=Buy+me+a+coffee+for+jsTree" class="btn btn-primary"><i class="glyphicon glyphicon-thumbs-up"></i>&nbsp;&nbsp;&nbsp;Donate</a>
+						</p>
+					</div>
+					<div class="col-md-4">
+						<div id="jstree1" class="demo">
+							<ul>
+								<li>Root node 1
+									<ul>
+										<li data-jstree='{ "selected" : true }'>initially selected</li>
+										<li data-jstree='{ "icon" : "http://jstree.com/tree-icon.png" }'>custom icon URL</li>
+										<li data-jstree='{ "opened" : true }'>initially open
+											<ul>
+												<li>Another node</li>
+											</ul>
+										</li>
+										<li data-jstree='{ "icon" : "glyphicon glyphicon-leaf" }'>Custom icon class (bootstrap)</li>
+									</ul>
+								</li>
+								<li><a href="http://www.jstree.com">Root node 2</a></li>
+							</ul>
+						</div>
+						<div id="jstree2" class="demo" style="margin-top:2em;"></div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<h3><i class="glyphicon glyphicon-leaf"></i> Getting Started - everything at a glance</h3>
+						<div style="text-align:center; color:black;" class="alert alert-block alert-warning">
+							<p>This is just a quick overview of the most basic operations. There is a detailed section below for each bullet.</p>
+							<h5><strong>If you are not into reading - jump straight to the <a href="#/demo/">demo &raquo;</a></strong></h5>
+						</div>
+					</div>
+				</div>
+				<div class="row" style="margin-top:1em;">
+					<div class="col-md-5">
+						<ol class="list-group">
+							<li class="list-group-item">
+								<h4 class="list-group-item-heading">download jsTree</h4>
+								<p class="list-group-item-text">All the files you need are in the <code>dist/</code> folder of the download.</p>
+							</li>
+							<li class="list-group-item">
+								<span class="badge">1</span>
+								<h4 class="list-group-item-heading">include a jsTree theme</h4>
+								<p class="list-group-item-text">Themes can be autloaded too, but it is best for performance to include the CSS file. Include the default theme from <code>dist/themes/default/style.min.css</code></p>
+							</li>
+							<li class="list-group-item">
+								<span class="badge">2</span>
+								<h4 class="list-group-item-heading">setup a container</h4>
+								<p class="list-group-item-text">This is the element where you want the tree to appear, a <code>&lt;div&gt;</code> is enough.</p>
+							</li>
+							<li class="list-group-item">
+								<span class="badge">3</span>
+								<h4 class="list-group-item-heading">include jQuery</h4>
+								<p class="list-group-item-text">jsTree requires <strong>1.9.0 or greater</strong> in your webpage. If you do not have a copy you can find one in <code>dist/libs/jquery.js</code></p>
+							</li>
+							<li class="list-group-item">
+								<span class="badge">4</span>
+								<h4 class="list-group-item-heading">include jsTree</h4>
+								<p class="list-group-item-text">For production include the minified version: <code>dist/jstree.min.js</code><br />For debugging there is a development version too: <code>dist/jstree.js</code></p>
+							</li>
+							<li class="list-group-item">
+								<span class="badge">5</span>
+								<h4 class="list-group-item-heading">create an instance</h4>
+								<p class="list-group-item-text">Once the DOM is ready you can start creating jstree instances using <code>$('selector').jstree();</code></p>
+							</li>
+							<li class="list-group-item">
+								<span class="badge">6</span>
+								<h4 class="list-group-item-heading">listen for events</h4>
+								<p class="list-group-item-text">jsTree uses jQuery events to notify you when something changes while users (or you) interact with the tree. The second parameter contains everything there is to know about the event that happened. There is a <a href="#/api/?q=.jstree Event">list of events</a> and what information they provide in the API documentation.</p>
+							</li>
+							<li class="list-group-item">
+								<span class="badge">7</span>
+								<h4 class="list-group-item-heading">interact with your instances</h4>
+								<p class="list-group-item-text">Once your instance is ready you can invoke methods on it. There is a <a href="#/api/?q=(">list of available methods</a> in the API documentation.</p>
+							</li>
+						</ol>
+					</div>
+					<div class="col-md-7">
+<pre style="padding:0px 20px;"><code>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;jsTree test&lt;/title&gt;
+<span class="point">  <span class="comment">&lt;!-- <strong>1</strong> load the theme CSS file --&gt;</span>
+  &lt;link rel="stylesheet" href="<strong>dist/themes/default/style.min.css</strong>" /&gt;</span>
+&lt;/head&gt;
+&lt;body&gt;
+<span class="point">  <span class="comment">&lt;!-- <strong>2</strong> setup a container element --&gt;</span>
+  &lt;div id="jstree"&gt;
+    <span class="comment">&lt;!-- in this example the tree is populated from inline HTML --&gt;</span>
+    &lt;ul&gt;
+      &lt;li&gt;Root node 1
+        &lt;ul&gt;
+          &lt;li id="child_node_1"&gt;Child node 1&lt;/li&gt;
+          &lt;li&gt;Child node 2&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Root node 2&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;div&gt;</span>
+  &lt;button&gt;demo button&lt;/button&gt;
+
+<span class="point">  <span class="comment">&lt;!-- <strong>3</strong> include the <a href="http://jquery.org">jQuery</a> library --&gt;</span>
+  &lt;script src="<strong>dist/libs/jquery.js</strong>"&gt;&lt;/script&gt;</span>
+<span class="point">  <span class="comment">&lt;!-- <strong>4</strong> include the minified <a href="http://jstree.com">jstree</a> source --&gt;</span>
+  &lt;script src="<strong>dist/jstree.min.js</strong>"&gt;&lt;/script&gt;</span>
+  &lt;script&gt;
+  $(function () {
+<span class="point">    <span class="comment">// <strong>5</strong> create an instance when the DOM is ready</span>
+    <strong>$('#jstree').jstree();</strong></span>
+<span class="point">    <span class="comment">// <strong>6</strong> bind to events triggered on the tree</span>
+    <strong>$('#jstree').on("changed.jstree", function (e, data) {
+      console.log(data.selected);
+    });</strong></span>
+<span class="point">    <span class="comment">// <strong>7</strong> interact the tree - either way is OK</span>
+    $('button').on('click', function () {
+      <strong>$('#jstree').jstree(true).select_node('child_node_1');</strong>
+      <strong>$('#jstree').jstree('select_node', 'child_node_1');</strong>
+      <strong>$.jstree.reference('#jstree').select_node('child_node_1');</strong>
+    }
+  });</span>
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+ </code></pre>
+					</div>
+				</div>
+				<div class="row" style="margin-top:3em;">
+					<div class="col-md-12">
+						<h3><i class="glyphicon glyphicon-leaf"></i> Configuring instances</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5">
+					<p>When you create an instance you can pass some options which change the way the tree behaves. Whatever you pass overwrites the defaults for that instance. The options are passed in as an object. Since jstree supports plugins the options for each plugin are contained in a separate key in the config object, and the key has the name of the plugin.</p>
+					<p>Omitting the config object means that all the defaults are used for that instance.</p>
+					<p>All options for the core are contained in a <code>core</code> key of the object. You can also modify the defaults which will affect all future instances. </p>
+					<p>Apart from <code>core</code>, there is one more special key in the config object - the <code>plugins</code> key. It defines which plugins are active on the instance.</p>
+					<p>You can have a look at all the <a href="#/api/?q=$.jstree.defaults">options and their default values</a>. This list is what you can configure on each instance.<br />For example, by default the tree allows multiple selection as stated in <code>$.jstree.defaults.core.multiple</code>, to overwrite that make sure your config object contains <code>"core" : { "multiple" : false }</code>. If you have multiple overrides for the same key (like <code>"core"</code> here), group them:</p>
+					<code style="white-space:pre;">$("#jstree").jstree({
+  "core" : {
+    "multiple" : false,
+    "animation" : 0
+  }
+});</code>
+					</div>
+					<div class="col-md-7">
+						<pre><code>
+<span class="comment">// create an instance without modifying the defaults</span>
+$('#jstree').jstree();
+
+<span class="comment">// create an instance and activate the wholerow and checkbox plugins</span>
+$('#jstree').jstree({
+  <strong>"plugins" : [ "wholerow", "checkbox" ]</strong>
+});
+
+<span class="comment">// use the large variant of the default theme</span>
+$('#jstree').jstree({
+  <strong>"core" : {
+    "theme" : {
+      "variant" : "large"
+    }
+  },</strong>
+  "plugins" : [ "wholerow", "checkbox" ]
+});
+
+<span class="comment">// configure the checkbox plugin along with the core</span>
+$('#jstree').jstree({
+  "core" : {
+    "theme" : {
+      "variant" : "large"
+    }
+  },
+  <strong>"checkbox" : {
+    "keep_selected_style" : false
+  },</strong>
+  "plugins" : [ "wholerow", "checkbox" ]
+});
+
+<span class="comment">// change the default for all future instances</span>
+<strong>$.jstree.defaults.core.theme.variant = "large";</strong>
+						</code></pre>
+					</div>
+				</div>
+
+				<div class="row" style="margin-top:3em;">
+					<div class="col-md-12">
+						<h3><i class="glyphicon glyphicon-leaf"></i> Populating a tree using HTML</h3>
+					</div>
+				</div>
+				<h4>Basic markup</h4>
+				<div class="row">
+					<div class="col-md-5">
+						<p>jsTree can turn a regular unordered list into a tree. The minimal required markup is a <code>&lt;ul&gt;</code> node with some nested <code>&lt;li&gt;</code> nodes with some text inside.</p>
+						<p>You should have a container wrapping the <code>&lt;ul&gt;</code> and create the instance on that container. Like so:<br /><code>$('#html1').jstree();</code>.
+					</div>
+					<div class="col-md-7">
+						<pre><code>&lt;div id="html1"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Root node 1&lt;/li&gt;
+    &lt;li&gt;Root node 2&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+					</div>
+				</div>
+				<h4>Nodes with children</h4>
+				<div class="row">
+					<div class="col-md-5">
+						<p>To create a node with child nodes simpy nest an <code>&lt;ul&gt;</code>.</p>
+						<p>Internally jstree converts the text to a link, so if there already is a link in the markup jstree won't mind. Like <code>Child node 2</code>.<br />Clicking on the link however will not direct the user to a new page, to do that - intercept the <code>changed.jstree</code> event and act accordingly.</p>
+						<p>Keep reading for the section on handling events.</p>
+					</div>
+					<div class="col-md-7">
+						<pre><code>&lt;div id="html1"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Root node 1<strong>
+      &lt;ul&gt;
+        &lt;li&gt;Child node 1&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#"&gt;Child node 2&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;</strong>
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+					</div>
+				</div>
+				<h4>Setting initial state with classes</h4>
+				<div class="row">
+					<div class="col-md-5">
+						<p>To make a node initially selected you can set the <code>jstree-clicked</code> class on the <code>&lt;a&gt;</code> element.</p>
+						<p>Similarly you can set the <code>jstree-open</code> class on any <code>&lt;li&gt;</code> element to make it initially extended, so that its children are visible.</p>
+						<p>It is a good idea to give your nodes <strong>unique</strong> IDs by adding the <code>id</code> attribute to any <code>&lt;li&gt;</code> element. This will be useful if you ened to sync with a backend as you will get the ID back in any events jstree triggers.</p>
+					</div>
+					<div class="col-md-7">
+						<pre><code>&hellip;
+&lt;li <strong>class="jstree-open"</strong> <strong>id="node_1"</strong>&gt;Root&lt;/li&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;a href="#" <strong>class="jstree-clicked"</strong>&gt;Child&lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/li&gt;
+&hellip;</code></pre>
+					</div>
+				</div>
+				<h4>Setting initial state with data attribute</h4>
+				<div class="row">
+					<div class="col-md-5">
+						<p>You can also set the state on a node using a <code>data-jstree</code> attribute.</p>
+						<p>You can use any combination of the following: <code>opened</code>, <code>selected</code>, <code>disabled</code>, <code>icon</code>.</p>
+						<p>Specifying an address (anything containing a <code>/</code>) will display that image as the node icon. Using a string will apply that class to the <code>&lt;i&gt;</code> element that is used to represent the icon.<br />For example if you are using Twitter Bootstrap you can use <code>"icon" : "glyphicon glyphicon-leaf"</code> to display a leaf icon.</p>
+					</div>
+					<div class="col-md-7">
+						<pre><code>&lt;li <strong>data-jstree='{"opened":true,"selected":true}'</strong>&gt;Root
+  &lt;ul&gt;
+    &lt;li <strong>data-jstree='{"disabled":true}'</strong>&gt;Child&lt;/li&gt;
+    &lt;li <strong>data-jstree='{"icon":"http://jstree.com/tree.png"}'</strong>&gt;
+      Child&lt;/li&gt;
+    &lt;li <strong>data-jstree='{"icon":"glyphicon glyphicon-leaf"}'</strong>&gt;
+      Child&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/li&gt;</code></pre>
+					</div>
+				</div>
+				<h4>Loading with AJAX</h4>
+				<div class="row">
+					<div class="col-md-5">
+						<p>You can also use AJAX to populate the tree with HTML your server returns. The format remains the same as the above, the only difference is that the HTML is not inside the container, but returned from the server.</p>
+						<p>To take advantage of this option you need to use the <a href="#/api/?f=$.jstree.defaults.core.data"><code>$.jstree.defaults.core.data</code></a> config option.</p>
+						<p>Just use a standard jQuery-like AJAX config and jstree will automatically make an AJAX request populate the tree with the response.</p>
+						<p>In addition to the standard jQuery ajax options here you can supply functions for <code>data</code> and <code>url</code>, the functions will be run in the current instance's scope and a param will be passed indicating which node is being loaded, the return value of those functions will be used as URL and data respectively.</p>
+					</div>
+					<div class="col-md-7">
+						<pre><code>
+// AJAX
+$('#tree').jstree({
+'core' : {
+  'data' : {
+    'url' : '/get/children/',
+    'data' : function (node) {
+      /* notable contents of node
+      {
+        id          : // node ID, could be autogenerated if you did not supply it
+        text        : // node text
+        icon        : // node icon - true for default, false for no icon, string for custom
+        parent      : // parent ID
+        parents     : // array of IDs of all the parents
+        children    : // array of IDs of all immediate children
+        children_d  : // array of IDS of all children including grandchildren, etc
+        state       : {
+          opened    : // is the node open
+          disabled  : // is the node disabled
+          selected  : // is the node selected
+          loaded    : // are the node's immediate children loaded (useful in AJAX configs)
+        },
+        original    : // if JSON is used as data - the original JSON for the node
+      }
+      */
+      return { 'id' : node.id };
+    }
+  }
+});
+						</code></pre>
+					</div>
+				</div>
+				<div class="row" style="margin-top:3em;">
+					<div class="col-md-12">
+						<h3><i class="glyphicon glyphicon-leaf"></i> Populating the tree using JSON</h3>
+					</div>
+				</div>
+				<h4>The format</h4>
+				<div class="row">
+					<div class="col-md-5">
+						<p>You can use JSON to populate the tree. To take advantage of this option you need to use the <a href="#/api/?f=$.jstree.defaults.core.data"><code>$.jstree.defaults.core.data</code></a> config option.</p>
+						<p>The expected format is an array of nodes, where each node can be a simple string or an object itself (there are no required fields for the object). Any nested nodes are supplied in the same manner in the <code>children</code> property of their parent.</p>
+						<p>To change the icon of the node use the <code>icon</code> property. Specifying a string containing a <code>/</code> will display that image as the node icon. Using any other string will apply that class to the <code>&lt;i&gt;</code> element that is used to represent the icon.<br />For example if you are using Twitter Bootstrap you can use <code>"icon" : "glyphicon glyphicon-leaf"</code> to display a leaf icon.</p>
+						<p>You can set the state on a node using the <code>state</code> property.</p>
+						<p>You can use any combination of the following: <code>opened</code>, <code>selected</code>, <code>disabled</code>.</p>
+					</div>
+					<div class="col-md-7">
+						<pre><code>
+$('#tree').jstree({
+  'core' : {
+    'data' : [
+       'Simple root node',
+       {
+         'id' : 'node_2',
+         'text' : 'Root node with options',
+         'state' : { 'opened' : true, 'selected' : true },
+         'children' : [ { 'text' : 'Child 1' }, 'Child 2']
+      }
+    ]
+  }
+});
+/*
+ Expected format of the node (there are no required fields)
+  id          : // node ID, will be autogenerated if omitted
+  text        : // node text
+  icon        : // node icon, false for no icon, string for custom
+  state       : {
+    opened    : // is the node open
+    disabled  : // is the node disabled
+    selected  : // is the node selected
+  },
+  children    : // array of strings or objects same as this one
+  li_attr     : // object of attributes to use for the generated LI node
+  a_attr      : // object of attributes to use for the generated A node
+*/
+						</code></pre>
+					</div>
+				</div>
+				<h4>Using AJAX</h4>
+				<div class="row">
+					<div class="col-md-5">
+						<p>You can also use AJAX to populate the tree with JSON your server returns. The format remains the same as the above, the only difference is that the JSON is not inside the config object, but returned from the server.</p>
+						<p>To take advantage of this option you need to use the <a href="#/api/?f=$.jstree.defaults.core.data"><code>$.jstree.defaults.core.data</code></a> config option.</p>
+						<p>Just use a standard jQuery-like AJAX config and jstree will automatically make an AJAX request populate the tree with the response.</p>
+						<p>In addition to the standard jQuery ajax options here you can supply functions for <code>data</code> and <code>url</code>, the functions will be run in the current instance's scope and a param will be passed indicating which node is being loaded, the return value of those functions will be used as URL and data respectively.</p>
+					</div>
+					<div class="col-md-7">
+						<pre><code>
+// AJAX
+$('#tree').jstree({
+'core' : {
+  'data' : {
+    'url' : '/get/children/',
+    'data' : function (node) {
+      /* notable contents of node
+      {
+        id          : // node ID
+        text        : // node text
+        icon        : // node icon - true for default, false for no icon, string for custom
+        parent      : // parent ID
+        parents     : // array of IDs of all the parents
+        children    : // array of IDs of all immediate children
+        children_d  : // array of IDS of all children including grandchildren, etc
+        state       : {
+          opened    : // is the node open
+          disabled  : // is the node disabled
+          selected  : // is the node selected
+          loaded    : // are the node's immediate children loaded (useful in AJAX configs)
+        },
+        original    : // if JSON is used as data - the original JSON for the node
+      }
+      */
+      return { 'id' : node.id };
+    }
+  }
+});
+						</code></pre>
+					</div>
+				</div>
+				<div class="row" style="margin-top:3em;">
+					<div class="col-md-12">
+						<h3><i class="glyphicon glyphicon-leaf"></i> Listening for events</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5">
+						<p>jsTree triggers various events on the container. You can review <a href="#/api/?q=.jstree Event">the list of all events</a> to know what to listen for.</p>
+						<p>To get more information about the event inspect its <code>data</code> argument.</p>
+						<p>In most cases where a node is involved you will get the whole node object passed in. If you get an ID string somewhere and want to inspect the node just use <a href="#/api/?f=get_node(obj [, as_dom])">.get_node()</a>.
+					</div>
+					<div class="col-md-7">
+						<pre><code>
+$('#jstree')
+	<span class="comment">// listen for event</span>
+	<strong>.on('changed.jstree',</strong> function (e, <strong>data</strong>) {
+		var i, j, r = [];
+		for(i = 0, j = data.selected.length; i < j; i++) {
+			r.push($(this).jstree(true).get_node(data.selected[i]).text);
+		}
+		alert('You selected ' + r.join(', '));
+	})
+	<span class="comment">// create the instance</span>
+	.jstree();
+						</code></pre>
+					</div>
+				</div>
+				<div class="row" style="margin-top:3em;">
+					<div class="col-md-12">
+						<h3><i class="glyphicon glyphicon-leaf"></i> Invoking methods on an instance</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5">
+						<p>To invoke a method on an instance you must first obtain a reference of the instance.</p>
+						<p>Check the API for <a href="#/api/?q=(">a list of available methods</a>.
+					</div>
+					<div class="col-md-7">
+						<pre><code>
+<span class="comment">// 3 ways of doing the same thing</span>
+$('#jstree').jstree(true).refresh();
+$('#jstree').jstree('refresh');
+$.jstree.reference('#jstree').refresh();
+						</code></pre>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="row page" id="demos" data-title="demos">
+		<div class="row page" id="demo">
 			<div class="col-md-12">
-				<h2>Demos</h2>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p id="asdf">asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
-				<p>asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br />asdf<br /></p>
+				<h2>Demo</h2>
 			</div>
 		</div>
-		<div class="row page" id="plugins" data-title="plugins">
+		<div class="row page" id="api">
 			<div class="col-md-12">
-				<h2>Plugins</h2>
-				asdf<br />asdf<br />asdf<br />asdf<br />
-				<a href="#/demos/asdf">asdfasdf</a>
-			</div>
-		</div>
-		<div class="row page" id="api" data-title="API">
-			<div class="col-md-12">
-				<h2>API</h2>
-				asdf<br />asdf<br />asdf<br />asdf<br />
+				<div id="api_inner" style="">
+					<div id="no_res" style="text-align:center;"><h4 style="font-size:1.1em; font-weight:bold;">Sorry, no results found.</h4><button class="btn btn-link" onclick="$('#srch').val('').keyup();">clear this search</button></div>
+					<div id="cl_src" style="text-align:center;"><h4 style="font-size:1.1em; font-weight:bold;">This is a filtered view.</h4><button class="btn btn-link" onclick="$('#srch').val('').keyup();">clear this search</button></div>
+				</div>
 			</div>
 		</div>
 	</div>
 	<a class="hidden-xs hidden-sm" href="https://github.com/vakata/jstree"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png" alt="Fork me on GitHub"></a>
-	<script src="./../libs/jquery.js"></script>
-	<script>
-	$(function () {
-		$('#content').children('.page').hide().each(function () {
-			$('#menu').append('<li><a href="#/'+$(this).attr('id')+'">'+$(this).data('title')+'</a></li>');
-		});
 
-		$(window).on('hashchange', function () {
-			var h = document.location.hash ? document.location.hash.toString().replace('#','').split('/') : null,
-				p = h && h.length && h.length > 2 ? $('#' + h[2]) : null;
-			if(h && h.length && h.length > 1) {
-				$('#menu a').eq($('#content').children('.page').hide().filter('#' + h[1]).show().index()).blur().parent().siblings().removeClass('active').end().addClass('active');
-			}
-			if(p && p.length && p.closest('.page').is(':visible')) {
-				p[0].scrollIntoView();
-			}
-			else {
-				document.documentElement.scrollTop = 0;
-			}
-			if(!$('.page:visible').length) {
-				document.location.hash = $('#menu').find('a').eq(0).attr('href');
-			}
-		}).trigger('hashchange');
-
-		var to = false;
-		$(window).resize(function () {
-			if(to) { clearTimeout(to); }
-			to = setTimeout(function () {
-				$('.page').css('minHeight','0px').css('minHeight', ($(document).height() - $('#head').outerHeight()) + 'px');
-			});
-		}).resize();
-	});
-
-
-	$.expr[':'].icontains = $.expr.createPseudo(function(search) {
-		return function(a) {
-			return (a.textContent || a.innerText || "").toLowerCase().indexOf(search.toLowerCase())>=0;
-		};
-	});
-	$(function () {
-		var container = $('.inner');
-		$.getJSON('./jstree.json', function (data) {
-			return;
-			var first = true;
-			$.each(data, function (i, v) {
-				if(first) {
-					container.append('<div style="text-align:center;" class="item clearfix first">' + v.description.full + '</div>');
-					//container.append('<div style="text-align:center;" class="item clearfix first">' + v.description.full + '</div>');
-					first = false;
-					return true;
-				}
-				if(!v.ignore) {
-					if(!v.code) {
-						v.code = '';
-					}
-					if(v.code.indexOf('\n') > 0) {
-						var l = 0,
-							s = v.code.split('\n')[1];
-						while(s[l] === '\t') { l++; }
-						v.code = new Array(l).join('\t') + v.code;
-						v.code = v.code.replace(new RegExp('^\t{'+(l-1)+'}','mg'), '');
-						v.code = v.code.replace(/\t+\:/g, ' :');
-					}
-					v.code = v.code.replace(/\t/g,'    ')
-					container.append('<div class="item clearfix"><div class="code"><pre><code>' + v.code + '</code></pre></div><div class="docs">' + v.description.full + '</div></div>');
-				}
-				//container.append(v.description.full);
-			});
-			$('h2').appendTo('.head').each(function () {
-				//https://github.com/vakata/jstree/archive/2.0.0-alpha.zip
-				var t = $(this),
-					a = t.text().replace(/jstree /ig,'');
-				t.html('<a href="http://jstree.com" class="logo" style="">&nbsp;</a>');
-			});
-			container.append('<div style="text-align:center; border-top:1px dotted silver;" class="item clearfix last">' + $('.first').html() + '</div>');
-			$('.first').html(' ');
-			$('.docs > h3').each(function () {
-				$(this).closest('.item').before($(this));
-			});
-			$('.item:eq(0)').append('<div class="input-append" style="transition: box-shadow 0.2s linear 0s; width:260px; text-align:center; border-radius:0 0 10px 10px; margin:0 auto; margin-left:-140px; left:50%; top:20px; position:absolute; padding:10px; background:white;"><input class="search input" id="q" value="" placeholder="Begin typing to search" type="text" /><button class="btn" type="button" id="cls" onclick="$(this).prev().val(\'\').keypress();" title="Clear search">&times;</button></div>');
-			var q = $('#q').parent(),
-				t = q.offset().top,
-				d = $(document);
-			q.data('fixed', false);
-			d.bind('scroll', function () {
-				if(d.scrollTop() > t) {
-					if(q.data('fixed') === false) {
-						q.css({'position':'fixed', 'top':'0', 'boxShadow':'0 0 5px gray'}).data('fixed', true);
-					}
-				}
-				else {
-					if(q.data('fixed') === true) {
-						q.css({'position':'absolute', 'top':'20px', 'boxShadow':'none'}).data('fixed', false);
-					}
-				}
-			});
-			var to = false;
-			if(document.location.hash && document.location.hash.length) {
-				$('#q').val(document.location.hash.replace(/^#/,''));
-			}
-			var last = false;
-			$('#q').on('keypress', function (e) {
-				//e.preventDefault();
-				if(to) { clearTimeout(to); }
-				to = setTimeout(function () {
-					var s = $.trim($('#q').val().replace(/[^a-z0-9_.\(\)\$]+/i,''));
-					if(s !== last) {
-						$('.alert').remove();
-						$('.selected').removeClass('selected');
-						if(s.length) {
-							var i = $('.docs code:icontains("' + s + '")').addClass('selected').closest('.item'),
-								t = $();
-							
-							i.each(function () {
-								t = t.add($(this));
-								t = t.add($(this).prevAll('h3:eq(0)'));
-							});
-							t.show();
-							$('.item:gt(0), h3').not(t).hide();
-
-							if(t.length == 0) {
-								$('.inner').append('<div class="alert alert-error" style="margin:20px; text-align:center; padding:20px;">No methods or properties matching `' + s + '`</div>');
-								$("html, body").animate({ scrollTop: 0 }, 200);
-							}
-							else {
-								$("html, body").animate({ scrollTop: t.eq(0).offset().top });
-							}
-							$('#cls').prop('disabled', false);
-						}
-						else {
-							$('.item, h3').show();
-							$('#cls').prop('disabled', true);
-							$("html, body").animate({ scrollTop: 0 });
-						}
-						document.location.hash = last = s;
-						$('.last').appendTo(container).show();
-					}
-				}, 500);
-			}).select().keypress();
-			$('pre').each(function () { hljs.highlightBlock(this); });
-		});
-	});
-	</script>
+	<script src="./assets/jquery-1.10.2.min.js"></script>
+	<script src="./assets/jquery.address-1.6.js"></script>
+	<script src="./assets/vakata.js"></script>
+	<script src="./../dist/jstree.min.js"></script>
+	<script src="./assets/docs.js"></script>
 </body>
 </html>

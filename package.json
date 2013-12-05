@@ -2,7 +2,7 @@
   "name": "jstree",
   "title": "jsTree",
   "description": "jQuery tree plugin",
-  "version": "3.0.0-alpha",
+  "version": "3.0.0",
   "homepage": "http://jstree.com",
   "author": {
     "name": "Ivan Bozhanov",
@@ -28,8 +28,9 @@
     "grunt-contrib-uglify": "*",
     "grunt-contrib-jshint": "*",
     "grunt-contrib-concat": "*",
-    "grunt-contrib-copy":   "*",
-    "grunt-contrib-cssmin": "*",
-    "dox": "~0.4.4"
+    "grunt-contrib-copy": "*",
+    "dox": "~0.4.4",
+    "grunt-contrib-less": "~0.8.2",
+    "grunt-contrib-watch": "~0.5.3"
   }
 }
