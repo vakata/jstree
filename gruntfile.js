@@ -147,10 +147,10 @@ module.exports = function(grunt) {
       process: function (contents) {
         contents = contents.replace(/\s*if\(\$\.jstree\.plugins\.[a-z]+\)\s*\{\s*return;\s*\}/ig, '');
         contents = contents.replace(/\/\*globals[^\/]+\//ig, '');
-        contents = contents.replace(/\(function \(factory[\s\S]*?undefined/mig, '(function ($, undefined');
-        contents = contents.replace(/\}\)\);/g, '}(jQuery));');
-        //contents = contents.replace(/\(function \(factory[\s\S]*?undefined[^\n]+/mig, '');
-        //contents = contents.replace(/\}\)\);/g, '');
+        //contents = contents.replace(/\(function \(factory[\s\S]*?undefined/mig, '(function ($, undefined');
+        //contents = contents.replace(/\}\)\);/g, '}(jQuery));');
+        contents = contents.replace(/\(function \(factory[\s\S]*?undefined[^\n]+/mig, '');
+        contents = contents.replace(/\}\)\);/g, '');
         contents = contents.replace(/\s*("|')use strict("|');/g, '');
         return grunt.file.read('src/intro.js') + contents + grunt.file.read('src/outro.js');
       }

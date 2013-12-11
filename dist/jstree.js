@@ -26,8 +26,6 @@
  * jslint: browser: true, ass: true, bitwise: true, continue: true, nomen: true, plusplus: true, regexp: true, unparam: true, todo: true, white: true
  */
 
-(function ($, undefined) {
-
 	// prevent another load? maybe there is a better way?
 	if($.jstree) {
 		return;
@@ -3316,15 +3314,13 @@
 	if($.vakata.browser.msie && $.vakata.browser.version < 8) {
 		$.jstree.defaults.core.animation = 0;
 	}
-}(jQuery));
+
 /**
  * ### Checkbox plugin
  *
  * This plugin renders checkbox icons in front of each node, making multiple selection much easier. 
  * It also supports tri-state behavior, meaning that if a node has a few of its children checked it will be rendered as undetermined, and state will be propagated up.
  */
-
-(function ($, undefined) {
 
 	var _i = document.createElement('I');
 	_i.className = 'jstree-icon jstree-checkbox';
@@ -3651,15 +3647,13 @@
 
 	// include the checkbox plugin by default
 	// $.jstree.defaults.plugins.push("checkbox");
-}(jQuery));
+
 /**
  * ### Contextmenu plugin
  *
  * Shows a context menu when a node is right-clicked.
  */
 // TODO: move logic outside of function + check multiple move
-
-(function ($, undefined) {
 
 	/**
 	 * stores all defaults for the contextmenu plugin
@@ -4183,14 +4177,12 @@
 		});
 	}($));
 	// $.jstree.defaults.plugins.push("contextmenu");
-}(jQuery));
+
 /**
  * ### Drag'n'drop plugin
  *
  * Enables dragging and dropping of nodes in the tree, resulting in a move or copy operations.
  */
-
-(function ($, undefined) {
 
 	/**
 	 * stores all defaults for the drag'n'drop plugin
@@ -4561,15 +4553,13 @@
 
 	// include the dnd plugin by default
 	// $.jstree.defaults.plugins.push("dnd");
-}(jQuery));
+
 
 /**
  * ### Search plugin
  *
  * Adds search functionality to jsTree.
  */
-
-(function ($, undefined) {
 
 	/**
 	 * stores all defaults for the search plugin
@@ -4881,14 +4871,12 @@
 
 	// include the search plugin by default
 	// $.jstree.defaults.plugins.push("search");
-}(jQuery));
+
 /**
  * ### Sort plugin
  *
  * Autmatically sorts all siblings in the tree according to a sorting function.
  */
-
-(function ($, undefined) {
 
 	/**
 	 * the settings function used to sort the nodes.
@@ -4941,14 +4929,12 @@
 
 	// include the sort plugin by default
 	// $.jstree.defaults.plugins.push("sort");
-}(jQuery));
+
 /**
  * ### State plugin
  *
  * Saves the state of the tree (selected nodes, opened nodes) on the user's computer using available options (localStorage, cookies, etc)
  */
-
-(function ($, undefined) {
 
 	var to = false;
 	/**
@@ -5456,14 +5442,12 @@
 
 	// include the state plugin by default
 	// $.jstree.defaults.plugins.push("state");
-}(jQuery));
+
 /**
  * ### Types plugin
  *
  * Makes it possible to add predefined types for groups of nodes, which make it possible to easily control nesting rules and icon for each group.
  */
-
-(function ($, undefined) {
 
 	/**
 	 * An object storing all types as key value pairs, where the key is the type name and the value is an object that could contain following keys (all optional).
@@ -5607,14 +5591,12 @@
 	};
 	// include the types plugin by default
 	// $.jstree.defaults.plugins.push("types");
-}(jQuery));
+
 /**
  * ### Unique plugin
  *
  * Enforces that no nodes with the same name can coexist as siblings.
  */
-
-(function ($, undefined) {
 
 	$.jstree.plugins.unique = function (options, parent) {
 		this.check = function (chk, obj, par, pos) {
@@ -5643,15 +5625,13 @@
 
 	// include the unique plugin by default
 	// $.jstree.defaults.plugins.push("unique");
-}(jQuery));
+
 
 /**
  * ### Wholerow plugin
  *
  * Makes each node appear block level. Making selection easier. May cause slow down for large trees in old browsers.
  */
-
-(function ($, undefined) {
 
 	var div = document.createElement('DIV');
 	div.setAttribute('unselectable','on');
@@ -5742,5 +5722,5 @@
 	};
 	// include the wholerow plugin by default
 	// $.jstree.defaults.plugins.push("wholerow");
-}(jQuery));
+
 }));
