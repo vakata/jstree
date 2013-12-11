@@ -60,7 +60,9 @@ pre code strong { color:#000; }
 .list-group-item-text { color:#666; }
 pre .point { display:inline-block; border-radius:5px; width:100%; padding:5px 0; }
 
-#jstree1, #jstree2 { max-width:100%; overflow:auto; font:10px Verdana, sans-serif; box-shadow:0 0 5px #ccc; padding:10px; border-radius:5px; }
+#jstree1, #jstree2, .demo { max-width:100%; overflow:auto; font:10px Verdana, sans-serif; box-shadow:0 0 5px #ccc; padding:10px; border-radius:5px; }
+
+#plugins .demo, #plugins pre { min-height:200px; }
 
 #no_res { text-align:center; border:0 !important; }
 @media (max-width: 740px) {

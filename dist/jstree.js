@@ -255,7 +255,7 @@
 		 * It is possible to pass in a standard jQuery-like AJAX config and jstree will automatically determine if the response is JSON or HTML and use that to populate the tree. 
 		 * In addition to the standard jQuery ajax options here you can suppy functions for `data` and `url`, the functions will be run in the current instance's scope and a param will be passed indicating which node is being loaded, the return value of those functions will be used.
 		 * 
-		 * The last option is to speciry a function, that function will receive the node being loaded as argument and a second param which is a function which should be called with the result.
+		 * The last option is to specify a function, that function will receive the node being loaded as argument and a second param which is a function which should be called with the result.
 		 *
 		 * __Examples__
 		 *
@@ -1264,7 +1264,7 @@
 			return data.id;
 		},
 		/**
-		 * parses a node from a JSON object (used when dealing with flat data, which has no nesting of children, but has id and parent_id properties) and appends it to the in memory tree model. Used internally.
+		 * parses a node from a JSON object (used when dealing with flat data, which has no nesting of children, but has id and parent properties) and appends it to the in memory tree model. Used internally.
 		 * @private
 		 * @name _parse_model_from_flat_json(d [, p, ps])
 		 * @param  {Object} d the JSON object to parse
@@ -1967,16 +1967,41 @@
 			if(this.is_disabled(obj)) {
 				return false;
 			}
-			if(!this.settings.core.multiple || (!e.metaKey && !e.ctrlKey)) {
+			if(!this.settings.core.multiple || (!e.metaKey && !e.ctrlKey && !e.shiftKey) || (e.shiftKey && (!this._data.core.last_clicked || !this.get_parent(obj) || this.get_parent(obj) !== this._data.core.last_clicked.parent ) )) {
 				this.deselect_all(true);
 				this.select_node(obj);
+				this._data.core.last_clicked = this.get_node(obj);
 			}
 			else {
-				if(!this.is_selected(obj)) {
-					this.select_node(obj);
+				if(e.shiftKey) {
+					var o = this.get_node(obj).id,
+						l = this._data.core.last_clicked.id,
+						p = this.get_node(this._data.core.last_clicked.parent).children,
+						c = false,
+						i, j;
+					for(i = 0, j = p.length; i < j; i += 1) {
+						// separate IFs work whem o and l are the same
+						if(p[i] === o) {
+							c = !c;
+						}
+						if(p[i] === l) {
+							c = !c;
+						}
+						if(c || p[i] === o || p[i] === l) {
+							this.select_node(p[i]);
+						}
+						else {
+							this.deselect_node(p[i]);
+						}
+					}
 				}
 				else {
-					this.deselect_node(obj);
+					if(!this.is_selected(obj)) {
+						this.select_node(obj);
+					}
+					else {
+						this.deselect_node(obj);
+					}
 				}
 			}
 			/**
@@ -2685,7 +2710,6 @@
 			}
 			if(pos > new_par.children.length) { pos = new_par.children.length; }
 			if(!this.check("move_node", obj, new_par, pos)) { return false; }
-
 			if(!is_multi && obj.parent === new_par.id) {
 				dpc = new_par.children.concat();
 				tmp = $.inArray(obj.id, dpc);
@@ -3297,9 +3321,8 @@
  * ### Checkbox plugin
  *
  * This plugin renders checkbox icons in front of each node, making multiple selection much easier. 
- * It also supports tri-state behavior, meaning that if a node has a few of it's children checked it will be rendered as undetermined, and state will be propagated up.
+ * It also supports tri-state behavior, meaning that if a node has a few of its children checked it will be rendered as undetermined, and state will be propagated up.
  */
-// TODO: undetermined state from the server
 
 (function ($, undefined) {
 
@@ -3559,15 +3582,25 @@
 		 * @plugin checkbox
 		 */
 		this._undetermined = function () {
-			var i, j, m = this._model.data, s = this._data.core.selected, p = [];
+			var i, j, m = this._model.data, s = this._data.core.selected, p = [], t = this;
 			for(i = 0, j = s.length; i < j; i++) {
 				p = p.concat(m[s[i]].parents);
 			}
+			// attempt for server side undetermined state
+			this.element.find('.jstree-closed').not(':has(ul)')
+				.each(function () {
+					var tmp = t.get_node(this);
+					if(!tmp.state.loaded && tmp.original.state.undetermined === true) {
+						p.push(tmp.id);
+						p = p.concat(tmp.parents);
+					}
+				});
 			p = $.vakata.array_unique(p);
 			i = $.inArray('#', p);
 			if(i !== -1) {
 				p = $.vakata.array_remove(p, i);
 			}
+
 			this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
 			for(i = 0, j = p.length; i < j; i++) {
 				if(!m[p[i]].state.selected) {
@@ -4190,7 +4223,7 @@
 						mlt = this.is_selected(obj) ? this.get_selected().length : 1;
 					if(obj && obj.id && obj.id !== "#" && e.which === 1) {
 						this.element.trigger('mousedown.jstree');
-						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_selected() : [obj] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + '"><i class="jstree-icon jstree-er"></i>' + (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget, true)) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
+						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_selected() : [obj.id] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + '"><i class="jstree-icon jstree-er"></i>' + (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget, true)) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
 					}
 				}, this));
 		};
@@ -4219,7 +4252,7 @@
 					ref = false,
 					off = false,
 					rel = false,
-					l, t, h, p, i, o, ok, t1, t2;
+					l, t, h, p, i, o, ok, t1, t2, op, ps, pr;
 				// if we are over an instance
 				if(ins && ins._data && ins._data.dnd) {
 					marker.attr('class', 'jstree-' + ins.get_theme());
@@ -4229,7 +4262,7 @@
 
 
 					// if are hovering the container itself add a new root node
-					if(data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) {
+					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && ins.get_container_ul().children().length === 0) {
 						ok = true;
 						for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
 							ok = ok && ins.check( (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"), data.data.nodes[t1], '#', 'last');
@@ -4286,7 +4319,15 @@
 								*/
 								ok = true;
 								for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
-									ok = ok && ins.check(( data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"),data.data.nodes[t1], p, i);
+									op = data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node";
+									ps = i;
+									if(op === "move_node" && v === 'a' && data.data.origin === ins && p === ins.get_parent(data.data.nodes[t1])) {
+										pr = ins.get_node(p);
+										if(ps > $.inArray(data.data.nodes[t1], pr.children)) {
+											ps -= 1;
+										}
+									}
+									ok = ok && ins.check(op, data.data.nodes[t1], p, ps);
 									if(!ok) { break; }
 								}
 								if(ok) {

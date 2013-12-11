@@ -1262,7 +1262,7 @@
 			return data.id;
 		},
 		/**
-		 * parses a node from a JSON object (used when dealing with flat data, which has no nesting of children, but has id and parent_id properties) and appends it to the in memory tree model. Used internally.
+		 * parses a node from a JSON object (used when dealing with flat data, which has no nesting of children, but has id and parent properties) and appends it to the in memory tree model. Used internally.
 		 * @private
 		 * @name _parse_model_from_flat_json(d [, p, ps])
 		 * @param  {Object} d the JSON object to parse
@@ -1965,16 +1965,41 @@
 			if(this.is_disabled(obj)) {
 				return false;
 			}
-			if(!this.settings.core.multiple || (!e.metaKey && !e.ctrlKey)) {
+			if(!this.settings.core.multiple || (!e.metaKey && !e.ctrlKey && !e.shiftKey) || (e.shiftKey && (!this._data.core.last_clicked || !this.get_parent(obj) || this.get_parent(obj) !== this._data.core.last_clicked.parent ) )) {
 				this.deselect_all(true);
 				this.select_node(obj);
+				this._data.core.last_clicked = this.get_node(obj);
 			}
 			else {
-				if(!this.is_selected(obj)) {
-					this.select_node(obj);
+				if(e.shiftKey) {
+					var o = this.get_node(obj).id,
+						l = this._data.core.last_clicked.id,
+						p = this.get_node(this._data.core.last_clicked.parent).children,
+						c = false,
+						i, j;
+					for(i = 0, j = p.length; i < j; i += 1) {
+						// separate IFs work whem o and l are the same
+						if(p[i] === o) {
+							c = !c;
+						}
+						if(p[i] === l) {
+							c = !c;
+						}
+						if(c || p[i] === o || p[i] === l) {
+							this.select_node(p[i]);
+						}
+						else {
+							this.deselect_node(p[i]);
+						}
+					}
 				}
 				else {
-					this.deselect_node(obj);
+					if(!this.is_selected(obj)) {
+						this.select_node(obj);
+					}
+					else {
+						this.deselect_node(obj);
+					}
 				}
 			}
 			/**
@@ -2683,7 +2708,6 @@
 			}
 			if(pos > new_par.children.length) { pos = new_par.children.length; }
 			if(!this.check("move_node", obj, new_par, pos)) { return false; }
-
 			if(!is_multi && obj.parent === new_par.id) {
 				dpc = new_par.children.concat();
 				tmp = $.inArray(obj.id, dpc);

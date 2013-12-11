@@ -2,9 +2,8 @@
  * ### Checkbox plugin
  *
  * This plugin renders checkbox icons in front of each node, making multiple selection much easier. 
- * It also supports tri-state behavior, meaning that if a node has a few of it's children checked it will be rendered as undetermined, and state will be propagated up.
+ * It also supports tri-state behavior, meaning that if a node has a few of its children checked it will be rendered as undetermined, and state will be propagated up.
  */
-// TODO: undetermined state from the server
 /*globals jQuery, define, exports, require, document */
 (function (factory) {
 	"use strict";
@@ -278,15 +277,25 @@
 		 * @plugin checkbox
 		 */
 		this._undetermined = function () {
-			var i, j, m = this._model.data, s = this._data.core.selected, p = [];
+			var i, j, m = this._model.data, s = this._data.core.selected, p = [], t = this;
 			for(i = 0, j = s.length; i < j; i++) {
 				p = p.concat(m[s[i]].parents);
 			}
+			// attempt for server side undetermined state
+			this.element.find('.jstree-closed').not(':has(ul)')
+				.each(function () {
+					var tmp = t.get_node(this);
+					if(!tmp.state.loaded && tmp.original.state.undetermined === true) {
+						p.push(tmp.id);
+						p = p.concat(tmp.parents);
+					}
+				});
 			p = $.vakata.array_unique(p);
 			i = $.inArray('#', p);
 			if(i !== -1) {
 				p = $.vakata.array_remove(p, i);
 			}
+
 			this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
 			for(i = 0, j = p.length; i < j; i++) {
 				if(!m[p[i]].state.selected) {

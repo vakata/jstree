@@ -3,22 +3,16 @@
 .jstree-children,
 .jstree-container-ul {
   display: block;
-  margin: 0 0 0 0;
-  padding: 0 0 0 0;
+  margin: 0;
+  padding: 0;
   list-style-type: none;
   list-style-image: none;
 }
 .jstree-node {
-  min-height: 18px;
-  line-height: 18px;
-  margin-left: 18px;
-  min-width: 18px;
   white-space: nowrap;
 }
 .jstree-anchor {
   display: inline-block;
-  line-height: 18px;
-  height: 18px;
   color: black;
   white-space: nowrap;
   padding: 0 4px 0 1px;
@@ -38,18 +32,12 @@
 }
 .jstree-icon,
 .jstree-icon:empty {
-  width: 18px;
-  height: 18px;
-  line-height: 18px;
   display: inline-block;
   text-decoration: none;
   margin: 0;
   padding: 0;
   vertical-align: top;
   text-align: center;
-}
-.jstree-container-ul > .jstree-node {
-  margin-left: 0;
 }
 .jstree-ocl {
   cursor: pointer;
@@ -77,7 +65,6 @@
 }
 .jstree-rtl .jstree-node {
   margin-left: 0;
-  margin-right: 18px;
 }
 .jstree-rtl .jstree-container-ul > .jstree-node {
   margin-right: 0;
@@ -278,31 +265,9 @@
   margin: 0 2px 0 2px;
 }
 .jstree-default .jstree-node,
-.jstree-default .jstree-icon,
-#jstree-dnd.jstree-default .jstree-ok,
-#jstree-dnd.jstree-default .jstree-er {
-  background-image: url("18px.png");
+.jstree-default .jstree-icon {
   background-repeat: no-repeat;
   background-color: transparent;
-}
-.jstree-default .jstree-node {
-  background-position: -162px 0;
-  background-repeat: repeat-y;
-}
-.jstree-default .jstree-last {
-  background: transparent;
-}
-.jstree-default .jstree-open > .jstree-ocl {
-  background-position: -72px 0;
-}
-.jstree-default .jstree-closed > .jstree-ocl {
-  background-position: -54px 0;
-}
-.jstree-default .jstree-leaf > .jstree-ocl {
-  background-position: -36px 0;
-}
-.jstree-default .jstree-loading > .jstree-ocl {
-  background: url("throbber.gif") center center no-repeat;
 }
 .jstree-default .jstree-anchor,
 .jstree-default .jstree-wholerow {
@@ -317,19 +282,6 @@
   background: #beebff;
   border-radius: 2px;
   box-shadow: inset 0 0 1px #999;
-}
-.jstree-default .jstree-anchor > .jstree-themeicon {
-  background-position: -144px 0;
-}
-.jstree-default > .jstree-no-dots .jstree-node,
-.jstree-default > .jstree-no-dots .jstree-leaf > .jstree-ocl {
-  background: transparent;
-}
-.jstree-default > .jstree-no-dots .jstree-open > .jstree-ocl {
-  background-position: -18px 0;
-}
-.jstree-default > .jstree-no-dots .jstree-closed > .jstree-ocl {
-  background-position: 0 0;
 }
 .jstree-default .jstree-no-icons .jstree-anchor > .jstree-themeicon {
   display: none;
@@ -362,18 +314,6 @@
 .jstree-default .jstree-no-checkboxes .jstree-checkbox {
   display: none !important;
 }
-.jstree-default .jstree-checkbox {
-  background-position: -90px 0;
-}
-.jstree-default .jstree-checkbox:hover {
-  background-position: -90px -18px;
-}
-.jstree-default .jstree-clicked > .jstree-checkbox {
-  background-position: -126px 0;
-}
-.jstree-default .jstree-clicked > .jstree-checkbox:hover {
-  background-position: -126px -18px;
-}
 .jstree-default.jstree-checkbox-no-clicked .jstree-clicked {
   background: transparent;
   box-shadow: none;
@@ -387,20 +327,22 @@
 .jstree-default.jstree-checkbox-no-clicked > .jstree-wholerow-ul .jstree-wholerow-clicked.jstree-wholerow-hovered {
   background: #e7f4f9;
 }
-.jstree-default .jstree-anchor > .jstree-undetermined {
-  background-position: -108px 0;
-}
-.jstree-default .jstree-anchor > .jstree-undetermined:hover {
-  background-position: -108px -18px;
+#jstree-dnd.jstree-default .jstree-ok,
+#jstree-dnd.jstree-default .jstree-er {
+  background-image: url("32px.png");
+  background-repeat: no-repeat;
+  background-color: transparent;
 }
 #jstree-dnd.jstree-default i {
   background: transparent;
+  width: 16px;
+  height: 16px;
 }
 #jstree-dnd.jstree-default .jstree-ok {
-  background-position: -164px -36px;
+  background-position: -9px -71px;
 }
 #jstree-dnd.jstree-default .jstree-er {
-  background-position: -18px -36px;
+  background-position: -39px -71px;
 }
 .jstree-default > .jstree-striped {
   background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAMAAAB/qqA+AAAABlBMVEUAAAAAAAClZ7nPAAAAAnRSTlMNAMM9s3UAAAAXSURBVHjajcEBAQAAAIKg/H/aCQZ70AUBjAATb6YPDgAAAABJRU5ErkJggg==") left top repeat;
@@ -415,7 +357,6 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  height: 18px;
 }
 .jstree-default .jstree-wholerow-hovered {
   background: #e7f4f9;
@@ -430,96 +371,307 @@
   background: linear-gradient(to bottom, #beebff 0%, #a8e4ff 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@color1', endColorstr='@color2', GradientType=0);
 }
-.jstree-rtl.jstree-default .jstree-node {
-  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAACAQMAAABv1h6PAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMHBgAAiABBI4gz9AAAAABJRU5ErkJggg==");
-  background-position: 100% 0px;
-}
-.jstree-rtl.jstree-default .jstree-last {
-  background: transparent;
-}
-.jstree-rtl.jstree-default .jstree-open > .jstree-ocl {
-  background-position: -72px -18px;
-}
-.jstree-rtl.jstree-default .jstree-closed > .jstree-ocl {
-  background-position: -54px -18px;
-}
-.jstree-rtl.jstree-default .jstree-leaf > .jstree-ocl {
-  background-position: -36px -18px;
-}
-.jstree-rtl.jstree-default > .jstree-no-dots .jstree-node,
-.jstree-rtl.jstree-default > .jstree-no-dots .jstree-leaf > .jstree-ocl {
-  background: transparent;
-}
-.jstree-rtl.jstree-default > .jstree-no-dots .jstree-open > .jstree-ocl {
-  background-position: -18px -18px;
-}
-.jstree-rtl.jstree-default > .jstree-no-dots .jstree-closed > .jstree-ocl {
-  background-position: 0 -18px;
-}
-.jstree-default .jstree-themeicon-custom {
-  background-color: transparent;
-  background-image: none;
-}
-.jstree-default-large .jstree-node {
+.jstree-default .jstree-node {
   min-height: 24px;
   line-height: 24px;
   margin-left: 24px;
   min-width: 24px;
 }
-.jstree-default-large .jstree-anchor {
+.jstree-default .jstree-anchor {
   line-height: 24px;
   height: 24px;
 }
-.jstree-default-large .jstree-icon,
-.jstree-default-large .jstree-icon:empty {
+.jstree-default .jstree-icon,
+.jstree-default .jstree-icon:empty {
   width: 24px;
   height: 24px;
   line-height: 24px;
 }
-.jstree-default-large.jstree-rtl .jstree-node {
+.jstree-default.jstree-rtl .jstree-node {
   margin-right: 24px;
+}
+.jstree-default .jstree-wholerow {
+  height: 24px;
+}
+.jstree-default .jstree-node,
+.jstree-default .jstree-icon {
+  background-image: url("32px.png");
+}
+.jstree-default .jstree-node {
+  background-position: -292px -4px;
+  background-repeat: repeat-y;
+}
+.jstree-default .jstree-last {
+  background: transparent;
+}
+.jstree-default .jstree-open > .jstree-ocl {
+  background-position: -132px -4px;
+}
+.jstree-default .jstree-closed > .jstree-ocl {
+  background-position: -100px -4px;
+}
+.jstree-default .jstree-leaf > .jstree-ocl {
+  background-position: -68px -4px;
+}
+.jstree-default .jstree-loading > .jstree-ocl {
+  background: url("throbber.gif") center center no-repeat;
+}
+.jstree-default .jstree-anchor > .jstree-themeicon {
+  background-position: -260px -4px;
+}
+.jstree-default > .jstree-no-dots .jstree-node,
+.jstree-default > .jstree-no-dots .jstree-leaf > .jstree-ocl {
+  background: transparent;
+}
+.jstree-default > .jstree-no-dots .jstree-open > .jstree-ocl {
+  background-position: -36px -4px;
+}
+.jstree-default > .jstree-no-dots .jstree-closed > .jstree-ocl {
+  background-position: -4px -4px;
+}
+.jstree-default .jstree-disabled {
+  background: transparent;
+}
+.jstree-default .jstree-disabled.jstree-hovered {
+  background: transparent;
+}
+.jstree-default .jstree-disabled.jstree-clicked {
+  background: #efefef;
+}
+.jstree-default .jstree-checkbox {
+  background-position: -164px -4px;
+}
+.jstree-default .jstree-checkbox:hover {
+  background-position: -164px -36px;
+}
+.jstree-default .jstree-clicked > .jstree-checkbox {
+  background-position: -228px -4px;
+}
+.jstree-default .jstree-clicked > .jstree-checkbox:hover {
+  background-position: -228px -36px;
+}
+.jstree-default .jstree-anchor > .jstree-undetermined {
+  background-position: -196px -4px;
+}
+.jstree-default .jstree-anchor > .jstree-undetermined:hover {
+  background-position: -196px -36px;
+}
+.jstree-default > .jstree-striped {
+  background-size: auto 48px;
+}
+.jstree-default.jstree-rtl .jstree-node {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
+  background-position: 100% 1px;
+}
+.jstree-default.jstree-rtl .jstree-last {
+  background: transparent;
+}
+.jstree-default.jstree-rtl .jstree-open > .jstree-ocl {
+  background-position: -132px -36px;
+}
+.jstree-default.jstree-rtl .jstree-closed > .jstree-ocl {
+  background-position: -100px -36px;
+}
+.jstree-default.jstree-rtl .jstree-leaf > .jstree-ocl {
+  background-position: -68px -36px;
+}
+.jstree-default.jstree-rtl > .jstree-no-dots .jstree-node,
+.jstree-default.jstree-rtl > .jstree-no-dots .jstree-leaf > .jstree-ocl {
+  background: transparent;
+}
+.jstree-default.jstree-rtl > .jstree-no-dots .jstree-open > .jstree-ocl {
+  background-position: -36px -36px;
+}
+.jstree-default.jstree-rtl > .jstree-no-dots .jstree-closed > .jstree-ocl {
+  background-position: -4px -36px;
+}
+.jstree-default .jstree-themeicon-custom {
+  background-color: transparent;
+  background-image: none;
+}
+.jstree-default.jstree-rtl .jstree-node {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
+  background-position: 100% 1px;
+}
+.jstree-default-small .jstree-node {
+  min-height: 18px;
+  line-height: 18px;
+  margin-left: 18px;
+  min-width: 18px;
+}
+.jstree-default-small .jstree-anchor {
+  line-height: 18px;
+  height: 18px;
+}
+.jstree-default-small .jstree-icon,
+.jstree-default-small .jstree-icon:empty {
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+}
+.jstree-default-small.jstree-rtl .jstree-node {
+  margin-right: 18px;
+}
+.jstree-default-small .jstree-wholerow {
+  height: 18px;
+}
+.jstree-default-small .jstree-node,
+.jstree-default-small .jstree-icon {
+  background-image: url("32px.png");
+}
+.jstree-default-small .jstree-node {
+  background-position: -295px -7px;
+  background-repeat: repeat-y;
+}
+.jstree-default-small .jstree-last {
+  background: transparent;
+}
+.jstree-default-small .jstree-open > .jstree-ocl {
+  background-position: -135px -7px;
+}
+.jstree-default-small .jstree-closed > .jstree-ocl {
+  background-position: -103px -7px;
+}
+.jstree-default-small .jstree-leaf > .jstree-ocl {
+  background-position: -71px -7px;
+}
+.jstree-default-small .jstree-loading > .jstree-ocl {
+  background: url("throbber.gif") center center no-repeat;
+}
+.jstree-default-small .jstree-anchor > .jstree-themeicon {
+  background-position: -263px -7px;
+}
+.jstree-default-small > .jstree-no-dots .jstree-node,
+.jstree-default-small > .jstree-no-dots .jstree-leaf > .jstree-ocl {
+  background: transparent;
+}
+.jstree-default-small > .jstree-no-dots .jstree-open > .jstree-ocl {
+  background-position: -39px -7px;
+}
+.jstree-default-small > .jstree-no-dots .jstree-closed > .jstree-ocl {
+  background-position: -7px -7px;
+}
+.jstree-default-small .jstree-disabled {
+  background: transparent;
+}
+.jstree-default-small .jstree-disabled.jstree-hovered {
+  background: transparent;
+}
+.jstree-default-small .jstree-disabled.jstree-clicked {
+  background: #efefef;
+}
+.jstree-default-small .jstree-checkbox {
+  background-position: -167px -7px;
+}
+.jstree-default-small .jstree-checkbox:hover {
+  background-position: -167px -39px;
+}
+.jstree-default-small .jstree-clicked > .jstree-checkbox {
+  background-position: -231px -7px;
+}
+.jstree-default-small .jstree-clicked > .jstree-checkbox:hover {
+  background-position: -231px -39px;
+}
+.jstree-default-small .jstree-anchor > .jstree-undetermined {
+  background-position: -199px -7px;
+}
+.jstree-default-small .jstree-anchor > .jstree-undetermined:hover {
+  background-position: -199px -39px;
+}
+.jstree-default-small > .jstree-striped {
+  background-size: auto 36px;
+}
+.jstree-default-small.jstree-rtl .jstree-node {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
+  background-position: 100% 1px;
+}
+.jstree-default-small.jstree-rtl .jstree-last {
+  background: transparent;
+}
+.jstree-default-small.jstree-rtl .jstree-open > .jstree-ocl {
+  background-position: -135px -39px;
+}
+.jstree-default-small.jstree-rtl .jstree-closed > .jstree-ocl {
+  background-position: -103px -39px;
+}
+.jstree-default-small.jstree-rtl .jstree-leaf > .jstree-ocl {
+  background-position: -71px -39px;
+}
+.jstree-default-small.jstree-rtl > .jstree-no-dots .jstree-node,
+.jstree-default-small.jstree-rtl > .jstree-no-dots .jstree-leaf > .jstree-ocl {
+  background: transparent;
+}
+.jstree-default-small.jstree-rtl > .jstree-no-dots .jstree-open > .jstree-ocl {
+  background-position: -39px -39px;
+}
+.jstree-default-small.jstree-rtl > .jstree-no-dots .jstree-closed > .jstree-ocl {
+  background-position: -7px -39px;
+}
+.jstree-default-small .jstree-themeicon-custom {
+  background-color: transparent;
+  background-image: none;
+}
+.jstree-default-small.jstree-rtl .jstree-node {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAACAQMAAABv1h6PAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMHBgAAiABBI4gz9AAAAABJRU5ErkJggg==");
+  background-position: 100% 0px;
+}
+.jstree-default-large .jstree-node {
+  min-height: 32px;
+  line-height: 32px;
+  margin-left: 32px;
+  min-width: 32px;
+}
+.jstree-default-large .jstree-anchor {
+  line-height: 32px;
+  height: 32px;
+}
+.jstree-default-large .jstree-icon,
+.jstree-default-large .jstree-icon:empty {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+.jstree-default-large.jstree-rtl .jstree-node {
+  margin-right: 32px;
+}
+.jstree-default-large .jstree-wholerow {
+  height: 32px;
 }
 .jstree-default-large .jstree-node,
 .jstree-default-large .jstree-icon {
-  background-image: url("24px.png");
+  background-image: url("32px.png");
 }
 .jstree-default-large .jstree-node {
-  background-position: -216px 0;
-}
-.jstree-default-large .jstree-last {
-  background: transparent;
-}
-.jstree-default-large .jstree-node {
-  background-position: -216px 0;
+  background-position: -288px 0px;
   background-repeat: repeat-y;
 }
 .jstree-default-large .jstree-last {
   background: transparent;
 }
 .jstree-default-large .jstree-open > .jstree-ocl {
-  background-position: -96px 0;
+  background-position: -128px 0px;
 }
 .jstree-default-large .jstree-closed > .jstree-ocl {
-  background-position: -72px 0;
+  background-position: -96px 0px;
 }
 .jstree-default-large .jstree-leaf > .jstree-ocl {
-  background-position: -48px 0;
+  background-position: -64px 0px;
 }
 .jstree-default-large .jstree-loading > .jstree-ocl {
   background: url("throbber.gif") center center no-repeat;
 }
 .jstree-default-large .jstree-anchor > .jstree-themeicon {
-  background-position: -192px 0;
+  background-position: -256px 0px;
 }
 .jstree-default-large > .jstree-no-dots .jstree-node,
 .jstree-default-large > .jstree-no-dots .jstree-leaf > .jstree-ocl {
   background: transparent;
 }
 .jstree-default-large > .jstree-no-dots .jstree-open > .jstree-ocl {
-  background-position: -24px 0;
+  background-position: -32px 0px;
 }
 .jstree-default-large > .jstree-no-dots .jstree-closed > .jstree-ocl {
-  background-position: 0 0;
+  background-position: 0px 0px;
 }
 .jstree-default-large .jstree-disabled {
   background: transparent;
@@ -531,25 +683,25 @@
   background: #efefef;
 }
 .jstree-default-large .jstree-checkbox {
-  background-position: -120px 0;
+  background-position: -160px 0px;
 }
 .jstree-default-large .jstree-checkbox:hover {
-  background-position: -120px -24px;
+  background-position: -160px -32px;
 }
 .jstree-default-large .jstree-clicked > .jstree-checkbox {
-  background-position: -168px 0;
+  background-position: -224px 0px;
 }
 .jstree-default-large .jstree-clicked > .jstree-checkbox:hover {
-  background-position: -168px -24px;
+  background-position: -224px -32px;
 }
 .jstree-default-large .jstree-anchor > .jstree-undetermined {
-  background-position: -144px 0;
+  background-position: -192px 0px;
 }
 .jstree-default-large .jstree-anchor > .jstree-undetermined:hover {
-  background-position: -144px -24px;
+  background-position: -192px -32px;
 }
 .jstree-default-large > .jstree-striped {
-  background-size: auto 48px;
+  background-size: auto 64px;
 }
 .jstree-default-large.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
@@ -559,154 +711,31 @@
   background: transparent;
 }
 .jstree-default-large.jstree-rtl .jstree-open > .jstree-ocl {
-  background-position: -96px -24px;
+  background-position: -128px -32px;
 }
 .jstree-default-large.jstree-rtl .jstree-closed > .jstree-ocl {
-  background-position: -72px -24px;
+  background-position: -96px -32px;
 }
 .jstree-default-large.jstree-rtl .jstree-leaf > .jstree-ocl {
-  background-position: -48px -24px;
+  background-position: -64px -32px;
 }
 .jstree-default-large.jstree-rtl > .jstree-no-dots .jstree-node,
 .jstree-default-large.jstree-rtl > .jstree-no-dots .jstree-leaf > .jstree-ocl {
   background: transparent;
 }
 .jstree-default-large.jstree-rtl > .jstree-no-dots .jstree-open > .jstree-ocl {
-  background-position: -24px -24px;
+  background-position: -32px -32px;
 }
 .jstree-default-large.jstree-rtl > .jstree-no-dots .jstree-closed > .jstree-ocl {
-  background-position: 0 -24px;
-}
-.jstree-default-large .jstree-wholerow {
-  height: 24px;
+  background-position: 0px -32px;
 }
 .jstree-default-large .jstree-themeicon-custom {
   background-color: transparent;
   background-image: none;
 }
-.jstree-default-xlarge .jstree-node {
-  min-height: 32px;
-  line-height: 32px;
-  margin-left: 32px;
-  min-width: 32px;
-}
-.jstree-default-xlarge .jstree-anchor {
-  line-height: 32px;
-  height: 32px;
-}
-.jstree-default-xlarge .jstree-icon,
-.jstree-default-xlarge .jstree-icon:empty {
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
-}
-.jstree-default-xlarge.jstree-rtl .jstree-node {
-  margin-right: 32px;
-}
-.jstree-default-xlarge .jstree-node,
-.jstree-default-xlarge .jstree-icon {
-  background-image: url("32px.png");
-}
-.jstree-default-xlarge .jstree-node {
-  background-position: -288px 0;
-}
-.jstree-default-xlarge .jstree-last {
-  background: transparent;
-}
-.jstree-default-xlarge .jstree-node {
-  background-position: -288px 0;
-  background-repeat: repeat-y;
-}
-.jstree-default-xlarge .jstree-last {
-  background: transparent;
-}
-.jstree-default-xlarge .jstree-open > .jstree-ocl {
-  background-position: -128px 0;
-}
-.jstree-default-xlarge .jstree-closed > .jstree-ocl {
-  background-position: -96px 0;
-}
-.jstree-default-xlarge .jstree-leaf > .jstree-ocl {
-  background-position: -64px 0;
-}
-.jstree-default-xlarge .jstree-loading > .jstree-ocl {
-  background: url("throbber.gif") center center no-repeat;
-}
-.jstree-default-xlarge .jstree-anchor > .jstree-themeicon {
-  background-position: -256px 0;
-}
-.jstree-default-xlarge > .jstree-no-dots .jstree-node,
-.jstree-default-xlarge > .jstree-no-dots .jstree-leaf > .jstree-ocl {
-  background: transparent;
-}
-.jstree-default-xlarge > .jstree-no-dots .jstree-open > .jstree-ocl {
-  background-position: -32px 0;
-}
-.jstree-default-xlarge > .jstree-no-dots .jstree-closed > .jstree-ocl {
-  background-position: 0 0;
-}
-.jstree-default-xlarge .jstree-disabled {
-  background: transparent;
-}
-.jstree-default-xlarge .jstree-disabled.jstree-hovered {
-  background: transparent;
-}
-.jstree-default-xlarge .jstree-disabled.jstree-clicked {
-  background: #efefef;
-}
-.jstree-default-xlarge .jstree-checkbox {
-  background-position: -160px 0;
-}
-.jstree-default-xlarge .jstree-checkbox:hover {
-  background-position: -160px -32px;
-}
-.jstree-default-xlarge .jstree-clicked > .jstree-checkbox {
-  background-position: -224px 0;
-}
-.jstree-default-xlarge .jstree-clicked > .jstree-checkbox:hover {
-  background-position: -224px -32px;
-}
-.jstree-default-xlarge .jstree-anchor > .jstree-undetermined {
-  background-position: -192px 0;
-}
-.jstree-default-xlarge .jstree-anchor > .jstree-undetermined:hover {
-  background-position: -192px -32px;
-}
-.jstree-default-xlarge > .jstree-striped {
-  background-size: auto 64px;
-}
-.jstree-default-xlarge.jstree-rtl .jstree-node {
+.jstree-default-large.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAACAQMAAAAD0EyKAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjgIIGBgABCgCBvVLXcAAAAABJRU5ErkJggg==");
   background-position: 100% 1px;
-}
-.jstree-default-xlarge.jstree-rtl .jstree-last {
-  background: transparent;
-}
-.jstree-default-xlarge.jstree-rtl .jstree-open > .jstree-ocl {
-  background-position: -128px -32px;
-}
-.jstree-default-xlarge.jstree-rtl .jstree-closed > .jstree-ocl {
-  background-position: -96px -32px;
-}
-.jstree-default-xlarge.jstree-rtl .jstree-leaf > .jstree-ocl {
-  background-position: -64px -32px;
-}
-.jstree-default-xlarge.jstree-rtl > .jstree-no-dots .jstree-node,
-.jstree-default-xlarge.jstree-rtl > .jstree-no-dots .jstree-leaf > .jstree-ocl {
-  background: transparent;
-}
-.jstree-default-xlarge.jstree-rtl > .jstree-no-dots .jstree-open > .jstree-ocl {
-  background-position: -32px -32px;
-}
-.jstree-default-xlarge.jstree-rtl > .jstree-no-dots .jstree-closed > .jstree-ocl {
-  background-position: 0 -32px;
-}
-.jstree-default-xlarge .jstree-wholerow {
-  height: 32px;
-}
-.jstree-default-xlarge .jstree-themeicon-custom {
-  background-color: transparent;
-  background-image: none;
 }
 @media (max-width: 768px) {
   .jstree-default {

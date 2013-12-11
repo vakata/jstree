@@ -6,7 +6,7 @@ $(function () {
 							.filter(function () {
 								return tmp ? tmp.search($(this).find('>h4>code').text()).isMatch : true;
 							}).show().length;
-			$('#api_inner').find('#no_res')[ res ? 'hide' : 'show' ]();
+			$('#api_inner').find('#no_res')[ !tmp || res ? 'hide' : 'show' ]();
 			$('#api_inner').find('#cl_src')[ tmp && res ? 'show' : 'hide' ]();
 			if(!$('#srch').is(':focus')) {
 				$('#srch').val(str);
@@ -34,7 +34,7 @@ $(function () {
 	$.address
 		//.state(window.location.protocol + '//' + window.location.host + window.location.pathname.replace(/^(.*?\/docs\/).*$/ig, '$1'))
 		.init(function(e) {
-			$('a:not([href^=http])').not($('.demo a')).address().on('click', function () { /*$(document).scrollTop(0);*/ });
+			$('a:not([href^=http])').not($('.demo a')).address().on('click', function () { if($.address.pathNames().length < 2 && !$.address.parameter('f')) { $(document).scrollTop(0); } });
 		})
 		.change(function(e) {
 			var page, elem, cont, srch;
@@ -58,7 +58,7 @@ $(function () {
 					elem[0].scrollIntoView();
 				}
 				else {
-					document.documentElement.scrollTop = 0;
+					//document.documentElement.scrollTop = 0;
 				}
 			}
 			$(window).resize();
@@ -176,7 +176,7 @@ $(function () {
 		filter(decodeURIComponent($.address.parameter('f')));
 	});
 
-	$.jstree.defaults.core.themes.variant = 'large';
+	//$.jstree.defaults.core.themes.variant = 'large';
 	$('#jstree1').jstree();
 	$('#jstree2').jstree({'plugins':["wholerow","checkbox"], 'core' : {
 		'data' : [

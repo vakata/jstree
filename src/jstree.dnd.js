@@ -51,7 +51,7 @@
 						mlt = this.is_selected(obj) ? this.get_selected().length : 1;
 					if(obj && obj.id && obj.id !== "#" && e.which === 1) {
 						this.element.trigger('mousedown.jstree');
-						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_selected() : [obj] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + '"><i class="jstree-icon jstree-er"></i>' + (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget, true)) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
+						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_selected() : [obj.id] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + '"><i class="jstree-icon jstree-er"></i>' + (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget, true)) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
 					}
 				}, this));
 		};
@@ -80,7 +80,7 @@
 					ref = false,
 					off = false,
 					rel = false,
-					l, t, h, p, i, o, ok, t1, t2;
+					l, t, h, p, i, o, ok, t1, t2, op, ps, pr;
 				// if we are over an instance
 				if(ins && ins._data && ins._data.dnd) {
 					marker.attr('class', 'jstree-' + ins.get_theme());
@@ -90,7 +90,7 @@
 
 
 					// if are hovering the container itself add a new root node
-					if(data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) {
+					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && ins.get_container_ul().children().length === 0) {
 						ok = true;
 						for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
 							ok = ok && ins.check( (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"), data.data.nodes[t1], '#', 'last');
@@ -147,7 +147,15 @@
 								*/
 								ok = true;
 								for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
-									ok = ok && ins.check(( data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"),data.data.nodes[t1], p, i);
+									op = data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node";
+									ps = i;
+									if(op === "move_node" && v === 'a' && data.data.origin === ins && p === ins.get_parent(data.data.nodes[t1])) {
+										pr = ins.get_node(p);
+										if(ps > $.inArray(data.data.nodes[t1], pr.children)) {
+											ps -= 1;
+										}
+									}
+									ok = ok && ins.check(op, data.data.nodes[t1], p, ps);
 									if(!ok) { break; }
 								}
 								if(ok) {

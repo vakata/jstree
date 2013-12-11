@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     copy: {
       dist : {
         files : [
-          { expand: true, cwd : 'src/themes/default/', src: ['*.css','*.png','*.gif'], dest: 'dist/themes/default/' },
+          //{ expand: true, cwd : 'src/themes/default/', src: ['*.css','*.png','*.gif'], dest: 'dist/themes/default/' },
           { expand: true, cwd : 'libs/', src: ['*'], dest: 'dist/libs/' }
         ]
       }
@@ -111,6 +111,20 @@ module.exports = function(grunt) {
           atBegin : true
         }
       },
+    },
+    imagemin: {
+      dynamic: {
+        options: {                       // Target options
+          optimizationLevel: 7,
+          pngquant : true
+        },
+        files: [{
+          expand: true,                  // Enable dynamic expansion
+          cwd:  'src/themes/default/',    // Src matches are relative to this path
+          src: ['**/*.{png,jpg,gif}'],   // Actual patterns to match
+          dest: 'dist/themes/default/'   // Destination path prefix
+        }]
+      }
     }
   });
 
@@ -121,6 +135,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-imagemin');
 
   grunt.registerMultiTask('amd', 'Clean up AMD', function () {
     var s, d;
@@ -161,7 +176,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy','uglify','less','qunit','dox']);
+  grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy','uglify','less','imagemin','qunit','dox']);
   grunt.registerTask('js', ['concat','amd','uglify']);
   grunt.registerTask('css', ['copy','less']);
 

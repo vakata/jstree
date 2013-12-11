@@ -31,6 +31,7 @@
     "grunt-contrib-copy": "*",
     "dox": "~0.4.4",
     "grunt-contrib-less": "~0.8.2",
-    "grunt-contrib-watch": "~0.5.3"
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-imagemin": "~0.4.0"
   }
 }

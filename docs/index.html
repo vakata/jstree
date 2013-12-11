@@ -6,7 +6,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>jsTree API documentation</title>
+	<title>jsTree</title>
 	<meta name="viewport" content="width=device-width" />
 	<!--[if lt IE 9]><script src="./assets/html5.js"></script><script src="./assets/respond.js"></script><![endif]-->
 	<!--[if lt IE 7]><meta http-equiv="imagetoolbar" content="false" /><![endif]-->
@@ -14,6 +14,9 @@
 	<link rel="stylesheet" href="./assets/bootstrap/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="./../dist/themes/default/style.min.css" />
 	<link rel="stylesheet" href="./assets/docs.css" />
+	<link rel="icon" href="./assets/favicon.ico" type="image/x-icon" />
+	<link rel="apple-touch-icon-precomposed" href="./assets/apple-touch-icon-precomposed.png" />
+	<script>window.$q=[];window.$=window.jQuery=function(a){window.$q.push(a);};</script>
 </head>
 <body>
 	<header id="head">
@@ -22,12 +25,12 @@
 				<div class="col-md-3 col-sm-12">
 					<h1 id="logo"><a href="http://jstree.com">jsTree - jQuery tree plugin</a></h1>
 				</div>
-				<div class="col-md-6 col-sm-6">
+				<div class="col-md-6 col-sm-8">
 					<nav>
-						<ul class="nav nav-pills" id="menu"><li><a href="/docs"><i class="glyphicon glyphicon-home"></i> Home</a></li><li><a href="/demo"><i class="glyphicon glyphicon-flash"></i> Demo</a></li><li><a href="/api"><i class="glyphicon glyphicon-cog"></i> API</a></li></ul>
+						<ul class="nav nav-pills" id="menu"><li><a href="/docs"><i class="glyphicon glyphicon-home"></i> Home</a></li><li><a href="/demo"><i class="glyphicon glyphicon-flash"></i> Demo</a></li><li><a href="/api"><i class="glyphicon glyphicon-cog"></i> API</a></li><li><a href="/plugins"><i class="glyphicon glyphicon-link"></i> Plugins</a></li></ul>
 					</nav>
 				</div>
-				<div class="col-md-3 col-sm-6">
+				<div class="col-md-3 col-sm-4">
 					<form role="search">
 						<input type="text" id="srch" class="form-control" placeholder="API search" />
 					</form>
@@ -376,6 +379,7 @@ $('#tree').jstree({
 						<p>To change the icon of the node use the <code>icon</code> property. Specifying a string containing a <code>/</code> will display that image as the node icon. Using any other string will apply that class to the <code>&lt;i&gt;</code> element that is used to represent the icon.<br />For example if you are using Twitter Bootstrap you can use <code>"icon" : "glyphicon glyphicon-leaf"</code> to display a leaf icon.</p>
 						<p>You can set the state on a node using the <code>state</code> property.</p>
 						<p>You can use any combination of the following: <code>opened</code>, <code>selected</code>, <code>disabled</code>.</p>
+						<p style="margin-top:2em; color:gray;">If you do not want to use the nested <code>"children"</code> property you can supply a flat array where each node object has <code>id</code> &amp; <code>parent</code> properties and no <code>children</code> property, jsTree will automatically build the hierarchy. To indicate a node should be a root node set its <code>parent</code> property to <code>"#"</code>.</p>
 					</div>
 					<div class="col-md-7">
 						<pre><code>
@@ -450,6 +454,22 @@ $('#tree').jstree({
 						</code></pre>
 					</div>
 				</div>
+				<h4>Using a function</h4>
+				<div class="row">
+					<div class="col-md-5">
+						<p>You can supply a function too. That function will receive two arguments - the node being loaded and a callback function to call with the children for that node once you are ready.</p>
+					</div>
+					<div class="col-md-7">
+						<pre><code>
+$('#tree').jstree({
+    'core' : {
+        'data' : function (obj, callback) {
+            callback.call(this, ['Root 1', 'Root 2']);
+        }
+    });
+						</code></pre>
+					</div>
+				</div>
 				<div class="row" style="margin-top:3em;">
 					<div class="col-md-12">
 						<h3><i class="glyphicon glyphicon-leaf"></i> Listening for events</h3>
@@ -484,7 +504,7 @@ $('#jstree')
 				</div>
 				<div class="row">
 					<div class="col-md-5">
-						<p>To invoke a method on an instance you must first obtain a reference of the instance.</p>
+						<p>To invoke a method on an instance you must obtain a reference of the instance and invoke the method. The example shows how to obtain a reference and invoke a method.</p>
 						<p>Check the API for <a href="#/api/?q=(">a list of available methods</a>.
 					</div>
 					<div class="col-md-7">
@@ -500,7 +520,55 @@ $.jstree.reference('#jstree').refresh();
 		</div>
 		<div class="row page" id="demo">
 			<div class="col-md-12">
-				<h2>Demo</h2>
+				<div class="row">
+					<div class="col-md-6">
+						<div style="text-align:center;">
+							<button type="button" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-asterisk"></i> Create new</button>
+							<button type="button" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-pencil"></i> Rename</button>
+							<button type="button" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i> Delete</button>
+							<input type="text" value="" style="display:block; box-shadow:inset 0 0 4px #ccc; margin:1em auto; padding:6px 12px; border-radius:10px; border:1px solid silver; font-size:1.1em;" placeholder="Search" />
+						</div>
+						<div id="jstree_demo" class="demo" style="margin-top:1em; min-height:400px;"><ul>
+								<li data-jstree='{"opened":true,"type":"root"}'>Root node
+									<ul>
+										<li>Child node 1
+											<ul>
+												<li data-jstree='{"opened":true,"type":"file"}'>File</li>
+											</ul>
+										</li>
+										<li>Child node 2</li>
+									</ul>
+								</li>
+							</ul></div>
+						<script>
+						$(function () {
+							$('#jstree_demo')
+								.jstree({
+									"core" : {
+										"animation" : 0,
+										"check_callback" : true,
+										"themes" : { "stripes" : true }
+									},
+									"types" : {
+										"#" : { "max_children" : 1, "max_depth" : 4 },
+										"root" : { "icon" : "glyphicon glyphicon-globe", "valid_children" : ["default"] },
+										"default" : { "valid_children" : ["default","file"] },
+										"file" : { "icon" : "./assets/images/tree_icon.png", "valid_children" : [] }
+									},
+									"plugins" : [ "contextmenu", "dnd", "search", "state", "types", "wholerow" ]
+								});
+						});
+						</script>
+					</div>
+					<div class="col-md-6">
+						<pre><code>$("#jstree_demo").jstree();</code></pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div id="log" style="margin-top:2em; padding:1em; min-height:200px; overflow:auto; border:1px solid silver; border-radius:5px;">LOG HERE</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row page" id="api">
@@ -508,6 +576,386 @@ $.jstree.reference('#jstree').refresh();
 				<div id="api_inner" style="">
 					<div id="no_res" style="text-align:center;"><h4 style="font-size:1.1em; font-weight:bold;">Sorry, no results found.</h4><button class="btn btn-link" onclick="$('#srch').val('').keyup();">clear this search</button></div>
 					<div id="cl_src" style="text-align:center;"><h4 style="font-size:1.1em; font-weight:bold;">This is a filtered view.</h4><button class="btn btn-link" onclick="$('#srch').val('').keyup();">clear this search</button></div>
+				</div>
+			</div>
+		</div>
+		<div class="row page" id="plugins">
+			<div class="col-md-12">
+				<div class="row">
+					<div class="col-md-12">
+						<h4>Plugins?</h4>
+						<p>jsTree has some functionality moved out of the core so you can only use it when you need it. To enable a plugin use the <code>plugins</code> <a href="#/api/?f=$.jstree.defaults.plugins">config option</a> and add that plugin's name to the array.</p>
+						<p>For example enabling all the plugins can be done this way:<br/><code>"plugins" : [ "checkbox", "contextmenu", "dnd", "search", "sort", "state", "types", "unique", "wholerow" ]</code></p>
+						<p>Here is a quick overview for each one.</p>
+					</div>
+				</div>
+
+				<h3><i class="glyphicon glyphicon-leaf"></i>&nbsp;Checkbox plugin</h3>
+				<div class="row" style="margin-top:3em;">
+					<div class="col-md-4">
+						<p>This plugin renders checkbox icons in front of each node, making multiple selection much easier. <br>It also supports tri-state behavior, meaning that if a node has a few of its children checked it will be rendered as undetermined, and state will be propagated up.</p>
+						<p><em>Undetermined state is automatically calculated, but if you are using AJAX and loading on demand and want to render a node as underemined pass <code>"undetermined" : true</code> in its state.</em></p>
+						<p>You can find all the <a href="#/api/?q=$.jstree.defaults.checkbox">checkbox plugin config options</a> in the API.</p>
+					</div>
+					<div class="col-md-4">
+<pre><code>$(function () {
+  $("#plugins1").jstree({
+    "checkbox" : {
+      "keep_selected_style" : false
+    },
+    "plugins" : [ "checkbox" ]
+  });
+});</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="plugins1" class="demo plugin-demo">
+							<ul>
+								<li data-jstree='{"opened":true}'>Root node
+									<ul>
+										<li>Child node 1</li>
+										<li>Child node 2</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$("#plugins1").jstree({
+								"checkbox" : {
+									"keep_selected_style" : false
+								},
+								"plugins" : [ "checkbox" ]
+							});
+						});
+						</script>
+					</div>
+				</div>
+
+				<h3><i class="glyphicon glyphicon-leaf"></i>&nbsp;Contextmenu plugin</h3>
+				<div class="row">
+					<div class="col-md-4">
+						<p>This plugin makes it possible to right click nodes and shows a list of configurable actions in a menu.</p>
+						<p>You can find all the <a href="#/api/?q=$.jstree.defaults.contextmenu">contextmenu plugin config options</a> in the API.</p>
+					</div>
+					<div class="col-md-4">
+<pre><code>$(function () {
+  $("#plugins2").jstree({
+    "plugins" : [ "contextmenu" ]
+  });
+});</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="plugins2" class="demo plugin-demo">
+							<ul>
+								<li data-jstree='{"opened":true}'>Root node
+									<ul>
+										<li>Context click me</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$("#plugins2")
+								.jstree({
+									"plugins" : [ "contextmenu" ]
+								});
+						});
+						</script>
+					</div>
+				</div>
+
+				<h3><i class="glyphicon glyphicon-leaf"></i>&nbsp;Drag &amp; drop plugin</h3>
+				<div class="row">
+					<div class="col-md-4">
+						<p>This plugin makes it possible to drag and drop tree nodes and rearrange the tree.</p>
+						<p>You can find all the <a href="#/api/?q=$.jstree.defaults.dnd">dnd plugin config options</a> in the API.</p>
+					</div>
+					<div class="col-md-4">
+<pre><code>$(function () {
+  $("#plugins3").jstree({
+    "core" : {
+      "check_callback" : true
+    },
+    "plugins" : [ "dnd" ]
+  });
+});</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="plugins3" class="demo plugin-demo">
+							<ul>
+								<li data-jstree='{"opened":true}'>Root node
+									<ul>
+										<li>Child node 1</li>
+										<li>Child node 2</li>
+									</ul>
+								</li>
+								<li>Root node 2</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$("#plugins3").jstree({
+								"core" : {
+									"check_callback" : true
+								},
+								"plugins" : [ "dnd" ]
+							});
+						});
+						</script>
+					</div>
+				</div>
+
+				<h3><i class="glyphicon glyphicon-leaf"></i>&nbsp;Search plugin</h3>
+				<div class="row">
+					<div class="col-md-4">
+						<p>This plugin adds the possibility to <a href="#/api/?f=search(str [, skip_async])">search for items</a> in the tree and even to show only matching nodes.</p>
+						<p>You can find all the <a href="#/api/?q=$.jstree.defaults.search">search plugin config options</a> in the API.</p>
+					</div>
+					<div class="col-md-4">
+<pre><code>$(function () {
+  $("#plugins4").jstree({
+    "plugins" : [ "search" ]
+  });
+  var to = false;
+  $('#plugins4_q').keyup(function () {
+    if(to) { clearTimeout(to); }
+    to = setTimeout(function () {
+      var v = $('#plugins4_q').val();
+      $('#plugins4').jstree(true).search(v);
+    }, 250);
+  });
+});</code></pre>
+					</div>
+					<div class="col-md-4">
+						<input type="text" id="plugins4_q" value="" class="input" style="margin:0em auto 1em auto; display:block; padding:4px; border-radius:4px; border:1px solid silver;" />
+						<div id="plugins4" class="demo plugin-demo">
+							<ul>
+								<li data-jstree='{"opened":true}'>Root node
+									<ul>
+										<li>Child node 1</li>
+										<li>Child node 2</li>
+									</ul>
+								</li>
+								<li>Root node 2</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$("#plugins4").jstree({
+								"plugins" : [ "search" ]
+							});
+							var to = false;
+							$('#plugins4_q').keyup(function () {
+								if(to) { clearTimeout(to); }
+								to = setTimeout(function () {
+									var v = $('#plugins4_q').val();
+									$('#plugins4').jstree(true).search(v);
+								}, 250);
+							});
+						});
+						</script>
+					</div>
+				</div>
+
+				<h3><i class="glyphicon glyphicon-leaf"></i>&nbsp;Sort plugin</h3>
+				<div class="row">
+					<div class="col-md-4">
+						<p>This plugin automatically arranges all sibling nodes according to a <a href="#/api/?f=$.jstree.defaults.sort">comparison config option function</a>, which defaults to alphabetical order.</p>
+					</div>
+					<div class="col-md-4">
+<pre><code>$(function () {
+  $("#plugins5").jstree({
+    "plugins" : [ "sort" ]
+  });
+});</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="plugins5" class="demo plugin-demo">
+							<ul>
+								<li data-jstree='{"opened":true}'>Root node
+									<ul>
+										<li>2</li>
+										<li>1</li>
+										<li>3</li>
+										<li>0</li>
+									</ul>
+								</li>
+								<li>Root node 2</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$("#plugins5").jstree({
+								"plugins" : [ "sort" ]
+							});
+						});
+						</script>
+					</div>
+				</div>
+
+				<h3><i class="glyphicon glyphicon-leaf"></i>&nbsp;State plugin</h3>
+				<div class="row">
+					<div class="col-md-4">
+						<p>This plugin saves all opened and selected nodes in the user's browser, so when returning to the same tree the previous state will be restored.</p>
+						<p>You can find all the <a href="#/api/?q=$.jstree.defaults.state">state plugin config options</a> in the API. Make a selection and refresh this page to see the change persisted.</p>
+					</div>
+					<div class="col-md-4">
+<pre><code>$(function () {
+  $("#plugins6").jstree({
+    "plugins" : [ "state" ]
+  });
+});</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="plugins6" class="demo plugin-demo">
+							<ul>
+								<li data-jstree='{"opened":true}'>Root node
+									<ul>
+										<li>A</li>
+										<li>few</li>
+										<li>more</li>
+										<li>nodes</li>
+									</ul>
+								</li>
+								<li>Root node 2</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$("#plugins6").jstree({
+								"plugins" : [ "state" ]
+							});
+						});
+						</script>
+					</div>
+				</div>
+
+				<h3><i class="glyphicon glyphicon-leaf"></i>&nbsp;Types plugin</h3>
+				<div class="row">
+					<div class="col-md-4">
+						<p>This plugin makes it possible to add predefined types for groups of nodes, which means to easily control nesting rules and icon for each group.</p>
+						<p>To set a node's type you can use <code>set_type</code> or supply a <code>type</code> property with the node's data.</p>
+						<p>You can find all the <a href="#/api/?f=$.jstree.defaults.types">types plugin config options &amp; functions</a> in the API.</p>
+					</div>
+					<div class="col-md-4">
+<pre><code>$(function () {
+  $("#plugins7").jstree({
+    "types" : {
+      "default" : {
+        "icon" : "glyphicon glyphicon-flash"
+      },
+      "demo" : {
+        "icon" : "glyphicon glyphicon-ok"
+      }
+    },
+    "plugins" : [ "types" ]
+  });
+});</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="plugins7" class="demo plugin-demo">
+							<ul>
+								<li data-jstree='{"opened":true, "type":"demo"}'>Root node
+									<ul>
+										<li>Node</li>
+									</ul>
+								</li>
+								<li>Root node 2</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$("#plugins7").jstree({
+								"types" : {
+									"default" : {
+										"icon" : "glyphicon glyphicon-flash"
+									},
+									"demo" : {
+										"icon" : "glyphicon glyphicon-ok"
+									}
+								},
+								"plugins" : [ "types" ]
+							});
+						});
+						</script>
+					</div>
+				</div>
+				
+				<h3><i class="glyphicon glyphicon-leaf"></i>&nbsp;Unique plugin</h3>
+				<div class="row">
+					<div class="col-md-4">
+						<p>Enforces that no nodes with the same name can coexist as siblings. This plugin has no options, it just prevents renaming and moving nodes to a parent, which already contains a node with the same name.</p>
+					</div>
+					<div class="col-md-4">
+<pre><code>$(function () {
+  $("#plugins8").jstree({
+    "core" : {
+      "check_callback" : true
+    },
+    "plugins" : [ "unique", "dnd" ]
+  });
+});</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="plugins8" class="demo plugin-demo">
+							<ul>
+								<li data-jstree='{"opened":true}'>Root node
+									<ul>
+										<li>Node</li>
+									</ul>
+								</li>
+								<li>Root node 2
+									<ul>
+										<li>Node</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$("#plugins8").jstree({
+								"core" : {
+									"check_callback" : true
+								},
+								"plugins" : [ "unique", "dnd" ]
+							});
+						});
+						</script>
+					</div>
+				</div>
+				
+				<h3><i class="glyphicon glyphicon-leaf"></i>&nbsp;Wholerow plugin</h3>
+				<div class="row">
+					<div class="col-md-4">
+						<p>Makes each node appear block level which makes selection easier. May cause slow down for large trees in old browsers.</p>
+					</div>
+					<div class="col-md-4">
+<pre><code>$(function () {
+  $("#plugins9").jstree({
+    "plugins" : [ "wholerow" ]
+  });
+});</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="plugins9" class="demo plugin-demo">
+							<ul>
+								<li data-jstree='{"opened":true}'>Root node
+									<ul>
+										<li data-jstree='{"selected":true}'>Node</li>
+									</ul>
+								</li>
+								<li>Root node 2</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$("#plugins9").jstree({
+								"plugins" : [ "wholerow" ]
+							});
+						});
+						</script>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -519,5 +967,6 @@ $.jstree.reference('#jstree').refresh();
 	<script src="./assets/vakata.js"></script>
 	<script src="./../dist/jstree.min.js"></script>
 	<script src="./assets/docs.js"></script>
+	<script>$.each($q,function(i,f){$(f)});$q=null;</script>
 </body>
 </html>
