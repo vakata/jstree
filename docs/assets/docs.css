@@ -1,5 +1,6 @@
 html { overflow-y:scroll; background:#D9E3CB url('./images/tree.png') left bottom fixed no-repeat; }
-body { background:transparent; }
+body { background:transparent; line-height:1.6em; }
+.list-group-item-text { line-height:1.6em; }
 .container { min-width:320px; max-width:960px; }
 #head { background:#333; border-bottom:4px solid #73796B; min-height:75px; }
 #logo { margin:0; padding:0; height:60px; }

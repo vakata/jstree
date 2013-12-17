@@ -6,7 +6,8 @@
 	"homepage": "http://jstree.com",
 	"keywords": [
 		"ui",
-		"tree"
+		"tree",
+		"jstree"
 	],
 	"author": {
 		"name": "Ivan Bozhanov",

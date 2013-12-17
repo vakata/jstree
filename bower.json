@@ -1,0 +1,34 @@
+{
+  "name": "jstree",
+  "version": "3.0.0",
+  "main" : [
+    "./dist/jstree.min.js",
+    "./dist/themes/default/style.min.css"
+  ],
+  "ignore": [
+    "**/.*",
+    "docs",
+    "demo",
+    "libs",
+    "node_modules",
+    "test",
+    "libs",
+    "src",
+    "*.md",
+    "AUTHORS.txt",
+    "jstree.jquery.js",
+    "gruntfile.js",
+    "package.json",
+    "bower.json",
+    "LICENCE-MIT",
+    "README.md"
+  ],
+  "dependencies": {
+    "jquery": ">=1.9.1"
+  },
+  "keywords": [
+    "ui",
+    "tree",
+    "jstree"
+  ]
+}
