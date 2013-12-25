@@ -31,6 +31,9 @@ $(function () {
 		},50);
 	});
 
+	$('.tab-content').children().hide().eq(0).show();
+	$('.nav a').on('click', function () { $(this).blur(); })
+
 	$.address
 		//.state(window.location.protocol + '//' + window.location.host + window.location.pathname.replace(/^(.*?\/docs\/).*$/ig, '$1'))
 		.init(function(e) {
@@ -55,7 +58,12 @@ $(function () {
 				cont.find('.item').show();
 				elem = e.pathNames[1] ? cont.find('#' + e.pathNames[1]) : [];
 				if(elem.length) {
-					elem[0].scrollIntoView();
+					if(elem.hasClass('tab-content-item')) {
+						elem.siblings().hide().end().show().parent().prev().children().removeClass('active').eq(elem.index()).addClass('active');
+					}
+					else {
+						elem[0].scrollIntoView();
+					}
 				}
 				else {
 					//document.documentElement.scrollTop = 0;
@@ -192,17 +200,4 @@ $(function () {
 			"And wholerow selection"
 		]
 	}});
-	$('#docs .list-group-item')
-		.on('mouseenter', function () {
-			var i = $(this).index();
-			if(i) {
-				$('pre .point').css('backgroundColor', 'transparent').eq(i-1).css('backgroundColor','#D9E3CB');
-			}
-		})
-		.on('mouseleave', function () {
-			var i = $(this).index();
-			if(i) {
-				$('pre .point').eq(i-1).css('backgroundColor','transparent');
-			}
-		});
 });

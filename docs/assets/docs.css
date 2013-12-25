@@ -20,6 +20,18 @@ h3 { text-align:left; color:#73796B; font-family:Georgia, serif; font-style:ital
 h3 > i { font-size:0.6em; }
 h4 { margin-top:1em; }
 
+#docs .nav {
+	margin:0 -15px 1em -15px; font-size:1.2em; padding-left:25px; text-align:center;
+	background-image: -webkit-gradient(linear, 0 100%, 0 0, from(#eee), color-stop(0.6, #fff));
+	background-image: -webkit-linear-gradient(bottom, #eee, #fff 60%);
+	background-image: -moz-linear-gradient(bottom, #eee, #fff 60%);
+	background-image: -o-linear-gradient(bottom, #eee, #fff 60%);
+	background-image: linear-gradient(bottom, #eee, #fff 60%);
+}
+#docs h3 { margin-left:-15px; margin-right:-15px; padding-left:25px; }
+
+.spaced > li { margin-bottom:1.8em; }
+
 .item { padding:12px 10px 0 10px; margin-bottom:10px; border-radius:5px; border:1px solid #eee; }
 .item > .item-inner { display:none; }
 .item:nth-child(2n) { background:#fcfcfc; }

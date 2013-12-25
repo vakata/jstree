@@ -85,72 +85,87 @@
 					</div>
 				</div>
 
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#/docs/overview" class="nava">Overview</a></li>
+					<li><a href="#/docs/config" class="nava">Configuration</a></li>
+					<li><a href="#/docs/html" class="nava">HTML data</a></li>
+					<li><a href="#/docs/json" class="nava">JSON data</a></li>
+					<li><a href="#/docs/events" class="nava">Events</a></li>
+					<li><a href="#/docs/interaction" class="nava">Interaction</a></li>
+				</ul>
+				<div class="tab-content">
+					<div id="overview" class="tab-content-item">
 				<div class="row">
 					<div class="col-md-12">
 						<h3><i class="glyphicon glyphicon-leaf"></i> Getting Started - everything at a glance</h3>
-						<div style="text-align:center; color:black;" class="alert alert-block alert-warning">
-							<p>This is just a quick overview of the most basic operations. There is a detailed section below for each bullet.</p>
-							<h5><strong>If you are not into reading - jump straight to the <a href="#/demo/">demo &raquo;</a></strong></h5>
-						</div>
 					</div>
 				</div>
 				<div class="row" style="margin-top:1em;">
-					<div class="col-md-5">
-						<ol class="list-group">
-							<li class="list-group-item">
-								<h4 class="list-group-item-heading">download jsTree</h4>
+					<div class="col-md-12">
+						<ol class="spaced">
+							<li>
+								<h4 class="list-group-item-heading"><a href="https://github.com/vakata/jstree/archive/master.zip">Download jsTree</a></h4>
 								<p class="list-group-item-text">All the files you need are in the <code>dist/</code> folder of the download.</p>
 							</li>
-							<li class="list-group-item">
-								<span class="badge">1</span>
-								<h4 class="list-group-item-heading">include a jsTree theme</h4>
-								<p class="list-group-item-text">Themes can be autloaded too, but it is best for performance to include the CSS file. Include the default theme from <code>dist/themes/default/style.min.css</code></p>
+							<li>
+								<h4 class="list-group-item-heading">Include a jsTree theme</h4>
+								<p class="list-group-item-text">Themes can be autloaded too, but it is best for performance to include the CSS file.</p>
+								<pre style="margin-top:1em;"><code>&lt;link rel="stylesheet" href="<strong>dist/themes/default/style.min.css</strong>" /&gt;</code></pre>
 							</li>
-							<li class="list-group-item">
-								<span class="badge">2</span>
-								<h4 class="list-group-item-heading">setup a container</h4>
-								<p class="list-group-item-text">This is the element where you want the tree to appear, a <code>&lt;div&gt;</code> is enough.</p>
+							<li>
+								<h4 class="list-group-item-heading">Setup a container</h4>
+								<p class="list-group-item-text">This is the element where you want the tree to appear, a <code>&lt;div&gt;</code> is enough. This example has a nested <code>&lt;ul&gt;</code> as there is no other data source configured (such as JSON).</p>
+								<pre style="margin-top:1em;"><code>  &lt;div <strong>id="jstree_demo_div"</strong>&gt;&lt;div&gt;</code></pre>
 							</li>
-							<li class="list-group-item">
-								<span class="badge">3</span>
-								<h4 class="list-group-item-heading">include jQuery</h4>
-								<p class="list-group-item-text">jsTree requires <strong>1.9.0 or greater</strong> in your webpage. If you do not have a copy you can find one in <code>dist/libs/jquery.js</code></p>
+							<li>
+								<h4 class="list-group-item-heading">Include jQuery</h4>
+								<p class="list-group-item-text">jsTree requires <strong>1.9.0 or greater</strong> in your webpage.</p>
+								<pre style="margin-top:1em;"><code>&lt;script src="<strong>dist/libs/jquery.js</strong>"&gt;&lt;/script&gt;</code></pre>
 							</li>
-							<li class="list-group-item">
-								<span class="badge">4</span>
-								<h4 class="list-group-item-heading">include jsTree</h4>
-								<p class="list-group-item-text">For production include the minified version: <code>dist/jstree.min.js</code><br />For debugging there is a development version too: <code>dist/jstree.js</code></p>
+							<li>
+								<h4 class="list-group-item-heading">Include jsTree</h4>
+								<p class="list-group-item-text">For production include the minified version: <code>dist/jstree.min.js</code>, there is a development version too: <code>dist/jstree.js</code></p>
+								<pre style="margin-top:1em;"><code>&lt;script src="<strong>dist/jstree.min.js</strong>"&gt;&lt;/script&gt;</code></pre>
 							</li>
-							<li class="list-group-item">
-								<span class="badge">5</span>
-								<h4 class="list-group-item-heading">create an instance</h4>
-								<p class="list-group-item-text">Once the DOM is ready you can start creating jstree instances using <code>$('selector').jstree();</code></p>
+							<li>
+								<h4 class="list-group-item-heading">Create an instance</h4>
+								<p class="list-group-item-text">Once the DOM is ready you can start creating jstree instances.</code></p>
+								<pre style="margin-top:1em;"><code>$(function () { <strong>$('#jstree_demo_div').jstree();</strong> }</code></pre>
 							</li>
-							<li class="list-group-item">
-								<span class="badge">6</span>
-								<h4 class="list-group-item-heading">listen for events</h4>
-								<p class="list-group-item-text">jsTree uses jQuery events to notify you when something changes while users (or you) interact with the tree. The second parameter contains everything there is to know about the event that happened. There is a <a href="#/api/?q=.jstree Event">list of events</a> and what information they provide in the API documentation.</p>
+							<li>
+								<h4 class="list-group-item-heading">Listen for events</h4>
+								<p class="list-group-item-text">jsTree uses events to notify you when something changes while users (or you) interact with the tree. So binding to jstree events is as easy binding to a click. There is a <a href="#/api/?q=.jstree Event">list of events</a> and what information they provide in the API documentation.</p>
+								<pre style="margin-top:1em;"><code>$('#jstree_demo_div').on("changed.jstree", function (e, data) {
+  console.log(data.selected);
+});</code></pre>
 							</li>
-							<li class="list-group-item">
-								<span class="badge">7</span>
-								<h4 class="list-group-item-heading">interact with your instances</h4>
-								<p class="list-group-item-text">Once your instance is ready you can invoke methods on it. There is a <a href="#/api/?q=(">list of available methods</a> in the API documentation.</p>
+							<li>
+								<h4 class="list-group-item-heading">Interact with your instances</h4>
+								<p class="list-group-item-text">Once an instance is ready you can invoke methods on it. There is a <a href="#/api/?q=(">list of available methods</a> in the API documentation. The three examples below do exactly the same thing</p>
+								<pre style="margin-top: 1em;"><code>$('button').on('click', function () {
+  <strong>$('#jstree').jstree(true).select_node('child_node_1');</strong>
+  <strong>$('#jstree').jstree('select_node', 'child_node_1');</strong>
+  <strong>$.jstree.reference('#jstree').select_node('child_node_1');</strong>
+}</code></pre>
 							</li>
 						</ol>
 					</div>
-					<div class="col-md-7">
-<pre style="padding:0px 20px;"><code>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<p style="text-align:center;"><button class="btn btn-info" onclick="$(this).blur().parent().next().slideToggle(); return false;">show the complete code</button></p>
+<pre style="padding:0px 20px; display:none;"><code>
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
   &lt;meta charset="utf-8"&gt;
   &lt;title&gt;jsTree test&lt;/title&gt;
-<span class="point">  <span class="comment">&lt;!-- <strong>1</strong> load the theme CSS file --&gt;</span>
-  &lt;link rel="stylesheet" href="<strong>dist/themes/default/style.min.css</strong>" /&gt;</span>
+  <span class="comment">&lt;!-- <strong>2</strong> load the theme CSS file --&gt;</span>
+  &lt;link rel="stylesheet" href="<strong>dist/themes/default/style.min.css</strong>" /&gt;
 &lt;/head&gt;
 &lt;body&gt;
-<span class="point">  <span class="comment">&lt;!-- <strong>2</strong> setup a container element --&gt;</span>
-  &lt;div id="jstree"&gt;
+  <span class="comment">&lt;!-- <strong>3</strong> setup a container element --&gt;</span>
+  &lt;div id="jstree_demo_div"&gt;
     <span class="comment">&lt;!-- in this example the tree is populated from inline HTML --&gt;</span>
     &lt;ul&gt;
       &lt;li&gt;Root node 1
@@ -161,104 +176,91 @@
       &lt;/li&gt;
       &lt;li&gt;Root node 2&lt;/li&gt;
     &lt;/ul&gt;
-  &lt;div&gt;</span>
+  &lt;div&gt;
   &lt;button&gt;demo button&lt;/button&gt;
 
-<span class="point">  <span class="comment">&lt;!-- <strong>3</strong> include the <a href="http://jquery.org">jQuery</a> library --&gt;</span>
-  &lt;script src="<strong>dist/libs/jquery.js</strong>"&gt;&lt;/script&gt;</span>
-<span class="point">  <span class="comment">&lt;!-- <strong>4</strong> include the minified <a href="http://jstree.com">jstree</a> source --&gt;</span>
-  &lt;script src="<strong>dist/jstree.min.js</strong>"&gt;&lt;/script&gt;</span>
+  <span class="comment">&lt;!-- <strong>4</strong> include the <a href="http://jquery.org">jQuery</a> library --&gt;</span>
+  &lt;script src="<strong>dist/libs/jquery.js</strong>"&gt;&lt;/script&gt;
+  <span class="comment">&lt;!-- <strong>5</strong> include the minified <a href="http://jstree.com">jstree</a> source --&gt;</span>
+  &lt;script src="<strong>dist/jstree.min.js</strong>"&gt;&lt;/script&gt;
   &lt;script&gt;
   $(function () {
-<span class="point">    <span class="comment">// <strong>5</strong> create an instance when the DOM is ready</span>
-    <strong>$('#jstree').jstree();</strong></span>
-<span class="point">    <span class="comment">// <strong>6</strong> bind to events triggered on the tree</span>
+    <span class="comment">// <strong>6</strong> create an instance when the DOM is ready</span>
+    <strong>$('#jstree').jstree();</strong>
+    <span class="comment">// <strong>7</strong> bind to events triggered on the tree</span>
     <strong>$('#jstree').on("changed.jstree", function (e, data) {
       console.log(data.selected);
-    });</strong></span>
-<span class="point">    <span class="comment">// <strong>7</strong> interact the tree - either way is OK</span>
+    });</strong>
+    <span class="comment">// <strong>8</strong> interact the tree - either way is OK</span>
     $('button').on('click', function () {
       <strong>$('#jstree').jstree(true).select_node('child_node_1');</strong>
       <strong>$('#jstree').jstree('select_node', 'child_node_1');</strong>
       <strong>$.jstree.reference('#jstree').select_node('child_node_1');</strong>
     }
-  });</span>
+  });
   &lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
  </code></pre>
 					</div>
 				</div>
-				<div class="row" style="margin-top:3em;">
+
+				</div><div id="config" class="tab-content-item">
+
+				<div class="row">
 					<div class="col-md-12">
 						<h3><i class="glyphicon glyphicon-leaf"></i> Configuring instances</h3>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-5">
-					<p>When you create an instance you can pass some options which change the way the tree behaves. Whatever you pass overwrites the defaults for that instance. The options are passed in as an object. Since jstree supports plugins the options for each plugin are contained in a separate key in the config object, and the key has the name of the plugin.</p>
-					<p>Omitting the config object means that all the defaults are used for that instance.</p>
-					<p>All options for the core are contained in a <code>core</code> key of the object. You can also modify the defaults which will affect all future instances. </p>
-					<p>Apart from <code>core</code>, there is one more special key in the config object - the <code>plugins</code> key. It defines which plugins are active on the instance.</p>
-					<p>You can have a look at all the <a href="#/api/?q=$.jstree.defaults">options and their default values</a>. This list is what you can configure on each instance.<br />For example, by default the tree allows multiple selection as stated in <code>$.jstree.defaults.core.multiple</code>, to overwrite that make sure your config object contains <code>"core" : { "multiple" : false }</code>. If you have multiple overrides for the same key (like <code>"core"</code> here), group them:</p>
-					<code style="white-space:pre;">$("#jstree").jstree({
-  "core" : {
-    "multiple" : false,
-    "animation" : 0
-  }
-});</code>
-					</div>
-					<div class="col-md-7">
-						<pre><code>
-<span class="comment">// create an instance without modifying the defaults</span>
-$('#jstree').jstree();
-
-<span class="comment">// create an instance and activate the wholerow and checkbox plugins</span>
-$('#jstree').jstree({
-  <strong>"plugins" : [ "wholerow", "checkbox" ]</strong>
-});
-
-<span class="comment">// use the large variant of the default theme</span>
-$('#jstree').jstree({
-  <strong>"core" : {
-    "theme" : {
-      "variant" : "large"
-    }
-  },</strong>
+					<div class="col-md-12">
+					<p>Creating an instance as described in the overview does not modify any of the defaults:</p>
+					<pre><code>$('#jstree').jstree();</code></pre>
+					<p>You can change the defaults for all future instances:</p>
+					<pre><code>$.jstree.defaults.core.theme.variant = "large";
+$('#jstree').jstree();</code></pre>
+					<p>But most of the time you will want to change the defaults only for the instance that is being created. This is achieved by passing in a config object when creating the instance:</p>
+					<pre><code>$('#jstree').jstree(<strong>{
   "plugins" : [ "wholerow", "checkbox" ]
-});
-
-<span class="comment">// configure the checkbox plugin along with the core</span>
-$('#jstree').jstree({
-  "core" : {
+}</strong>);</code></pre>
+					<p>As seen in the previous example - there is one special key in the config object named <code>plugins</code>. It is an array of strings, which contain the names of the plugins you want active on that instance.</p>
+					<p>All options that do not depend on a plugin are contained in a key of the config object named <code>core</code>, the options for each plugin are contained within a key with the same name as the plugin:</p>
+					<pre><code>$('#jstree').jstree({
+  <strong>"core"</strong> : {
     "theme" : {
       "variant" : "large"
     }
   },
-  <strong>"checkbox" : {
+  <strong>"checkbox"</strong> : {
     "keep_selected_style" : false
-  },</strong>
+  },
   "plugins" : [ "wholerow", "checkbox" ]
-});
+});</code></pre>
 
-<span class="comment">// change the default for all future instances</span>
-<strong>$.jstree.defaults.core.theme.variant = "large";</strong>
-						</code></pre>
+					<p>You can have a look at all the <a href="#/api/?q=$.jstree.defaults">options and their default values</a>. This list is what you can configure on each instance.<br />For example, by default the tree allows multiple selection as stated in <code>$.jstree.defaults.core.multiple</code>, to overwrite that make sure your config object contains <code>"core" : { "multiple" : false }</code>. If you have multiple overrides for the same key (like <code>"core"</code> here), group them:</p>
+					<pre><code>$("#jstree").jstree({
+  "core" : {
+    "multiple" : false,
+    "animation" : 0
+  }
+});</code></pre>
 					</div>
 				</div>
 
-				<div class="row" style="margin-top:3em;">
+				</div><div id="html" class="tab-content-item">
+
+				<div class="row">
 					<div class="col-md-12">
 						<h3><i class="glyphicon glyphicon-leaf"></i> Populating a tree using HTML</h3>
 					</div>
 				</div>
 				<h4>Basic markup</h4>
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-4">
 						<p>jsTree can turn a regular unordered list into a tree. The minimal required markup is a <code>&lt;ul&gt;</code> node with some nested <code>&lt;li&gt;</code> nodes with some text inside.</p>
 						<p>You should have a container wrapping the <code>&lt;ul&gt;</code> and create the instance on that container. Like so:<br /><code>$('#html1').jstree();</code>.
 					</div>
-					<div class="col-md-7">
+					<div class="col-md-4">
 						<pre><code>&lt;div id="html1"&gt;
   &lt;ul&gt;
     &lt;li&gt;Root node 1&lt;/li&gt;
@@ -266,15 +268,28 @@ $('#jstree').jstree({
   &lt;/ul&gt;
 &lt;/div&gt;</code></pre>
 					</div>
+					<div class="col-md-4">
+						<div class="demo" id="using_html_1">
+							<ul>
+								<li>Root node 1</li>
+								<li>Root node 2</li>
+							</ul>
+						</div>
+					</div>
+					<script>
+					$(function () {
+						$('#using_html_1').jstree();
+					});
+					</script>
 				</div>
 				<h4>Nodes with children</h4>
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-4">
 						<p>To create a node with child nodes simpy nest an <code>&lt;ul&gt;</code>.</p>
 						<p>Internally jstree converts the text to a link, so if there already is a link in the markup jstree won't mind. Like <code>Child node 2</code>.<br />Clicking on the link however will not direct the user to a new page, to do that - intercept the <code>changed.jstree</code> event and act accordingly.</p>
 						<p>Keep reading for the section on handling events.</p>
 					</div>
-					<div class="col-md-7">
+					<div class="col-md-4">
 						<pre><code>&lt;div id="html1"&gt;
   &lt;ul&gt;
     &lt;li&gt;Root node 1<strong>
@@ -286,15 +301,32 @@ $('#jstree').jstree({
   &lt;/ul&gt;
 &lt;/div&gt;</code></pre>
 					</div>
+					<div class="col-md-4">
+						<div id="using_html_2" class="demo">
+							<ul>
+								<li>Root node 1
+									<ul>
+										<li>Child node 1</li>
+										<li><a href="#">Child node 2</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$('#using_html_2').jstree();
+						});
+						</script>
+					</div>
 				</div>
 				<h4>Setting initial state with classes</h4>
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-4">
 						<p>To make a node initially selected you can set the <code>jstree-clicked</code> class on the <code>&lt;a&gt;</code> element.</p>
 						<p>Similarly you can set the <code>jstree-open</code> class on any <code>&lt;li&gt;</code> element to make it initially extended, so that its children are visible.</p>
-						<p>It is a good idea to give your nodes <strong>unique</strong> IDs by adding the <code>id</code> attribute to any <code>&lt;li&gt;</code> element. This will be useful if you ened to sync with a backend as you will get the ID back in any events jstree triggers.</p>
+						<p>It is a good idea to give your nodes <strong>unique</strong> IDs by adding the <code>id</code> attribute to any <code>&lt;li&gt;</code> element. This will be useful if you need to sync with a backend as you will get the ID back in any events jstree triggers.</p>
 					</div>
-					<div class="col-md-7">
+					<div class="col-md-4">
 						<pre><code>&hellip;
 &lt;li <strong>class="jstree-open"</strong> <strong>id="node_1"</strong>&gt;Root&lt;/li&gt;
   &lt;ul&gt;
@@ -305,15 +337,31 @@ $('#jstree').jstree({
 &lt;/li&gt;
 &hellip;</code></pre>
 					</div>
+					<div class="col-md-4">
+						<div id="using_html_3" class="demo">
+							<ul>
+								<li class="jstree-open">Root
+									<ul>
+										<li><a href="#" class="jstree-clicked">Child</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$('#using_html_3').jstree();
+						});
+						</script>
+					</div>
 				</div>
 				<h4>Setting initial state with data attribute</h4>
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-4">
 						<p>You can also set the state on a node using a <code>data-jstree</code> attribute.</p>
 						<p>You can use any combination of the following: <code>opened</code>, <code>selected</code>, <code>disabled</code>, <code>icon</code>.</p>
 						<p>Specifying an address (anything containing a <code>/</code>) will display that image as the node icon. Using a string will apply that class to the <code>&lt;i&gt;</code> element that is used to represent the icon.<br />For example if you are using Twitter Bootstrap you can use <code>"icon" : "glyphicon glyphicon-leaf"</code> to display a leaf icon.</p>
 					</div>
-					<div class="col-md-7">
+					<div class="col-md-4">
 						<pre><code>&lt;li <strong>data-jstree='{"opened":true,"selected":true}'</strong>&gt;Root
   &lt;ul&gt;
     &lt;li <strong>data-jstree='{"disabled":true}'</strong>&gt;Child&lt;/li&gt;
@@ -324,210 +372,410 @@ $('#jstree').jstree({
   &lt;/ul&gt;
 &lt;/li&gt;</code></pre>
 					</div>
+					<div class="col-md-4">
+						<div id="using_html_4" class="demo">
+							<ul>
+								<li data-jstree='{"opened":true,"selected":true}'>Root
+								  <ul>
+								    <li data-jstree='{"disabled":true}'>Child</li>
+								    <li data-jstree='{"icon":"http://jstree.com/tree.png"}'>
+								      Child</li>
+								    <li data-jstree='{"icon":"glyphicon glyphicon-leaf"}'>
+								      Child</li>
+								  </ul>
+								</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$('#using_html_4').jstree();
+						});
+						</script>
+					</div>
 				</div>
 				<h4>Loading with AJAX</h4>
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-4">
 						<p>You can also use AJAX to populate the tree with HTML your server returns. The format remains the same as the above, the only difference is that the HTML is not inside the container, but returned from the server.</p>
 						<p>To take advantage of this option you need to use the <a href="#/api/?f=$.jstree.defaults.core.data"><code>$.jstree.defaults.core.data</code></a> config option.</p>
-						<p>Just use a standard jQuery-like AJAX config and jstree will automatically make an AJAX request populate the tree with the response.</p>
+						<p>Just use a standard jQuery-like AJAX config and jstree will automatically make an AJAX request populate the tree with the response.</p><p>Add a class of <code>jstree-closed</code> to any LI node you return and do not nest an UL node and jstree will make another AJAX call as soon as the user opens this node.</p>
 						<p>In addition to the standard jQuery ajax options here you can supply functions for <code>data</code> and <code>url</code>, the functions will be run in the current instance's scope and a param will be passed indicating which node is being loaded, the return value of those functions will be used as URL and data respectively.</p>
 					</div>
-					<div class="col-md-7">
-						<pre><code>
-// AJAX
-$('#tree').jstree({
+					<div class="col-md-4">
+						<pre><code>$('#tree').jstree({
 'core' : {
   'data' : {
-    'url' : '/get/children/',
+    'url' : 'ajax_nodes.html',
     'data' : function (node) {
-      /* notable contents of node
-      {
-        id          : // node ID, could be autogenerated if you did not supply it
-        text        : // node text
-        icon        : // node icon - true for default, false for no icon, string for custom
-        parent      : // parent ID
-        parents     : // array of IDs of all the parents
-        children    : // array of IDs of all immediate children
-        children_d  : // array of IDS of all children including grandchildren, etc
-        state       : {
-          opened    : // is the node open
-          disabled  : // is the node disabled
-          selected  : // is the node selected
-          loaded    : // are the node's immediate children loaded (useful in AJAX configs)
-        },
-        original    : // if JSON is used as data - the original JSON for the node
+      'url' : 'ajax_nodes.html',
+      'data' : function (node) {
+        return { 'id' : node.id };
       }
-      */
       return { 'id' : node.id };
     }
   }
 });
-						</code></pre>
+
+// Example response:
+&lt;ul&gt;
+&lt;li&gt;Node 1&lt;/li&gt;
+&lt;li class="jstree-closed"&gt;Node 2&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="using_html_5" class="demo"></div>
+						<script>
+						$(function () {
+							$('#using_html_5').jstree({
+								'core' : {
+									'data' : {
+										'url' : 'ajax_nodes.html',
+										'data' : function (node) {
+											return { 'id' : node.id };
+										}
+									}
+								}
+							});
+						});
+						</script>
 					</div>
 				</div>
-				<div class="row" style="margin-top:3em;">
+
+				</div><div id="json" class="tab-content-item">
+
+				<div class="row">
 					<div class="col-md-12">
 						<h3><i class="glyphicon glyphicon-leaf"></i> Populating the tree using JSON</h3>
 					</div>
 				</div>
 				<h4>The format</h4>
 				<div class="row">
-					<div class="col-md-5">
-						<p>You can use JSON to populate the tree. To take advantage of this option you need to use the <a href="#/api/?f=$.jstree.defaults.core.data"><code>$.jstree.defaults.core.data</code></a> config option.</p>
-						<p>The expected format is an array of nodes, where each node can be a simple string or an object itself (there are no required fields for the object). Any nested nodes are supplied in the same manner in the <code>children</code> property of their parent.</p>
-						<p>To change the icon of the node use the <code>icon</code> property. Specifying a string containing a <code>/</code> will display that image as the node icon. Using any other string will apply that class to the <code>&lt;i&gt;</code> element that is used to represent the icon.<br />For example if you are using Twitter Bootstrap you can use <code>"icon" : "glyphicon glyphicon-leaf"</code> to display a leaf icon.</p>
-						<p>You can set the state on a node using the <code>state</code> property.</p>
-						<p>You can use any combination of the following: <code>opened</code>, <code>selected</code>, <code>disabled</code>.</p>
-						<p style="margin-top:2em; color:gray;">If you do not want to use the nested <code>"children"</code> property you can supply a flat array where each node object has <code>id</code> &amp; <code>parent</code> properties and no <code>children</code> property, jsTree will automatically build the hierarchy. To indicate a node should be a root node set its <code>parent</code> property to <code>"#"</code>.</p>
+					<div class="col-md-6">
+						<p>jsTree needs a specific format to work with JSON. In the standard syntax no fields are required - pass only what you need. Keep in mind you will be able to access any additional properties you specify - jsTree won't touch them and you will be able to use them later on.</p>
+						<p>To change the icon of the node use the <code>icon</code> property. Specifying a string containing a <code>/</code> will display that image as the node icon. Using any other string will apply that class to the <code>&lt;i&gt;</code> element that is used to represent the icon. You can use boolean <code>false</code> to make jsTree render the node with no icon.</p>
+						<p>You can set the state on a node using the <code>state</code> property. Use any combination of the following: <code>opened</code>, <code>selected</code>, <code>disabled</code>.</p>
+						<p>Both <code>li_attr</code> and <code>a_attr</code> are passed directly to jQuery's attr function.</p>
+						<p>When using AJAX set <code>children</code> to boolean <code>true</code> and jsTree will render the node as closed and make an additional request for that node when the user opens it.</p>
+						<p>Any nested children should either be objects following the same format, or plain strings (in which case the string is used for the node's text and everything else is autogenerated).</p>
 					</div>
-					<div class="col-md-7">
-						<pre><code>
-$('#tree').jstree({
-  'core' : {
+					<div class="col-md-6">
+						<pre><code><span class="comment">// Expected format of the node (there are no required fields)</span>
+{
+  id          : "string" <span class="comment">// will be autogenerated if omitted</span>
+  text        : "string" <span class="comment">// node text</span>
+  icon        : "string" <span class="comment">// string for custom</span>
+  state       : {
+    opened    : boolean  <span class="comment">// is the node open</span>
+    disabled  : boolean  <span class="comment">// is the node disabled</span>
+    selected  : boolean  <span class="comment">// is the node selected</span>
+  },
+  children    : []  <span class="comment">// array of strings or objects</span>
+  li_attr     : {}  <span class="comment">// attributes for the generated LI node</span>
+  a_attr      : {}  <span class="comment">// attributes for the generated A node</span>
+}</code></pre>
+					</div>
+				</div>
+				<h4>Alternative JSON format</h4>
+				<div class="row">
+					<div class="col-md-6">
+						<p>If you do not want to use the nested <code>children</code> approach, you can use the alternative syntax where each node object has two required fields: <code>id</code> &amp; <code>parent</code> and no <code>children</code> property (everything else remains the same).</p>
+						<p>jsTree will automatically build the hierarchy. To indicate a node should be a root node set its <code>parent</code> property to <code>"#"</code>.</p>
+						<p>This should be used mainly when you render the whole tree at once and is useful when data is stored in a database using adjacency.</p>
+					</div>
+					<div class="col-md-6">
+						<pre><code><span class="comment">// Alternative format of the node (id &amp; parent are required)</span>
+{
+  <strong>id          : "string"</strong> <span class="comment">// required</span>
+  <strong>parent      : "string"</strong> <span class="comment">// required</span>
+  text        : "string" <span class="comment">// node text</span>
+  icon        : "string" <span class="comment">// string for custom</span>
+  state       : {
+    opened    : boolean  <span class="comment">// is the node open</span>
+    disabled  : boolean  <span class="comment">// is the node disabled</span>
+    selected  : boolean  <span class="comment">// is the node selected</span>
+  },
+  li_attr     : {}  <span class="comment">// attributes for the generated LI node</span>
+  a_attr      : {}  <span class="comment">// attributes for the generated A node</span>
+}</code></pre>
+					</div>
+				</div>
+				<h4>Using JSON</h4>
+				<div class="row">
+					<div class="col-md-4">
+						<p>To populate the tree with a JSON object you need to use the <a href="#/api/?f=$.jstree.defaults.core.data"><code>$.jstree.defaults.core.data</code></a> config option.</p>
+						<p>The expected format is an array of nodes, where each node should be an object as described above or a simple string (in which case the string is used for the node's text property ane everything else is autogenerated). Any nested nodes are supplied in the same manner in the <code>children</code> property of their parent.</p>
+					</div>
+					<div class="col-md-4">
+						<pre><code>$('#using_json').jstree({ 'core' : {
     'data' : [
        'Simple root node',
        {
-         'id' : 'node_2',
-         'text' : 'Root node with options',
-         'state' : { 'opened' : true, 'selected' : true },
-         'children' : [ { 'text' : 'Child 1' }, 'Child 2']
+         'text' : 'Root node 2',
+         'state' : {
+           'opened' : true,
+           'selected' : true
+         },
+         'children' : [
+           { 'text' : 'Child 1' },
+           'Child 2'
+         ]
       }
     ]
-  }
-});
-/*
- Expected format of the node (there are no required fields)
-  id          : // node ID, will be autogenerated if omitted
-  text        : // node text
-  icon        : // node icon, false for no icon, string for custom
-  state       : {
-    opened    : // is the node open
-    disabled  : // is the node disabled
-    selected  : // is the node selected
-  },
-  children    : // array of strings or objects same as this one
-  li_attr     : // object of attributes to use for the generated LI node
-  a_attr      : // object of attributes to use for the generated A node
-*/
-						</code></pre>
+} });</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="using_json" class="demo">
+						</div>
+						<script>
+						$(function () {
+							$('#using_json').jstree({ 'core' : {
+							    'data' : [
+							       'Simple root node',
+							       {
+							         'text' : 'Root node 2',
+							         'state' : {
+							           'opened' : true, 'selected' : true
+							         },
+							         'children' : [
+							           { 'text' : 'Child 1' },
+							           'Child 2'
+							         ]
+							      }
+							    ]
+							} });
+						});</script>
+					</div>
+				</div>
+				<h4>Using the alternative JSON format</h4>
+				<div class="row">
+					<div class="col-md-8">
+						<pre><code>$('#using_json_2').jstree({ 'core' : {
+    'data' : [
+       { "id" : "ajson1", "parent" : "#", "text" : "Simple root node" },
+       { "id" : "ajson2", "parent" : "#", "text" : "Root node 2" },
+       { "id" : "ajson3", "parent" : "ajson2", "text" : "Child 1" },
+       { "id" : "ajson4", "parent" : "ajson2", "text" : "Child 2" },
+    ]
+} });</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="using_json_2" class="demo">
+						</div>
+						<script>
+						$(function () {
+							$('#using_json_2').jstree({ 'core' : {
+							    'data' : [
+							       { "id" : "ajson1", "parent" : "#", "text" : "Simple root node" },
+							       { "id" : "ajson2", "parent" : "#", "text" : "Root node 2", "state" : { "opened" : true } },
+							       { "id" : "ajson3", "parent" : "ajson2", "text" : "Child 1" },
+							       { "id" : "ajson4", "parent" : "ajson2", "text" : "Child 2" },
+							    ]
+							} });
+						});</script>
 					</div>
 				</div>
 				<h4>Using AJAX</h4>
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-4">
 						<p>You can also use AJAX to populate the tree with JSON your server returns. The format remains the same as the above, the only difference is that the JSON is not inside the config object, but returned from the server.</p>
 						<p>To take advantage of this option you need to use the <a href="#/api/?f=$.jstree.defaults.core.data"><code>$.jstree.defaults.core.data</code></a> config option.</p>
 						<p>Just use a standard jQuery-like AJAX config and jstree will automatically make an AJAX request populate the tree with the response.</p>
 						<p>In addition to the standard jQuery ajax options here you can supply functions for <code>data</code> and <code>url</code>, the functions will be run in the current instance's scope and a param will be passed indicating which node is being loaded, the return value of those functions will be used as URL and data respectively.</p>
 					</div>
-					<div class="col-md-7">
+					<div class="col-md-4">
 						<pre><code>
-// AJAX
 $('#tree').jstree({
 'core' : {
   'data' : {
-    'url' : '/get/children/',
+    'url' : function (node) {
+      return node.id === '#' ? 
+        'ajax_roots.json' : 
+        'ajax_children.json';
+    },
     'data' : function (node) {
-      /* notable contents of node
-      {
-        id          : // node ID
-        text        : // node text
-        icon        : // node icon - true for default, false for no icon, string for custom
-        parent      : // parent ID
-        parents     : // array of IDs of all the parents
-        children    : // array of IDs of all immediate children
-        children_d  : // array of IDS of all children including grandchildren, etc
-        state       : {
-          opened    : // is the node open
-          disabled  : // is the node disabled
-          selected  : // is the node selected
-          loaded    : // are the node's immediate children loaded (useful in AJAX configs)
-        },
-        original    : // if JSON is used as data - the original JSON for the node
-      }
-      */
       return { 'id' : node.id };
     }
   }
 });
 						</code></pre>
 					</div>
+					<div class="col-md-4">
+						<div id="using_json_3" class="demo"></div>
+						<script>
+						$(function () {
+							$('#using_json_3').jstree({
+								'core' : {
+									'data' : {
+									    'url' : function (node) {
+									      return node.id === '#' ? 'ajax_roots.json' : 'ajax_children.json';
+									    },
+									    'data' : function (node) {
+									      return { 'id' : node.id };
+									    }
+									}
+								}
+							});
+						});
+						</script>
+					</div>
 				</div>
 				<h4>Using a function</h4>
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-4">
 						<p>You can supply a function too. That function will receive two arguments - the node being loaded and a callback function to call with the children for that node once you are ready.</p>
 					</div>
-					<div class="col-md-7">
+					<div class="col-md-4">
 						<pre><code>
 $('#tree').jstree({
     'core' : {
-        'data' : function (obj, callback) {
-            callback.call(this, ['Root 1', 'Root 2']);
+        'data' : function (obj, cb) {
+            cb.call(this,
+              ['Root 1', 'Root 2']);
         }
-    });
+    }});
 						</code></pre>
 					</div>
+					<div class="col-md-4">
+						<div id="using_json_4" class="demo"></div>
+						<script>
+						$(function () {
+							$('#using_json_4').jstree({
+							    'core' : {
+							        'data' : function (obj, callback) {
+							            callback.call(this, ['Root 1', 'Root 2']);
+							        }
+							    }});
+						});
+						</script>
+					</div>
 				</div>
-				<div class="row" style="margin-top:3em;">
+
+				</div><div id="events" class="tab-content-item">
+
+				<div class="row">
 					<div class="col-md-12">
 						<h3><i class="glyphicon glyphicon-leaf"></i> Listening for events</h3>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-12">
 						<p>jsTree triggers various events on the container. You can review <a href="#/api/?q=.jstree Event">the list of all events</a> to know what to listen for.</p>
 						<p>To get more information about the event inspect its <code>data</code> argument.</p>
-						<p>In most cases where a node is involved you will get the whole node object passed in. If you get an ID string somewhere and want to inspect the node just use <a href="#/api/?f=get_node(obj [, as_dom])">.get_node()</a>.
-					</div>
-					<div class="col-md-7">
-						<pre><code>
-$('#jstree')
-	<span class="comment">// listen for event</span>
-	<strong>.on('changed.jstree',</strong> function (e, <strong>data</strong>) {
-		var i, j, r = [];
-		for(i = 0, j = data.selected.length; i < j; i++) {
-			r.push($(this).jstree(true).get_node(data.selected[i]).text);
-		}
-		alert('You selected ' + r.join(', '));
-	})
-	<span class="comment">// create the instance</span>
-	.jstree();
-						</code></pre>
+						<p>In most cases where a node is involved you will get the whole node object passed in. If you get an ID string somewhere and want to inspect the node just use <a href="#/api/?f=get_node(obj [, as_dom])">.get_node()</a>.</p>
 					</div>
 				</div>
-				<div class="row" style="margin-top:3em;">
+				<div class="row">
+					<div class="col-md-8">
+						<pre><code>
+$('#jstree')
+  <span class="comment">// listen for event</span>
+  <strong>.on('changed.jstree',</strong> function (e, <strong>data</strong>) {
+    var i, j, r = [];
+    for(i = 0, j = data.selected.length; i < j; i++) {
+      r.push(data.instance.get_node(data.selected[i]).text);
+    }
+    $('#event_result').html('Selected: ' + r.join(', '));
+  })
+  <span class="comment">// create the instance</span>
+  .jstree();
+						</code></pre>
+					</div>
+					<div class="col-md-4">
+						<div id="using_events" class="demo">
+							<ul>
+								<li id="r1" class="jstree-open" data-jstree='{"selected":true}'>Root 1
+									<ul>
+										<li id="n1">Child 1</li>
+										<li id="n2">Child 2</li>
+									</ul>
+								</li>
+								<li id="r2" class="jstree-open">Root 2
+									<ul>
+										<li id="n3">Child 3</li>
+										<li id="n4">Child 4</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<div id="event_result" style="margin-top:2em; text-align:center;">asdf</div>
+						<script>
+						$(function () {
+							$('#using_events')
+								.on('changed.jstree', function (e, data) {
+									var i, j, r = [];
+									for(i = 0, j = data.selected.length; i < j; i++) {
+										r.push(data.instance.get_node(data.selected[i]).text);
+									}
+									$('#event_result').html('Selected:<br /> ' + r.join(', '));
+								})
+								.jstree();
+						});
+						</script>
+					</div>
+				</div>
+
+				</div><div id="interaction" class="tab-content-item">
+
+				<div class="row">
 					<div class="col-md-12">
 						<h3><i class="glyphicon glyphicon-leaf"></i> Invoking methods on an instance</h3>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-4">
 						<p>To invoke a method on an instance you must obtain a reference of the instance and invoke the method. The example shows how to obtain a reference and invoke a method.</p>
 						<p>Check the API for <a href="#/api/?q=(">a list of available methods</a>.
 					</div>
-					<div class="col-md-7">
+					<div class="col-md-4">
 						<pre><code>
 <span class="comment">// 3 ways of doing the same thing</span>
-$('#jstree').jstree(true).refresh();
-$('#jstree').jstree('refresh');
-$.jstree.reference('#jstree').refresh();
+$('#jstree').jstree(true)
+  .select_node('mn1');
+$('#jstree')
+  .jstree('select_node', 'mn2');
+$.jstree.reference('#jstree')
+  .select_node('mn3');
 						</code></pre>
 					</div>
+					<div class="col-md-4">
+						<div style="text-align:center; margin-bottom:1em;">
+							<button class="btn btn-info" onclick="$('#using_methods').jstree(true).select_node('mn1');">select 1</button> 
+							<button class="btn btn-info" onclick="$('#using_methods').jstree('select_node', 'mn2');">select 2</button> 
+							<button class="btn btn-info" onclick="$.jstree.reference('#using_methods').select_node('mn3');">select 3</button> 
+						</div>
+						<div id="using_methods" class="demo">
+							<ul>
+								<li id="mn1">Node 1</li>
+								<li id="mn2">Node 2</li>
+								<li id="mn3">Node 3</li>
+							</ul>
+						</div>
+						<script>
+						$(function () {
+							$('#using_methods').jstree();
+						});
+						</script>
+					</div>
 				</div>
+
+				</div></div>
+
 			</div>
 		</div>
 		<div class="row page" id="demo">
 			<div class="col-md-12">
 				<div class="row">
+					<div class="col-md-4 col-sm-8 col-xs-8">
+						<button type="button" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-asterisk"></i> Create</button>
+						<button type="button" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-pencil"></i> Rename</button>
+						<button type="button" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i> Delete</button>
+					</div>
+					<div class="col-md-2 col-sm-4 col-xs-4" style="text-align:right;">
+						<input type="text" value="" style="box-shadow:inset 0 0 4px #eee; width:120px; margin:0; padding:6px 12px; border-radius:4px; border:1px solid silver; font-size:1.1em;" placeholder="Search" />
+					</div>
+				</div>
+				<div class="row">
 					<div class="col-md-6">
-						<div style="text-align:center;">
-							<button type="button" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-asterisk"></i> Create new</button>
-							<button type="button" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-pencil"></i> Rename</button>
-							<button type="button" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-remove"></i> Delete</button>
-							<input type="text" value="" style="display:block; box-shadow:inset 0 0 4px #ccc; margin:1em auto; padding:6px 12px; border-radius:10px; border:1px solid silver; font-size:1.1em;" placeholder="Search" />
-						</div>
 						<div id="jstree_demo" class="demo" style="margin-top:1em; min-height:400px;"><ul>
 								<li data-jstree='{"opened":true,"type":"root"}'>Root node
 									<ul>
@@ -561,12 +809,12 @@ $.jstree.reference('#jstree').refresh();
 						</script>
 					</div>
 					<div class="col-md-6">
-						<pre><code>$("#jstree_demo").jstree();</code></pre>
+						<pre style="margin-top:1em;"><code>$("#jstree_demo").jstree();</code></pre>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<div id="log" style="margin-top:2em; padding:1em; min-height:200px; overflow:auto; border:1px solid silver; border-radius:5px;">LOG HERE</div>
+						<p style="text-align:center; margin-top:2em;"><a href="http://jsfiddle.net/vakata/3khw3/">This demo is available as a jsFiddle &raquo;</a></p>
 					</div>
 				</div>
 			</div>
@@ -803,6 +1051,7 @@ $.jstree.reference('#jstree').refresh();
 					<div class="col-md-4">
 <pre><code>$(function () {
   $("#plugins6").jstree({
+    "state" : { "key" : "demo2" },
     "plugins" : [ "state" ]
   });
 });</code></pre>
@@ -824,6 +1073,7 @@ $.jstree.reference('#jstree').refresh();
 						<script>
 						$(function () {
 							$("#plugins6").jstree({
+								"state" : { "key" : "demo2" },
 								"plugins" : [ "state" ]
 							});
 						});

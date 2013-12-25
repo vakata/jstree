@@ -650,7 +650,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.trigger(\"init\");\n\n\t\t\tthis._data.core.original_container_html = this.element.find(\" > ul > li\").clone(true);\n\t\t\tthis._data.core.original_container_html\n\t\t\t\t.find(\"li\").addBack()\n\t\t\t\t.contents().filter(function() {\n\t\t\t\t\treturn this.nodeType === 3 && (!this.nodeValue || /^\\s+$/.test(this.nodeValue));\n\t\t\t\t})\n\t\t\t\t.remove();\n\t\t\tthis.element.html(\"<\"+\"ul class='jstree-container-ul'><\"+\"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><\"+\"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-loading-icon'></i>\" + this.get_string(\"Loading ...\") + \"</a></li></ul>\");\n\t\t\tthis._data.core.li_height = this.get_container_ul().children(\"li:eq(0)\").height() || 18;"
+		"code": "this.trigger(\"init\");\n\n\t\t\tthis._data.core.original_container_html = this.element.find(\" > ul > li\").clone(true);\n\t\t\tthis._data.core.original_container_html\n\t\t\t\t.find(\"li\").addBack()\n\t\t\t\t.contents().filter(function() {\n\t\t\t\t\treturn this.nodeType === 3 && (!this.nodeValue || /^\\s+$/.test(this.nodeValue));\n\t\t\t\t})\n\t\t\t\t.remove();\n\t\t\tthis.element.html(\"<\"+\"ul class='jstree-container-ul'><\"+\"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><\"+\"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>\" + this.get_string(\"Loading ...\") + \"</a></li></ul>\");\n\t\t\tthis._data.core.li_height = this.get_container_ul().children(\"li:eq(0)\").height() || 18;"
 	},
 	{
 		"tags": [
