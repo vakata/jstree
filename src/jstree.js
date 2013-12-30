@@ -2477,7 +2477,8 @@
 			if(!pos.match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
 				return this.load_node(par, function () { this.create_node(par, node, pos, callback, true); });
 			}
-			if(!node) { node = this.get_string('New node'); }
+			if(!node) { node = { "text" : this.get_string('New node') }; }
+			if(node.text === undefined) { node.text = this.get_string('New node'); }
 			var tmp, dpc, i, j;
 
 			if(par.id === '#') {
@@ -2507,7 +2508,9 @@
 					break;
 			}
 			if(pos > par.children.length) { pos = par.children.length; }
+			if(!node.id) { node.id = true; }
 			if(!this.check("create_node", node, par, pos)) { return false; }
+			delete node.id;
 			node = this._parse_model_from_json(node, par.id, par.parents.concat());
 			if(!node) { return false; }
 			tmp = this.get_node(node);
@@ -2528,7 +2531,7 @@
 			tmp[pos] = node.id;
 			par.children = tmp;
 
-			this.redraw_node(par);
+			this.redraw_node(par, true);
 			if(callback) { callback.call(this, this.get_node(node)); }
 			/**
 			 * triggered when a node is created
@@ -3030,7 +3033,7 @@
 							if(key === 27) {
 								this.value = t;
 							}
-							if(key === 27 || key === 13 || key === 37 || key === 38 || key === 39 || key === 40) {
+							if(key === 27 || key === 13 || key === 37 || key === 38 || key === 39 || key === 40 || key === 32) {
 								event.stopImmediatePropagation();
 							}
 							if(key === 27 || key === 13) {

@@ -12,10 +12,14 @@ module.exports = function(grunt) {
       }
     },
     copy: {
-      dist : {
+      libs : {
         files : [
-          //{ expand: true, cwd : 'src/themes/default/', src: ['*.css','*.png','*.gif'], dest: 'dist/themes/default/' },
           { expand: true, cwd : 'libs/', src: ['*'], dest: 'dist/libs/' }
+        ]
+      },
+      docs : {
+        files : [
+          { expand: true, cwd : 'dist/', src: ['**/*'], dest: 'docs/assets/dist/' }
         ]
       }
     },
@@ -176,7 +180,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy','uglify','less','imagemin','qunit','dox']);
+  grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy:libs','uglify','less','imagemin','copy:docs','qunit','dox']);
   grunt.registerTask('js', ['concat','amd','uglify']);
   grunt.registerTask('css', ['copy','less']);
 

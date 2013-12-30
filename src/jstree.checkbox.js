@@ -279,13 +279,15 @@
 		this._undetermined = function () {
 			var i, j, m = this._model.data, s = this._data.core.selected, p = [], t = this;
 			for(i = 0, j = s.length; i < j; i++) {
-				p = p.concat(m[s[i]].parents);
+				if(m[s[i]] && m[s[i]].parents) {
+					p = p.concat(m[s[i]].parents);
+				}
 			}
 			// attempt for server side undetermined state
 			this.element.find('.jstree-closed').not(':has(ul)')
 				.each(function () {
 					var tmp = t.get_node(this);
-					if(!tmp.state.loaded && tmp.original.state.undetermined === true) {
+					if(!tmp.state.loaded && tmp.original && tmp.original.state && tmp.original.state.undetermined && tmp.original.state.undetermined === true) {
 						p.push(tmp.id);
 						p = p.concat(tmp.parents);
 					}

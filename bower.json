@@ -1,6 +1,6 @@
 {
   "name": "jstree",
-  "version": "3.0.0",
+  "version": "3.0.0-beta",
   "main" : [
     "./dist/jstree.min.js",
     "./dist/themes/default/style.min.css"
