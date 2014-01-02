@@ -942,6 +942,7 @@
 		load_node : function (obj, callback) {
 			var t1, t2;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.load_node(obj[t1], callback);
 				}
@@ -1672,6 +1673,7 @@
 		open_node : function (obj, callback, animation) {
 			var t1, t2, d, t;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.open_node(obj[t1], callback, animation);
 				}
@@ -1772,6 +1774,7 @@
 		close_node : function (obj, animation) {
 			var t1, t2, t, d;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.close_node(obj[t1], animation);
 				}
@@ -1826,6 +1829,7 @@
 		toggle_node : function (obj) {
 			var t1, t2;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.toggle_node(obj[t1]);
 				}
@@ -1929,6 +1933,7 @@
 		enable_node : function (obj) {
 			var t1, t2;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.enable_node(obj[t1]);
 				}
@@ -1957,6 +1962,7 @@
 		disable_node : function (obj) {
 			var t1, t2;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.disable_node(obj[t1]);
 				}
@@ -2086,6 +2092,7 @@
 		select_node : function (obj, supress_event, prevent_open) {
 			var dom, t1, t2, th;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.select_node(obj[t1], supress_event, prevent_open);
 				}
@@ -2138,6 +2145,7 @@
 		deselect_node : function (obj, supress_event) {
 			var t1, t2, dom;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.deselect_node(obj[t1], supress_event);
 				}
@@ -2417,6 +2425,7 @@
 		set_text : function (obj, val) {
 			var t1, t2, dom, tmp;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.set_text(obj[t1], val);
 				}
@@ -2578,6 +2587,7 @@
 		rename_node : function (obj, val) {
 			var t1, t2, old;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.rename_node(obj[t1], val);
 				}
@@ -2609,6 +2619,7 @@
 		delete_node : function (obj) {
 			var t1, t2, par, pos, tmp, i, j, k, l, c;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.delete_node(obj[t1]);
 				}
@@ -2690,7 +2701,7 @@
 		move_node : function (obj, par, pos, callback, is_loaded) {
 			var t1, t2, old_par, new_par, old_ins, is_multi, dpc, tmp, i, j, k, l, p;
 			if($.isArray(obj)) {
-				obj.reverse();
+				obj = obj.reverse().slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.move_node(obj[t1], par, pos, callback, is_loaded);
 				}
@@ -2825,7 +2836,7 @@
 		copy_node : function (obj, par, pos, callback, is_loaded) {
 			var t1, t2, dpc, tmp, i, j, node, old_par, new_par, old_ins, is_multi;
 			if($.isArray(obj)) {
-				obj.reverse();
+				obj = obj.reverse().slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.copy_node(obj[t1], par, pos, callback, is_loaded);
 				}
@@ -3196,6 +3207,7 @@
 		set_icon : function (obj, icon) {
 			var t1, t2, dom;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.set_icon(obj[t1], icon);
 				}
@@ -3234,6 +3246,7 @@
 		hide_icon : function (obj) {
 			var t1, t2;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.hide_icon(obj[t1]);
 				}
@@ -3253,6 +3266,7 @@
 		show_icon : function (obj) {
 			var t1, t2, dom;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.show_icon(obj[t1]);
 				}
@@ -5599,6 +5613,7 @@
 		this.set_type = function (obj, type) {
 			var t, t1, t2;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.set_type(obj[t1], type);
 				}

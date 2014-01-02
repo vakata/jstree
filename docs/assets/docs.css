@@ -4,7 +4,8 @@ body { background:transparent; line-height:1.6em; }
 .container { min-width:320px; max-width:960px; }
 #head { background:#333; border-bottom:4px solid #73796B; min-height:75px; }
 #logo { margin:0; padding:0; height:60px; }
-#logo a { display:block; margin:0 auto; height:100%; width:160px; overflow:hidden; text-indent:110%; white-space:nowrap; background:url('./images/logo.png') left 5px no-repeat; }
+#logo span { position:absolute; right:0; top:1px; font-size:10px; background:#D9E3CB; box-shadow:0 0 4px black; padding:1px 6px 3px 6px; border-radius:4px; text-indent:0; color:black; font-weight:bold; }
+#logo a { position:relative; display:block; margin:0 auto; height:100%; width:160px; overflow:hidden; text-indent:110%; white-space:nowrap; background:url('./images/logo.png') left 5px no-repeat; }
 #content { box-shadow:0 20px 0px 20px rgba(255,255,255,0.3); }
 #menu { text-align:center; vertical-align:top; }
 #menu > li { margin:0 10px 0 0; display:inline-block; float:none; }

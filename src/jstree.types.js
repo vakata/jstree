@@ -145,6 +145,7 @@
 		this.set_type = function (obj, type) {
 			var t, t1, t2;
 			if($.isArray(obj)) {
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.set_type(obj[t1], type);
 				}
