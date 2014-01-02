@@ -1122,7 +1122,11 @@
 				}
 				// 3) normalize && populate parents and children_d with recursion
 				for(i = 0, j = p.children.length; i < j; i++) {
-					this._parse_model_from_flat_json(m[p.children[i]], par, p.parents.concat());
+					tmp = this._parse_model_from_flat_json(m[p.children[i]], par, p.parents.concat());
+					dpc.push(tmp);
+					if(m[tmp].children_d.length) {
+						dpc = dpc.concat(m[tmp].children_d);
+					}
 				}
 				// ?) three_state selection - p.state.selected && t - (if three_state foreach(dat => ch) -> foreach(parents) if(parent.selected) child.selected = true;
 			}
@@ -1738,6 +1742,25 @@
 					this.trigger("after_open", { "node" : obj });
 				}
 			}
+		},
+		/**
+		 * opens every parent of a node (node should be loaded)
+		 * @name _open_to(obj)
+		 * @param {mixed} obj the node to reveal
+		 * @private
+		 */
+		_open_to : function (obj) {
+			obj = this.get_node(obj);
+			if(!obj || obj.id === '#') {
+				return false;
+			}
+			var i, j, p = obj.parents;
+			for(i = 0, j = p.length; i < j; i+=1) {
+				if(i !== '#') {
+					this.open_node(p[i], false, 0);
+				}
+			}
+			return $(document.getElementById(obj.id));
 		},
 		/**
 		 * closes a node, hiding its children
@@ -2989,11 +3012,8 @@
 		 * @param  {String} default_text the text to populate the input with (if omitted the node text value is used)
 		 */
 		edit : function (obj, default_text) {
-			obj = this.get_node(obj, true);
+			obj = this._open_to(obj);
 			if(!obj || !obj.length) { return false; }
-			obj.parentsUntil(".jstree",".jstree-closed").each($.proxy(function (i, v) {
-				this.open_node(v, false, 0);
-			}, this));
 			var rtl = this._data.core.rtl,
 				w  = this.element.width(),
 				a  = obj.children('.jstree-anchor'),

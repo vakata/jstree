@@ -1664,7 +1664,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "_append_json_data : function (dom, data) {\n\t\t\tdom = this.get_node(dom);\n\t\t\tvar dat = data,\n\t\t\t\tpar = dom.id,\n\t\t\t\tchd = [],\n\t\t\t\tdpc = [],\n\t\t\t\tm = this._model.data,\n\t\t\t\tp = m[par],\n\t\t\t\ts = this._data.core.selected.length,\n\t\t\t\ttmp, i, j;\n\t\t\tif(!$.isArray(dat)) { dat = [dat]; }\n\t\t\tif(dat.length && dat[0].id !== undefined && dat[0].parent !== undefined) {\n\t\t\t\t// Flat JSON support (for easy import from DB):\n\t\t\t\t// 1) convert to object (foreach)\n\t\t\t\tfor(i = 0, j = dat.length; i < j; i++) {\n\t\t\t\t\tif(!dat[i].children) {\n\t\t\t\t\t\tdat[i].children = [];\n\t\t\t\t\t}\n\t\t\t\t\tm[dat[i].id] = dat[i];\n\t\t\t\t}\n\t\t\t\t// 2) populate children (foreach)\n\t\t\t\tfor(i = 0, j = dat.length; i < j; i++) {\n\t\t\t\t\tm[dat[i].parent].children.push(dat[i].id);\n\t\t\t\t\t// populate parent.children_d\n\t\t\t\t\tp.children_d.push(dat[i].id);\n\t\t\t\t}\n\t\t\t\t// 3) normalize && populate parents and children_d with recursion\n\t\t\t\tfor(i = 0, j = p.children.length; i < j; i++) {\n\t\t\t\t\tthis._parse_model_from_flat_json(m[p.children[i]], par, p.parents.concat());\n\t\t\t\t}\n\t\t\t\t// ?) three_state selection - p.state.selected && t - (if three_state foreach(dat => ch) -> foreach(parents) if(parent.selected) child.selected = true;\n\t\t\t}\n\t\t\telse {\n\t\t\t\tfor(i = 0, j = dat.length; i < j; i++) {\n\t\t\t\t\ttmp = this._parse_model_from_json(dat[i], par, p.parents.concat());\n\t\t\t\t\tif(tmp) {\n\t\t\t\t\t\tchd.push(tmp);\n\t\t\t\t\t\tdpc.push(tmp);\n\t\t\t\t\t\tif(m[tmp].children_d.length) {\n\t\t\t\t\t\t\tdpc = dpc.concat(m[tmp].children_d);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tp.children = chd;\n\t\t\t\tp.children_d = dpc;\n\t\t\t\tfor(i = 0, j = p.parents.length; i < j; i++) {\n\t\t\t\t\tm[p.parents[i]].children_d = m[p.parents[i]].children_d.concat(dpc);\n\t\t\t\t}\n\t\t\t}\n\t\t\tthis.trigger('model', { \"nodes\" : dpc, 'parent' : par });\n\n\t\t\tif(par !== '#') {\n\t\t\t\tthis._node_changed(par);\n\t\t\t\tthis.redraw();\n\t\t\t}\n\t\t\telse {\n\t\t\t\t// this.get_container_ul().children('.jstree-initial-node').remove();\n\t\t\t\tthis.redraw(true);\n\t\t\t}\n\t\t\tif(this._data.core.selected.length !== s) {\n\t\t\t\tthis.trigger('changed', { 'action' : 'model', 'selected' : this._data.core.selected });\n\t\t\t}\n\t\t\treturn true;\n\t\t},"
+		"code": "_append_json_data : function (dom, data) {\n\t\t\tdom = this.get_node(dom);\n\t\t\tvar dat = data,\n\t\t\t\tpar = dom.id,\n\t\t\t\tchd = [],\n\t\t\t\tdpc = [],\n\t\t\t\tm = this._model.data,\n\t\t\t\tp = m[par],\n\t\t\t\ts = this._data.core.selected.length,\n\t\t\t\ttmp, i, j;\n\t\t\tif(!$.isArray(dat)) { dat = [dat]; }\n\t\t\tif(dat.length && dat[0].id !== undefined && dat[0].parent !== undefined) {\n\t\t\t\t// Flat JSON support (for easy import from DB):\n\t\t\t\t// 1) convert to object (foreach)\n\t\t\t\tfor(i = 0, j = dat.length; i < j; i++) {\n\t\t\t\t\tif(!dat[i].children) {\n\t\t\t\t\t\tdat[i].children = [];\n\t\t\t\t\t}\n\t\t\t\t\tm[dat[i].id] = dat[i];\n\t\t\t\t}\n\t\t\t\t// 2) populate children (foreach)\n\t\t\t\tfor(i = 0, j = dat.length; i < j; i++) {\n\t\t\t\t\tm[dat[i].parent].children.push(dat[i].id);\n\t\t\t\t\t// populate parent.children_d\n\t\t\t\t\tp.children_d.push(dat[i].id);\n\t\t\t\t}\n\t\t\t\t// 3) normalize && populate parents and children_d with recursion\n\t\t\t\tfor(i = 0, j = p.children.length; i < j; i++) {\n\t\t\t\t\ttmp = this._parse_model_from_flat_json(m[p.children[i]], par, p.parents.concat());\n\t\t\t\t\tdpc.push(tmp);\n\t\t\t\t\tif(m[tmp].children_d.length) {\n\t\t\t\t\t\tdpc = dpc.concat(m[tmp].children_d);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\t// ?) three_state selection - p.state.selected && t - (if three_state foreach(dat => ch) -> foreach(parents) if(parent.selected) child.selected = true;\n\t\t\t}\n\t\t\telse {\n\t\t\t\tfor(i = 0, j = dat.length; i < j; i++) {\n\t\t\t\t\ttmp = this._parse_model_from_json(dat[i], par, p.parents.concat());\n\t\t\t\t\tif(tmp) {\n\t\t\t\t\t\tchd.push(tmp);\n\t\t\t\t\t\tdpc.push(tmp);\n\t\t\t\t\t\tif(m[tmp].children_d.length) {\n\t\t\t\t\t\t\tdpc = dpc.concat(m[tmp].children_d);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tp.children = chd;\n\t\t\t\tp.children_d = dpc;\n\t\t\t\tfor(i = 0, j = p.parents.length; i < j; i++) {\n\t\t\t\t\tm[p.parents[i]].children_d = m[p.parents[i]].children_d.concat(dpc);\n\t\t\t\t}\n\t\t\t}\n\t\t\tthis.trigger('model', { \"nodes\" : dpc, 'parent' : par });\n\n\t\t\tif(par !== '#') {\n\t\t\t\tthis._node_changed(par);\n\t\t\t\tthis.redraw();\n\t\t\t}\n\t\t\telse {\n\t\t\t\t// this.get_container_ul().children('.jstree-initial-node').remove();\n\t\t\t\tthis.redraw(true);\n\t\t\t}\n\t\t\tif(this._data.core.selected.length !== s) {\n\t\t\t\tthis.trigger('changed', { 'action' : 'model', 'selected' : this._data.core.selected });\n\t\t\t}\n\t\t\treturn true;\n\t\t},"
 	},
 	{
 		"tags": [
@@ -2038,6 +2038,34 @@
 		"isPrivate": false,
 		"ignore": false,
 		"code": "this.trigger(\"after_open\", { \"node\" : obj });\n\t\t\t\t}\n\t\t\t}\n\t\t},"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "_open_to(obj)"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "obj",
+				"description": "the node to reveal"
+			},
+			{
+				"type": "private",
+				"string": ""
+			}
+		],
+		"description": {
+			"full": "<p>opens every parent of a node (node should be loaded)</p>",
+			"summary": "<p>opens every parent of a node (node should be loaded)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "_open_to : function (obj) {\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tvar i, j, p = obj.parents;\n\t\t\tfor(i = 0, j = p.length; i < j; i+=1) {\n\t\t\t\tif(i !== '#') {\n\t\t\t\t\tthis.open_node(p[i], false, 0);\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn $(document.getElementById(obj.id));\n\t\t},"
 	},
 	{
 		"tags": [
@@ -4184,7 +4212,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "edit : function (obj, default_text) {\n\t\t\tobj = this.get_node(obj, true);\n\t\t\tif(!obj || !obj.length) { return false; }\n\t\t\tobj.parentsUntil(\".jstree\",\".jstree-closed\").each($.proxy(function (i, v) {\n\t\t\t\tthis.open_node(v, false, 0);\n\t\t\t}, this));\n\t\t\tvar rtl = this._data.core.rtl,\n\t\t\t\tw  = this.element.width(),\n\t\t\t\ta  = obj.children('.jstree-anchor'),"
+		"code": "edit : function (obj, default_text) {\n\t\t\tobj = this._open_to(obj);\n\t\t\tif(!obj || !obj.length) { return false; }\n\t\t\tvar rtl = this._data.core.rtl,\n\t\t\t\tw  = this.element.width(),\n\t\t\t\ta  = obj.children('.jstree-anchor'),"
 	},
 	{
 		"tags": [],
