@@ -3029,6 +3029,7 @@
 			var rtl = this._data.core.rtl,
 				w  = this.element.width(),
 				a  = obj.children('.jstree-anchor'),
+				s  = $('<span>'),
 				/*!
 				oi = obj.children("i:visible"),
 				ai = a.children("i:visible"),
@@ -3051,13 +3052,14 @@
 							"width" : "150px" // will be set a bit further down
 						},
 						"blur" : $.proxy(function () {
-							var i = a.children(".jstree-rename-input"),
+							var i = s.children(".jstree-rename-input"),
 								v = i.val();
 							if(v === "") { v = t; }
 							h1.remove();
-							i.remove();
+							s.replaceWith(a);
+							s.remove();
 							if(this.rename_node(obj, v) === false) {
-								this.rename_node(obj, t);
+								this.set_text(obj, t);
 							}
 						}, this),
 						"keydown" : function (event) {
@@ -3073,6 +3075,8 @@
 								this.blur();
 							}
 						},
+						"click" : function (e) { e.stopImmediatePropagation(); },
+						"mousedown" : function (e) { e.stopImmediatePropagation(); },
 						"keyup" : function (event) {
 							h2.width(Math.min(h1.text("pW" + this.value).width(),w));
 						},
@@ -3091,7 +3095,8 @@
 						wordSpacing		: a.css('wordSpacing')		|| ''
 				};
 			this.set_text(obj, "");
-			a.append(h2);
+			s.attr('class', a.attr('class')).append(a.contents().clone()).append(h2);
+			a.replaceWith(s);
 			h1.css(fn);
 			h2.css(fn).width(Math.min(h1.text("pW" + h2[0].value).width(),w))[0].select();
 		},
