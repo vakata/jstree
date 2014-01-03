@@ -289,8 +289,8 @@
 					if($.vakata.context.settings.icons) {
 						str += "<"+"ins ";
 						if(val.icon) {
-							if(val.icon.indexOf("/") !== -1)	{ str += " style='background:url(\"" + val.icon + "\") center center no-repeat' "; }
-							else								{ str += " class='" + val.icon + "' "; }
+							if(val.icon.indexOf("/") !== -1 || val.icon.indexOf(".") !== -1) { str += " style='background:url(\"" + val.icon + "\") center center no-repeat' "; }
+							else { str += " class='" + val.icon + "' "; }
 						}
 						str += ">&#160;<"+"/ins><"+"span>&#160;<"+"/span>";
 					}

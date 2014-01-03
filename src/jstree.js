@@ -1612,7 +1612,7 @@
 				if(obj.icon === false) {
 					node.childNodes[1].childNodes[0].className += ' jstree-themeicon-hidden';
 				}
-				else if(obj.icon.indexOf('/') === -1) {
+				else if(obj.icon.indexOf('/') === -1 && obj.icon.indexOf('.') === -1) {
 					node.childNodes[1].childNodes[0].className += ' ' + obj.icon + ' jstree-themeicon-custom';
 				}
 				else {
@@ -2632,16 +2632,24 @@
 			pos = $.inArray(obj.id, par.children);
 			c = false;
 			if(!this.check("delete_node", obj, par, pos)) { return false; }
-			par.children = $.vakata.array_remove(par.children, pos);
+			if(pos !== -1) {
+				par.children = $.vakata.array_remove(par.children, pos);
+			}
 			tmp = obj.children_d.concat([]);
 			tmp.push(obj.id);
 			for(k = 0, l = tmp.length; k < l; k++) {
 				for(i = 0, j = obj.parents.length; i < j; i++) {
-					this._model.data[obj.parents[i]].children_d = $.vakata.array_remove(this._model.data[obj.parents[i]].children_d, $.inArray(tmp[k], this._model.data[obj.parents[i]].children_d));
+					pos = $.inArray(tmp[k], this._model.data[obj.parents[i]].children_d);
+					if(pos !== -1) {
+						this._model.data[obj.parents[i]].children_d = $.vakata.array_remove(this._model.data[obj.parents[i]].children_d, pos);
+					}
 				}
 				if(this._model.data[tmp[k]].state.selected) {
 					c = true;
-					this._data.core.selected = $.vakata.array_remove(this._data.core.selected, $.inArray(tmp[k], this._data.core.selected));
+					pos = $.inArray(tmp[k], this._data.core.selected);
+					if(pos !== -1) {
+						this._data.core.selected = $.vakata.array_remove(this._data.core.selected, pos);
+					}
 				}
 			}
 			/**
@@ -2655,7 +2663,9 @@
 			if(c) {
 				this.trigger('changed', { 'action' : 'delete_node', 'node' : obj, 'selected' : this._data.core.selected, 'parent' : par.id });
 			}
-			delete this._model.data[obj.id];
+			for(k = 0, l = tmp.length; k < l; k++) {
+				delete this._model.data[tmp[k]];
+			}
 			this.redraw_node(par, true);
 			return true;
 		},
@@ -2721,6 +2731,13 @@
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
 			old_ins = this._model.data[obj.id] ? this : $.jstree.reference(obj.id);
 			is_multi = (this._id !== old_ins._id);
+			if(is_multi) {
+				if(this.copy_node(obj, par, pos, callback, is_loaded)) {
+					old_ins.delete_node(obj);
+					return true;
+				}
+				return false;
+			}
 			//var m = this._model.data;
 			if(new_par.id === '#') {
 				if(pos === "before") { pos = "first"; }
@@ -2746,7 +2763,7 @@
 			}
 			if(pos > new_par.children.length) { pos = new_par.children.length; }
 			if(!this.check("move_node", obj, new_par, pos)) { return false; }
-			if(!is_multi && obj.parent === new_par.id) {
+			if(obj.parent === new_par.id) {
 				dpc = new_par.children.concat();
 				tmp = $.inArray(obj.id, dpc);
 				if(tmp !== -1) {
@@ -2794,19 +2811,20 @@
 				// update object
 				obj.parent = new_par.id;
 				tmp = new_par.parents.concat();
-				tmp.push(new_par.id);
+				tmp.unshift(new_par.id);
+				p = obj.parents.length;
 				obj.parents = tmp;
 
-				if(is_multi) {
-					old_ins.delete_node(obj.id);
-					this._node_changed(new_par.id);
-					this.redraw(new_par.id === '#');
+				// update object children
+				tmp = tmp.concat();
+				for(i = 0, j = obj.children_d.length; i < j; i++) {
+					this._model.data[obj.children_d[i]].parents = this._model.data[obj.children_d[i]].parents.slice(0,p*-1);
+					Array.prototype.push.apply(this._model.data[obj.children_d[i]].parents, tmp);
 				}
-				else {
-					this._node_changed(old_par);
-					this._node_changed(new_par.id);
-					this.redraw(old_par === '#' || new_par.id === '#');
-				}
+
+				this._node_changed(old_par);
+				this._node_changed(new_par.id);
+				this.redraw(old_par === '#' || new_par.id === '#');
 			}
 			if(callback) { callback.call(this, obj, new_par, pos); }
 			/**
@@ -3226,7 +3244,7 @@
 			if(icon === false) {
 				this.removeClass('jstree-themeicon-custom').hide_icon(obj);
 			}
-			else if(icon.indexOf("/") === -1) {
+			else if(icon.indexOf("/") === -1 && icon.indexOf(".") === -1) {
 				dom.addClass(icon + ' jstree-themeicon-custom').attr("rel",icon);
 			}
 			else {

@@ -188,7 +188,11 @@
 				if(!data.data.jstree) { return; }
 				marker.hide();
 				if(lastmv) {
-					lastmv.ins[ data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ](data.data.nodes, lastmv.par, lastmv.pos);
+					var i, j, nodes = [];
+					for(i = 0, j = data.data.nodes.length; i < j; i++) {
+						nodes[i] = data.data.origin.get_node(data.data.nodes[i]);
+					}
+					lastmv.ins[ data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);
 				}
 			})
 			.bind('keyup keydown', function (e, data) {
