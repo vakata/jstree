@@ -2405,6 +2405,35 @@
 			});
 		},
 		/**
+		 * set (change) the ID of a node
+		 * @name set_id(obj, id)
+		 * @param  {mixed} obj the node
+		 * @param  {String} id the new ID
+		 * @return {Boolean}
+		 */
+		set_id : function (obj, id) {
+			obj = this.get_node(obj);
+			if(!obj || obj.id === '#') { return false; }
+			var i, j, m = this._model.data;
+			// update parents (replace current ID with new one in children and children_d)
+			m[obj.parent].children[$.inArray(obj.id, m[obj.parent].children)] = id;
+			for(i = 0, j = obj.parents.length; i < j; i++) {
+				m[obj.parents[i]].children_d[$.inArray(obj.id, m[obj.parents[i]].children_d)] = id;
+			}
+			// update children (replace current ID with new one in parent and parents)
+			for(i = 0, j = obj.children.length; i < j; i++) {
+				m[obj.children[i]].parent = id;
+			}
+			for(i = 0, j = obj.children_d.length; i < j; i++) {
+				m[obj.children_d[i]].parents[$.inArray(obj.id, m[obj.children_d[i]].parents)] = id;
+			}
+			// update model and obj itself (obj.id, this._model.data[KEY])
+			delete m[obj.id];
+			obj.id = id;
+			m[id] = obj;
+			return true;
+		},
+		/**
 		 * get the text value of a node
 		 * @name get_text(obj)
 		 * @param  {mixed} obj the node
