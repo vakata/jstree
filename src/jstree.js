@@ -1622,7 +1622,8 @@
 					node.childNodes[1].childNodes[0].className += ' jstree-themeicon-custom';
 				}
 			}
-			node.childNodes[1].appendChild(d.createTextNode(obj.text));
+			//node.childNodes[1].appendChild(d.createTextNode(obj.text));
+			node.childNodes[1].innerHTML += obj.text;
 			if(obj.data) { $.data(node, obj.data); }
 
 			if(deep && obj.children.length && obj.state.opened) {
