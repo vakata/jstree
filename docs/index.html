@@ -604,6 +604,7 @@ $('#jstree').jstree();</code></pre>
 						<p>To take advantage of this option you need to use the <a href="/api/?f=$.jstree.defaults.core.data"><code>$.jstree.defaults.core.data</code></a> config option.</p>
 						<p>Just use a standard jQuery-like AJAX config and jstree will automatically make an AJAX request populate the tree with the response.</p>
 						<p>In addition to the standard jQuery ajax options here you can supply functions for <code>data</code> and <code>url</code>, the functions will be run in the current instance's scope and a param will be passed indicating which node is being loaded, the return value of those functions will be used as URL and data respectively.</p>
+						<p>If you do not return correct json headers from the server, at least set the <code>dataType</code> jQuery AJAX option to <code>"json"</code>.</p>
 					</div>
 					<div class="col-md-4">
 						<pre><code>

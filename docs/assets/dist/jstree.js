@@ -1575,7 +1575,7 @@
 				if(obj.li_attr.hasOwnProperty(i)) {
 					if(i === 'id') { continue; }
 					if(i !== 'class') {
-						_node.setAttribute(i, obj.li_attr[i]);
+						node.setAttribute(i, obj.li_attr[i]);
 					}
 					else {
 						c += obj.li_attr[i];
