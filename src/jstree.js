@@ -764,23 +764,25 @@
 				obj = obj.id;
 			}
 			var dom;
-			if(this._model.data[obj]) {
-				obj = this._model.data[obj];
-			}
-			else if(((dom = $(obj, this.element)).length || (dom = $('#' + obj, this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {
-				obj = this._model.data[dom.closest('li').attr('id')];
-			}
-			else if((dom = $(obj, this.element)).length && dom.hasClass('jstree')) {
-				obj = this._model.data['#'];
-			}
-			else {
-				return false;
-			}
+			try {
+				if(this._model.data[obj]) {
+					obj = this._model.data[obj];
+				}
+				else if(((dom = $(obj, this.element)).length || (dom = $('#' + obj, this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {
+					obj = this._model.data[dom.closest('li').attr('id')];
+				}
+				else if((dom = $(obj, this.element)).length && dom.hasClass('jstree')) {
+					obj = this._model.data['#'];
+				}
+				else {
+					return false;
+				}
 
-			if(as_dom) {
-				obj = obj.id === '#' ? this.element : $(document.getElementById(obj.id));
-			}
-			return obj;
+				if(as_dom) {
+					obj = obj.id === '#' ? this.element : $(document.getElementById(obj.id));
+				}
+				return obj;
+			} catch (ex) { return false; }
 		},
 		/**
 		 * get the next visible node that is below the `obj` node. If `strict` is set to `true` only sibling nodes are returned.

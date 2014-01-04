@@ -1062,7 +1062,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "get_node : function (obj, as_dom) {\n\t\t\tif(obj && obj.id) {\n\t\t\t\tobj = obj.id;\n\t\t\t}\n\t\t\tvar dom;\n\t\t\tif(this._model.data[obj]) {\n\t\t\t\tobj = this._model.data[obj];\n\t\t\t}\n\t\t\telse if(((dom = $(obj, this.element)).length || (dom = $('#' + obj, this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {\n\t\t\t\tobj = this._model.data[dom.closest('li').attr('id')];\n\t\t\t}\n\t\t\telse if((dom = $(obj, this.element)).length && dom.hasClass('jstree')) {\n\t\t\t\tobj = this._model.data['#'];\n\t\t\t}\n\t\t\telse {\n\t\t\t\treturn false;\n\t\t\t}\n\n\t\t\tif(as_dom) {\n\t\t\t\tobj = obj.id === '#' ? this.element : $(document.getElementById(obj.id));\n\t\t\t}\n\t\t\treturn obj;\n\t\t},"
+		"code": "get_node : function (obj, as_dom) {\n\t\t\tif(obj && obj.id) {\n\t\t\t\tobj = obj.id;\n\t\t\t}\n\t\t\tvar dom;\n\t\t\ttry {\n\t\t\t\tif(this._model.data[obj]) {\n\t\t\t\t\tobj = this._model.data[obj];\n\t\t\t\t}\n\t\t\t\telse if(((dom = $(obj, this.element)).length || (dom = $('#' + obj, this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {\n\t\t\t\t\tobj = this._model.data[dom.closest('li').attr('id')];\n\t\t\t\t}\n\t\t\t\telse if((dom = $(obj, this.element)).length && dom.hasClass('jstree')) {\n\t\t\t\t\tobj = this._model.data['#'];\n\t\t\t\t}\n\t\t\t\telse {\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\n\t\t\t\tif(as_dom) {\n\t\t\t\t\tobj = obj.id === '#' ? this.element : $(document.getElementById(obj.id));\n\t\t\t\t}\n\t\t\t\treturn obj;\n\t\t\t} catch (ex) { return false; }\n\t\t},"
 	},
 	{
 		"tags": [
