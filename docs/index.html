@@ -169,7 +169,7 @@
   <strong>$('#jstree').jstree(true).select_node('child_node_1');</strong>
   <strong>$('#jstree').jstree('select_node', 'child_node_1');</strong>
   <strong>$.jstree.reference('#jstree').select_node('child_node_1');</strong>
-}</code></pre>
+});</code></pre>
 							</li>
 						</ol>
 					</div>
@@ -199,7 +199,7 @@
       &lt;/li&gt;
       &lt;li&gt;Root node 2&lt;/li&gt;
     &lt;/ul&gt;
-  &lt;div&gt;
+  &lt;/div&gt;
   &lt;button&gt;demo button&lt;/button&gt;
 
   <span class="comment">&lt;!-- <strong>4</strong> include the <a href="http://jquery.org">jQuery</a> library --&gt;</span>
@@ -214,12 +214,12 @@
     <strong>$('#jstree').on("changed.jstree", function (e, data) {
       console.log(data.selected);
     });</strong>
-    <span class="comment">// <strong>8</strong> interact the tree - either way is OK</span>
+    <span class="comment">// <strong>8</strong> interact with the tree - either way is OK</span>
     $('button').on('click', function () {
       <strong>$('#jstree').jstree(true).select_node('child_node_1');</strong>
       <strong>$('#jstree').jstree('select_node', 'child_node_1');</strong>
       <strong>$.jstree.reference('#jstree').select_node('child_node_1');</strong>
-    }
+    });
   });
   &lt;/script&gt;
 &lt;/body&gt;
@@ -721,7 +721,7 @@ $('#jstree')
 								</li>
 							</ul>
 						</div>
-						<div id="event_result" style="margin-top:2em; text-align:center;">asdf</div>
+						<div id="event_result" style="margin-top:2em; text-align:center;">&nbsp;</div>
 						<script>
 						$(function () {
 							$('#using_events')
@@ -743,6 +743,11 @@ $('#jstree')
 				<div class="row">
 					<div class="col-md-12">
 						<h3><i class="glyphicon glyphicon-leaf"></i> Invoking methods on an instance</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-warning">Please keep in mind that by default all modifications to the tree are prevented (create, rename, move, delete). To enable them set <a href="/api/?q=check_callback&amp;f=$.jstree.defaults.core.check_callback">core.check_callback</a> to <code>true</code></div>
 					</div>
 				</div>
 				<div class="row">

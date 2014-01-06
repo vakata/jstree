@@ -286,7 +286,8 @@
 
 		function _init() {
 			var localStorageReallyWorks = false, data;
-			if(window.hasOwnProperty("localStorage")){
+			//if(window.hasOwnProperty("localStorage")){
+			if(Object.prototype.hasOwnProperty.call(window, "localStorage")){
 				try {
 					window.localStorage.setItem('_tmptest', 'tmpval');
 					localStorageReallyWorks = true;
@@ -305,7 +306,8 @@
 					}
 				} catch(ignore) {/*! Firefox fails when touching localStorage and cookies are disabled */}
 			}
-			else if(window.hasOwnProperty("globalStorage")) {
+			//else if(window.hasOwnProperty("globalStorage")) {
+			else if(Object.prototype.hasOwnProperty.call(window, "globalStorage")) {
 				try {
 					if(window.globalStorage) {
 						_storage_service = window.globalStorage[window.location.hostname];
