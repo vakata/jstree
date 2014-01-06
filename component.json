@@ -11,7 +11,7 @@
   ],
   "scripts": [
     "dist/jstree.js",
-    "dist/jstree-min.js"
+    "dist/jstree.min.js"
   ],
   "images": [
     "dist/themes/default/32px.png",
