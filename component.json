@@ -10,7 +10,7 @@
     "jstree"
   ],
   "scripts": [
-    "dist/jstree.js"
+    "dist/jstree.js",
     "dist/jstree-min.js"
   ],
   "images": [
