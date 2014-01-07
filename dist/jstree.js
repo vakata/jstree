@@ -1793,7 +1793,7 @@
 			if(d.length) {
 				if(!animation) {
 					d[0].className = d[0].className.replace('jstree-open', 'jstree-closed');
-					//d.children('ul').remove();
+					d.children('ul').remove();
 				}
 				else {
 					d
@@ -2109,13 +2109,11 @@
 			if(!obj.state.selected) {
 				obj.state.selected = true;
 				this._data.core.selected.push(obj.id);
-
-				if(dom.length) {
+				if(!prevent_open) {
+					dom = this._open_to(obj);
+				}
+				if(dom && dom.length) {
 					dom.children('.jstree-anchor').addClass('jstree-clicked');
-					if(!prevent_open) {
-						th = this;
-						dom.parents(".jstree-closed").each(function () { th.open_node(this, false, 0); });
-					}
 				}
 				/**
 				 * triggered when an node is selected
