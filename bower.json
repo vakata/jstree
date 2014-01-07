@@ -15,11 +15,11 @@
 		"libs",
 		"src",
 		"*.md",
-		"AUTHORS.txt",
-		"jstree.jquery.js",
+		"jstree.jquery.json",
 		"gruntfile.js",
 		"package.json",
 		"bower.json",
+		"component.json",
 		"LICENCE-MIT",
 		"README.md"
 	],
