@@ -3343,13 +3343,15 @@
 	$.vakata.attributes = function(node, with_values) {
 		node = $(node)[0];
 		var attr = with_values ? {} : [];
-		$.each(node.attributes, function (i, v) {
-			if($.inArray(v.nodeName.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }
-			if(v.nodeValue !== null && $.trim(v.nodeValue) !== '') {
-				if(with_values) { attr[v.nodeName] = v.nodeValue; }
-				else { attr.push(v.nodeName); }
-			}
-		});
+		if(node && node.attributes) {
+			$.each(node.attributes, function (i, v) {
+				if($.inArray(v.nodeName.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }
+				if(v.nodeValue !== null && $.trim(v.nodeValue) !== '') {
+					if(with_values) { attr[v.nodeName] = v.nodeValue; }
+					else { attr.push(v.nodeName); }
+				}
+			});
+		}
 		return attr;
 	};
 	$.vakata.array_unique = function(array) {
