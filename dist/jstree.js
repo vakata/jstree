@@ -5599,6 +5599,21 @@
 						}
 					}, this));
 		};
+		this.get_json = function (obj, options) {
+			var i, j,
+				m = this._model.data,
+				tmp = parent.get_json.call(this, obj, options);
+			if(tmp === false) { return false; }
+			if($.isArray(tmp)) {
+				for(i = 0, j = tmp.length; i < j; i++) {
+					tmp[i].type = tmp[i].id && m[tmp[i].id] && m[tmp[i].id].type ? m[tmp[i].id].type : "default";
+				}
+			}
+			else {
+				tmp.type = tmp.id && m[tmp.id] && m[tmp.id].type ? m[tmp.id].type : "default";
+			}
+			return tmp;
+		};
 		this.check = function (chk, obj, par, pos) {
 			if(parent.check.call(this, chk, obj, par, pos) === false) { return false; }
 			obj = obj && obj.id ? obj : this.get_node(obj);
