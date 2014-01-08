@@ -2244,11 +2244,12 @@
 		},
 		/**
 		 * get an array of all selected node IDs
-		 * @name get_selected()
+		 * @name get_selected([full])
+		 * @param  {mixed}  full if set to `true` the returned array will consist of the full node objects, otherwise - only IDs will be returned
 		 * @return {Array}
 		 */
-		get_selected : function () {
-			return this._data.core.selected;
+		get_selected : function (full) {
+			return full ? $.map(this._data.core.selected, $.proxy(function (i) { return this.get_node(i); }, this)) : this._data.core.selected;
 		},
 		/**
 		 * gets the current state of the tree so that it can be restored later with `set_state(state)`. Used internally.
