@@ -30,7 +30,14 @@
   text-decoration: none;
   color: inherit;
 }
-.jstree-icon,
+.jstree-icon {
+  display: inline-block;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+  text-align: center;
+}
 .jstree-icon:empty {
   display: inline-block;
   text-decoration: none;
@@ -381,7 +388,11 @@
   line-height: 24px;
   height: 24px;
 }
-.jstree-default .jstree-icon,
+.jstree-default .jstree-icon {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
 .jstree-default .jstree-icon:empty {
   width: 24px;
   height: 24px;
@@ -503,7 +514,11 @@
   line-height: 18px;
   height: 18px;
 }
-.jstree-default-small .jstree-icon,
+.jstree-default-small .jstree-icon {
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+}
 .jstree-default-small .jstree-icon:empty {
   width: 18px;
   height: 18px;
@@ -625,7 +640,11 @@
   line-height: 32px;
   height: 32px;
 }
-.jstree-default-large .jstree-icon,
+.jstree-default-large .jstree-icon {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
 .jstree-default-large .jstree-icon:empty {
   width: 32px;
   height: 32px;

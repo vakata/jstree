@@ -986,6 +986,10 @@ $.jstree.reference('#jstree')
 					<div class="col-md-4">
 <pre><code>$(function () {
   $("#plugins2").jstree({
+     "core" : {
+       // so that create works
+       "check_callback" : true
+     },
     "plugins" : [ "contextmenu" ]
   });
 });</code></pre>
@@ -1004,6 +1008,9 @@ $.jstree.reference('#jstree')
 						$(function () {
 							$("#plugins2")
 								.jstree({
+									"core" : {
+										"check_callback" : true
+									},
 									"plugins" : [ "contextmenu" ]
 								});
 						});

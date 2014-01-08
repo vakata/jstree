@@ -2429,6 +2429,10 @@
 				m[obj.children_d[i]].parents[$.inArray(obj.id, m[obj.children_d[i]].parents)] = id;
 			}
 			// update model and obj itself (obj.id, this._model.data[KEY])
+			i = this.get_node(obj.id, true);
+			if(i) {
+				i.attr('id', id);
+			}
 			delete m[obj.id];
 			obj.id = id;
 			m[id] = obj;
