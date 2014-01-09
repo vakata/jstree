@@ -52,7 +52,13 @@
 		 * @name $.jstree.defaults.search.show_only_matches
 		 * @plugin search
 		 */
-		show_only_matches : false
+		show_only_matches : false,
+		/**
+		 * Indicates if all nodes opened to reveal the search result, should be closed when the search is cleared or a new search is performed. Default is `true`.
+		 * @name $.jstree.defaults.search.close_opened_onclear
+		 * @plugin search
+		 */
+		close_opened_onclear : true
 	};
 
 	$.jstree.plugins.search = function (options, parent) {
@@ -62,6 +68,7 @@
 			this._data.search.str = "";
 			this._data.search.dom = $();
 			this._data.search.res = [];
+			this._data.search.opn = [];
 
 			if(this.settings.search.show_only_matches) {
 				this.element
@@ -109,6 +116,7 @@
 			this._data.search.str = str;
 			this._data.search.dom = $();
 			this._data.search.res = [];
+			this._data.search.opn = [];
 
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
 
@@ -149,6 +157,9 @@
 		 */
 		this.clear_search = function () {
 			this._data.search.dom.children(".jstree-anchor").removeClass("jstree-search");
+			if(this.settings.search.close_opened_onclear) {
+				this.close_node(this._data.search.opn);
+			}
 			/**
 			 * triggered after search is complete
 			 * @event
@@ -161,6 +172,7 @@
 			this.trigger('clear_search', { 'nodes' : this._data.search.dom, str : this._data.search.str, res : this._data.search.res });
 			this._data.search.str = "";
 			this._data.search.res = [];
+			this._data.search.opn = [];
 			this._data.search.dom = $();
 		};
 		/**
@@ -176,6 +188,7 @@
 				v = document.getElementById(v);
 				if(v) {
 					if(t.is_closed(v)) {
+						t._data.search.opn.push(v.id);
 						t.open_node(v, function () { t._search_open(d); });
 					}
 				}

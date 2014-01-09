@@ -5263,7 +5263,27 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "show_only_matches : false\n\t};\n\n\t$.jstree.plugins.search = function (options, parent) {\n\t\tthis.bind = function () {\n\t\t\tparent.bind.call(this);\n\n\t\t\tthis._data.search.str = \"\";\n\t\t\tthis._data.search.dom = $();\n\t\t\tthis._data.search.res = [];\n\n\t\t\tif(this.settings.search.show_only_matches) {\n\t\t\t\tthis.element\n\t\t\t\t\t.on(\"search.jstree\", function (e, data) {\n\t\t\t\t\t\tif(data.nodes.length) {\n\t\t\t\t\t\t\t$(this).find(\"li\").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');\n\t\t\t\t\t\t\tdata.nodes.parentsUntil(\".jstree\").addBack().show()\n\t\t\t\t\t\t\t\t.filter(\"ul\").each(function () { $(this).children(\"li:visible\").eq(-1).addClass(\"jstree-last\"); });\n\t\t\t\t\t\t}\n\t\t\t\t\t})\n\t\t\t\t\t.on(\"clear_search.jstree\", function (e, data) {\n\t\t\t\t\t\tif(data.nodes.length) {\n\t\t\t\t\t\t\t$(this).find(\"li\").css(\"display\",\"\").filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t}\n\t\t};"
+		"code": "show_only_matches : false,"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "$.jstree.defaults.search.close_opened_onclear"
+			},
+			{
+				"type": "plugin",
+				"string": "search"
+			}
+		],
+		"description": {
+			"full": "<p>Indicates if all nodes opened to reveal the search result, should be closed when the search is cleared or a new search is performed. Default is <code>true</code>.</p>",
+			"summary": "<p>Indicates if all nodes opened to reveal the search result, should be closed when the search is cleared or a new search is performed. Default is <code>true</code>.</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "close_opened_onclear : true\n\t};\n\n\t$.jstree.plugins.search = function (options, parent) {\n\t\tthis.bind = function () {\n\t\t\tparent.bind.call(this);\n\n\t\t\tthis._data.search.str = \"\";\n\t\t\tthis._data.search.dom = $();\n\t\t\tthis._data.search.res = [];\n\t\t\tthis._data.search.opn = [];\n\n\t\t\tif(this.settings.search.show_only_matches) {\n\t\t\t\tthis.element\n\t\t\t\t\t.on(\"search.jstree\", function (e, data) {\n\t\t\t\t\t\tif(data.nodes.length) {\n\t\t\t\t\t\t\t$(this).find(\"li\").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');\n\t\t\t\t\t\t\tdata.nodes.parentsUntil(\".jstree\").addBack().show()\n\t\t\t\t\t\t\t\t.filter(\"ul\").each(function () { $(this).children(\"li:visible\").eq(-1).addClass(\"jstree-last\"); });\n\t\t\t\t\t\t}\n\t\t\t\t\t})\n\t\t\t\t\t.on(\"clear_search.jstree\", function (e, data) {\n\t\t\t\t\t\tif(data.nodes.length) {\n\t\t\t\t\t\t\t$(this).find(\"li\").css(\"display\",\"\").filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t}\n\t\t};"
 	},
 	{
 		"tags": [
@@ -5303,7 +5323,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.search = function (str, skip_async) {\n\t\t\tif(str === false || $.trim(str) === \"\") {\n\t\t\t\treturn this.clear_search();\n\t\t\t}\n\t\t\tvar s = this.settings.search,\n\t\t\t\ta = s.ajax ? $.extend({}, s.ajax) : false,\n\t\t\t\tf = null,\n\t\t\t\tr = [],\n\t\t\t\tp = [], i, j;\n\t\t\tif(this._data.search.res.length) {\n\t\t\t\tthis.clear_search();\n\t\t\t}\n\t\t\tif(!skip_async && a !== false) {\n\t\t\t\tif(!a.data) { a.data = {}; }\n\t\t\t\ta.data.str = str;\n\t\t\t\treturn $.ajax(s.ajax).done($.proxy(function (d) {\n\t\t\t\t\tthis._search_load(d, str);\n\t\t\t\t}, this));\n\t\t\t}\n\t\t\tthis._data.search.str = str;\n\t\t\tthis._data.search.dom = $();\n\t\t\tthis._data.search.res = [];\n\n\t\t\tf = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });\n\n\t\t\t$.each(this._model.data, function (i, v) {\n\t\t\t\tif(v.text && f.search(v.text).isMatch) {\n\t\t\t\t\tr.push(i);\n\t\t\t\t\tp = p.concat(v.parents);\n\t\t\t\t}\n\t\t\t});\n\t\t\tif(r.length) {\n\t\t\t\tp = $.vakata.array_unique(p);\n\t\t\t\tthis._search_open(p);\n\t\t\t\tfor(i = 0, j = r.length; i < j; i++) {\n\t\t\t\t\tf = this.get_node(r[i], true);\n\t\t\t\t\tif(f) {\n\t\t\t\t\t\tthis._data.search.dom = this._data.search.dom.add(f);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tthis._data.search.res = r;\n\t\t\t\tthis._data.search.dom.children(\".jstree-anchor\").addClass('jstree-search');\n\t\t\t}",
+		"code": "this.search = function (str, skip_async) {\n\t\t\tif(str === false || $.trim(str) === \"\") {\n\t\t\t\treturn this.clear_search();\n\t\t\t}\n\t\t\tvar s = this.settings.search,\n\t\t\t\ta = s.ajax ? $.extend({}, s.ajax) : false,\n\t\t\t\tf = null,\n\t\t\t\tr = [],\n\t\t\t\tp = [], i, j;\n\t\t\tif(this._data.search.res.length) {\n\t\t\t\tthis.clear_search();\n\t\t\t}\n\t\t\tif(!skip_async && a !== false) {\n\t\t\t\tif(!a.data) { a.data = {}; }\n\t\t\t\ta.data.str = str;\n\t\t\t\treturn $.ajax(s.ajax).done($.proxy(function (d) {\n\t\t\t\t\tthis._search_load(d, str);\n\t\t\t\t}, this));\n\t\t\t}\n\t\t\tthis._data.search.str = str;\n\t\t\tthis._data.search.dom = $();\n\t\t\tthis._data.search.res = [];\n\t\t\tthis._data.search.opn = [];\n\n\t\t\tf = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });\n\n\t\t\t$.each(this._model.data, function (i, v) {\n\t\t\t\tif(v.text && f.search(v.text).isMatch) {\n\t\t\t\t\tr.push(i);\n\t\t\t\t\tp = p.concat(v.parents);\n\t\t\t\t}\n\t\t\t});\n\t\t\tif(r.length) {\n\t\t\t\tp = $.vakata.array_unique(p);\n\t\t\t\tthis._search_open(p);\n\t\t\t\tfor(i = 0, j = r.length; i < j; i++) {\n\t\t\t\t\tf = this.get_node(r[i], true);\n\t\t\t\t\tif(f) {\n\t\t\t\t\t\tthis._data.search.dom = this._data.search.dom.add(f);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tthis._data.search.res = r;\n\t\t\t\tthis._data.search.dom.children(\".jstree-anchor\").addClass('jstree-search');\n\t\t\t}",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
@@ -5381,7 +5401,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.clear_search = function () {\n\t\t\tthis._data.search.dom.children(\".jstree-anchor\").removeClass(\"jstree-search\");",
+		"code": "this.clear_search = function () {\n\t\t\tthis._data.search.dom.children(\".jstree-anchor\").removeClass(\"jstree-search\");\n\t\t\tif(this.settings.search.close_opened_onclear) {\n\t\t\t\tthis.close_node(this._data.search.opn);\n\t\t\t}",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
@@ -5435,7 +5455,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.trigger('clear_search', { 'nodes' : this._data.search.dom, str : this._data.search.str, res : this._data.search.res });\n\t\t\tthis._data.search.str = \"\";\n\t\t\tthis._data.search.res = [];\n\t\t\tthis._data.search.dom = $();\n\t\t};"
+		"code": "this.trigger('clear_search', { 'nodes' : this._data.search.dom, str : this._data.search.str, res : this._data.search.res });\n\t\t\tthis._data.search.str = \"\";\n\t\t\tthis._data.search.res = [];\n\t\t\tthis._data.search.opn = [];\n\t\t\tthis._data.search.dom = $();\n\t\t};"
 	},
 	{
 		"tags": [
@@ -5467,7 +5487,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this._search_open = function (d) {\n\t\t\tvar t = this;\n\t\t\t$.each(d.concat([]), function (i, v) {\n\t\t\t\tv = document.getElementById(v);\n\t\t\t\tif(v) {\n\t\t\t\t\tif(t.is_closed(v)) {\n\t\t\t\t\t\tt.open_node(v, function () { t._search_open(d); });\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\t\t};",
+		"code": "this._search_open = function (d) {\n\t\t\tvar t = this;\n\t\t\t$.each(d.concat([]), function (i, v) {\n\t\t\t\tv = document.getElementById(v);\n\t\t\t\tif(v) {\n\t\t\t\t\tif(t.is_closed(v)) {\n\t\t\t\t\t\tt._data.search.opn.push(v.id);\n\t\t\t\t\t\tt.open_node(v, function () { t._search_open(d); });\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\t\t};",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
