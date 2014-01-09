@@ -2577,7 +2577,7 @@
 			if(pos > par.children.length) { pos = par.children.length; }
 			if(!node.id) { node.id = true; }
 			if(!this.check("create_node", node, par, pos)) { return false; }
-			delete node.id;
+			if(node.id === true) { delete node.id; }
 			node = this._parse_model_from_json(node, par.id, par.parents.concat());
 			if(!node) { return false; }
 			tmp = this.get_node(node);
