@@ -3263,7 +3263,7 @@
 		 * @param {String} icon the new icon - can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
 		 */
 		set_icon : function (obj, icon) {
-			var t1, t2, dom;
+			var t1, t2, dom, old;
 			if($.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -3273,16 +3273,22 @@
 			}
 			obj = this.get_node(obj);
 			if(!obj || obj.id === '#') { return false; }
+			old = obj.icon;
 			obj.icon = icon;
-			dom = this.get_node(obj, true).children("jstree-anchor").children(".jstree-themeicon");
+			dom = this.get_node(obj, true).children(".jstree-anchor").children(".jstree-themeicon");
 			if(icon === false) {
-				this.removeClass('jstree-themeicon-custom').hide_icon(obj);
+				this.hide_icon(obj);
+			}
+			else if(icon === true) {
+				dom.removeClass('jstree-themeicon-custom ' + old).css("background","").removeAttr("rel");
 			}
 			else if(icon.indexOf("/") === -1 && icon.indexOf(".") === -1) {
+				dom.removeClass(old).css("background","");
 				dom.addClass(icon + ' jstree-themeicon-custom').attr("rel",icon);
 			}
 			else {
-				dom.removeClass('jstree-themeicon-custom').css("background", "url('" + icon + "') center center no-repeat").attr("rel",icon);
+				dom.removeClass(old).css("background","");
+				dom.addClass('jstree-themeicon-custom').css("background", "url('" + icon + "') center center no-repeat").attr("rel",icon);
 			}
 			return true;
 		},

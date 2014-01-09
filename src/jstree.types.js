@@ -158,7 +158,7 @@
 		 * @plugin types
 		 */
 		this.set_type = function (obj, type) {
-			var t, t1, t2;
+			var t, t1, t2, old_type, old_icon;
 			if($.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -169,9 +169,11 @@
 			t = this.settings.types;
 			obj = this.get_node(obj);
 			if(!t[type] || !obj) { return false; }
+			old_type = obj.type;
+			old_icon = this.get_icon(obj);
 			obj.type = type;
-			if(t[type].icon && this.get_icon(obj) === true) {
-				this.set_icon(obj, t[type].icon);
+			if(old_icon === true || (t[old_type] && t[old_type].icon && old_icon === t[old_type].icon)) {
+				this.set_icon(obj, t[type].icon || true);
 			}
 			return true;
 		};
