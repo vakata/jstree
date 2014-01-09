@@ -255,7 +255,7 @@
 								else {
 									if(p.state.selected) {
 										p.state.selected = false;
-										this._data.core.selected = $.vakata.array_remove(this._data.core.selected, $.inArray(p.id, this._data.core.selected));
+										this._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, p.id);
 										tmp = this.get_node(p, true);
 										if(tmp && tmp.length) {
 											tmp.children('.jstree-anchor').removeClass('jstree-clicked');

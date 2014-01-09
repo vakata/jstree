@@ -2159,7 +2159,7 @@
 			dom = this.get_node(obj, true);
 			if(obj.state.selected) {
 				obj.state.selected = false;
-				this._data.core.selected = $.vakata.array_remove(this._data.core.selected, $.inArray(obj.id, this._data.core.selected));
+				this._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, obj.id);
 				if(dom.length) {
 					dom.children('.jstree-anchor').removeClass('jstree-clicked');
 				}
@@ -2312,7 +2312,7 @@
 									if(t.is_closed(v)) {
 										t.open_node(v, false, 0);
 									}
-									$.vakata.array_remove(state.core.open, $.inArray(v,state.core.open));
+									$.vakata.array_remove_item(state.core.open, v);
 								}
 								else {
 									if(!t.is_loading(v)) {
@@ -2827,7 +2827,7 @@
 					}
 					old_ins._model.data[obj.parents[i]].children_d = dpc;
 				}
-				old_ins._model.data[old_par].children = $.vakata.array_remove(old_ins._model.data[old_par].children, $.inArray(obj.id, old_ins._model.data[old_par].children));
+				old_ins._model.data[old_par].children = $.vakata.array_remove_item(old_ins._model.data[old_par].children, obj.id);
 
 				// insert into new parent and up
 				for(i = 0, j = new_par.parents.length; i < j; i++) {
@@ -3377,6 +3377,11 @@
 		array.length = from < 0 ? array.length + from : from;
 		array.push.apply(array, rest);
 		return array;
+	};
+	// remove item from array
+	$.vakata.array_remove_item = function(array, item) {
+		var tmp = $.inArray(item, array);
+		return tmp !== -1 ? $.vakata.array_remove(array, tmp) : array;
 	};
 	// browser sniffing
 	(function () {
