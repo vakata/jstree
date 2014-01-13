@@ -529,7 +529,23 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "variant\t\t\t: false\n\t\t},"
+		"code": "variant\t\t\t: false,"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "$.jstree.defaults.core.themes.responsive"
+			}
+		],
+		"description": {
+			"full": "<p>a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to <code>true</code>.</p>",
+			"summary": "<p>a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to <code>true</code>.</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "responsive\t\t: true\n\t\t},"
 	},
 	{
 		"tags": [
@@ -4305,7 +4321,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "set_theme : function (theme_name, theme_url) {\n\t\t\tif(!theme_name) { return false; }\n\t\t\tif(theme_url === true) {\n\t\t\t\tvar dir = this.settings.core.themes.dir;\n\t\t\t\tif(!dir) { dir = $.jstree.path + '/themes'; }\n\t\t\t\ttheme_url = dir + '/' + theme_name + '/style.css';\n\t\t\t}\n\t\t\tif(theme_url && $.inArray(theme_url, themes_loaded) === -1) {\n\t\t\t\t$('head').append('<'+'link rel=\"stylesheet\" href=\"' + theme_url + '\" type=\"text/css\" />');\n\t\t\t\tthemes_loaded.push(theme_url);\n\t\t\t}\n\t\t\tif(this._data.core.themes.name) {\n\t\t\t\tthis.element.removeClass('jstree-' + this._data.core.themes.name);\n\t\t\t}\n\t\t\tthis._data.core.themes.name = theme_name;\n\t\t\tthis.element.addClass('jstree-' + theme_name);"
+		"code": "set_theme : function (theme_name, theme_url) {\n\t\t\tif(!theme_name) { return false; }\n\t\t\tif(theme_url === true) {\n\t\t\t\tvar dir = this.settings.core.themes.dir;\n\t\t\t\tif(!dir) { dir = $.jstree.path + '/themes'; }\n\t\t\t\ttheme_url = dir + '/' + theme_name + '/style.css';\n\t\t\t}\n\t\t\tif(theme_url && $.inArray(theme_url, themes_loaded) === -1) {\n\t\t\t\t$('head').append('<'+'link rel=\"stylesheet\" href=\"' + theme_url + '\" type=\"text/css\" />');\n\t\t\t\tthemes_loaded.push(theme_url);\n\t\t\t}\n\t\t\tif(this._data.core.themes.name) {\n\t\t\t\tthis.element.removeClass('jstree-' + this._data.core.themes.name);\n\t\t\t}\n\t\t\tthis._data.core.themes.name = theme_name;\n\t\t\tthis.element.addClass('jstree-' + theme_name);\n\t\t\tthis.element[this.settings.core.themes.responsive ? 'addClass' : 'removeClass' ]('jstree-' + theme_name + '-responsive');"
 	},
 	{
 		"tags": [

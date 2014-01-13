@@ -757,130 +757,130 @@
   background-position: 100% 1px;
 }
 @media (max-width: 768px) {
-  .jstree-default {
+  .jstree-default-responsive {
     /*
 		.jstree-open > .jstree-ocl,
 		.jstree-closed > .jstree-ocl { border-radius:20px; background-color:white; }
 		*/
   }
-  .jstree-default .jstree-icon {
+  .jstree-default-responsive .jstree-icon {
     background-image: url("40px.png");
   }
-  .jstree-default .jstree-node,
-  .jstree-default .jstree-leaf > .jstree-ocl {
+  .jstree-default-responsive .jstree-node,
+  .jstree-default-responsive .jstree-leaf > .jstree-ocl {
     background: transparent;
   }
-  .jstree-default .jstree-node {
+  .jstree-default-responsive .jstree-node {
     min-height: 40px;
     line-height: 40px;
     margin-left: 40px;
     min-width: 40px;
     white-space: nowrap;
   }
-  .jstree-default .jstree-anchor {
+  .jstree-default-responsive .jstree-anchor {
     line-height: 40px;
     height: 40px;
   }
-  .jstree-default .jstree-icon,
-  .jstree-default .jstree-icon:empty {
+  .jstree-default-responsive .jstree-icon,
+  .jstree-default-responsive .jstree-icon:empty {
     width: 40px;
     height: 40px;
     line-height: 40px;
   }
-  .jstree-default > .jstree-container-ul > .jstree-node {
+  .jstree-default-responsive > .jstree-container-ul > .jstree-node {
     margin-left: 0;
   }
-  .jstree-default.jstree-rtl .jstree-node {
+  .jstree-default-responsive.jstree-rtl .jstree-node {
     margin-left: 0;
     margin-right: 40px;
   }
-  .jstree-default.jstree-rtl .jstree-container-ul > .jstree-node {
+  .jstree-default-responsive.jstree-rtl .jstree-container-ul > .jstree-node {
     margin-right: 0;
   }
-  .jstree-default .jstree-ocl,
-  .jstree-default .jstree-themeicon,
-  .jstree-default .jstree-checkbox {
+  .jstree-default-responsive .jstree-ocl,
+  .jstree-default-responsive .jstree-themeicon,
+  .jstree-default-responsive .jstree-checkbox {
     background-size: 120px 200px;
   }
-  .jstree-default .jstree-leaf > .jstree-ocl {
+  .jstree-default-responsive .jstree-leaf > .jstree-ocl {
     background: transparent;
   }
-  .jstree-default .jstree-open > .jstree-ocl {
+  .jstree-default-responsive .jstree-open > .jstree-ocl {
     background-position: 0 0px !important;
   }
-  .jstree-default .jstree-closed > .jstree-ocl {
+  .jstree-default-responsive .jstree-closed > .jstree-ocl {
     background-position: 0 -40px !important;
   }
-  .jstree-default.jstree-rtl .jstree-closed > .jstree-ocl {
+  .jstree-default-responsive.jstree-rtl .jstree-closed > .jstree-ocl {
     background-position: -40px 0px !important;
   }
-  .jstree-default .jstree-anchor > .jstree-themeicon {
+  .jstree-default-responsive .jstree-anchor > .jstree-themeicon {
     background-position: -40px -40px;
   }
-  .jstree-default .jstree-checkbox,
-  .jstree-default .jstree-checkbox:hover {
+  .jstree-default-responsive .jstree-checkbox,
+  .jstree-default-responsive .jstree-checkbox:hover {
     background-position: -40px -80px;
   }
-  .jstree-default .jstree-clicked > .jstree-checkbox,
-  .jstree-default .jstree-clicked > .jstree-checkbox:hover {
+  .jstree-default-responsive .jstree-clicked > .jstree-checkbox,
+  .jstree-default-responsive .jstree-clicked > .jstree-checkbox:hover {
     background-position: 0 -80px;
   }
-  .jstree-default .jstree-anchor > .jstree-undetermined,
-  .jstree-default .jstree-anchor > .jstree-undetermined:hover {
+  .jstree-default-responsive .jstree-anchor > .jstree-undetermined,
+  .jstree-default-responsive .jstree-anchor > .jstree-undetermined:hover {
     background-position: 0 -120px;
   }
-  .jstree-default .jstree-anchor {
+  .jstree-default-responsive .jstree-anchor {
     font-weight: bold;
     font-size: 1.1em;
     text-shadow: 1px 1px white;
   }
-  .jstree-default > .jstree-striped {
+  .jstree-default-responsive > .jstree-striped {
     background: transparent;
   }
-  .jstree-default .jstree-wholerow {
+  .jstree-default-responsive .jstree-wholerow {
     border-top: 1px solid rgba(255, 255, 255, 0.7);
     border-bottom: 1px solid rgba(64, 64, 64, 0.2);
     background: #ebebeb;
     height: 40px;
   }
-  .jstree-default .jstree-wholerow-hovered {
+  .jstree-default-responsive .jstree-wholerow-hovered {
     background: #e7f4f9;
   }
-  .jstree-default .jstree-wholerow-clicked {
+  .jstree-default-responsive .jstree-wholerow-clicked {
     background: #beebff;
   }
-  .jstree-default .jstree-children .jstree-last > .jstree-wholerow {
+  .jstree-default-responsive .jstree-children .jstree-last > .jstree-wholerow {
     box-shadow: inset 0 -6px 3px -5px #666666;
   }
-  .jstree-default .jstree-children .jstree-open > .jstree-wholerow {
+  .jstree-default-responsive .jstree-children .jstree-open > .jstree-wholerow {
     box-shadow: inset 0 6px 3px -5px #666666;
     border-top: 0;
   }
-  .jstree-default .jstree-children .jstree-open + .jstree-open {
+  .jstree-default-responsive .jstree-children .jstree-open + .jstree-open {
     box-shadow: none;
   }
-  .jstree-default .jstree-node,
-  .jstree-default .jstree-icon,
-  .jstree-default .jstree-node > .jstree-ocl,
-  .jstree-default .jstree-themeicon,
-  .jstree-default .jstree-checkbox {
+  .jstree-default-responsive .jstree-node,
+  .jstree-default-responsive .jstree-icon,
+  .jstree-default-responsive .jstree-node > .jstree-ocl,
+  .jstree-default-responsive .jstree-themeicon,
+  .jstree-default-responsive .jstree-checkbox {
     background-image: url("40px.png");
     background-size: 120px 200px;
   }
-  .jstree-default .jstree-node {
+  .jstree-default-responsive .jstree-node {
     background-position: -80px 0;
     background-repeat: repeat-y;
   }
-  .jstree-default .jstree-last {
+  .jstree-default-responsive .jstree-last {
     background: transparent;
   }
-  .jstree-default .jstree-leaf > .jstree-ocl {
+  .jstree-default-responsive .jstree-leaf > .jstree-ocl {
     background-position: -40px -120px;
   }
-  .jstree-default .jstree-last > .jstree-ocl {
+  .jstree-default-responsive .jstree-last > .jstree-ocl {
     background-position: -40px -160px;
   }
-  .jstree-default .jstree-themeicon-custom {
+  .jstree-default-responsive .jstree-themeicon-custom {
     background-color: transparent;
     background-image: none;
   }

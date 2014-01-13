@@ -382,7 +382,12 @@
 			 * a string (or boolean `false`) specifying the theme variant to use (if the theme supports variants)
 			 * @name $.jstree.defaults.core.themes.variant
 			 */
-			variant			: false
+			variant			: false,
+			/**
+			 * a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to `true`.
+			 * @name $.jstree.defaults.core.themes.responsive
+			 */
+			responsive		: true
 		},
 		/**
 		 * if left as `true` all parents of all selected nodes will be opened once the tree loads (so that all selected nodes are visible to the user)
@@ -3177,6 +3182,7 @@
 			}
 			this._data.core.themes.name = theme_name;
 			this.element.addClass('jstree-' + theme_name);
+			this.element[this.settings.core.themes.responsive ? 'addClass' : 'removeClass' ]('jstree-' + theme_name + '-responsive');
 			/**
 			 * triggered when a theme is set
 			 * @event
