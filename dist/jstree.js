@@ -1877,7 +1877,7 @@
 			dom.each(function () {
 				_this.open_node(
 					this,
-					_this.is_loaded(this) ?
+					_this.is_leaf(this) ?
 						false :
 						function(dom) { this.open_all(dom, animation, original_obj); },
 					animation || 0
