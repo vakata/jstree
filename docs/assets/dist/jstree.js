@@ -2764,13 +2764,13 @@
 				return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); });
 			}
 
-			old_par = obj.parent.toString();
+			old_par = (obj.parent || '#').toString();
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
 			old_ins = this._model.data[obj.id] ? this : $.jstree.reference(obj.id);
-			is_multi = (this._id !== old_ins._id);
+			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
 			if(is_multi) {
 				if(this.copy_node(obj, par, pos, callback, is_loaded)) {
-					old_ins.delete_node(obj);
+					if(old_ins) { old_ins.delete_node(obj); }
 					return true;
 				}
 				return false;
@@ -2907,10 +2907,10 @@
 				return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true); });
 			}
 
-			old_par = obj.parent.toString();
+			old_par = (obj.parent || '#').toString();
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
 			old_ins = this._model.data[obj.id] ? this : $.jstree.reference(obj.id);
-			is_multi = (this._id !== old_ins._id);
+			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
 			if(new_par.id === '#') {
 				if(pos === "before") { pos = "first"; }
 				if(pos === "after") { pos = "last"; }
@@ -2935,9 +2935,9 @@
 			}
 			if(pos > new_par.children.length) { pos = new_par.children.length; }
 			if(!this.check("copy_node", obj, new_par, pos)) { return false; }
-
-			node = old_ins.get_json(obj, { no_id : true, no_data : true, no_state : true });
+			node = old_ins ? old_ins.get_json(obj, { no_id : true, no_data : true, no_state : true }) : obj;
 			if(!node) { return false; }
+			if(node.id === true) { delete node.id; }
 			node = this._parse_model_from_json(node, new_par.id, new_par.parents.concat());
 			if(!node) { return false; }
 			tmp = this.get_node(node);
@@ -4332,14 +4332,14 @@
 					marker.attr('class', 'jstree-' + ins.get_theme());
 					data.helper
 						.children().attr('class', 'jstree-' + ins.get_theme())
-						.find('.jstree-copy:eq(0)')[ data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'show' : 'hide' ]();
+						.find('.jstree-copy:eq(0)')[ data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'show' : 'hide' ]();
 
 
 					// if are hovering the container itself add a new root node
 					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && ins.get_container_ul().children().length === 0) {
 						ok = true;
 						for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
-							ok = ok && ins.check( (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"), data.data.nodes[t1], '#', 'last');
+							ok = ok && ins.check( (data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"), data.data.nodes[t1], '#', 'last');
 							if(!ok) { break; }
 						}
 						if(ok) {
@@ -4393,9 +4393,9 @@
 								*/
 								ok = true;
 								for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
-									op = data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node";
+									op = data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node";
 									ps = i;
-									if(op === "move_node" && v === 'a' && data.data.origin === ins && p === ins.get_parent(data.data.nodes[t1])) {
+									if(op === "move_node" && v === 'a' && (data.data.origin && data.data.origin === ins) && p === ins.get_parent(data.data.nodes[t1])) {
 										pr = ins.get_node(p);
 										if(ps > $.inArray(data.data.nodes[t1], pr.children)) {
 											ps -= 1;
@@ -4436,15 +4436,15 @@
 				if(lastmv) {
 					var i, j, nodes = [];
 					for(i = 0, j = data.data.nodes.length; i < j; i++) {
-						nodes[i] = data.data.origin.get_node(data.data.nodes[i]);
+						nodes[i] = data.data.origin ? data.data.origin.get_node(data.data.nodes[i]) : data.data.nodes[i];
 					}
-					lastmv.ins[ data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);
+					lastmv.ins[ data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);
 				}
 			})
 			.bind('keyup keydown', function (e, data) {
 				data = $.vakata.dnd._get();
 				if(data.data && data.data.jstree) {
-					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey) ? 'show' : 'hide' ]();
+					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin && data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey) ? 'show' : 'hide' ]();
 				}
 			});
 	});

@@ -2764,13 +2764,13 @@
 				return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); });
 			}
 
-			old_par = obj.parent.toString();
+			old_par = (obj.parent || '#').toString();
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
 			old_ins = this._model.data[obj.id] ? this : $.jstree.reference(obj.id);
-			is_multi = (this._id !== old_ins._id);
+			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
 			if(is_multi) {
 				if(this.copy_node(obj, par, pos, callback, is_loaded)) {
-					old_ins.delete_node(obj);
+					if(old_ins) { old_ins.delete_node(obj); }
 					return true;
 				}
 				return false;
@@ -2907,10 +2907,10 @@
 				return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true); });
 			}
 
-			old_par = obj.parent.toString();
+			old_par = (obj.parent || '#').toString();
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
 			old_ins = this._model.data[obj.id] ? this : $.jstree.reference(obj.id);
-			is_multi = (this._id !== old_ins._id);
+			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
 			if(new_par.id === '#') {
 				if(pos === "before") { pos = "first"; }
 				if(pos === "after") { pos = "last"; }
@@ -2935,9 +2935,9 @@
 			}
 			if(pos > new_par.children.length) { pos = new_par.children.length; }
 			if(!this.check("copy_node", obj, new_par, pos)) { return false; }
-
-			node = old_ins.get_json(obj, { no_id : true, no_data : true, no_state : true });
+			node = old_ins ? old_ins.get_json(obj, { no_id : true, no_data : true, no_state : true }) : obj;
 			if(!node) { return false; }
+			if(node.id === true) { delete node.id; }
 			node = this._parse_model_from_json(node, new_par.id, new_par.parents.concat());
 			if(!node) { return false; }
 			tmp = this.get_node(node);
