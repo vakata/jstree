@@ -1615,7 +1615,7 @@
 			if(c.length) {
 				node.childNodes[1].className = 'jstree-anchor ' + c;
 			}
-			if(obj.icon && obj.icon !== true) {
+			if((obj.icon && obj.icon !== true) || obj.icon === false) {
 				if(obj.icon === false) {
 					node.childNodes[1].childNodes[0].className += ' jstree-themeicon-hidden';
 				}
