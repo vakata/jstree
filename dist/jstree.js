@@ -1112,6 +1112,13 @@
 				p = m[par],
 				s = this._data.core.selected.length,
 				tmp, i, j;
+			// *%$@!!!
+			if(dat.d) {
+				dat = dat.d;
+				if(typeof dat === "string") {
+					dat = $.vakata.json.decode(dat);
+				}
+			}
 			if(!$.isArray(dat)) { dat = [dat]; }
 			if(dat.length && dat[0].id !== undefined && dat[0].parent !== undefined) {
 				// Flat JSON support (for easy import from DB):
@@ -3432,6 +3439,69 @@
 	if($.vakata.browser.msie && $.vakata.browser.version < 8) {
 		$.jstree.defaults.core.animation = 0;
 	}
+	(function ($, undefined) {
+		// private function for json quoting strings
+		var _quote = function (str) {
+			var escapeable	= /["\\\x00-\x1f\x7f-\x9f]/g,
+				meta		= { '\b':'\\b','\t':'\\t','\n':'\\n','\f':'\\f','\r':'\\r','"' :'\\"','\\':'\\\\' };
+			if(str.match(escapeable)) {
+				return '"' + str.replace(escapeable, function (a) {
+						var c = meta[a];
+						if(typeof c === 'string') { return c; }
+						c = a.charCodeAt();
+						return '\\u00' + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
+					}) + '"';
+			}
+			return '"' + str + '"';
+		};
+		$.vakata.json = {
+			encode : (JSON && JSON.stringify ? JSON.stringify : function (o) {
+				if (o === null) { return "null"; }
+
+				var tmp = [], i;
+				switch(typeof o) {
+					case "undefined":
+						return undefined;
+					case "number":
+					case "boolean":
+						return o.toString();
+					case "string":
+						return _quote(o);
+					case "object":
+						if($.isFunction(o.toJSON)) {
+							return $.vakata.json.encode(o.toJSON());
+						}
+						if(o.constructor === Date) {
+							return '"' +
+								o.getUTCFullYear() + '-' +
+								String("0" + (o.getUTCMonth() + 1)).slice(-2) + '-' +
+								String("0" + o.getUTCDate()).slice(-2) + 'T' +
+								String("0" + o.getUTCHours()).slice(-2) + ':' +
+								String("0" + o.getUTCMinutes()).slice(-2) + ':' +
+								String("0" + o.getUTCSeconds()).slice(-2) + '.' +
+								String("00" + o.getUTCMilliseconds()).slice(-3) + 'Z"';
+						}
+						if(o.constructor === Array) {
+							for(i = 0; i < o.length; i++) {
+								tmp.push( $.vakata.json.encode(o[i]) || "null" );
+							}
+							return "[" + tmp.join(",") + "]";
+						}
+
+						$.each(o, function (i, v) {
+							if($.isFunction(v)) { return true; }
+							i = typeof i === "number" ? '"' + i + '"' : _quote(i);
+							v = $.vakata.json.encode(v);
+							tmp.push(i + ":" + v);
+						});
+						return "{" + tmp.join(", ") + "}";
+				}
+			}),
+			decode : (JSON && JSON.parse ? JSON.parse : function (json) {
+				return $.parseJSON(json);
+			})
+		};
+	}(jQuery));
 
 /**
  * ### Checkbox plugin
@@ -5105,71 +5175,6 @@
 			return $.vakata.storage.del(this.settings.state.key);
 		};
 	};
-
-	// helpers
-	(function ($, undefined) {
-		// private function for json quoting strings
-		var _quote = function (str) {
-			var escapeable	= /["\\\x00-\x1f\x7f-\x9f]/g,
-				meta		= { '\b':'\\b','\t':'\\t','\n':'\\n','\f':'\\f','\r':'\\r','"' :'\\"','\\':'\\\\' };
-			if(str.match(escapeable)) {
-				return '"' + str.replace(escapeable, function (a) {
-						var c = meta[a];
-						if(typeof c === 'string') { return c; }
-						c = a.charCodeAt();
-						return '\\u00' + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
-					}) + '"';
-			}
-			return '"' + str + '"';
-		};
-		$.vakata.json = {
-			encode : (JSON && JSON.stringify ? JSON.stringify : function (o) {
-				if (o === null) { return "null"; }
-
-				var tmp = [], i;
-				switch(typeof o) {
-					case "undefined":
-						return undefined;
-					case "number":
-					case "boolean":
-						return o.toString();
-					case "string":
-						return _quote(o);
-					case "object":
-						if($.isFunction(o.toJSON)) {
-							return $.vakata.json.encode(o.toJSON());
-						}
-						if(o.constructor === Date) {
-							return '"' +
-								o.getUTCFullYear() + '-' +
-								String("0" + (o.getUTCMonth() + 1)).slice(-2) + '-' +
-								String("0" + o.getUTCDate()).slice(-2) + 'T' +
-								String("0" + o.getUTCHours()).slice(-2) + ':' +
-								String("0" + o.getUTCMinutes()).slice(-2) + ':' +
-								String("0" + o.getUTCSeconds()).slice(-2) + '.' +
-								String("00" + o.getUTCMilliseconds()).slice(-3) + 'Z"';
-						}
-						if(o.constructor === Array) {
-							for(i = 0; i < o.length; i++) {
-								tmp.push( $.vakata.json.encode(o[i]) || "null" );
-							}
-							return "[" + tmp.join(",") + "]";
-						}
-
-						$.each(o, function (i, v) {
-							if($.isFunction(v)) { return true; }
-							i = typeof i === "number" ? '"' + i + '"' : _quote(i);
-							v = $.vakata.json.encode(v);
-							tmp.push(i + ":" + v);
-						});
-						return "{" + tmp.join(", ") + "}";
-				}
-			}),
-			decode : (JSON && JSON.parse ? JSON.parse : function (json) {
-				return $.parseJSON(json);
-			})
-		};
-	}(jQuery));
 
 	(function ($, document, undefined) {
 		var raw		= function (s) { return s; },
