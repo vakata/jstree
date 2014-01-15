@@ -424,9 +424,6 @@
 .jstree-default .jstree-leaf > .jstree-ocl {
   background-position: -68px -4px;
 }
-.jstree-default .jstree-loading > .jstree-ocl {
-  background: url("throbber.gif") center center no-repeat;
-}
 .jstree-default .jstree-anchor > .jstree-themeicon {
   background-position: -260px -4px;
 }
@@ -500,6 +497,9 @@
   background-color: transparent;
   background-image: none;
 }
+.jstree-default > .jstree-container-ul .jstree-loading > .jstree-ocl {
+  background: url("throbber.gif") center center no-repeat;
+}
 .jstree-default.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
   background-position: 100% 1px;
@@ -549,9 +549,6 @@
 }
 .jstree-default-small .jstree-leaf > .jstree-ocl {
   background-position: -71px -7px;
-}
-.jstree-default-small .jstree-loading > .jstree-ocl {
-  background: url("throbber.gif") center center no-repeat;
 }
 .jstree-default-small .jstree-anchor > .jstree-themeicon {
   background-position: -263px -7px;
@@ -626,6 +623,9 @@
   background-color: transparent;
   background-image: none;
 }
+.jstree-default-small > .jstree-container-ul .jstree-loading > .jstree-ocl {
+  background: url("throbber.gif") center center no-repeat;
+}
 .jstree-default-small.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAACAQMAAABv1h6PAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMHBgAAiABBI4gz9AAAAABJRU5ErkJggg==");
   background-position: 100% 0px;
@@ -675,9 +675,6 @@
 }
 .jstree-default-large .jstree-leaf > .jstree-ocl {
   background-position: -64px 0px;
-}
-.jstree-default-large .jstree-loading > .jstree-ocl {
-  background: url("throbber.gif") center center no-repeat;
 }
 .jstree-default-large .jstree-anchor > .jstree-themeicon {
   background-position: -256px 0px;
@@ -751,6 +748,9 @@
 .jstree-default-large .jstree-themeicon-custom {
   background-color: transparent;
   background-image: none;
+}
+.jstree-default-large > .jstree-container-ul .jstree-loading > .jstree-ocl {
+  background: url("throbber.gif") center center no-repeat;
 }
 .jstree-default-large.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAACAQMAAAAD0EyKAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjgIIGBgABCgCBvVLXcAAAAABJRU5ErkJggg==");

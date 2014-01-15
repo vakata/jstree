@@ -30,7 +30,6 @@
 	.jstree-open > .jstree-ocl { background-position:-(@image-height * 4 + @correction) -@correction; }
 	.jstree-closed > .jstree-ocl { background-position:-(@image-height * 3 + @correction) -@correction; }
 	.jstree-leaf > .jstree-ocl { background-position:-(@image-height * 2 + @correction) -@correction; }
-	.jstree-loading > .jstree-ocl { background:url("throbber.gif") center center no-repeat; }
 
 	.jstree-anchor > .jstree-themeicon { background-position:-(@image-height * 8 + @correction) -@correction; }
 
@@ -87,6 +86,8 @@
 		}
 	}
 	.jstree-themeicon-custom { background-color:transparent; background-image:none; }
+
+	> .jstree-container-ul .jstree-loading > .jstree-ocl { background:url("throbber.gif") center center no-repeat; }
 }
 
 .jstree-default {
