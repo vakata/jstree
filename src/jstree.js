@@ -1267,6 +1267,12 @@
 					data.state.loaded = false;
 				}
 			}
+			if(data.li_attr.class) {
+				data.li_attr.class = data.li_attr.class.replace('jstree-closed','').replace('jstree-open','');
+			}
+			if(data.a_attr.class) {
+				data.a_attr.class = data.a_attr.class.replace('jstree-clicked','').replace('jstree-disabled','');
+			}
 			m[data.id] = data;
 			if(data.state.selected) {
 				this._data.core.selected.push(data.id);
