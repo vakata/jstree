@@ -5836,8 +5836,8 @@
 		this.teardown = function () {
 			if(this.settings.wholerow) {
 				this.element.find(".jstree-wholerow").remove();
-				parent.teardown.call(this);
 			}
+			parent.teardown.call(this);
 		};
 		this.redraw_node = function(obj, deep, callback) {
 			obj = parent.redraw_node.call(this, obj, deep, callback);
