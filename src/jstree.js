@@ -2104,7 +2104,7 @@
 		 * select a node
 		 * @name select_node(obj [, supress_event, prevent_open])
 		 * @param {mixed} obj an array can be used to select multiple nodes
-		 * @param {Boolean} supress_event if set to `true` the `changed.jstree` event won't be triggered
+		 * @param {Boolean} supress_event if set to `true` no event will be triggered
 		 * @param {Boolean} prevent_open if set to `true` parents of the selected node won't be opened
 		 * @trigger select_node.jstree, changed.jstree
 		 */
@@ -2131,15 +2131,15 @@
 				if(dom && dom.length) {
 					dom.children('.jstree-anchor').addClass('jstree-clicked');
 				}
-				/**
-				 * triggered when an node is selected
-				 * @event
-				 * @name select_node.jstree
-				 * @param {Object} node
-				 * @param {Array} selected the current selection
-				 */
-				this.trigger('select_node', { 'node' : obj, 'selected' : this._data.core.selected });
 				if(!supress_event) {
+					/**
+					 * triggered when an node is selected
+					 * @event
+					 * @name select_node.jstree
+					 * @param {Object} node
+					 * @param {Array} selected the current selection
+					 */
+					this.trigger('select_node', { 'node' : obj, 'selected' : this._data.core.selected });
 					/**
 					 * triggered when selection changes
 					 * @event
