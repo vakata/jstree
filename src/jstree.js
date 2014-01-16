@@ -2571,12 +2571,12 @@
 			switch(pos) {
 				case "before":
 					tmp = this.get_node(par.parent);
-					pos = $.inArray(par, tmp.children);
+					pos = $.inArray(par.id, tmp.children);
 					par = tmp;
 					break;
 				case "after" :
 					tmp = this.get_node(par.parent);
-					pos = $.inArray(par, tmp.children);
+					pos = $.inArray(par.id, tmp.children) + 1;
 					par = tmp;
 					break;
 				case "inside":
