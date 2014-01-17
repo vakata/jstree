@@ -2275,7 +2275,7 @@
 		"tags": [
 			{
 				"type": "name",
-				"string": "open_all([obj, animation])"
+				"string": "close_all([obj, animation])"
 			},
 			{
 				"type": "param",

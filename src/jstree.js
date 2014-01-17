@@ -1906,7 +1906,7 @@
 		},
 		/**
 		 * closes all nodes within a node (or the tree), revaling their children
-		 * @name open_all([obj, animation])
+		 * @name close_all([obj, animation])
 		 * @param {mixed} obj the node to close recursively, omit to close all nodes in the tree
 		 * @param {Number} animation the animation duration in milliseconds when closing the nodes, the default is no animation
 		 * @trigger close_all.jstree
