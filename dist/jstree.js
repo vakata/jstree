@@ -1004,7 +1004,10 @@
 					return $.ajax(s)
 						.done($.proxy(function (d,t,x) {
 								var type = x.getResponseHeader('Content-Type');
-								if(type.indexOf('json') !== -1) {
+                                                                if(type === 'text/xml') {
+                                                                        return callback.call(this, this._append_json_data(obj, x.responseXML));
+                                                                }
+                                                                if(type.indexOf('json') !== -1) {
 									return callback.call(this, this._append_json_data(obj, d));
 								}
 								if(type.indexOf('html') !== -1) {
