@@ -1689,10 +1689,11 @@
 		 * @param {mixed} obj the node to open
 		 * @param {Function} callback a function to execute once the node is opened
 		 * @param {Number} animation the animation duration in milliseconds when opening the node (overrides the `core.animation` setting). Use `false` for no animation.
-		 * @trigger open_node.jstree, after_open.jstree
+		 * @trigger before_open.jstree, open_node.jstree, after_open.jstree
 		 */
 		open_node : function (obj, callback, animation) {
 			var t1, t2, d, t;
+			this.trigger("before_open", { "node" : obj });
 			if($.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
