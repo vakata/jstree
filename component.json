@@ -23,6 +23,6 @@
 		"dist/themes/default/style.min.css"
 	],
 	"dependencies": {
-		"components/jquery": ">= 1.9.1"
+		"components/jquery": "*"
 	}
 }
