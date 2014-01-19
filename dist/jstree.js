@@ -3126,8 +3126,9 @@
 							h1.remove();
 							s.replaceWith(a);
 							s.remove();
+							this.set_text(obj, t);
 							if(this.rename_node(obj, v) === false) {
-								this.set_text(obj, t);
+								this.set_text(obj, t); // move this up? and fix #483
 							}
 						}, this),
 						"keydown" : function (event) {
