@@ -4893,7 +4893,7 @@
 				if(v) {
 					if(t.is_closed(v)) {
 						t._data.search.opn.push(v.id);
-						t.open_node(v, function () { t._search_open(d); });
+						t.open_node(v, function () { t._search_open(d); }, 0);
 					}
 				}
 			});

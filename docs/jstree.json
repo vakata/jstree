@@ -5503,7 +5503,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this._search_open = function (d) {\n\t\t\tvar t = this;\n\t\t\t$.each(d.concat([]), function (i, v) {\n\t\t\t\tv = document.getElementById(v);\n\t\t\t\tif(v) {\n\t\t\t\t\tif(t.is_closed(v)) {\n\t\t\t\t\t\tt._data.search.opn.push(v.id);\n\t\t\t\t\t\tt.open_node(v, function () { t._search_open(d); });\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\t\t};",
+		"code": "this._search_open = function (d) {\n\t\t\tvar t = this;\n\t\t\t$.each(d.concat([]), function (i, v) {\n\t\t\t\tv = document.getElementById(v);\n\t\t\t\tif(v) {\n\t\t\t\t\tif(t.is_closed(v)) {\n\t\t\t\t\t\tt._data.search.opn.push(v.id);\n\t\t\t\t\t\tt.open_node(v, function () { t._search_open(d); }, 0);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\t\t};",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
