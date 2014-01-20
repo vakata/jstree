@@ -5417,7 +5417,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.clear_search = function () {\n\t\t\tthis._data.search.dom.children(\".jstree-anchor\").removeClass(\"jstree-search\");\n\t\t\tif(this.settings.search.close_opened_onclear) {\n\t\t\t\tthis.close_node(this._data.search.opn);\n\t\t\t}",
+		"code": "this.clear_search = function () {\n\t\t\tthis._data.search.dom.children(\".jstree-anchor\").removeClass(\"jstree-search\");\n\t\t\tif(this.settings.search.close_opened_onclear) {\n\t\t\t\tthis.close_node(this._data.search.opn, 0);\n\t\t\t}",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",

@@ -4862,7 +4862,7 @@
 		this.clear_search = function () {
 			this._data.search.dom.children(".jstree-anchor").removeClass("jstree-search");
 			if(this.settings.search.close_opened_onclear) {
-				this.close_node(this._data.search.opn);
+				this.close_node(this._data.search.opn, 0);
 			}
 			/**
 			 * triggered after search is complete
