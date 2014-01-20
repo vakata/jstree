@@ -7,7 +7,7 @@
 			"body": ""
 		},
 		"ignore": false,
-		"code": "(function (factory) {\n\t\"use strict\";\n\tif (typeof define === 'function' && define.amd) {\n\t\tdefine('jstree', ['jquery'], factory);\n\t}\n\telse if(typeof exports === 'object') {\n\t\tfactory(require('jquery'));\n\t}\n\telse {\n\t\tfactory(jQuery);\n\t}\n}(function ($, undefined) {\n\t\"use strict\";"
+		"code": "(function (factory) {\n\t\"use strict\";\n\tif (typeof define === 'function' && define.amd) {\n\t\tdefine(['jquery'], factory);\n\t}\n\telse if(typeof exports === 'object') {\n\t\tfactory(require('jquery'));\n\t}\n\telse {\n\t\tfactory(jQuery);\n\t}\n}(function ($, undefined) {\n\t\"use strict\";"
 	},
 	{
 		"tags": [],
