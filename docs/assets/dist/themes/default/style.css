@@ -125,7 +125,7 @@
   list-style: none;
   display: inline;
 }
-.vakata-context li a {
+.vakata-context li > a {
   display: block;
   padding: 0 2em 0 2em;
   text-decoration: none;
@@ -140,14 +140,14 @@
   -webkit-border-radius: 1px;
   border-radius: 1px;
 }
-.vakata-context li a:hover {
+.vakata-context li > a:hover {
   position: relative;
   background-color: #e8eff7;
   -moz-box-shadow: 0 0 2px #0a6aa1;
   -webkit-box-shadow: 0 0 2px #0a6aa1;
   box-shadow: 0 0 2px #0a6aa1;
 }
-.vakata-context li a.vakata-context-parent {
+.vakata-context li > a.vakata-context-parent {
   background-image: url("data:image/gif;base64,R0lGODlhCwAHAIAAACgoKP///yH5BAEAAAEALAAAAAALAAcAAAIORI4JlrqN1oMSnmmZDQUAOw==");
   background-position: right center;
   background-repeat: no-repeat;
@@ -187,15 +187,22 @@
   border: 0;
   box-shadow: 0 0 0;
 }
-.vakata-context li a ins {
+.vakata-context li > a > i {
   text-decoration: none;
   display: inline-block;
   width: 2.4em;
   height: 2.4em;
   background: transparent;
   margin: 0 0 0 -2em;
+  vertical-align: top;
+  text-align: center;
+  line-height: 2.4em;
 }
-.vakata-context li a span {
+.vakata-context li > a > i:empty {
+  width: 2.4em;
+  line-height: 2.4em;
+}
+.vakata-context li > a .vakata-contextmenu-sep {
   display: inline-block;
   width: 1px;
   height: 2.4em;
@@ -203,18 +210,24 @@
   margin: 0 0.5em 0 0;
   border-left: 1px solid #e2e3e3;
 }
+.vakata-context .vakata-contextmenu-shortcut {
+  font-size: 0.8em;
+  color: silver;
+  opacity: 0.5;
+  display: none;
+}
 .vakata-context-rtl ul {
   left: auto;
   right: 100%;
   margin-left: auto;
   margin-right: -4px;
 }
-.vakata-context-rtl li a.vakata-context-parent {
+.vakata-context-rtl li > a.vakata-context-parent {
   background-image: url("data:image/gif;base64,R0lGODlhCwAHAIAAACgoKP///yH5BAEAAAEALAAAAAALAAcAAAINjI+AC7rWHIsPtmoxLAA7");
   background-position: left center;
   background-repeat: no-repeat;
 }
-.vakata-context-rtl .vakata-context-separator a {
+.vakata-context-rtl .vakata-context-separator > a {
   margin: 0 2.4em 0 0;
   border-left: 0;
   border-right: 1px solid #e2e3e3;
@@ -225,10 +238,10 @@
   margin-left: -4px;
   margin-right: auto;
 }
-.vakata-context-rtl li a ins {
+.vakata-context-rtl li > a > i {
   margin: 0 -2em 0 0;
 }
-.vakata-context-rtl li a span {
+.vakata-context-rtl li > a .vakata-contextmenu-sep {
   margin: 0 0 0 0.5em;
   border-left-color: white;
   background: #e2e3e3;

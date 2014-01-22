@@ -42,13 +42,16 @@
 		/**
 		 * an object of actions, or a function that accepts a node and returns an object of actions available for that node.
 		 * 
-		 * Each action consists of a key (a unique name) and a value which is an object with the following properties:
+		 * Each action consists of a key (a unique name) and a value which is an object with the following properties (only label and action are required):
 		 * 
 		 * * `separator_before` - a boolean indicating if there should be a separator before this item
 		 * * `separator_after` - a boolean indicating if there should be a separator after this item
 		 * * `_disabled` - a boolean indicating if this action should be disabled
 		 * * `label` - a string - the name of the action
 		 * * `action` - a function to be executed if this item is chosen
+		 * * `icon` - a string, can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
+		 * * `shortcut` - keyCode which will trigger the action if the menu is open (for example `113` for rename, which equals F2)
+		 * * `shortcut_label` - shortcut label (like for example `F2` for rename)
 		 * 
 		 * @name $.jstree.defaults.contextmenu.items
 		 * @plugin contextmenu
@@ -73,6 +76,11 @@
 					"separator_after"	: false,
 					"_disabled"			: false, //(this.check("rename_node", data.reference, this.get_parent(data.reference), "")),
 					"label"				: "Rename",
+					/*
+					"shortcut"			: 113,
+					"shortcut_label"	: 'F2',
+					"icon"				: "glyphicon glyphicon-leaf",
+					*/
 					"action"			: function (data) {
 						var inst = $.jstree.reference(data.reference),
 							obj = inst.get_node(data.reference);
@@ -284,17 +292,17 @@
 						str += "<"+"li class='vakata-context-separator'><"+"a href='#' " + ($.vakata.context.settings.icons ? '' : 'style="margin-left:0px;"') + ">&#160;<"+"/a><"+"/li>";
 					}
 					sep = false;
-					str += "<"+"li class='" + (val._class || "") + (val._disabled ? " vakata-contextmenu-disabled " : "") + "'>";
+					str += "<"+"li class='" + (val._class || "") + (val._disabled ? " vakata-contextmenu-disabled " : "") + "' "+(val.shortcut?" data-shortcut='"+val.shortcut+"' ":'')+">";
 					str += "<"+"a href='#' rel='" + (vakata_context.items.length - 1) + "'>";
 					if($.vakata.context.settings.icons) {
-						str += "<"+"ins ";
+						str += "<"+"i ";
 						if(val.icon) {
 							if(val.icon.indexOf("/") !== -1 || val.icon.indexOf(".") !== -1) { str += " style='background:url(\"" + val.icon + "\") center center no-repeat' "; }
 							else { str += " class='" + val.icon + "' "; }
 						}
-						str += ">&#160;<"+"/ins><"+"span>&#160;<"+"/span>";
+						str += "><"+"/i><"+"span class='vakata-contextmenu-sep'>&#160;<"+"/span>";
 					}
-					str += val.label + "<"+"/a>";
+					str += val.label + (val.shortcut?' <span class="vakata-contextmenu-shortcut vakata-contextmenu-shortcut-'+val.shortcut+'">'+ (val.shortcut_label || '') +'</span>':'') + "<"+"/a>";
 					if(val.submenu) {
 						tmp = $.vakata.context._parse(val.submenu, true);
 						if(tmp) { str += tmp; }
@@ -494,6 +502,13 @@
 								break;
 						}
 					})
+				.on('keydown', function (e) {
+					e.preventDefault();
+					var a = vakata_context.element.find('.vakata-contextmenu-shortcut-' + e.which).parent();
+					if(a.parent().not('.vakata-context-disabled')) {
+						a.mouseup();
+					}
+				})
 				.appendTo("body");
 
 			$(document)
