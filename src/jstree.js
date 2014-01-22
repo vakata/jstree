@@ -1050,6 +1050,8 @@
 		 */
 		_append_html_data : function (dom, data) {
 			dom = this.get_node(dom);
+			dom.children = [];
+			dom.children_d = [];
 			var dat = data.is('ul') ? data.children() : data,
 				par = dom.id,
 				chd = [],
@@ -1104,6 +1106,8 @@
 		 */
 		_append_json_data : function (dom, data) {
 			dom = this.get_node(dom);
+			dom.children = [];
+			dom.children_d = [];
 			var dat = data,
 				par = dom.id,
 				chd = [],
