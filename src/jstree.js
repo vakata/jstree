@@ -2535,9 +2535,11 @@
 					}
 				}
 			}
-			if(options && options.no_id && tmp.li_attr && tmp.li_attr.id) {
-				delete tmp.li_attr.id;
+			if(options && options.no_id) {
 				delete tmp.id;
+				if(tmp.li_attr && tmp.li_attr.id) {
+					delete tmp.li_attr.id;
+				}
 			}
 			if(!options || !options.no_children) {
 				for(i = 0, j = obj.children.length; i < j; i++) {

@@ -2535,9 +2535,11 @@
 					}
 				}
 			}
-			if(options && options.no_id && tmp.li_attr && tmp.li_attr.id) {
-				delete tmp.li_attr.id;
+			if(options && options.no_id) {
 				delete tmp.id;
+				if(tmp.li_attr && tmp.li_attr.id) {
+					delete tmp.li_attr.id;
+				}
 			}
 			if(!options || !options.no_children) {
 				for(i = 0, j = obj.children.length; i < j; i++) {
@@ -5641,15 +5643,28 @@
 		this.get_json = function (obj, options) {
 			var i, j,
 				m = this._model.data,
-				tmp = parent.get_json.call(this, obj, options);
+				opt = options ? $.extend(true, options, {no_id:true}) : {},
+				tmp = parent.get_json.call(this, obj, opt);
 			if(tmp === false) { return false; }
 			if($.isArray(tmp)) {
 				for(i = 0, j = tmp.length; i < j; i++) {
 					tmp[i].type = tmp[i].id && m[tmp[i].id] && m[tmp[i].id].type ? m[tmp[i].id].type : "default";
+					if(options && options.no_id) {
+						delete tmp[i].id;
+						if(tmp[i].li_attr && tmp[i].li_attr.id) {
+							delete tmp[i].li_attr.id;
+						}
+					}
 				}
 			}
 			else {
 				tmp.type = tmp.id && m[tmp.id] && m[tmp.id].type ? m[tmp.id].type : "default";
+				if(options && options.no_id) {
+					delete tmp.id;
+					if(tmp.li_attr && tmp.li_attr.id) {
+						delete tmp.li_attr.id;
+					}
+				}
 			}
 			return tmp;
 		};
@@ -5857,7 +5872,7 @@
 						this.hover_node(e.currentTarget);
 						return false;
 					}, this))
-				.on("mousedown.jstree", ".jstree-wholerow", $.proxy(function (e) {
+				.on("mousedown.jstree", ".jstree-wholerow, .jstree-ocl", $.proxy(function (e) {
 						// see #487
 						e.stopImmediatePropagation();
 						this.hover_node(e.currentTarget);

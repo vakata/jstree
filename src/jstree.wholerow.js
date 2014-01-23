@@ -86,7 +86,7 @@
 						this.hover_node(e.currentTarget);
 						return false;
 					}, this))
-				.on("mousedown.jstree", ".jstree-wholerow", $.proxy(function (e) {
+				.on("mousedown.jstree", ".jstree-wholerow, .jstree-ocl", $.proxy(function (e) {
 						// see #487
 						e.stopImmediatePropagation();
 						this.hover_node(e.currentTarget);

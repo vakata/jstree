@@ -72,15 +72,28 @@
 		this.get_json = function (obj, options) {
 			var i, j,
 				m = this._model.data,
-				tmp = parent.get_json.call(this, obj, options);
+				opt = options ? $.extend(true, options, {no_id:true}) : {},
+				tmp = parent.get_json.call(this, obj, opt);
 			if(tmp === false) { return false; }
 			if($.isArray(tmp)) {
 				for(i = 0, j = tmp.length; i < j; i++) {
 					tmp[i].type = tmp[i].id && m[tmp[i].id] && m[tmp[i].id].type ? m[tmp[i].id].type : "default";
+					if(options && options.no_id) {
+						delete tmp[i].id;
+						if(tmp[i].li_attr && tmp[i].li_attr.id) {
+							delete tmp[i].li_attr.id;
+						}
+					}
 				}
 			}
 			else {
 				tmp.type = tmp.id && m[tmp.id] && m[tmp.id].type ? m[tmp.id].type : "default";
+				if(options && options.no_id) {
+					delete tmp.id;
+					if(tmp.li_attr && tmp.li_attr.id) {
+						delete tmp.li_attr.id;
+					}
+				}
 			}
 			return tmp;
 		};
