@@ -2997,7 +2997,7 @@
 	$.vakata.xslt = function (xml, xsl, callback) {
 		var r = false, p, q, s;
 		// IE9
-		if(r === false && window.ActiveXObject) {
+		if(r === false && (window.ActiveXObject || "ActiveXObject" in window)) {
 			try {
 				r = new ActiveXObject("Msxml2.XSLTemplate");
 				q = new ActiveXObject("Msxml2.DOMDocument");
