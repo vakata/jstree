@@ -1,5 +1,7 @@
 // wrap in IIFE and pass jQuery as $
 (function ($) {
+	"use strict";
+
 	// some private plugin stuff if needed
 	var private_var = null;
 
@@ -56,12 +58,13 @@
 		this.set_state = function (state, callback) {
 			// only process your part if parent returns true
 			// there will be multiple times with false
-			if(parent.set_state.call(state, callback)) {
+			if(parent.set_state.call(this, state, callback)) {
 				// check the key you set above
 				if(state.sample) {
 					// do(stuff); // like calling this.sample_function(state.sample.var);
-					// remove your part of the state and RETURN FALSE, the next cycle will be TRUE
+					// remove your part of the state, call again and RETURN FALSE, the next cycle will be TRUE
 					delete state.sample;
+					this.set_state(state, callback);
 					return false;
 				}
 				// return true if your state is gone (cleared in the previous step)

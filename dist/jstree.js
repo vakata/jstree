@@ -2318,7 +2318,12 @@
 			if(state) {
 				if(state.core) {
 					var res, n, t, _this;
-					if($.isArray(state.core.open)) {
+					if(state.core.open) {
+						if(!$.isArray(state.core.open)) {
+							delete state.core.open;
+							this.set_state(state, callback);
+							return false;
+						}
 						res = true;
 						n = false;
 						t = this;
@@ -2354,7 +2359,6 @@
 							this.element.scrollTop(state.core.scroll.top);
 						}
 						delete state.core.scroll;
-						delete state.core.open;
 						this.set_state(state, callback);
 						return false;
 					}
@@ -2385,17 +2389,21 @@
 						this.set_state(state, callback);
 						return false;
 					}
-					if($.isEmptyObject(state)) {
-						if(callback) { callback.call(this); }
-						/**
-						 * triggered when a `set_state` call completes
-						 * @event
-						 * @name set_state.jstree
-						 */
-						this.trigger('set_state');
+					if($.isEmptyObject(state.core)) {
+						delete state.core;
+						this.set_state(state, callback);
 						return false;
 					}
-					return true;
+				}
+				if($.isEmptyObject(state)) {
+					if(callback) { callback.call(this); }
+					/**
+					 * triggered when a `set_state` call completes
+					 * @event
+					 * @name set_state.jstree
+					 */
+					this.trigger('set_state');
+					return false;
 				}
 				return true;
 			}
