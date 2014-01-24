@@ -73,7 +73,7 @@
 	> .jstree-striped { background-size:auto (@base-height * 2); }
 
 	&.jstree-rtl {
-		.jstree-node { background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg=="); background-position: 100% 1px; }
+		.jstree-node { background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg=="); background-position: 100% 1px; background-repeat:repeat-y; }
 		.jstree-last { background:transparent; }
 		.jstree-open > .jstree-ocl { background-position:-(@image-height * 4 + @correction) -(@image-height * 1 + @correction); }
 		.jstree-closed > .jstree-ocl { background-position:-(@image-height * 3 + @correction) -(@image-height * 1 + @correction); }
@@ -140,15 +140,18 @@
 // theme variants
 .jstree-default {
 	.jstree-theme(24px, "32px.png", 32px);
-	&.jstree-rtl .jstree-node { background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg=="); background-position: 100% 1px; }
+	&.jstree-rtl .jstree-node { background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg=="); }
+	&.jstree-rtl .jstree-last { background:transparent; }
 }
 .jstree-default-small {
 	.jstree-theme(18px, "32px.png", 32px);
-	&.jstree-rtl .jstree-node { background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAACAQMAAABv1h6PAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMHBgAAiABBI4gz9AAAAABJRU5ErkJggg=="); background-position: 100% 0px; }
+	&.jstree-rtl .jstree-node { background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAACAQMAAABv1h6PAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMHBgAAiABBI4gz9AAAAABJRU5ErkJggg=="); }
+	&.jstree-rtl .jstree-last { background:transparent; }
 }
 .jstree-default-large {
 	.jstree-theme(32px, "32px.png", 32px);
-	&.jstree-rtl .jstree-node { background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAACAQMAAAAD0EyKAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjgIIGBgABCgCBvVLXcAAAAABJRU5ErkJggg=="); background-position: 100% 1px; }
+	&.jstree-rtl .jstree-node { background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAACAQMAAAAD0EyKAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjgIIGBgABCgCBvVLXcAAAAABJRU5ErkJggg=="); }
+	&.jstree-rtl .jstree-last { background:transparent; }
 }
 
 // mobile theme attempt

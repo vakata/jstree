@@ -483,6 +483,7 @@
 .jstree-default.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
   background-position: 100% 1px;
+  background-repeat: repeat-y;
 }
 .jstree-default.jstree-rtl .jstree-last {
   background: transparent;
@@ -515,7 +516,9 @@
 }
 .jstree-default.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
-  background-position: 100% 1px;
+}
+.jstree-default.jstree-rtl .jstree-last {
+  background: transparent;
 }
 .jstree-default-small .jstree-node {
   min-height: 18px;
@@ -609,6 +612,7 @@
 .jstree-default-small.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
   background-position: 100% 1px;
+  background-repeat: repeat-y;
 }
 .jstree-default-small.jstree-rtl .jstree-last {
   background: transparent;
@@ -641,7 +645,9 @@
 }
 .jstree-default-small.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAACAQMAAABv1h6PAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMHBgAAiABBI4gz9AAAAABJRU5ErkJggg==");
-  background-position: 100% 0px;
+}
+.jstree-default-small.jstree-rtl .jstree-last {
+  background: transparent;
 }
 .jstree-default-large .jstree-node {
   min-height: 32px;
@@ -735,6 +741,7 @@
 .jstree-default-large.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
   background-position: 100% 1px;
+  background-repeat: repeat-y;
 }
 .jstree-default-large.jstree-rtl .jstree-last {
   background: transparent;
@@ -767,7 +774,9 @@
 }
 .jstree-default-large.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAACAQMAAAAD0EyKAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjgIIGBgABCgCBvVLXcAAAAABJRU5ErkJggg==");
-  background-position: 100% 1px;
+}
+.jstree-default-large.jstree-rtl .jstree-last {
+  background: transparent;
 }
 @media (max-width: 768px) {
   .jstree-default-responsive {
