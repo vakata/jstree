@@ -55,18 +55,11 @@
 						this.get_node(data.node, true).find('.jstree-clicked').parent().children('.jstree-wholerow').addClass('jstree-wholerow-clicked');
 					}, this))
 				.on("hover_node.jstree dehover_node.jstree", $.proxy(function (e, data) {
-						this.element.find('.jstree-wholerow-hovered').removeClass('jstree-wholerow-hovered');
-						if(e.type === "hover_node") {
-							this.get_node(data.node, true).each(function () {
-								$(this).children('.jstree-wholerow').addClass('jstree-wholerow-hovered');
-							});
-						}
+						this.get_node(data.node, true).children('.jstree-wholerow')[e.type === "hover_node"?"addClass":"removeClass"]('jstree-wholerow-hovered');
 					}, this))
 				.on("contextmenu.jstree", ".jstree-wholerow", $.proxy(function (e) {
-						//if(typeof this._data.contextmenu !== 'undefined') {
-							e.preventDefault();
-							$(e.currentTarget).closest("li").children("a:eq(0)").trigger('contextmenu',e);
-						//}
+						e.preventDefault();
+						$(e.currentTarget).closest("li").children("a:eq(0)").trigger('contextmenu',e);
 					}, this))
 				.on("click.jstree", ".jstree-wholerow", function (e) {
 						e.stopImmediatePropagation();
@@ -79,15 +72,6 @@
 						$(e.currentTarget).closest("li").children("a:eq(0)").trigger(tmp).focus();
 					}, this))
 				.on("mouseover.jstree", ".jstree-wholerow, .jstree-icon", $.proxy(function (e) {
-						e.stopImmediatePropagation();
-						//if($(e.currentTarget).closest('li').children(".jstree-clicked").length) {
-						//	return false;
-						//}
-						this.hover_node(e.currentTarget);
-						return false;
-					}, this))
-				.on("mousedown.jstree", ".jstree-node", $.proxy(function (e) {
-						// see #487
 						e.stopImmediatePropagation();
 						this.hover_node(e.currentTarget);
 						return false;

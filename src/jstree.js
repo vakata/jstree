@@ -646,16 +646,10 @@
 						this[ this._data.core.themes.stripes ? "show_stripes" : "hide_stripes" ]();
 					}, this))
 				.on('focus.jstree', '.jstree-anchor', $.proxy(function (e) {
+						this.element.find('.jstree-hovered').not(e.currentTarget).mouseleave();
 						$(e.currentTarget).mouseenter();
 					}, this))
-				.on('blur.jstree', '.jstree-anchor', $.proxy(function (e) {
-						$(e.currentTarget).mouseleave();
-					}, this))
 				.on('mouseenter.jstree', '.jstree-anchor', $.proxy(function (e) {
-						var o = this.element.find('.jstree-anchor:focus').not('.jstree-clicked');
-						if(o && o.length && o[0] !== e.currentTarget) {
-							o.blur();
-						}
 						this.hover_node(e.currentTarget);
 					}, this))
 				.on('mouseleave.jstree', '.jstree-anchor', $.proxy(function (e) {
@@ -2071,9 +2065,12 @@
 		 */
 		hover_node : function (obj) {
 			obj = this.get_node(obj, true);
-			if(!obj || !obj.length) {
+			if(!obj || !obj.length || obj.children('.jstree-hovered').length) {
 				return false;
 			}
+			var o = this.element.find('.jstree-hovered');
+			if(o && o.length) { this.dehover_node(o); }
+
 			obj.children('.jstree-anchor').addClass('jstree-hovered');
 			/**
 			 * triggered when an node is hovered
@@ -2092,7 +2089,7 @@
 		 */
 		dehover_node : function (obj) {
 			obj = this.get_node(obj, true);
-			if(!obj || !obj.length) {
+			if(!obj || !obj.length || !obj.children('.jstree-hovered').length) {
 				return false;
 			}
 			obj.children('.jstree-anchor').removeClass('jstree-hovered');
