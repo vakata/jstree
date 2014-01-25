@@ -981,7 +981,7 @@
 		 * @return {Boolean}
 		 */
 		_load_node : function (obj, callback) {
-			var s = this.settings.core.data;
+			var s = this.settings.core.data, t;
 			// use original HTML
 			if(!s) {
 				return callback.call(this, obj.id === '#' ? this._append_html_data(obj, this._data.core.original_container_html.clone(true)) : false);
@@ -1014,7 +1014,8 @@
 								callback.call(this, false);
 							}, this));
 				}
-				return callback.call(this, this._append_json_data(obj, s));
+				t = ($.isArray(s) || $.isPlainObject(s)) ? $.vakata.json.decode($.vakata.json.encode(s)) : s;
+				return callback.call(this, this._append_json_data(obj, t));
 			}
 			if(typeof s === 'string') {
 				return callback.call(this, this._append_html_data(obj, s));
