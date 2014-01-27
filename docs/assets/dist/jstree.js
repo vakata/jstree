@@ -3877,7 +3877,7 @@
 		 */
 		show_at_node : true,
 		/**
-		 * an object of actions, or a function that accepts a node and returns an object of actions available for that node.
+		 * an object of actions, or a function that accepts a node and a callback function and calls the callback function with an object of actions available for that node (you can also return the items too).
 		 * 
 		 * Each action consists of a key (a unique name) and a value which is an object with the following properties (only label and action are required):
 		 * 
@@ -3893,8 +3893,8 @@
 		 * @name $.jstree.defaults.contextmenu.items
 		 * @plugin contextmenu
 		 */
-		items : function (o) { // Could be an object directly
-			return {
+		items : function (o, cb) { // Could be an object directly
+			cb({
 				"create" : {
 					"separator_before"	: false,
 					"separator_after"	: true,
@@ -3993,7 +3993,7 @@
 						}
 					}
 				}
-			};
+			});
 		}
 	};
 
@@ -4023,7 +4023,7 @@
 		};
 
 		/**
-		 * show the context menu for a node
+		 * prepare and show the context menu for a node
 		 * @name show_contextmenu(obj [, x, y])
 		 * @param {mixed} obj the node
 		 * @param {Number} x the x-coordinate relative to the document to show the menu at
@@ -4050,8 +4050,29 @@
 			}
 
 			i = s.items;
-			if($.isFunction(i)) { i = i.call(this, obj); }
-
+			if($.isFunction(i)) {
+				i = i.call(this, obj, $.proxy(function (i) {
+					this._show_contextmenu(obj, x, y, i);
+				}, this));
+			}
+			if($.isPlainObject(i)) {
+				this._show_contextmenu(obj, x, y, i);
+			}
+		};
+		/**
+		 * show the prepared context menu for a node
+		 * @name _show_contextmenu(obj, x, y, i)
+		 * @param {mixed} obj the node
+		 * @param {Number} x the x-coordinate relative to the document to show the menu at
+		 * @param {Number} y the y-coordinate relative to the document to show the menu at
+		 * @param {Number} i the object of items to show
+		 * @plugin contextmenu
+		 * @trigger show_contextmenu.jstree
+		 * @private
+		 */
+		this._show_contextmenu = function (obj, x, y, i) {
+			var d = this.get_node(obj, true),
+				a = d.children(".jstree-anchor");
 			$(document).one("context_show.vakata", $.proxy(function (e, data) {
 				var cls = 'jstree-contextmenu jstree-' + this.get_theme() + '-contextmenu';
 				$(data.element).addClass(cls);
