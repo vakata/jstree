@@ -2329,7 +2329,7 @@
 						n = false;
 						t = this;
 						$.each(state.core.open.concat([]), function (i, v) {
-							n = document.getElementById(v);
+							n = t.get_node(v);
 							if(n) {
 								if(t.is_loaded(v)) {
 									if(t.is_closed(v)) {
