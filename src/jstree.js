@@ -1575,7 +1575,7 @@
 					}
 					ind = node.index();
 				}
-				m[obj.id].data = node.data();
+				// m[obj.id].data = node.data(); // use only node's data, no need to touch jquery storage
 				if(!deep && obj.children.length && !node.children('ul').length) {
 					deep = true;
 				}
@@ -1643,7 +1643,7 @@
 			}
 			//node.childNodes[1].appendChild(d.createTextNode(obj.text));
 			node.childNodes[1].innerHTML += obj.text;
-			if(obj.data) { $.data(node, obj.data); }
+			// if(obj.data) { $.data(node, obj.data); } // always work with node's data, no need to touch jquery store
 
 			if(deep && obj.children.length && obj.state.opened) {
 				k = d.createElement('UL');
@@ -1877,8 +1877,8 @@
 			var dom = obj.id === '#' ? this.get_container_ul() : this.get_node(obj, true), i, j, _this;
 			if(!dom.length) {
 				for(i = 0, j = obj.children_d.length; i < j; i++) {
-					if(this.is_closed(this._mode.data[obj.children_d[i]])) {
-						this._mode.data[obj.children_d[i]].state.opened = true;
+					if(this.is_closed(this._model.data[obj.children_d[i]])) {
+						this._model.data[obj.children_d[i]].state.opened = true;
 					}
 				}
 				return this.trigger('open_all', { "node" : obj });
@@ -1918,7 +1918,7 @@
 				_this = this, i, j;
 			if(!dom.length) {
 				for(i = 0, j = obj.children_d.length; i < j; i++) {
-					this._mode.data[obj.children_d[i]].state.opened = false;
+					this._model.data[obj.children_d[i]].state.opened = false;
 				}
 				return this.trigger('close_all', { "node" : obj });
 			}
@@ -2519,11 +2519,14 @@
 		 * @param  {Boolean} options.no_state do not return state information
 		 * @param  {Boolean} options.no_id do not return ID
 		 * @param  {Boolean} options.no_children do not include children
+		 * @param  {Boolean} options.no_data do not include node data
+		 * @param  {Boolean} options.flat return flat JSON instead of nested
 		 * @return {Object}
 		 */
-		get_json : function (obj, options) {
+		get_json : function (obj, options, flat) {
 			obj = this.get_node(obj || '#');
 			if(!obj) { return false; }
+			if(options.flat && !flat) { flat = []; }
 			var tmp = {
 				'id' : obj.id,
 				'text' : obj.text,
@@ -2531,9 +2534,15 @@
 				'li_attr' : obj.li_attr,
 				'a_attr' : obj.a_attr,
 				'state' : {},
-				'data' : options && options.no_data ? false : ( this.get_node(obj, true).length ? this.get_node(obj, true).data() : obj.data ),
-				'children' : []
+				'data' : options && options.no_data ? false : obj.data
+				//( this.get_node(obj, true).length ? this.get_node(obj, true).data() : obj.data ),
 			}, i, j;
+			if(options.flat) {
+				tmp.parent = obj.parent;
+			}
+			else {
+				tmp.children = [];
+			}
 			if(!options || !options.no_state) {
 				for(i in obj.state) {
 					if(obj.state.hasOwnProperty(i)) {
@@ -2547,12 +2556,20 @@
 					delete tmp.li_attr.id;
 				}
 			}
+			if(options.flat && obj.id !== '#') {
+				flat.push(tmp);
+			}
 			if(!options || !options.no_children) {
 				for(i = 0, j = obj.children.length; i < j; i++) {
-					tmp.children.push(this.get_json(obj.children[i], options));
+					if(options.flat) {
+						this.get_json(obj.children[i], options, flat);
+					}
+					else {
+						tmp.children.push(this.get_json(obj.children[i], options));
+					}
 				}
 			}
-			return obj.id === '#' ? tmp.children : tmp;
+			return options.flat ? flat : (obj.id === '#' ? tmp.children : tmp);
 		},
 		/**
 		 * create a new node (do not confuse with load_node)
