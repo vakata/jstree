@@ -39,7 +39,18 @@
 		 * @plugin state
 		 */
 		events	: 'changed.jstree open_node.jstree close_node.jstree',
-		ttl		: false
+		/**
+		 * Time in milliseconds after which the state will expire. Defaults to 'false' meaning - no expire.
+		 * @name $.jstree.defaults.state.ttl
+		 * @plugin state
+		 */
+		ttl		: false,
+		/**
+		 * A function that will be executed prior to restoring state with one argument - the state object. Can be used to clear unwanted parts of the state.
+		 * @name $.jstree.defaults.state.filter
+		 * @plugin state
+		 */
+		filter	: false
 	};
 	$.jstree.plugins.state = function (options, parent) {
 		this.bind = function () {
@@ -71,6 +82,7 @@
 		 */
 		this.restore_state = function () {
 			var k = $.vakata.storage.get(this.settings.state.key);
+			if(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }
 
 			if(!!k) { this.set_state(k); }
 			this.trigger('restore_state', { 'state' : k });

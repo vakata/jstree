@@ -5828,7 +5828,47 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "events\t: 'changed.jstree open_node.jstree close_node.jstree',\n\t\tttl\t\t: false\n\t};\n\t$.jstree.plugins.state = function (options, parent) {\n\t\tthis.bind = function () {\n\t\t\tparent.bind.call(this);\n\n\t\t\tthis.element\n\t\t\t\t.on(\"ready.jstree\", $.proxy(function (e, data) {\n\t\t\t\t\t\tthis.element.one(\"restore_state.jstree set_state.jstree\", $.proxy(function () {\n\t\t\t\t\t\t\tthis.element.on(this.settings.state.events, $.proxy(function () {\n\t\t\t\t\t\t\t\tif(to) { clearTimeout(to); }\n\t\t\t\t\t\t\t\tto = setTimeout($.proxy(function () { this.save_state(); }, this), 100);\n\t\t\t\t\t\t\t}, this));\n\t\t\t\t\t\t}, this));\n\t\t\t\t\t\tthis.restore_state();\n\t\t\t\t\t}, this));\n\t\t};"
+		"code": "events\t: 'changed.jstree open_node.jstree close_node.jstree',"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "$.jstree.defaults.state.ttl"
+			},
+			{
+				"type": "plugin",
+				"string": "state"
+			}
+		],
+		"description": {
+			"full": "<p>Time in milliseconds after which the state will expire. Defaults to 'false' meaning - no expire.</p>",
+			"summary": "<p>Time in milliseconds after which the state will expire. Defaults to 'false' meaning - no expire.</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "ttl\t\t: false,"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "$.jstree.defaults.state.filter"
+			},
+			{
+				"type": "plugin",
+				"string": "state"
+			}
+		],
+		"description": {
+			"full": "<p>A function that will be executed prior to restoring state with one argument - the state object. Can be used to clear unwanted parts of the state.</p>",
+			"summary": "<p>A function that will be executed prior to restoring state with one argument - the state object. Can be used to clear unwanted parts of the state.</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "filter\t: false\n\t};\n\t$.jstree.plugins.state = function (options, parent) {\n\t\tthis.bind = function () {\n\t\t\tparent.bind.call(this);\n\n\t\t\tthis.element\n\t\t\t\t.on(\"ready.jstree\", $.proxy(function (e, data) {\n\t\t\t\t\t\tthis.element.one(\"restore_state.jstree set_state.jstree\", $.proxy(function () {\n\t\t\t\t\t\t\tthis.element.on(this.settings.state.events, $.proxy(function () {\n\t\t\t\t\t\t\t\tif(to) { clearTimeout(to); }\n\t\t\t\t\t\t\t\tto = setTimeout($.proxy(function () { this.save_state(); }, this), 100);\n\t\t\t\t\t\t\t}, this));\n\t\t\t\t\t\t}, this));\n\t\t\t\t\t\tthis.restore_state();\n\t\t\t\t\t}, this));\n\t\t};"
 	},
 	{
 		"tags": [
@@ -5874,7 +5914,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.restore_state = function () {\n\t\t\tvar k = $.vakata.storage.get(this.settings.state.key);\n\n\t\t\tif(!!k) { this.set_state(k); }\n\t\t\tthis.trigger('restore_state', { 'state' : k });\n\t\t};",
+		"code": "this.restore_state = function () {\n\t\t\tvar k = $.vakata.storage.get(this.settings.state.key);\n\t\t\tif(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }\n\n\t\t\tif(!!k) { this.set_state(k); }\n\t\t\tthis.trigger('restore_state', { 'state' : k });\n\t\t};",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
