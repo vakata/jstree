@@ -627,7 +627,7 @@
 								 * @event
 								 * @name ready.jstree
 								 */
-								this.trigger("ready");
+								setTimeout($.proxy(function () { this.trigger("ready"); }, this), 0);
 							}
 						}
 					}, this))
@@ -988,7 +988,7 @@
 			}
 			if($.isFunction(s)) {
 				return s.call(this, obj, $.proxy(function (d) {
-					return callback.call(this, this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $(d) : d));
+					return d === false ? callback.call(this, false) : callback.call(this, this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $(d) : d));
 				}, this));
 			}
 			if(typeof s === 'object') {
@@ -4846,6 +4846,7 @@
 			this._data.search.dom = $();
 			this._data.search.res = [];
 			this._data.search.opn = [];
+			this._data.search.sln = null;
 
 			if(this.settings.search.show_only_matches) {
 				this.element
@@ -4887,7 +4888,9 @@
 				if(!a.data) { a.data = {}; }
 				a.data.str = str;
 				return $.ajax(s.ajax).done($.proxy(function (d) {
-					this._search_load(d, str);
+					if(d && d.d) { d = d.d; }
+					this._data.search.sln = !$.isArray(d) ? [] : d;
+					this._search_load(str);
 				}, this));
 			}
 			this._data.search.str = str;
@@ -4975,24 +4978,29 @@
 		 * loads nodes that need to be opened to reveal the search results. Used only internally.
 		 * @private
 		 * @name _search_load(d, str)
-		 * @param {Array} d an array of node IDs
 		 * @param {String} str the search string
 		 * @plugin search
 		 */
-		this._search_load = function (d, str) {
+		this._search_load = function (str) {
 			var res = true,
 				t = this,
 				m = t._model.data;
-			$.each(d.concat([]), function (i, v) {
-				if(m[v]) {
-					if(!m[v].state.loaded) {
-						t.load_node(v, function () { t._search_load(d, str); });
-						res = false;
-					}
+			if($.isArray(this._data.search.sln)) {
+				if(!this._data.search.sln.length) {
+					this._data.search.sln = null;
+					this.search(str, true);
 				}
-			});
-			if(res) {
-				this.search(str, true);
+				else {
+					$.each(this._data.search.sln, function (i, v) {
+						if(m[v]) {
+							if(!m[v].state.loaded) {
+								$.vakata.array_remove_item(t._data.search.sln, v);
+								t.load_node(v, function (o, s) { if(s) { t._search_load(str); } });
+								res = false;
+							}
+						}
+					});
+				}
 			}
 		};
 	};

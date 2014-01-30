@@ -627,7 +627,7 @@
 								 * @event
 								 * @name ready.jstree
 								 */
-								this.trigger("ready");
+								setTimeout($.proxy(function () { this.trigger("ready"); }, this), 0);
 							}
 						}
 					}, this))
@@ -988,7 +988,7 @@
 			}
 			if($.isFunction(s)) {
 				return s.call(this, obj, $.proxy(function (d) {
-					return callback.call(this, this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $(d) : d));
+					return d === false ? callback.call(this, false) : callback.call(this, this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $(d) : d));
 				}, this));
 			}
 			if(typeof s === 'object') {
