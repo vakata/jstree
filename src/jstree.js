@@ -508,9 +508,6 @@
 		 * @name bind()
 		 */
 		bind : function () {
-			if($.support.touch) {
-				this.element.addTouch();
-			}
 			this.element
 				.on("dblclick.jstree", function () {
 						if(document.selection && document.selection.empty) {

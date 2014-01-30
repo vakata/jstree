@@ -508,9 +508,6 @@
 		 * @name bind()
 		 */
 		bind : function () {
-			if($.support.touch) {
-				this.element.addTouch();
-			}
 			this.element
 				.on("dblclick.jstree", function () {
 						if(document.selection && document.selection.empty) {
@@ -4440,10 +4437,10 @@
 			parent.bind.call(this);
 
 			this.element
-				.on('mousedown', 'a', $.proxy(function (e) {
+				.on('mousedown touchstart', '.jstree-anchor', $.proxy(function (e) {
 					var obj = this.get_node(e.target),
 						mlt = this.is_selected(obj) ? this.get_selected().length : 1;
-					if(obj && obj.id && obj.id !== "#" && e.which === 1 &&
+					if(obj && obj.id && obj.id !== "#" && (e.which === 1 || e.type === "touchstart") &&
 						(this.settings.dnd.is_draggable === true || ($.isFunction(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, obj)))
 					) {
 						this.element.trigger('mousedown.jstree');
@@ -4654,8 +4651,8 @@
 					scroll_e: false,
 					scroll_i: false
 				};
-				$(document).unbind("mousemove",	$.vakata.dnd.drag);
-				$(document).unbind("mouseup",	$.vakata.dnd.stop);
+				$(document).off("mousemove touchmove", $.vakata.dnd.drag);
+				$(document).off("mouseup touchend", $.vakata.dnd.stop);
 			},
 			_scroll : function (init_only) {
 				if(!vakata_dnd.scroll_e || (!vakata_dnd.scroll_l && !vakata_dnd.scroll_t)) {
@@ -4677,6 +4674,11 @@
 				}
 			},
 			start : function (e, data, html) {
+				if(e.type === "touchstart" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {
+					e.pageX = e.originalEvent.targetTouches[0].pageX;
+					e.pageY = e.originalEvent.targetTouches[0].pageY;
+					e.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);
+				}
 				if(vakata_dnd.is_drag) { $.vakata.dnd.stop({}); }
 				try {
 					e.currentTarget.unselectable = "on";
@@ -4699,11 +4701,16 @@
 						"zIndex"		: "10000"
 					});
 				}
-				$(document).bind("mousemove", $.vakata.dnd.drag);
-				$(document).bind("mouseup", $.vakata.dnd.stop);
+				$(document).bind("mousemove touchmove", $.vakata.dnd.drag);
+				$(document).bind("mouseup touchend", $.vakata.dnd.stop);
 				return false;
 			},
 			drag : function (e) {
+				if(e.type === "touchmove" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {
+					e.pageX = e.originalEvent.targetTouches[0].pageX;
+					e.pageY = e.originalEvent.targetTouches[0].pageY;
+					e.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);
+				}
 				if(!vakata_dnd.is_down) { return; }
 				if(!vakata_dnd.is_drag) {
 					if(
@@ -4779,6 +4786,11 @@
 				$.vakata.dnd._trigger("move", e);
 			},
 			stop : function (e) {
+				if(e.type === "touchend" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {
+					e.pageX = e.originalEvent.targetTouches[0].pageX;
+					e.pageY = e.originalEvent.targetTouches[0].pageY;
+					e.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);
+				}
 				if(vakata_dnd.is_drag) {
 					$.vakata.dnd._trigger("stop", e);
 				}
