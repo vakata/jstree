@@ -72,7 +72,7 @@
 		this.get_json = function (obj, options) {
 			var i, j,
 				m = this._model.data,
-				opt = options ? $.extend(true, options, {no_id:true}) : {},
+				opt = options ? $.extend(true, options, {no_id:false}) : {},
 				tmp = parent.get_json.call(this, obj, opt);
 			if(tmp === false) { return false; }
 			if($.isArray(tmp)) {
