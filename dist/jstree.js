@@ -2332,7 +2332,9 @@
 									if(t.is_closed(v)) {
 										t.open_node(v, false, 0);
 									}
-									$.vakata.array_remove_item(state.core.open, v);
+									if(state && state.core && state.core.open) {
+										$.vakata.array_remove_item(state.core.open, v);
+									}
 								}
 								else {
 									if(!t.is_loading(v)) {
@@ -2394,6 +2396,7 @@
 					}
 				}
 				if($.isEmptyObject(state)) {
+					state = null;
 					if(callback) { callback.call(this); }
 					/**
 					 * triggered when a `set_state` call completes
