@@ -165,17 +165,38 @@
 			parent.bind.call(this);
 
 			this.element
-				.on("contextmenu.jstree", "a", $.proxy(function (e) {
+				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e) {
 						e.preventDefault();
 						if(!this.is_loading(e.currentTarget)) {
 							this.show_contextmenu(e.currentTarget, e.pageX, e.pageY);
 						}
 					}, this))
-				.on("click.jstree", "a", $.proxy(function (e) {
+				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
 						if(this._data.contextmenu.visible) {
 							$.vakata.context.hide();
 						}
 					}, this));
+			/*
+			if(!('oncontextmenu' in document.body) && ('ontouchstart' in document.body)) {
+				var el = null, tm = null;
+				this.element
+					.on("touchstart", ".jstree-anchor", function (e) {
+						el = e.currentTarget;
+						tm = +new Date();
+						$(document).one("touchend", function (e) {
+							e.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);
+							e.currentTarget = e.target;
+							tm = ((+(new Date())) - tm);
+							if(e.target === el && tm > 600 && tm < 1000) {
+								e.preventDefault();
+								$(el).trigger('contextmenu', e);
+							}
+							el = null;
+							tm = null;
+						});
+					});
+			}
+			*/
 			$(document).on("context_hide.vakata", $.proxy(function () { this._data.contextmenu.visible = false; }, this));
 		};
 		this.teardown = function () {

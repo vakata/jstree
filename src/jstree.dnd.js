@@ -163,7 +163,7 @@
 											ps -= 1;
 										}
 									}
-									ok = ok && ins.check(op, data.data.nodes[t1], p, ps);
+									ok = ok && ins.check(op, (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), p, ps);
 									if(!ok) { break; }
 								}
 								if(ok) {
