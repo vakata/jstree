@@ -216,13 +216,17 @@
 				else {
 					$.each(this._data.search.sln, function (i, v) {
 						if(m[v]) {
+							$.vakata.array_remove_item(t._data.search.sln, v);
 							if(!m[v].state.loaded) {
-								$.vakata.array_remove_item(t._data.search.sln, v);
 								t.load_node(v, function (o, s) { if(s) { t._search_load(str); } });
 								res = false;
 							}
 						}
 					});
+					if(res) {
+						this._data.search.sln = [];
+						this._search_load(str);
+					}
 				}
 			}
 		};
