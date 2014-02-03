@@ -101,7 +101,8 @@
 			if(parent.check.call(this, chk, obj, par, pos) === false) { return false; }
 			obj = obj && obj.id ? obj : this.get_node(obj);
 			par = par && par.id ? par : this.get_node(par);
-			var m = this._model.data, tmp, d, i, j;
+			var m = obj && obj.id ? $.jstree.reference(obj.id) : null, tmp, d, i, j;
+			m = m && m._model && m._model.data ? m._model.data : null;
 			switch(chk) {
 				case "create_node":
 				case "move_node":
@@ -114,7 +115,7 @@
 						if(tmp.valid_children !== undefined && tmp.valid_children !== -1 && $.inArray(obj.type, tmp.valid_children) === -1) {
 							return false;
 						}
-						if(obj.children_d && obj.parents) {
+						if(m && obj.children_d && obj.parents) {
 							d = 0;
 							for(i = 0, j = obj.children_d.length; i < j; i++) {
 								d = Math.max(d, m[obj.children_d[i]].parents.length);
