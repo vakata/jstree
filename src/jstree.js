@@ -37,7 +37,6 @@
 
 	// internal variables
 	var instance_counter = 0,
-		total_nodes = 0,
 		ccp_node = false,
 		ccp_mode = false,
 		ccp_inst = false,
@@ -117,6 +116,7 @@
 	 */
 	$.jstree.core = function (id) {
 		this._id = id;
+		this._cnt = 0;
 		this._data = {
 			core : {
 				themes : {
@@ -1251,7 +1251,7 @@
 			}
 			tmp = d.children("ul").children("li");
 			do {
-				tid = 'j' + this._id + '_' + (++total_nodes);
+				tid = 'j' + this._id + '_' + (++this._cnt);
 			} while(m[tid]);
 			data.id = data.li_attr.id || tid;
 			if(tmp.length) {
@@ -1392,7 +1392,7 @@
 			if(p) { ps.unshift(p); }
 			var tid = false, i, j, c, e, m = this._model.data, df = this._model.default_state, tmp;
 			do {
-				tid = 'j' + this._id + '_' + (++total_nodes);
+				tid = 'j' + this._id + '_' + (++this._cnt);
 			} while(m[tid]);
 
 			tmp = {
@@ -2417,6 +2417,17 @@
 		 */
 		refresh : function () {
 			this._data.core.state = this.get_state();
+			this._cnt = 0;
+			this._model.data = {
+				'#' : {
+					id : '#',
+					parent : null,
+					parents : [],
+					children : [],
+					children_d : [],
+					state : { loaded : false }
+				}
+			};
 			this.load_node('#', function (o, s) {
 				if(s) {
 					this.set_state($.extend(true, {}, this._data.core.state), function () {
