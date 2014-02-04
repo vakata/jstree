@@ -57,7 +57,7 @@
 		 * @plugin contextmenu
 		 */
 		items : function (o, cb) { // Could be an object directly
-			cb({
+			return {
 				"create" : {
 					"separator_before"	: false,
 					"separator_after"	: true,
@@ -158,7 +158,7 @@
 						}
 					}
 				}
-			});
+			};
 		}
 	};
 
