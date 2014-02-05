@@ -2011,7 +2011,7 @@
 			}
 			if(!this.settings.core.multiple || (!e.metaKey && !e.ctrlKey && !e.shiftKey) || (e.shiftKey && (!this._data.core.last_clicked || !this.get_parent(obj) || this.get_parent(obj) !== this._data.core.last_clicked.parent ) )) {
 				this.deselect_all(true);
-				this.select_node(obj);
+				this.select_node(obj, false, false, e);
 				this._data.core.last_clicked = this.get_node(obj);
 			}
 			else {
@@ -2030,19 +2030,19 @@
 							c = !c;
 						}
 						if(c || p[i] === o || p[i] === l) {
-							this.select_node(p[i]);
+							this.select_node(p[i], false, false, e);
 						}
 						else {
-							this.deselect_node(p[i]);
+							this.deselect_node(p[i], false, false, e);
 						}
 					}
 				}
 				else {
 					if(!this.is_selected(obj)) {
-						this.select_node(obj);
+						this.select_node(obj, false, false, e);
 					}
 					else {
-						this.deselect_node(obj);
+						this.deselect_node(obj, false, false, e);
 					}
 				}
 			}
@@ -2107,12 +2107,12 @@
 		 * @param {Boolean} prevent_open if set to `true` parents of the selected node won't be opened
 		 * @trigger select_node.jstree, changed.jstree
 		 */
-		select_node : function (obj, supress_event, prevent_open) {
+		select_node : function (obj, supress_event, prevent_open, e) {
 			var dom, t1, t2, th;
 			if($.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-					this.select_node(obj[t1], supress_event, prevent_open);
+					this.select_node(obj[t1], supress_event, prevent_open, e);
 				}
 				return true;
 			}
@@ -2136,8 +2136,9 @@
 				 * @name select_node.jstree
 				 * @param {Object} node
 				 * @param {Array} selected the current selection
+				 * @param {Object} event the event (if any) that triggered this select_node
 				 */
-				this.trigger('select_node', { 'node' : obj, 'selected' : this._data.core.selected });
+				this.trigger('select_node', { 'node' : obj, 'selected' : this._data.core.selected, 'event' : e });
 				if(!supress_event) {
 					/**
 					 * triggered when selection changes
@@ -2146,8 +2147,9 @@
 					 * @param {Object} node
 					 * @param {Object} action the action that caused the selection to change
 					 * @param {Array} selected the current selection
+					 * @param {Object} event the event (if any) that triggered this changed event
 					 */
-					this.trigger('changed', { 'action' : 'select_node', 'node' : obj, 'selected' : this._data.core.selected });
+					this.trigger('changed', { 'action' : 'select_node', 'node' : obj, 'selected' : this._data.core.selected, 'event' : e });
 				}
 			}
 		},
@@ -2158,12 +2160,12 @@
 		 * @param {Boolean} supress_event if set to `true` the `changed.jstree` event won't be triggered
 		 * @trigger deselect_node.jstree, changed.jstree
 		 */
-		deselect_node : function (obj, supress_event) {
+		deselect_node : function (obj, supress_event, e) {
 			var t1, t2, dom;
 			if($.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-					this.deselect_node(obj[t1], supress_event);
+					this.deselect_node(obj[t1], supress_event, e);
 				}
 				return true;
 			}
@@ -2184,10 +2186,11 @@
 				 * @name deselect_node.jstree
 				 * @param {Object} node
 				 * @param {Array} selected the current selection
+				 * @param {Object} event the event (if any) that triggered this deselect_node
 				 */
-				this.trigger('deselect_node', { 'node' : obj, 'selected' : this._data.core.selected });
+				this.trigger('deselect_node', { 'node' : obj, 'selected' : this._data.core.selected, 'event' : e });
 				if(!supress_event) {
-					this.trigger('changed', { 'action' : 'deselect_node', 'node' : obj, 'selected' : this._data.core.selected });
+					this.trigger('changed', { 'action' : 'deselect_node', 'node' : obj, 'selected' : this._data.core.selected, 'event' : e });
 				}
 			}
 		},

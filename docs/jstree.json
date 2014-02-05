@@ -2516,7 +2516,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "activate_node : function (obj, e) {\n\t\t\tif(this.is_disabled(obj)) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tif(!this.settings.core.multiple || (!e.metaKey && !e.ctrlKey && !e.shiftKey) || (e.shiftKey && (!this._data.core.last_clicked || !this.get_parent(obj) || this.get_parent(obj) !== this._data.core.last_clicked.parent ) )) {\n\t\t\t\tthis.deselect_all(true);\n\t\t\t\tthis.select_node(obj);\n\t\t\t\tthis._data.core.last_clicked = this.get_node(obj);\n\t\t\t}\n\t\t\telse {\n\t\t\t\tif(e.shiftKey) {\n\t\t\t\t\tvar o = this.get_node(obj).id,\n\t\t\t\t\t\tl = this._data.core.last_clicked.id,\n\t\t\t\t\t\tp = this.get_node(this._data.core.last_clicked.parent).children,\n\t\t\t\t\t\tc = false,\n\t\t\t\t\t\ti, j;\n\t\t\t\t\tfor(i = 0, j = p.length; i < j; i += 1) {\n\t\t\t\t\t\t// separate IFs work whem o and l are the same\n\t\t\t\t\t\tif(p[i] === o) {\n\t\t\t\t\t\t\tc = !c;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(p[i] === l) {\n\t\t\t\t\t\t\tc = !c;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(c || p[i] === o || p[i] === l) {\n\t\t\t\t\t\t\tthis.select_node(p[i]);\n\t\t\t\t\t\t}\n\t\t\t\t\t\telse {\n\t\t\t\t\t\t\tthis.deselect_node(p[i]);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\telse {\n\t\t\t\t\tif(!this.is_selected(obj)) {\n\t\t\t\t\t\tthis.select_node(obj);\n\t\t\t\t\t}\n\t\t\t\t\telse {\n\t\t\t\t\t\tthis.deselect_node(obj);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}"
+		"code": "activate_node : function (obj, e) {\n\t\t\tif(this.is_disabled(obj)) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tif(!this.settings.core.multiple || (!e.metaKey && !e.ctrlKey && !e.shiftKey) || (e.shiftKey && (!this._data.core.last_clicked || !this.get_parent(obj) || this.get_parent(obj) !== this._data.core.last_clicked.parent ) )) {\n\t\t\t\tthis.deselect_all(true);\n\t\t\t\tthis.select_node(obj, false, false, e);\n\t\t\t\tthis._data.core.last_clicked = this.get_node(obj);\n\t\t\t}\n\t\t\telse {\n\t\t\t\tif(e.shiftKey) {\n\t\t\t\t\tvar o = this.get_node(obj).id,\n\t\t\t\t\t\tl = this._data.core.last_clicked.id,\n\t\t\t\t\t\tp = this.get_node(this._data.core.last_clicked.parent).children,\n\t\t\t\t\t\tc = false,\n\t\t\t\t\t\ti, j;\n\t\t\t\t\tfor(i = 0, j = p.length; i < j; i += 1) {\n\t\t\t\t\t\t// separate IFs work whem o and l are the same\n\t\t\t\t\t\tif(p[i] === o) {\n\t\t\t\t\t\t\tc = !c;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(p[i] === l) {\n\t\t\t\t\t\t\tc = !c;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(c || p[i] === o || p[i] === l) {\n\t\t\t\t\t\t\tthis.select_node(p[i], false, false, e);\n\t\t\t\t\t\t}\n\t\t\t\t\t\telse {\n\t\t\t\t\t\t\tthis.deselect_node(p[i], false, false, e);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\telse {\n\t\t\t\t\tif(!this.is_selected(obj)) {\n\t\t\t\t\t\tthis.select_node(obj, false, false, e);\n\t\t\t\t\t}\n\t\t\t\t\telse {\n\t\t\t\t\t\tthis.deselect_node(obj, false, false, e);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}"
 	},
 	{
 		"tags": [
@@ -2708,7 +2708,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "select_node : function (obj, supress_event, prevent_open) {\n\t\t\tvar dom, t1, t2, th;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.select_node(obj[t1], supress_event, prevent_open);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tdom = this.get_node(obj, true);\n\t\t\tif(!obj.state.selected) {\n\t\t\t\tobj.state.selected = true;\n\t\t\t\tthis._data.core.selected.push(obj.id);\n\t\t\t\tif(!prevent_open) {\n\t\t\t\t\tdom = this._open_to(obj);\n\t\t\t\t}\n\t\t\t\tif(dom && dom.length) {\n\t\t\t\t\tdom.children('.jstree-anchor').addClass('jstree-clicked');\n\t\t\t\t}"
+		"code": "select_node : function (obj, supress_event, prevent_open, e) {\n\t\t\tvar dom, t1, t2, th;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.select_node(obj[t1], supress_event, prevent_open, e);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tdom = this.get_node(obj, true);\n\t\t\tif(!obj.state.selected) {\n\t\t\t\tobj.state.selected = true;\n\t\t\t\tthis._data.core.selected.push(obj.id);\n\t\t\t\tif(!prevent_open) {\n\t\t\t\t\tdom = this._open_to(obj);\n\t\t\t\t}\n\t\t\t\tif(dom && dom.length) {\n\t\t\t\t\tdom.children('.jstree-anchor').addClass('jstree-clicked');\n\t\t\t\t}"
 	},
 	{
 		"tags": [
@@ -2735,6 +2735,14 @@
 				],
 				"name": "selected",
 				"description": "the current selection"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "event",
+				"description": "the event (if any) that triggered this select_node"
 			}
 		],
 		"description": {
@@ -2744,7 +2752,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.trigger('select_node', { 'node' : obj, 'selected' : this._data.core.selected });\n\t\t\t\tif(!supress_event) {"
+		"code": "this.trigger('select_node', { 'node' : obj, 'selected' : this._data.core.selected, 'event' : e });\n\t\t\t\tif(!supress_event) {"
 	},
 	{
 		"tags": [
@@ -2779,6 +2787,14 @@
 				],
 				"name": "selected",
 				"description": "the current selection"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "event",
+				"description": "the event (if any) that triggered this changed event"
 			}
 		],
 		"description": {
@@ -2788,7 +2804,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.trigger('changed', { 'action' : 'select_node', 'node' : obj, 'selected' : this._data.core.selected });\n\t\t\t\t}\n\t\t\t}\n\t\t},"
+		"code": "this.trigger('changed', { 'action' : 'select_node', 'node' : obj, 'selected' : this._data.core.selected, 'event' : e });\n\t\t\t\t}\n\t\t\t}\n\t\t},"
 	},
 	{
 		"tags": [
@@ -2824,7 +2840,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "deselect_node : function (obj, supress_event) {\n\t\t\tvar t1, t2, dom;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.deselect_node(obj[t1], supress_event);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tdom = this.get_node(obj, true);\n\t\t\tif(obj.state.selected) {\n\t\t\t\tobj.state.selected = false;\n\t\t\t\tthis._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, obj.id);\n\t\t\t\tif(dom.length) {\n\t\t\t\t\tdom.children('.jstree-anchor').removeClass('jstree-clicked');\n\t\t\t\t}"
+		"code": "deselect_node : function (obj, supress_event, e) {\n\t\t\tvar t1, t2, dom;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.deselect_node(obj[t1], supress_event, e);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tdom = this.get_node(obj, true);\n\t\t\tif(obj.state.selected) {\n\t\t\t\tobj.state.selected = false;\n\t\t\t\tthis._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, obj.id);\n\t\t\t\tif(dom.length) {\n\t\t\t\t\tdom.children('.jstree-anchor').removeClass('jstree-clicked');\n\t\t\t\t}"
 	},
 	{
 		"tags": [
@@ -2851,6 +2867,14 @@
 				],
 				"name": "selected",
 				"description": "the current selection"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "event",
+				"description": "the event (if any) that triggered this deselect_node"
 			}
 		],
 		"description": {
@@ -2860,7 +2884,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.trigger('deselect_node', { 'node' : obj, 'selected' : this._data.core.selected });\n\t\t\t\tif(!supress_event) {\n\t\t\t\t\tthis.trigger('changed', { 'action' : 'deselect_node', 'node' : obj, 'selected' : this._data.core.selected });\n\t\t\t\t}\n\t\t\t}\n\t\t},"
+		"code": "this.trigger('deselect_node', { 'node' : obj, 'selected' : this._data.core.selected, 'event' : e });\n\t\t\t\tif(!supress_event) {\n\t\t\t\t\tthis.trigger('changed', { 'action' : 'deselect_node', 'node' : obj, 'selected' : this._data.core.selected, 'event' : e });\n\t\t\t\t}\n\t\t\t}\n\t\t},"
 	},
 	{
 		"tags": [
