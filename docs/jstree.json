@@ -5217,7 +5217,151 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.trigger('show_contextmenu', { \"node\" : obj, \"x\" : x, \"y\" : y });\n\t\t};\n\t};\n\n\t// contextmenu helper\n\t(function ($) {\n\t\tvar right_to_left = false,\n\t\t\tvakata_context = {\n\t\t\t\telement\t\t: false,\n\t\t\t\treference\t: false,\n\t\t\t\tposition_x\t: 0,\n\t\t\t\tposition_y\t: 0,\n\t\t\t\titems\t\t: [],\n\t\t\t\thtml\t\t: \"\",\n\t\t\t\tis_visible\t: false\n\t\t\t};\n\n\t\t$.vakata.context = {\n\t\t\tsettings : {\n\t\t\t\thide_onmouseleave\t: 0,\n\t\t\t\ticons\t\t\t\t: true\n\t\t\t},\n\t\t\t_trigger : function (event_name) {\n\t\t\t\t$(document).triggerHandler(\"context_\" + event_name + \".vakata\", {\n\t\t\t\t\t\"reference\"\t: vakata_context.reference,\n\t\t\t\t\t\"element\"\t: vakata_context.element,\n\t\t\t\t\t\"position\"\t: {\n\t\t\t\t\t\t\"x\" : vakata_context.position_x,\n\t\t\t\t\t\t\"y\" : vakata_context.position_y\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t},\n\t\t\t_execute : function (i) {\n\t\t\t\ti = vakata_context.items[i];\n\t\t\t\treturn i && (!i._disabled || ($.isFunction(i._disabled) && !i._disabled({ \"item\" : i, \"reference\" : vakata_context.reference, \"element\" : vakata_context.element }))) && i.action ? i.action.call(null, {\n\t\t\t\t\t\t\t\"item\"\t\t: i,\n\t\t\t\t\t\t\t\"reference\"\t: vakata_context.reference,\n\t\t\t\t\t\t\t\"element\"\t: vakata_context.element,\n\t\t\t\t\t\t\t\"position\"\t: {\n\t\t\t\t\t\t\t\t\"x\" : vakata_context.position_x,\n\t\t\t\t\t\t\t\t\"y\" : vakata_context.position_y\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}) : false;\n\t\t\t},\n\t\t\t_parse : function (o, is_callback) {\n\t\t\t\tif(!o) { return false; }\n\t\t\t\tif(!is_callback) {\n\t\t\t\t\tvakata_context.html\t\t= \"\";\n\t\t\t\t\tvakata_context.items\t= [];\n\t\t\t\t}\n\t\t\t\tvar str = \"\",\n\t\t\t\t\tsep = false,\n\t\t\t\t\ttmp;\n\n\t\t\t\tif(is_callback) { str += \"<\"+\"ul>\"; }\n\t\t\t\t$.each(o, function (i, val) {\n\t\t\t\t\tif(!val) { return true; }\n\t\t\t\t\tvakata_context.items.push(val);\n\t\t\t\t\tif(!sep && val.separator_before) {\n\t\t\t\t\t\tstr += \"<\"+\"li class='vakata-context-separator'><\"+\"a href='#' \" + ($.vakata.context.settings.icons ? '' : 'style=\"margin-left:0px;\"') + \">&#160;<\"+\"/a><\"+\"/li>\";\n\t\t\t\t\t}\n\t\t\t\t\tsep = false;\n\t\t\t\t\tstr += \"<\"+\"li class='\" + (val._class || \"\") + (val._disabled === true || ($.isFunction(val._disabled) && val._disabled({ \"item\" : val, \"reference\" : vakata_context.reference, \"element\" : vakata_context.element })) ? \" vakata-contextmenu-disabled \" : \"\") + \"' \"+(val.shortcut?\" data-shortcut='\"+val.shortcut+\"' \":'')+\">\";\n\t\t\t\t\tstr += \"<\"+\"a href='#' rel='\" + (vakata_context.items.length - 1) + \"'>\";\n\t\t\t\t\tif($.vakata.context.settings.icons) {\n\t\t\t\t\t\tstr += \"<\"+\"i \";\n\t\t\t\t\t\tif(val.icon) {\n\t\t\t\t\t\t\tif(val.icon.indexOf(\"/\") !== -1 || val.icon.indexOf(\".\") !== -1) { str += \" style='background:url(\\\"\" + val.icon + \"\\\") center center no-repeat' \"; }\n\t\t\t\t\t\t\telse { str += \" class='\" + val.icon + \"' \"; }\n\t\t\t\t\t\t}\n\t\t\t\t\t\tstr += \"><\"+\"/i><\"+\"span class='vakata-contextmenu-sep'>&#160;<\"+\"/span>\";\n\t\t\t\t\t}\n\t\t\t\t\tstr += val.label + (val.shortcut?' <span class=\"vakata-contextmenu-shortcut vakata-contextmenu-shortcut-'+val.shortcut+'\">'+ (val.shortcut_label || '') +'</span>':'') + \"<\"+\"/a>\";\n\t\t\t\t\tif(val.submenu) {\n\t\t\t\t\t\ttmp = $.vakata.context._parse(val.submenu, true);\n\t\t\t\t\t\tif(tmp) { str += tmp; }\n\t\t\t\t\t}\n\t\t\t\t\tstr += \"<\"+\"/li>\";\n\t\t\t\t\tif(val.separator_after) {\n\t\t\t\t\t\tstr += \"<\"+\"li class='vakata-context-separator'><\"+\"a href='#' \" + ($.vakata.context.settings.icons ? '' : 'style=\"margin-left:0px;\"') + \">&#160;<\"+\"/a><\"+\"/li>\";\n\t\t\t\t\t\tsep = true;\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\tstr  = str.replace(/<li class\\='vakata-context-separator'\\><\\/li\\>$/,\"\");\n\t\t\t\tif(is_callback) { str += \"</ul>\"; }\n\t\t\t\tif(!is_callback) { vakata_context.html = str; $.vakata.context._trigger(\"parse\"); }\n\t\t\t\treturn str.length > 10 ? str : false;\n\t\t\t},\n\t\t\t_show_submenu : function (o) {\n\t\t\t\to = $(o);\n\t\t\t\tif(!o.length || !o.children(\"ul\").length) { return; }\n\t\t\t\tvar e = o.children(\"ul\"),\n\t\t\t\t\tx = o.offset().left + o.outerWidth(),\n\t\t\t\t\ty = o.offset().top,\n\t\t\t\t\tw = e.width(),\n\t\t\t\t\th = e.height(),\n\t\t\t\t\tdw = $(window).width() + $(window).scrollLeft(),\n\t\t\t\t\tdh = $(window).height() + $(window).scrollTop();\n\t\t\t\t// може да се спести е една проверка - дали няма някой от класовете вече нагоре\n\t\t\t\tif(right_to_left) {\n\t\t\t\t\to[x - (w + 10 + o.outerWidth()) < 0 ? \"addClass\" : \"removeClass\"](\"vakata-context-left\");\n\t\t\t\t}\n\t\t\t\telse {\n\t\t\t\t\to[x + w + 10 > dw ? \"addClass\" : \"removeClass\"](\"vakata-context-right\");\n\t\t\t\t}\n\t\t\t\tif(y + h + 10 > dh) {\n\t\t\t\t\te.css(\"bottom\",\"-1px\");\n\t\t\t\t}\n\t\t\t\te.show();\n\t\t\t},\n\t\t\tshow : function (reference, position, data) {\n\t\t\t\tvar o, e, x, y, w, h, dw, dh, cond = true;\n\t\t\t\tif(vakata_context.element && vakata_context.element.length) {\n\t\t\t\t\tvakata_context.element.width('');\n\t\t\t\t}\n\t\t\t\tswitch(cond) {\n\t\t\t\t\tcase (!position && !reference):\n\t\t\t\t\t\treturn false;\n\t\t\t\t\tcase (!!position && !!reference):\n\t\t\t\t\t\tvakata_context.reference\t= reference;\n\t\t\t\t\t\tvakata_context.position_x\t= position.x;\n\t\t\t\t\t\tvakata_context.position_y\t= position.y;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tcase (!position && !!reference):\n\t\t\t\t\t\tvakata_context.reference\t= reference;\n\t\t\t\t\t\to = reference.offset();\n\t\t\t\t\t\tvakata_context.position_x\t= o.left + reference.outerHeight();\n\t\t\t\t\t\tvakata_context.position_y\t= o.top;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tcase (!!position && !reference):\n\t\t\t\t\t\tvakata_context.position_x\t= position.x;\n\t\t\t\t\t\tvakata_context.position_y\t= position.y;\n\t\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\t\tif(!!reference && !data && $(reference).data('vakata_contextmenu')) {\n\t\t\t\t\tdata = $(reference).data('vakata_contextmenu');\n\t\t\t\t}\n\t\t\t\tif($.vakata.context._parse(data)) {\n\t\t\t\t\tvakata_context.element.html(vakata_context.html);\n\t\t\t\t}\n\t\t\t\tif(vakata_context.items.length) {\n\t\t\t\t\te = vakata_context.element;\n\t\t\t\t\tx = vakata_context.position_x;\n\t\t\t\t\ty = vakata_context.position_y;\n\t\t\t\t\tw = e.width();\n\t\t\t\t\th = e.height();\n\t\t\t\t\tdw = $(window).width() + $(window).scrollLeft();\n\t\t\t\t\tdh = $(window).height() + $(window).scrollTop();\n\t\t\t\t\tif(right_to_left) {\n\t\t\t\t\t\tx -= e.outerWidth();\n\t\t\t\t\t\tif(x < $(window).scrollLeft() + 20) {\n\t\t\t\t\t\t\tx = $(window).scrollLeft() + 20;\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tif(x + w + 20 > dw) {\n\t\t\t\t\t\tx = dw - (w + 20);\n\t\t\t\t\t}\n\t\t\t\t\tif(y + h + 20 > dh) {\n\t\t\t\t\t\ty = dh - (h + 20);\n\t\t\t\t\t}\n\n\t\t\t\t\tvakata_context.element\n\t\t\t\t\t\t.css({ \"left\" : x, \"top\" : y })\n\t\t\t\t\t\t.show()\n\t\t\t\t\t\t.find('a:eq(0)').focus().parent().addClass(\"vakata-context-hover\");\n\t\t\t\t\tvakata_context.is_visible = true;\n\t\t\t\t\t$.vakata.context._trigger(\"show\");\n\t\t\t\t}\n\t\t\t},\n\t\t\thide : function () {\n\t\t\t\tif(vakata_context.is_visible) {\n\t\t\t\t\tvakata_context.element.hide().find(\"ul\").hide().end().find(':focus').blur();\n\t\t\t\t\tvakata_context.is_visible = false;\n\t\t\t\t\t$.vakata.context._trigger(\"hide\");\n\t\t\t\t}\n\t\t\t}\n\t\t};\n\t\t$(function () {\n\t\t\tright_to_left = $(\"body\").css(\"direction\") === \"rtl\";\n\t\t\tvar to = false;\n\n\t\t\tvakata_context.element = $(\"<ul class='vakata-context'></ul>\");\n\t\t\tvakata_context.element\n\t\t\t\t.on(\"mouseenter\", \"li\", function (e) {\n\t\t\t\t\te.stopImmediatePropagation();\n\n\t\t\t\t\tif($.contains(this, e.relatedTarget)) {\n\t\t\t\t\t\t// премахнато заради delegate mouseleave по-долу\n\t\t\t\t\t\t// $(this).find(\".vakata-context-hover\").removeClass(\"vakata-context-hover\");\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t\tif(to) { clearTimeout(to); }\n\t\t\t\t\tvakata_context.element.find(\".vakata-context-hover\").removeClass(\"vakata-context-hover\").end();\n\n\t\t\t\t\t$(this)\n\t\t\t\t\t\t.siblings().find(\"ul\").hide().end().end()\n\t\t\t\t\t\t.parentsUntil(\".vakata-context\", \"li\").addBack().addClass(\"vakata-context-hover\");\n\t\t\t\t\t$.vakata.context._show_submenu(this);\n\t\t\t\t})\n\t\t\t\t// тестово - дали не натоварва?\n\t\t\t\t.on(\"mouseleave\", \"li\", function (e) {\n\t\t\t\t\tif($.contains(this, e.relatedTarget)) { return; }\n\t\t\t\t\t$(this).find(\".vakata-context-hover\").addBack().removeClass(\"vakata-context-hover\");\n\t\t\t\t})\n\t\t\t\t.on(\"mouseleave\", function (e) {\n\t\t\t\t\t$(this).find(\".vakata-context-hover\").removeClass(\"vakata-context-hover\");\n\t\t\t\t\tif($.vakata.context.settings.hide_onmouseleave) {\n\t\t\t\t\t\tto = setTimeout(\n\t\t\t\t\t\t\t(function (t) {\n\t\t\t\t\t\t\t\treturn function () { $.vakata.context.hide(); };\n\t\t\t\t\t\t\t}(this)), $.vakata.context.settings.hide_onmouseleave);\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t\t.on(\"click\", \"a\", function (e) {\n\t\t\t\t\te.preventDefault();\n\t\t\t\t})\n\t\t\t\t.on(\"mouseup\", \"a\", function (e) {\n\t\t\t\t\tif(!$(this).blur().parent().hasClass(\"vakata-context-disabled\") && $.vakata.context._execute($(this).attr(\"rel\")) !== false) {\n\t\t\t\t\t\t$.vakata.context.hide();\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t\t.on('keydown', 'a', function (e) {\n\t\t\t\t\t\tvar o = null;\n\t\t\t\t\t\tswitch(e.which) {\n\t\t\t\t\t\t\tcase 13:\n\t\t\t\t\t\t\tcase 32:\n\t\t\t\t\t\t\t\te.type = \"mouseup\";\n\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\t$(e.currentTarget).trigger(e);\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 37:\n\t\t\t\t\t\t\t\tif(vakata_context.is_visible) {\n\t\t\t\t\t\t\t\t\tvakata_context.element.find(\".vakata-context-hover\").last().parents(\"li:eq(0)\").find(\"ul\").hide().find(\".vakata-context-hover\").removeClass(\"vakata-context-hover\").end().end().children('a').focus();\n\t\t\t\t\t\t\t\t\te.stopImmediatePropagation();\n\t\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 38:\n\t\t\t\t\t\t\t\tif(vakata_context.is_visible) {\n\t\t\t\t\t\t\t\t\to = vakata_context.element.find(\"ul:visible\").addBack().last().children(\".vakata-context-hover\").removeClass(\"vakata-context-hover\").prevAll(\"li:not(.vakata-context-separator)\").first();\n\t\t\t\t\t\t\t\t\tif(!o.length) { o = vakata_context.element.find(\"ul:visible\").addBack().last().children(\"li:not(.vakata-context-separator)\").last(); }\n\t\t\t\t\t\t\t\t\to.addClass(\"vakata-context-hover\").children('a').focus();\n\t\t\t\t\t\t\t\t\te.stopImmediatePropagation();\n\t\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 39:\n\t\t\t\t\t\t\t\tif(vakata_context.is_visible) {\n\t\t\t\t\t\t\t\t\tvakata_context.element.find(\".vakata-context-hover\").last().children(\"ul\").show().children(\"li:not(.vakata-context-separator)\").removeClass(\"vakata-context-hover\").first().addClass(\"vakata-context-hover\").children('a').focus();\n\t\t\t\t\t\t\t\t\te.stopImmediatePropagation();\n\t\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 40:\n\t\t\t\t\t\t\t\tif(vakata_context.is_visible) {\n\t\t\t\t\t\t\t\t\to = vakata_context.element.find(\"ul:visible\").addBack().last().children(\".vakata-context-hover\").removeClass(\"vakata-context-hover\").nextAll(\"li:not(.vakata-context-separator)\").first();\n\t\t\t\t\t\t\t\t\tif(!o.length) { o = vakata_context.element.find(\"ul:visible\").addBack().last().children(\"li:not(.vakata-context-separator)\").first(); }\n\t\t\t\t\t\t\t\t\to.addClass(\"vakata-context-hover\").children('a').focus();\n\t\t\t\t\t\t\t\t\te.stopImmediatePropagation();\n\t\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 27:\n\t\t\t\t\t\t\t\t$.vakata.context.hide();\n\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\t\t//console.log(e.which);\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t}\n\t\t\t\t\t})\n\t\t\t\t.on('keydown', function (e) {\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tvar a = vakata_context.element.find('.vakata-contextmenu-shortcut-' + e.which).parent();\n\t\t\t\t\tif(a.parent().not('.vakata-context-disabled')) {\n\t\t\t\t\t\ta.mouseup();\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t\t.appendTo(\"body\");\n\n\t\t\t$(document)\n\t\t\t\t.on(\"mousedown\", function (e) {\n\t\t\t\t\tif(vakata_context.is_visible && !$.contains(vakata_context.element[0], e.target)) { $.vakata.context.hide(); }\n\t\t\t\t})\n\t\t\t\t.on(\"context_show.vakata\", function (e, data) {\n\t\t\t\t\tvakata_context.element.find(\"li:has(ul)\").children(\"a\").addClass(\"vakata-context-parent\");\n\t\t\t\t\tif(right_to_left) {\n\t\t\t\t\t\tvakata_context.element.addClass(\"vakata-context-rtl\").css(\"direction\", \"rtl\");\n\t\t\t\t\t}\n\t\t\t\t\t// also apply a RTL class?\n\t\t\t\t\tvakata_context.element.find(\"ul\").hide().end();\n\t\t\t\t});\n\t\t});\n\t}($));\n\t// $.jstree.defaults.plugins.push(\"contextmenu\");"
+		"code": "this.trigger('show_contextmenu', { \"node\" : obj, \"x\" : x, \"y\" : y });\n\t\t};\n\t};\n\n\t// contextmenu helper\n\t(function ($) {\n\t\tvar right_to_left = false,\n\t\t\tvakata_context = {\n\t\t\t\telement\t\t: false,\n\t\t\t\treference\t: false,\n\t\t\t\tposition_x\t: 0,\n\t\t\t\tposition_y\t: 0,\n\t\t\t\titems\t\t: [],\n\t\t\t\thtml\t\t: \"\",\n\t\t\t\tis_visible\t: false\n\t\t\t};\n\n\t\t$.vakata.context = {\n\t\t\tsettings : {\n\t\t\t\thide_onmouseleave\t: 0,\n\t\t\t\ticons\t\t\t\t: true\n\t\t\t},\n\t\t\t_trigger : function (event_name) {\n\t\t\t\t$(document).triggerHandler(\"context_\" + event_name + \".vakata\", {\n\t\t\t\t\t\"reference\"\t: vakata_context.reference,\n\t\t\t\t\t\"element\"\t: vakata_context.element,\n\t\t\t\t\t\"position\"\t: {\n\t\t\t\t\t\t\"x\" : vakata_context.position_x,\n\t\t\t\t\t\t\"y\" : vakata_context.position_y\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t},\n\t\t\t_execute : function (i) {\n\t\t\t\ti = vakata_context.items[i];\n\t\t\t\treturn i && (!i._disabled || ($.isFunction(i._disabled) && !i._disabled({ \"item\" : i, \"reference\" : vakata_context.reference, \"element\" : vakata_context.element }))) && i.action ? i.action.call(null, {\n\t\t\t\t\t\t\t\"item\"\t\t: i,\n\t\t\t\t\t\t\t\"reference\"\t: vakata_context.reference,\n\t\t\t\t\t\t\t\"element\"\t: vakata_context.element,\n\t\t\t\t\t\t\t\"position\"\t: {\n\t\t\t\t\t\t\t\t\"x\" : vakata_context.position_x,\n\t\t\t\t\t\t\t\t\"y\" : vakata_context.position_y\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}) : false;\n\t\t\t},\n\t\t\t_parse : function (o, is_callback) {\n\t\t\t\tif(!o) { return false; }\n\t\t\t\tif(!is_callback) {\n\t\t\t\t\tvakata_context.html\t\t= \"\";\n\t\t\t\t\tvakata_context.items\t= [];\n\t\t\t\t}\n\t\t\t\tvar str = \"\",\n\t\t\t\t\tsep = false,\n\t\t\t\t\ttmp;\n\n\t\t\t\tif(is_callback) { str += \"<\"+\"ul>\"; }\n\t\t\t\t$.each(o, function (i, val) {\n\t\t\t\t\tif(!val) { return true; }\n\t\t\t\t\tvakata_context.items.push(val);\n\t\t\t\t\tif(!sep && val.separator_before) {\n\t\t\t\t\t\tstr += \"<\"+\"li class='vakata-context-separator'><\"+\"a href='#' \" + ($.vakata.context.settings.icons ? '' : 'style=\"margin-left:0px;\"') + \">&#160;<\"+\"/a><\"+\"/li>\";\n\t\t\t\t\t}\n\t\t\t\t\tsep = false;\n\t\t\t\t\tstr += \"<\"+\"li class='\" + (val._class || \"\") + (val._disabled === true || ($.isFunction(val._disabled) && val._disabled({ \"item\" : val, \"reference\" : vakata_context.reference, \"element\" : vakata_context.element })) ? \" vakata-contextmenu-disabled \" : \"\") + \"' \"+(val.shortcut?\" data-shortcut='\"+val.shortcut+\"' \":'')+\">\";\n\t\t\t\t\tstr += \"<\"+\"a href='#' rel='\" + (vakata_context.items.length - 1) + \"'>\";\n\t\t\t\t\tif($.vakata.context.settings.icons) {\n\t\t\t\t\t\tstr += \"<\"+\"i \";\n\t\t\t\t\t\tif(val.icon) {\n\t\t\t\t\t\t\tif(val.icon.indexOf(\"/\") !== -1 || val.icon.indexOf(\".\") !== -1) { str += \" style='background:url(\\\"\" + val.icon + \"\\\") center center no-repeat' \"; }\n\t\t\t\t\t\t\telse { str += \" class='\" + val.icon + \"' \"; }\n\t\t\t\t\t\t}\n\t\t\t\t\t\tstr += \"><\"+\"/i><\"+\"span class='vakata-contextmenu-sep'>&#160;<\"+\"/span>\";\n\t\t\t\t\t}\n\t\t\t\t\tstr += val.label + (val.shortcut?' <span class=\"vakata-contextmenu-shortcut vakata-contextmenu-shortcut-'+val.shortcut+'\">'+ (val.shortcut_label || '') +'</span>':'') + \"<\"+\"/a>\";\n\t\t\t\t\tif(val.submenu) {\n\t\t\t\t\t\ttmp = $.vakata.context._parse(val.submenu, true);\n\t\t\t\t\t\tif(tmp) { str += tmp; }\n\t\t\t\t\t}\n\t\t\t\t\tstr += \"<\"+\"/li>\";\n\t\t\t\t\tif(val.separator_after) {\n\t\t\t\t\t\tstr += \"<\"+\"li class='vakata-context-separator'><\"+\"a href='#' \" + ($.vakata.context.settings.icons ? '' : 'style=\"margin-left:0px;\"') + \">&#160;<\"+\"/a><\"+\"/li>\";\n\t\t\t\t\t\tsep = true;\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\tstr  = str.replace(/<li class\\='vakata-context-separator'\\><\\/li\\>$/,\"\");\n\t\t\t\tif(is_callback) { str += \"</ul>\"; }"
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "plugin",
+				"string": "contextmenu"
+			},
+			{
+				"type": "name",
+				"string": "context_parse.vakata"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "reference",
+				"description": "the element that was right clicked"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "element",
+				"description": "the DOM element of the menu itself"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "position",
+				"description": "the x & y coordinates of the menu"
+			}
+		],
+		"description": {
+			"full": "<p>triggered on the document when the contextmenu is parsed (HTML is built)</p>",
+			"summary": "<p>triggered on the document when the contextmenu is parsed (HTML is built)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "if(!is_callback) { vakata_context.html = str; $.vakata.context._trigger(\"parse\"); }\n\t\t\t\treturn str.length > 10 ? str : false;\n\t\t\t},\n\t\t\t_show_submenu : function (o) {\n\t\t\t\to = $(o);\n\t\t\t\tif(!o.length || !o.children(\"ul\").length) { return; }\n\t\t\t\tvar e = o.children(\"ul\"),\n\t\t\t\t\tx = o.offset().left + o.outerWidth(),\n\t\t\t\t\ty = o.offset().top,\n\t\t\t\t\tw = e.width(),\n\t\t\t\t\th = e.height(),\n\t\t\t\t\tdw = $(window).width() + $(window).scrollLeft(),\n\t\t\t\t\tdh = $(window).height() + $(window).scrollTop();\n\t\t\t\t// може да се спести е една проверка - дали няма някой от класовете вече нагоре\n\t\t\t\tif(right_to_left) {\n\t\t\t\t\to[x - (w + 10 + o.outerWidth()) < 0 ? \"addClass\" : \"removeClass\"](\"vakata-context-left\");\n\t\t\t\t}\n\t\t\t\telse {\n\t\t\t\t\to[x + w + 10 > dw ? \"addClass\" : \"removeClass\"](\"vakata-context-right\");\n\t\t\t\t}\n\t\t\t\tif(y + h + 10 > dh) {\n\t\t\t\t\te.css(\"bottom\",\"-1px\");\n\t\t\t\t}\n\t\t\t\te.show();\n\t\t\t},\n\t\t\tshow : function (reference, position, data) {\n\t\t\t\tvar o, e, x, y, w, h, dw, dh, cond = true;\n\t\t\t\tif(vakata_context.element && vakata_context.element.length) {\n\t\t\t\t\tvakata_context.element.width('');\n\t\t\t\t}\n\t\t\t\tswitch(cond) {\n\t\t\t\t\tcase (!position && !reference):\n\t\t\t\t\t\treturn false;\n\t\t\t\t\tcase (!!position && !!reference):\n\t\t\t\t\t\tvakata_context.reference\t= reference;\n\t\t\t\t\t\tvakata_context.position_x\t= position.x;\n\t\t\t\t\t\tvakata_context.position_y\t= position.y;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tcase (!position && !!reference):\n\t\t\t\t\t\tvakata_context.reference\t= reference;\n\t\t\t\t\t\to = reference.offset();\n\t\t\t\t\t\tvakata_context.position_x\t= o.left + reference.outerHeight();\n\t\t\t\t\t\tvakata_context.position_y\t= o.top;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tcase (!!position && !reference):\n\t\t\t\t\t\tvakata_context.position_x\t= position.x;\n\t\t\t\t\t\tvakata_context.position_y\t= position.y;\n\t\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\t\tif(!!reference && !data && $(reference).data('vakata_contextmenu')) {\n\t\t\t\t\tdata = $(reference).data('vakata_contextmenu');\n\t\t\t\t}\n\t\t\t\tif($.vakata.context._parse(data)) {\n\t\t\t\t\tvakata_context.element.html(vakata_context.html);\n\t\t\t\t}\n\t\t\t\tif(vakata_context.items.length) {\n\t\t\t\t\te = vakata_context.element;\n\t\t\t\t\tx = vakata_context.position_x;\n\t\t\t\t\ty = vakata_context.position_y;\n\t\t\t\t\tw = e.width();\n\t\t\t\t\th = e.height();\n\t\t\t\t\tdw = $(window).width() + $(window).scrollLeft();\n\t\t\t\t\tdh = $(window).height() + $(window).scrollTop();\n\t\t\t\t\tif(right_to_left) {\n\t\t\t\t\t\tx -= e.outerWidth();\n\t\t\t\t\t\tif(x < $(window).scrollLeft() + 20) {\n\t\t\t\t\t\t\tx = $(window).scrollLeft() + 20;\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tif(x + w + 20 > dw) {\n\t\t\t\t\t\tx = dw - (w + 20);\n\t\t\t\t\t}\n\t\t\t\t\tif(y + h + 20 > dh) {\n\t\t\t\t\t\ty = dh - (h + 20);\n\t\t\t\t\t}\n\n\t\t\t\t\tvakata_context.element\n\t\t\t\t\t\t.css({ \"left\" : x, \"top\" : y })\n\t\t\t\t\t\t.show()\n\t\t\t\t\t\t.find('a:eq(0)').focus().parent().addClass(\"vakata-context-hover\");\n\t\t\t\t\tvakata_context.is_visible = true;"
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "plugin",
+				"string": "contextmenu"
+			},
+			{
+				"type": "name",
+				"string": "context_show.vakata"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "reference",
+				"description": "the element that was right clicked"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "element",
+				"description": "the DOM element of the menu itself"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "position",
+				"description": "the x & y coordinates of the menu"
+			}
+		],
+		"description": {
+			"full": "<p>triggered on the document when the contextmenu is shown</p>",
+			"summary": "<p>triggered on the document when the contextmenu is shown</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "$.vakata.context._trigger(\"show\");\n\t\t\t\t}\n\t\t\t},\n\t\t\thide : function () {\n\t\t\t\tif(vakata_context.is_visible) {\n\t\t\t\t\tvakata_context.element.hide().find(\"ul\").hide().end().find(':focus').blur();\n\t\t\t\t\tvakata_context.is_visible = false;"
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "plugin",
+				"string": "contextmenu"
+			},
+			{
+				"type": "name",
+				"string": "context_hide.vakata"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "reference",
+				"description": "the element that was right clicked"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "element",
+				"description": "the DOM element of the menu itself"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "position",
+				"description": "the x & y coordinates of the menu"
+			}
+		],
+		"description": {
+			"full": "<p>triggered on the document when the contextmenu is hidden</p>",
+			"summary": "<p>triggered on the document when the contextmenu is hidden</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "$.vakata.context._trigger(\"hide\");\n\t\t\t\t}\n\t\t\t}\n\t\t};\n\t\t$(function () {\n\t\t\tright_to_left = $(\"body\").css(\"direction\") === \"rtl\";\n\t\t\tvar to = false;\n\n\t\t\tvakata_context.element = $(\"<ul class='vakata-context'></ul>\");\n\t\t\tvakata_context.element\n\t\t\t\t.on(\"mouseenter\", \"li\", function (e) {\n\t\t\t\t\te.stopImmediatePropagation();\n\n\t\t\t\t\tif($.contains(this, e.relatedTarget)) {\n\t\t\t\t\t\t// премахнато заради delegate mouseleave по-долу\n\t\t\t\t\t\t// $(this).find(\".vakata-context-hover\").removeClass(\"vakata-context-hover\");\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t\tif(to) { clearTimeout(to); }\n\t\t\t\t\tvakata_context.element.find(\".vakata-context-hover\").removeClass(\"vakata-context-hover\").end();\n\n\t\t\t\t\t$(this)\n\t\t\t\t\t\t.siblings().find(\"ul\").hide().end().end()\n\t\t\t\t\t\t.parentsUntil(\".vakata-context\", \"li\").addBack().addClass(\"vakata-context-hover\");\n\t\t\t\t\t$.vakata.context._show_submenu(this);\n\t\t\t\t})\n\t\t\t\t// тестово - дали не натоварва?\n\t\t\t\t.on(\"mouseleave\", \"li\", function (e) {\n\t\t\t\t\tif($.contains(this, e.relatedTarget)) { return; }\n\t\t\t\t\t$(this).find(\".vakata-context-hover\").addBack().removeClass(\"vakata-context-hover\");\n\t\t\t\t})\n\t\t\t\t.on(\"mouseleave\", function (e) {\n\t\t\t\t\t$(this).find(\".vakata-context-hover\").removeClass(\"vakata-context-hover\");\n\t\t\t\t\tif($.vakata.context.settings.hide_onmouseleave) {\n\t\t\t\t\t\tto = setTimeout(\n\t\t\t\t\t\t\t(function (t) {\n\t\t\t\t\t\t\t\treturn function () { $.vakata.context.hide(); };\n\t\t\t\t\t\t\t}(this)), $.vakata.context.settings.hide_onmouseleave);\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t\t.on(\"click\", \"a\", function (e) {\n\t\t\t\t\te.preventDefault();\n\t\t\t\t})\n\t\t\t\t.on(\"mouseup\", \"a\", function (e) {\n\t\t\t\t\tif(!$(this).blur().parent().hasClass(\"vakata-context-disabled\") && $.vakata.context._execute($(this).attr(\"rel\")) !== false) {\n\t\t\t\t\t\t$.vakata.context.hide();\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t\t.on('keydown', 'a', function (e) {\n\t\t\t\t\t\tvar o = null;\n\t\t\t\t\t\tswitch(e.which) {\n\t\t\t\t\t\t\tcase 13:\n\t\t\t\t\t\t\tcase 32:\n\t\t\t\t\t\t\t\te.type = \"mouseup\";\n\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\t$(e.currentTarget).trigger(e);\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 37:\n\t\t\t\t\t\t\t\tif(vakata_context.is_visible) {\n\t\t\t\t\t\t\t\t\tvakata_context.element.find(\".vakata-context-hover\").last().parents(\"li:eq(0)\").find(\"ul\").hide().find(\".vakata-context-hover\").removeClass(\"vakata-context-hover\").end().end().children('a').focus();\n\t\t\t\t\t\t\t\t\te.stopImmediatePropagation();\n\t\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 38:\n\t\t\t\t\t\t\t\tif(vakata_context.is_visible) {\n\t\t\t\t\t\t\t\t\to = vakata_context.element.find(\"ul:visible\").addBack().last().children(\".vakata-context-hover\").removeClass(\"vakata-context-hover\").prevAll(\"li:not(.vakata-context-separator)\").first();\n\t\t\t\t\t\t\t\t\tif(!o.length) { o = vakata_context.element.find(\"ul:visible\").addBack().last().children(\"li:not(.vakata-context-separator)\").last(); }\n\t\t\t\t\t\t\t\t\to.addClass(\"vakata-context-hover\").children('a').focus();\n\t\t\t\t\t\t\t\t\te.stopImmediatePropagation();\n\t\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 39:\n\t\t\t\t\t\t\t\tif(vakata_context.is_visible) {\n\t\t\t\t\t\t\t\t\tvakata_context.element.find(\".vakata-context-hover\").last().children(\"ul\").show().children(\"li:not(.vakata-context-separator)\").removeClass(\"vakata-context-hover\").first().addClass(\"vakata-context-hover\").children('a').focus();\n\t\t\t\t\t\t\t\t\te.stopImmediatePropagation();\n\t\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 40:\n\t\t\t\t\t\t\t\tif(vakata_context.is_visible) {\n\t\t\t\t\t\t\t\t\to = vakata_context.element.find(\"ul:visible\").addBack().last().children(\".vakata-context-hover\").removeClass(\"vakata-context-hover\").nextAll(\"li:not(.vakata-context-separator)\").first();\n\t\t\t\t\t\t\t\t\tif(!o.length) { o = vakata_context.element.find(\"ul:visible\").addBack().last().children(\"li:not(.vakata-context-separator)\").first(); }\n\t\t\t\t\t\t\t\t\to.addClass(\"vakata-context-hover\").children('a').focus();\n\t\t\t\t\t\t\t\t\te.stopImmediatePropagation();\n\t\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase 27:\n\t\t\t\t\t\t\t\t$.vakata.context.hide();\n\t\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\t\t//console.log(e.which);\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t}\n\t\t\t\t\t})\n\t\t\t\t.on('keydown', function (e) {\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tvar a = vakata_context.element.find('.vakata-contextmenu-shortcut-' + e.which).parent();\n\t\t\t\t\tif(a.parent().not('.vakata-context-disabled')) {\n\t\t\t\t\t\ta.mouseup();\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t\t.appendTo(\"body\");\n\n\t\t\t$(document)\n\t\t\t\t.on(\"mousedown\", function (e) {\n\t\t\t\t\tif(vakata_context.is_visible && !$.contains(vakata_context.element[0], e.target)) { $.vakata.context.hide(); }\n\t\t\t\t})\n\t\t\t\t.on(\"context_show.vakata\", function (e, data) {\n\t\t\t\t\tvakata_context.element.find(\"li:has(ul)\").children(\"a\").addClass(\"vakata-context-parent\");\n\t\t\t\t\tif(right_to_left) {\n\t\t\t\t\t\tvakata_context.element.addClass(\"vakata-context-rtl\").css(\"direction\", \"rtl\");\n\t\t\t\t\t}\n\t\t\t\t\t// also apply a RTL class?\n\t\t\t\t\tvakata_context.element.find(\"ul\").hide().end();\n\t\t\t\t});\n\t\t});\n\t}($));\n\t// $.jstree.defaults.plugins.push(\"contextmenu\");"
 	},
 	{
 		"tags": [],
@@ -5336,7 +5480,231 @@
 			"body": ""
 		},
 		"ignore": true,
-		"code": "ok = true;\n\t\t\t\t\t\t\t\tfor(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {\n\t\t\t\t\t\t\t\t\top = data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? \"copy_node\" : \"move_node\";\n\t\t\t\t\t\t\t\t\tps = i;\n\t\t\t\t\t\t\t\t\tif(op === \"move_node\" && v === 'a' && (data.data.origin && data.data.origin === ins) && p === ins.get_parent(data.data.nodes[t1])) {\n\t\t\t\t\t\t\t\t\t\tpr = ins.get_node(p);\n\t\t\t\t\t\t\t\t\t\tif(ps > $.inArray(data.data.nodes[t1], pr.children)) {\n\t\t\t\t\t\t\t\t\t\t\tps -= 1;\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tok = ok && ( (ins && ins.settings && ins.settings.dnd && ins.settings.dnd.check_while_dragging === false) || ins.check(op, (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), p, ps) );\n\t\t\t\t\t\t\t\t\tif(!ok) { break; }\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tif(ok) {\n\t\t\t\t\t\t\t\t\tif(v === 'i' && ref.parent().is('.jstree-closed') && ins.settings.dnd.open_timeout) {\n\t\t\t\t\t\t\t\t\t\topento = setTimeout((function (x, z) { return function () { x.open_node(z); }; }(ins, ref)), ins.settings.dnd.open_timeout);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tlastmv = { 'ins' : ins, 'par' : p, 'pos' : i };\n\t\t\t\t\t\t\t\t\tmarker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();\n\t\t\t\t\t\t\t\t\tdata.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');\n\t\t\t\t\t\t\t\t\to = true;\n\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\tif(o === true) { return; }\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tlastmv = false;\n\t\t\t\tdata.helper.find('.jstree-icon').removeClass('jstree-ok').addClass('jstree-er');\n\t\t\t\tmarker.hide();\n\t\t\t})\n\t\t\t.bind('dnd_scroll.vakata', function (e, data) {\n\t\t\t\tif(!data.data.jstree) { return; }\n\t\t\t\tmarker.hide();\n\t\t\t\tlastmv = false;\n\t\t\t\tdata.helper.find('.jstree-icon:eq(0)').removeClass('jstree-ok').addClass('jstree-er');\n\t\t\t})\n\t\t\t.bind('dnd_stop.vakata', function (e, data) {\n\t\t\t\tif(opento) { clearTimeout(opento); }\n\t\t\t\tif(!data.data.jstree) { return; }\n\t\t\t\tmarker.hide();\n\t\t\t\tif(lastmv) {\n\t\t\t\t\tvar i, j, nodes = [];\n\t\t\t\t\tfor(i = 0, j = data.data.nodes.length; i < j; i++) {\n\t\t\t\t\t\tnodes[i] = data.data.origin ? data.data.origin.get_node(data.data.nodes[i]) : data.data.nodes[i];\n\t\t\t\t\t}\n\t\t\t\t\tlastmv.ins[ data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);\n\t\t\t\t}\n\t\t\t})\n\t\t\t.bind('keyup keydown', function (e, data) {\n\t\t\t\tdata = $.vakata.dnd._get();\n\t\t\t\tif(data.data && data.data.jstree) {\n\t\t\t\t\tdata.helper.find('.jstree-copy:eq(0)')[ data.data.origin && data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey) ? 'show' : 'hide' ]();\n\t\t\t\t}\n\t\t\t});\n\t});\n\n\t// helpers\n\t(function ($) {\n\t\t$.fn.vakata_reverse = [].reverse;\n\t\t// private variable\n\t\tvar vakata_dnd = {\n\t\t\telement\t: false,\n\t\t\tis_down\t: false,\n\t\t\tis_drag\t: false,\n\t\t\thelper\t: false,\n\t\t\thelper_w: 0,\n\t\t\tdata\t: false,\n\t\t\tinit_x\t: 0,\n\t\t\tinit_y\t: 0,\n\t\t\tscroll_l: 0,\n\t\t\tscroll_t: 0,\n\t\t\tscroll_e: false,\n\t\t\tscroll_i: false\n\t\t};\n\t\t$.vakata.dnd = {\n\t\t\tsettings : {\n\t\t\t\tscroll_speed\t\t: 10,\n\t\t\t\tscroll_proximity\t: 20,\n\t\t\t\thelper_left\t\t\t: 5,\n\t\t\t\thelper_top\t\t\t: 10,\n\t\t\t\tthreshold\t\t\t: 5\n\t\t\t},\n\t\t\t_trigger : function (event_name, e) {\n\t\t\t\tvar data = $.vakata.dnd._get();\n\t\t\t\tdata.event = e;\n\t\t\t\t$(document).triggerHandler(\"dnd_\" + event_name + \".vakata\", data);\n\t\t\t},\n\t\t\t_get : function () {\n\t\t\t\treturn {\n\t\t\t\t\t\"data\"\t\t: vakata_dnd.data,\n\t\t\t\t\t\"element\"\t: vakata_dnd.element,\n\t\t\t\t\t\"helper\"\t: vakata_dnd.helper\n\t\t\t\t};\n\t\t\t},\n\t\t\t_clean : function () {\n\t\t\t\tif(vakata_dnd.helper) { vakata_dnd.helper.remove(); }\n\t\t\t\tif(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }\n\t\t\t\tvakata_dnd = {\n\t\t\t\t\telement\t: false,\n\t\t\t\t\tis_down\t: false,\n\t\t\t\t\tis_drag\t: false,\n\t\t\t\t\thelper\t: false,\n\t\t\t\t\thelper_w: 0,\n\t\t\t\t\tdata\t: false,\n\t\t\t\t\tinit_x\t: 0,\n\t\t\t\t\tinit_y\t: 0,\n\t\t\t\t\tscroll_l: 0,\n\t\t\t\t\tscroll_t: 0,\n\t\t\t\t\tscroll_e: false,\n\t\t\t\t\tscroll_i: false\n\t\t\t\t};\n\t\t\t\t$(document).off(\"mousemove touchmove\", $.vakata.dnd.drag);\n\t\t\t\t$(document).off(\"mouseup touchend\", $.vakata.dnd.stop);\n\t\t\t},\n\t\t\t_scroll : function (init_only) {\n\t\t\t\tif(!vakata_dnd.scroll_e || (!vakata_dnd.scroll_l && !vakata_dnd.scroll_t)) {\n\t\t\t\t\tif(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\tif(!vakata_dnd.scroll_i) {\n\t\t\t\t\tvakata_dnd.scroll_i = setInterval($.vakata.dnd._scroll, 100);\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\tif(init_only === true) { return false; }\n\n\t\t\t\tvar i = vakata_dnd.scroll_e.scrollTop(),\n\t\t\t\t\tj = vakata_dnd.scroll_e.scrollLeft();\n\t\t\t\tvakata_dnd.scroll_e.scrollTop(i + vakata_dnd.scroll_t * $.vakata.dnd.settings.scroll_speed);\n\t\t\t\tvakata_dnd.scroll_e.scrollLeft(j + vakata_dnd.scroll_l * $.vakata.dnd.settings.scroll_speed);\n\t\t\t\tif(i !== vakata_dnd.scroll_e.scrollTop() || j !== vakata_dnd.scroll_e.scrollLeft()) {\n\t\t\t\t\t$.vakata.dnd._trigger(\"scroll\", vakata_dnd.scroll_e);\n\t\t\t\t}\n\t\t\t},\n\t\t\tstart : function (e, data, html) {\n\t\t\t\tif(e.type === \"touchstart\" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.targetTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.targetTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(vakata_dnd.is_drag) { $.vakata.dnd.stop({}); }\n\t\t\t\ttry {\n\t\t\t\t\te.currentTarget.unselectable = \"on\";\n\t\t\t\t\te.currentTarget.onselectstart = function() { return false; };\n\t\t\t\t\tif(e.currentTarget.style) { e.currentTarget.style.MozUserSelect = \"none\"; }\n\t\t\t\t} catch(ignore) { }\n\t\t\t\tvakata_dnd.init_x\t= e.pageX;\n\t\t\t\tvakata_dnd.init_y\t= e.pageY;\n\t\t\t\tvakata_dnd.data\t\t= data;\n\t\t\t\tvakata_dnd.is_down\t= true;\n\t\t\t\tvakata_dnd.element\t= e.currentTarget;\n\t\t\t\tif(html !== false) {\n\t\t\t\t\tvakata_dnd.helper = $(\"<div id='vakata-dnd'></div>\").html(html).css({\n\t\t\t\t\t\t\"display\"\t\t: \"block\",\n\t\t\t\t\t\t\"margin\"\t\t: \"0\",\n\t\t\t\t\t\t\"padding\"\t\t: \"0\",\n\t\t\t\t\t\t\"position\"\t\t: \"absolute\",\n\t\t\t\t\t\t\"top\"\t\t\t: \"-2000px\",\n\t\t\t\t\t\t\"lineHeight\"\t: \"16px\",\n\t\t\t\t\t\t\"zIndex\"\t\t: \"10000\"\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t\t$(document).bind(\"mousemove touchmove\", $.vakata.dnd.drag);\n\t\t\t\t$(document).bind(\"mouseup touchend\", $.vakata.dnd.stop);\n\t\t\t\treturn false;\n\t\t\t},\n\t\t\tdrag : function (e) {\n\t\t\t\tif(e.type === \"touchmove\" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.targetTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.targetTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(!vakata_dnd.is_down) { return; }\n\t\t\t\tif(!vakata_dnd.is_drag) {\n\t\t\t\t\tif(\n\t\t\t\t\t\tMath.abs(e.pageX - vakata_dnd.init_x) > $.vakata.dnd.settings.threshold ||\n\t\t\t\t\t\tMath.abs(e.pageY - vakata_dnd.init_y) > $.vakata.dnd.settings.threshold\n\t\t\t\t\t) {\n\t\t\t\t\t\tif(vakata_dnd.helper) {\n\t\t\t\t\t\t\tvakata_dnd.helper.appendTo(\"body\");\n\t\t\t\t\t\t\tvakata_dnd.helper_w = vakata_dnd.helper.outerWidth();\n\t\t\t\t\t\t}\n\t\t\t\t\t\tvakata_dnd.is_drag = true;\n\t\t\t\t\t\t$.vakata.dnd._trigger(\"start\", e);\n\t\t\t\t\t}\n\t\t\t\t\telse { return; }\n\t\t\t\t}\n\n\t\t\t\tvar d  = false, w  = false,\n\t\t\t\t\tdh = false, wh = false,\n\t\t\t\t\tdw = false, ww = false,\n\t\t\t\t\tdt = false, dl = false,\n\t\t\t\t\tht = false, hl = false;\n\n\t\t\t\tvakata_dnd.scroll_t = 0;\n\t\t\t\tvakata_dnd.scroll_l = 0;\n\t\t\t\tvakata_dnd.scroll_e = false;\n\t\t\t\t$(e.target)\n\t\t\t\t\t.parentsUntil(\"body\").addBack().vakata_reverse()\n\t\t\t\t\t.filter(function () {\n\t\t\t\t\t\treturn\t(/^auto|scroll$/).test($(this).css(\"overflow\")) &&\n\t\t\t\t\t\t\t\t(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);\n\t\t\t\t\t})\n\t\t\t\t\t.each(function () {\n\t\t\t\t\t\tvar t = $(this), o = t.offset();\n\t\t\t\t\t\tif(this.scrollHeight > this.offsetHeight) {\n\t\t\t\t\t\t\tif(o.top + t.height() - e.pageY < $.vakata.dnd.settings.scroll_proximity)\t{ vakata_dnd.scroll_t = 1; }\n\t\t\t\t\t\t\tif(e.pageY - o.top < $.vakata.dnd.settings.scroll_proximity)\t\t\t\t{ vakata_dnd.scroll_t = -1; }\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(this.scrollWidth > this.offsetWidth) {\n\t\t\t\t\t\t\tif(o.left + t.width() - e.pageX < $.vakata.dnd.settings.scroll_proximity)\t{ vakata_dnd.scroll_l = 1; }\n\t\t\t\t\t\t\tif(e.pageX - o.left < $.vakata.dnd.settings.scroll_proximity)\t\t\t\t{ vakata_dnd.scroll_l = -1; }\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(vakata_dnd.scroll_t || vakata_dnd.scroll_l) {\n\t\t\t\t\t\t\tvakata_dnd.scroll_e = $(this);\n\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\n\t\t\t\tif(!vakata_dnd.scroll_e) {\n\t\t\t\t\td  = $(document); w = $(window);\n\t\t\t\t\tdh = d.height(); wh = w.height();\n\t\t\t\t\tdw = d.width(); ww = w.width();\n\t\t\t\t\tdt = d.scrollTop(); dl = d.scrollLeft();\n\t\t\t\t\tif(dh > wh && e.pageY - dt < $.vakata.dnd.settings.scroll_proximity)\t\t{ vakata_dnd.scroll_t = -1;  }\n\t\t\t\t\tif(dh > wh && wh - (e.pageY - dt) < $.vakata.dnd.settings.scroll_proximity)\t{ vakata_dnd.scroll_t = 1; }\n\t\t\t\t\tif(dw > ww && e.pageX - dl < $.vakata.dnd.settings.scroll_proximity)\t\t{ vakata_dnd.scroll_l = -1; }\n\t\t\t\t\tif(dw > ww && ww - (e.pageX - dl) < $.vakata.dnd.settings.scroll_proximity)\t{ vakata_dnd.scroll_l = 1; }\n\t\t\t\t\tif(vakata_dnd.scroll_t || vakata_dnd.scroll_l) {\n\t\t\t\t\t\tvakata_dnd.scroll_e = d;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tif(vakata_dnd.scroll_e) { $.vakata.dnd._scroll(true); }\n\n\t\t\t\tif(vakata_dnd.helper) {\n\t\t\t\t\tht = parseInt(e.pageY + $.vakata.dnd.settings.helper_top, 10);\n\t\t\t\t\thl = parseInt(e.pageX + $.vakata.dnd.settings.helper_left, 10);\n\t\t\t\t\tif(dh && ht + 25 > dh) { ht = dh - 50; }\n\t\t\t\t\tif(dw && hl + vakata_dnd.helper_w > dw) { hl = dw - (vakata_dnd.helper_w + 2); }\n\t\t\t\t\tvakata_dnd.helper.css({\n\t\t\t\t\t\tleft\t: hl + \"px\",\n\t\t\t\t\t\ttop\t\t: ht + \"px\"\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t\t$.vakata.dnd._trigger(\"move\", e);\n\t\t\t},\n\t\t\tstop : function (e) {\n\t\t\t\tif(e.type === \"touchend\" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.targetTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.targetTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(vakata_dnd.is_drag) {\n\t\t\t\t\t$.vakata.dnd._trigger(\"stop\", e);\n\t\t\t\t}\n\t\t\t\t$.vakata.dnd._clean();\n\t\t\t}\n\t\t};\n\t}(jQuery));\n\n\t// include the dnd plugin by default\n\t// $.jstree.defaults.plugins.push(\"dnd\");"
+		"code": "ok = true;\n\t\t\t\t\t\t\t\tfor(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {\n\t\t\t\t\t\t\t\t\top = data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? \"copy_node\" : \"move_node\";\n\t\t\t\t\t\t\t\t\tps = i;\n\t\t\t\t\t\t\t\t\tif(op === \"move_node\" && v === 'a' && (data.data.origin && data.data.origin === ins) && p === ins.get_parent(data.data.nodes[t1])) {\n\t\t\t\t\t\t\t\t\t\tpr = ins.get_node(p);\n\t\t\t\t\t\t\t\t\t\tif(ps > $.inArray(data.data.nodes[t1], pr.children)) {\n\t\t\t\t\t\t\t\t\t\t\tps -= 1;\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tok = ok && ( (ins && ins.settings && ins.settings.dnd && ins.settings.dnd.check_while_dragging === false) || ins.check(op, (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), p, ps) );\n\t\t\t\t\t\t\t\t\tif(!ok) { break; }\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tif(ok) {\n\t\t\t\t\t\t\t\t\tif(v === 'i' && ref.parent().is('.jstree-closed') && ins.settings.dnd.open_timeout) {\n\t\t\t\t\t\t\t\t\t\topento = setTimeout((function (x, z) { return function () { x.open_node(z); }; }(ins, ref)), ins.settings.dnd.open_timeout);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tlastmv = { 'ins' : ins, 'par' : p, 'pos' : i };\n\t\t\t\t\t\t\t\t\tmarker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();\n\t\t\t\t\t\t\t\t\tdata.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');\n\t\t\t\t\t\t\t\t\to = true;\n\t\t\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\tif(o === true) { return; }\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tlastmv = false;\n\t\t\t\tdata.helper.find('.jstree-icon').removeClass('jstree-ok').addClass('jstree-er');\n\t\t\t\tmarker.hide();\n\t\t\t})\n\t\t\t.bind('dnd_scroll.vakata', function (e, data) {\n\t\t\t\tif(!data.data.jstree) { return; }\n\t\t\t\tmarker.hide();\n\t\t\t\tlastmv = false;\n\t\t\t\tdata.helper.find('.jstree-icon:eq(0)').removeClass('jstree-ok').addClass('jstree-er');\n\t\t\t})\n\t\t\t.bind('dnd_stop.vakata', function (e, data) {\n\t\t\t\tif(opento) { clearTimeout(opento); }\n\t\t\t\tif(!data.data.jstree) { return; }\n\t\t\t\tmarker.hide();\n\t\t\t\tif(lastmv) {\n\t\t\t\t\tvar i, j, nodes = [];\n\t\t\t\t\tfor(i = 0, j = data.data.nodes.length; i < j; i++) {\n\t\t\t\t\t\tnodes[i] = data.data.origin ? data.data.origin.get_node(data.data.nodes[i]) : data.data.nodes[i];\n\t\t\t\t\t}\n\t\t\t\t\tlastmv.ins[ data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);\n\t\t\t\t}\n\t\t\t})\n\t\t\t.bind('keyup keydown', function (e, data) {\n\t\t\t\tdata = $.vakata.dnd._get();\n\t\t\t\tif(data.data && data.data.jstree) {\n\t\t\t\t\tdata.helper.find('.jstree-copy:eq(0)')[ data.data.origin && data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey) ? 'show' : 'hide' ]();\n\t\t\t\t}\n\t\t\t});\n\t});\n\n\t// helpers\n\t(function ($) {\n\t\t$.fn.vakata_reverse = [].reverse;\n\t\t// private variable\n\t\tvar vakata_dnd = {\n\t\t\telement\t: false,\n\t\t\tis_down\t: false,\n\t\t\tis_drag\t: false,\n\t\t\thelper\t: false,\n\t\t\thelper_w: 0,\n\t\t\tdata\t: false,\n\t\t\tinit_x\t: 0,\n\t\t\tinit_y\t: 0,\n\t\t\tscroll_l: 0,\n\t\t\tscroll_t: 0,\n\t\t\tscroll_e: false,\n\t\t\tscroll_i: false\n\t\t};\n\t\t$.vakata.dnd = {\n\t\t\tsettings : {\n\t\t\t\tscroll_speed\t\t: 10,\n\t\t\t\tscroll_proximity\t: 20,\n\t\t\t\thelper_left\t\t\t: 5,\n\t\t\t\thelper_top\t\t\t: 10,\n\t\t\t\tthreshold\t\t\t: 5\n\t\t\t},\n\t\t\t_trigger : function (event_name, e) {\n\t\t\t\tvar data = $.vakata.dnd._get();\n\t\t\t\tdata.event = e;\n\t\t\t\t$(document).triggerHandler(\"dnd_\" + event_name + \".vakata\", data);\n\t\t\t},\n\t\t\t_get : function () {\n\t\t\t\treturn {\n\t\t\t\t\t\"data\"\t\t: vakata_dnd.data,\n\t\t\t\t\t\"element\"\t: vakata_dnd.element,\n\t\t\t\t\t\"helper\"\t: vakata_dnd.helper\n\t\t\t\t};\n\t\t\t},\n\t\t\t_clean : function () {\n\t\t\t\tif(vakata_dnd.helper) { vakata_dnd.helper.remove(); }\n\t\t\t\tif(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }\n\t\t\t\tvakata_dnd = {\n\t\t\t\t\telement\t: false,\n\t\t\t\t\tis_down\t: false,\n\t\t\t\t\tis_drag\t: false,\n\t\t\t\t\thelper\t: false,\n\t\t\t\t\thelper_w: 0,\n\t\t\t\t\tdata\t: false,\n\t\t\t\t\tinit_x\t: 0,\n\t\t\t\t\tinit_y\t: 0,\n\t\t\t\t\tscroll_l: 0,\n\t\t\t\t\tscroll_t: 0,\n\t\t\t\t\tscroll_e: false,\n\t\t\t\t\tscroll_i: false\n\t\t\t\t};\n\t\t\t\t$(document).off(\"mousemove touchmove\", $.vakata.dnd.drag);\n\t\t\t\t$(document).off(\"mouseup touchend\", $.vakata.dnd.stop);\n\t\t\t},\n\t\t\t_scroll : function (init_only) {\n\t\t\t\tif(!vakata_dnd.scroll_e || (!vakata_dnd.scroll_l && !vakata_dnd.scroll_t)) {\n\t\t\t\t\tif(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\tif(!vakata_dnd.scroll_i) {\n\t\t\t\t\tvakata_dnd.scroll_i = setInterval($.vakata.dnd._scroll, 100);\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\tif(init_only === true) { return false; }\n\n\t\t\t\tvar i = vakata_dnd.scroll_e.scrollTop(),\n\t\t\t\t\tj = vakata_dnd.scroll_e.scrollLeft();\n\t\t\t\tvakata_dnd.scroll_e.scrollTop(i + vakata_dnd.scroll_t * $.vakata.dnd.settings.scroll_speed);\n\t\t\t\tvakata_dnd.scroll_e.scrollLeft(j + vakata_dnd.scroll_l * $.vakata.dnd.settings.scroll_speed);\n\t\t\t\tif(i !== vakata_dnd.scroll_e.scrollTop() || j !== vakata_dnd.scroll_e.scrollLeft()) {"
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "plugin",
+				"string": "dnd"
+			},
+			{
+				"type": "name",
+				"string": "dnd_scroll.vakata"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Mixed"
+				],
+				"name": "data",
+				"description": "any data supplied with the call to $.vakata.dnd.start"
+			},
+			{
+				"type": "param",
+				"types": [
+					"DOM"
+				],
+				"name": "element",
+				"description": "the DOM element being dragged"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "helper",
+				"description": "the helper shown next to the mouse"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "event",
+				"description": "the element that is scrolling"
+			}
+		],
+		"description": {
+			"full": "<p>triggered on the document when a drag causes an element to scroll</p>",
+			"summary": "<p>triggered on the document when a drag causes an element to scroll</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "$.vakata.dnd._trigger(\"scroll\", vakata_dnd.scroll_e);\n\t\t\t\t}\n\t\t\t},\n\t\t\tstart : function (e, data, html) {\n\t\t\t\tif(e.type === \"touchstart\" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.targetTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.targetTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(vakata_dnd.is_drag) { $.vakata.dnd.stop({}); }\n\t\t\t\ttry {\n\t\t\t\t\te.currentTarget.unselectable = \"on\";\n\t\t\t\t\te.currentTarget.onselectstart = function() { return false; };\n\t\t\t\t\tif(e.currentTarget.style) { e.currentTarget.style.MozUserSelect = \"none\"; }\n\t\t\t\t} catch(ignore) { }\n\t\t\t\tvakata_dnd.init_x\t= e.pageX;\n\t\t\t\tvakata_dnd.init_y\t= e.pageY;\n\t\t\t\tvakata_dnd.data\t\t= data;\n\t\t\t\tvakata_dnd.is_down\t= true;\n\t\t\t\tvakata_dnd.element\t= e.currentTarget;\n\t\t\t\tif(html !== false) {\n\t\t\t\t\tvakata_dnd.helper = $(\"<div id='vakata-dnd'></div>\").html(html).css({\n\t\t\t\t\t\t\"display\"\t\t: \"block\",\n\t\t\t\t\t\t\"margin\"\t\t: \"0\",\n\t\t\t\t\t\t\"padding\"\t\t: \"0\",\n\t\t\t\t\t\t\"position\"\t\t: \"absolute\",\n\t\t\t\t\t\t\"top\"\t\t\t: \"-2000px\",\n\t\t\t\t\t\t\"lineHeight\"\t: \"16px\",\n\t\t\t\t\t\t\"zIndex\"\t\t: \"10000\"\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t\t$(document).bind(\"mousemove touchmove\", $.vakata.dnd.drag);\n\t\t\t\t$(document).bind(\"mouseup touchend\", $.vakata.dnd.stop);\n\t\t\t\treturn false;\n\t\t\t},\n\t\t\tdrag : function (e) {\n\t\t\t\tif(e.type === \"touchmove\" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.targetTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.targetTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(!vakata_dnd.is_down) { return; }\n\t\t\t\tif(!vakata_dnd.is_drag) {\n\t\t\t\t\tif(\n\t\t\t\t\t\tMath.abs(e.pageX - vakata_dnd.init_x) > $.vakata.dnd.settings.threshold ||\n\t\t\t\t\t\tMath.abs(e.pageY - vakata_dnd.init_y) > $.vakata.dnd.settings.threshold\n\t\t\t\t\t) {\n\t\t\t\t\t\tif(vakata_dnd.helper) {\n\t\t\t\t\t\t\tvakata_dnd.helper.appendTo(\"body\");\n\t\t\t\t\t\t\tvakata_dnd.helper_w = vakata_dnd.helper.outerWidth();\n\t\t\t\t\t\t}\n\t\t\t\t\t\tvakata_dnd.is_drag = true;"
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "plugin",
+				"string": "dnd"
+			},
+			{
+				"type": "name",
+				"string": "dnd_start.vakata"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Mixed"
+				],
+				"name": "data",
+				"description": "any data supplied with the call to $.vakata.dnd.start"
+			},
+			{
+				"type": "param",
+				"types": [
+					"DOM"
+				],
+				"name": "element",
+				"description": "the DOM element being dragged"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "helper",
+				"description": "the helper shown next to the mouse"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "event",
+				"description": "the event that caused the start (probably mousemove)"
+			}
+		],
+		"description": {
+			"full": "<p>triggered on the document when a drag starts</p>",
+			"summary": "<p>triggered on the document when a drag starts</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "$.vakata.dnd._trigger(\"start\", e);\n\t\t\t\t\t}\n\t\t\t\t\telse { return; }\n\t\t\t\t}\n\n\t\t\t\tvar d  = false, w  = false,\n\t\t\t\t\tdh = false, wh = false,\n\t\t\t\t\tdw = false, ww = false,\n\t\t\t\t\tdt = false, dl = false,\n\t\t\t\t\tht = false, hl = false;\n\n\t\t\t\tvakata_dnd.scroll_t = 0;\n\t\t\t\tvakata_dnd.scroll_l = 0;\n\t\t\t\tvakata_dnd.scroll_e = false;\n\t\t\t\t$(e.target)\n\t\t\t\t\t.parentsUntil(\"body\").addBack().vakata_reverse()\n\t\t\t\t\t.filter(function () {\n\t\t\t\t\t\treturn\t(/^auto|scroll$/).test($(this).css(\"overflow\")) &&\n\t\t\t\t\t\t\t\t(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);\n\t\t\t\t\t})\n\t\t\t\t\t.each(function () {\n\t\t\t\t\t\tvar t = $(this), o = t.offset();\n\t\t\t\t\t\tif(this.scrollHeight > this.offsetHeight) {\n\t\t\t\t\t\t\tif(o.top + t.height() - e.pageY < $.vakata.dnd.settings.scroll_proximity)\t{ vakata_dnd.scroll_t = 1; }\n\t\t\t\t\t\t\tif(e.pageY - o.top < $.vakata.dnd.settings.scroll_proximity)\t\t\t\t{ vakata_dnd.scroll_t = -1; }\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(this.scrollWidth > this.offsetWidth) {\n\t\t\t\t\t\t\tif(o.left + t.width() - e.pageX < $.vakata.dnd.settings.scroll_proximity)\t{ vakata_dnd.scroll_l = 1; }\n\t\t\t\t\t\t\tif(e.pageX - o.left < $.vakata.dnd.settings.scroll_proximity)\t\t\t\t{ vakata_dnd.scroll_l = -1; }\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(vakata_dnd.scroll_t || vakata_dnd.scroll_l) {\n\t\t\t\t\t\t\tvakata_dnd.scroll_e = $(this);\n\t\t\t\t\t\t\treturn false;\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\n\t\t\t\tif(!vakata_dnd.scroll_e) {\n\t\t\t\t\td  = $(document); w = $(window);\n\t\t\t\t\tdh = d.height(); wh = w.height();\n\t\t\t\t\tdw = d.width(); ww = w.width();\n\t\t\t\t\tdt = d.scrollTop(); dl = d.scrollLeft();\n\t\t\t\t\tif(dh > wh && e.pageY - dt < $.vakata.dnd.settings.scroll_proximity)\t\t{ vakata_dnd.scroll_t = -1;  }\n\t\t\t\t\tif(dh > wh && wh - (e.pageY - dt) < $.vakata.dnd.settings.scroll_proximity)\t{ vakata_dnd.scroll_t = 1; }\n\t\t\t\t\tif(dw > ww && e.pageX - dl < $.vakata.dnd.settings.scroll_proximity)\t\t{ vakata_dnd.scroll_l = -1; }\n\t\t\t\t\tif(dw > ww && ww - (e.pageX - dl) < $.vakata.dnd.settings.scroll_proximity)\t{ vakata_dnd.scroll_l = 1; }\n\t\t\t\t\tif(vakata_dnd.scroll_t || vakata_dnd.scroll_l) {\n\t\t\t\t\t\tvakata_dnd.scroll_e = d;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tif(vakata_dnd.scroll_e) { $.vakata.dnd._scroll(true); }\n\n\t\t\t\tif(vakata_dnd.helper) {\n\t\t\t\t\tht = parseInt(e.pageY + $.vakata.dnd.settings.helper_top, 10);\n\t\t\t\t\thl = parseInt(e.pageX + $.vakata.dnd.settings.helper_left, 10);\n\t\t\t\t\tif(dh && ht + 25 > dh) { ht = dh - 50; }\n\t\t\t\t\tif(dw && hl + vakata_dnd.helper_w > dw) { hl = dw - (vakata_dnd.helper_w + 2); }\n\t\t\t\t\tvakata_dnd.helper.css({\n\t\t\t\t\t\tleft\t: hl + \"px\",\n\t\t\t\t\t\ttop\t\t: ht + \"px\"\n\t\t\t\t\t});\n\t\t\t\t}"
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "plugin",
+				"string": "dnd"
+			},
+			{
+				"type": "name",
+				"string": "dnd_move.vakata"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Mixed"
+				],
+				"name": "data",
+				"description": "any data supplied with the call to $.vakata.dnd.start"
+			},
+			{
+				"type": "param",
+				"types": [
+					"DOM"
+				],
+				"name": "element",
+				"description": "the DOM element being dragged"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "helper",
+				"description": "the helper shown next to the mouse"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "event",
+				"description": "the event that caused this to trigger (most likely mousemove)"
+			}
+		],
+		"description": {
+			"full": "<p>triggered on the document when a drag is in progress</p>",
+			"summary": "<p>triggered on the document when a drag is in progress</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "$.vakata.dnd._trigger(\"move\", e);\n\t\t\t},\n\t\t\tstop : function (e) {\n\t\t\t\tif(e.type === \"touchend\" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.targetTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.targetTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(vakata_dnd.is_drag) {"
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "plugin",
+				"string": "dnd"
+			},
+			{
+				"type": "name",
+				"string": "dnd_stop.vakata"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Mixed"
+				],
+				"name": "data",
+				"description": "any data supplied with the call to $.vakata.dnd.start"
+			},
+			{
+				"type": "param",
+				"types": [
+					"DOM"
+				],
+				"name": "element",
+				"description": "the DOM element being dragged"
+			},
+			{
+				"type": "param",
+				"types": [
+					"jQuery"
+				],
+				"name": "helper",
+				"description": "the helper shown next to the mouse"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "event",
+				"description": "the event that caused the stop"
+			}
+		],
+		"description": {
+			"full": "<p>triggered on the document when a drag stops (the dragged element is dropped)</p>",
+			"summary": "<p>triggered on the document when a drag stops (the dragged element is dropped)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "$.vakata.dnd._trigger(\"stop\", e);\n\t\t\t\t}\n\t\t\t\t$.vakata.dnd._clean();\n\t\t\t}\n\t\t};\n\t}(jQuery));\n\n\t// include the dnd plugin by default\n\t// $.jstree.defaults.plugins.push(\"dnd\");"
 	},
 	{
 		"tags": [],

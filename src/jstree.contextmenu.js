@@ -359,6 +359,15 @@
 				});
 				str  = str.replace(/<li class\='vakata-context-separator'\><\/li\>$/,"");
 				if(is_callback) { str += "</ul>"; }
+				/**
+				 * triggered on the document when the contextmenu is parsed (HTML is built)
+				 * @event
+				 * @plugin contextmenu
+				 * @name context_parse.vakata
+				 * @param {jQuery} reference the element that was right clicked
+				 * @param {jQuery} element the DOM element of the menu itself
+				 * @param {Object} position the x & y coordinates of the menu
+				 */
 				if(!is_callback) { vakata_context.html = str; $.vakata.context._trigger("parse"); }
 				return str.length > 10 ? str : false;
 			},
@@ -440,6 +449,15 @@
 						.show()
 						.find('a:eq(0)').focus().parent().addClass("vakata-context-hover");
 					vakata_context.is_visible = true;
+					/**
+					 * triggered on the document when the contextmenu is shown
+					 * @event
+					 * @plugin contextmenu
+					 * @name context_show.vakata
+					 * @param {jQuery} reference the element that was right clicked
+					 * @param {jQuery} element the DOM element of the menu itself
+					 * @param {Object} position the x & y coordinates of the menu
+					 */
 					$.vakata.context._trigger("show");
 				}
 			},
@@ -447,6 +465,15 @@
 				if(vakata_context.is_visible) {
 					vakata_context.element.hide().find("ul").hide().end().find(':focus').blur();
 					vakata_context.is_visible = false;
+					/**
+					 * triggered on the document when the contextmenu is hidden
+					 * @event
+					 * @plugin contextmenu
+					 * @name context_hide.vakata
+					 * @param {jQuery} reference the element that was right clicked
+					 * @param {jQuery} element the DOM element of the menu itself
+					 * @param {Object} position the x & y coordinates of the menu
+					 */
 					$.vakata.context._trigger("hide");
 				}
 			}
