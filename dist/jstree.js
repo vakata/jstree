@@ -2431,6 +2431,7 @@
 					state : { loaded : false }
 				}
 			};
+			this.element.html("<"+"ul class='jstree-container-ul'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
 			this.load_node('#', function (o, s) {
 				if(s) {
 					this.set_state($.extend(true, {}, this._data.core.state), function () {
