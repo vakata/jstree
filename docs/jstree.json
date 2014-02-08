@@ -3252,7 +3252,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "set_id : function (obj, id) {\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') { return false; }\n\t\t\tvar i, j, m = this._model.data;\n\t\t\t// update parents (replace current ID with new one in children and children_d)\n\t\t\tm[obj.parent].children[$.inArray(obj.id, m[obj.parent].children)] = id;\n\t\t\tfor(i = 0, j = obj.parents.length; i < j; i++) {\n\t\t\t\tm[obj.parents[i]].children_d[$.inArray(obj.id, m[obj.parents[i]].children_d)] = id;\n\t\t\t}\n\t\t\t// update children (replace current ID with new one in parent and parents)\n\t\t\tfor(i = 0, j = obj.children.length; i < j; i++) {\n\t\t\t\tm[obj.children[i]].parent = id;\n\t\t\t}\n\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\tm[obj.children_d[i]].parents[$.inArray(obj.id, m[obj.children_d[i]].parents)] = id;\n\t\t\t}\n\t\t\t// update model and obj itself (obj.id, this._model.data[KEY])\n\t\t\ti = this.get_node(obj.id, true);\n\t\t\tif(i) {\n\t\t\t\ti.attr('id', id);\n\t\t\t}\n\t\t\tdelete m[obj.id];\n\t\t\tobj.id = id;\n\t\t\tm[id] = obj;\n\t\t\treturn true;\n\t\t},"
+		"code": "set_id : function (obj, id) {\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') { return false; }\n\t\t\tvar i, j, m = this._model.data;\n\t\t\t// update parents (replace current ID with new one in children and children_d)\n\t\t\tm[obj.parent].children[$.inArray(obj.id, m[obj.parent].children)] = id;\n\t\t\tfor(i = 0, j = obj.parents.length; i < j; i++) {\n\t\t\t\tm[obj.parents[i]].children_d[$.inArray(obj.id, m[obj.parents[i]].children_d)] = id;\n\t\t\t}\n\t\t\t// update children (replace current ID with new one in parent and parents)\n\t\t\tfor(i = 0, j = obj.children.length; i < j; i++) {\n\t\t\t\tm[obj.children[i]].parent = id;\n\t\t\t}\n\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\tm[obj.children_d[i]].parents[$.inArray(obj.id, m[obj.children_d[i]].parents)] = id;\n\t\t\t}\n\t\t\ti = $.inArray(obj.id, this._data.core.selected);\n\t\t\tif(i !== -1) { this._data.core.selected[i] = id; }\n\t\t\t// update model and obj itself (obj.id, this._model.data[KEY])\n\t\t\ti = this.get_node(obj.id, true);\n\t\t\tif(i) {\n\t\t\t\ti.attr('id', id);\n\t\t\t}\n\t\t\tdelete m[obj.id];\n\t\t\tobj.id = id;\n\t\t\tm[id] = obj;\n\t\t\treturn true;\n\t\t},"
 	},
 	{
 		"tags": [
@@ -4715,7 +4715,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "show_icon : function (obj) {\n\t\t\tvar t1, t2, dom;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.show_icon(obj[t1]);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj === '#') { return false; }\n\t\t\tdom = this.get_node(obj, true);\n\t\t\tobj.icon = dom.length ? dom.children(\"a\").children(\".jstree-themeicon\").attr('rel') : true;\n\t\t\tif(!obj.icon) { obj.icon = true; }\n\t\t\tdom.children(\"a\").children(\".jstree-themeicon\").removeClass('jstree-themeicon-hidden');\n\t\t\treturn true;\n\t\t}\n\t};\n\n\t// helpers\n\t$.vakata = {};\n\t// reverse\n\t$.fn.vakata_reverse = [].reverse;\n\t// collect attributes\n\t$.vakata.attributes = function(node, with_values) {\n\t\tnode = $(node)[0];\n\t\tvar attr = with_values ? {} : [];\n\t\tif(node && node.attributes) {\n\t\t\t$.each(node.attributes, function (i, v) {\n\t\t\t\tif($.inArray(v.nodeName.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }\n\t\t\t\tif(v.nodeValue !== null && $.trim(v.nodeValue) !== '') {\n\t\t\t\t\tif(with_values) { attr[v.nodeName] = v.nodeValue; }\n\t\t\t\t\telse { attr.push(v.nodeName); }\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t\treturn attr;\n\t};\n\t$.vakata.array_unique = function(array) {\n\t\tvar a = [], i, j, l;\n\t\tfor(i = 0, l = array.length; i < l; i++) {\n\t\t\tfor(j = 0; j <= i; j++) {\n\t\t\t\tif(array[i] === array[j]) {\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\t}\n\t\t\tif(j === i) { a.push(array[i]); }\n\t\t}\n\t\treturn a;\n\t};\n\t// remove item from array\n\t$.vakata.array_remove = function(array, from, to) {\n\t\tvar rest = array.slice((to || from) + 1 || array.length);\n\t\tarray.length = from < 0 ? array.length + from : from;\n\t\tarray.push.apply(array, rest);\n\t\treturn array;\n\t};\n\t// remove item from array\n\t$.vakata.array_remove_item = function(array, item) {\n\t\tvar tmp = $.inArray(item, array);\n\t\treturn tmp !== -1 ? $.vakata.array_remove(array, tmp) : array;\n\t};\n\t// browser sniffing\n\t(function () {\n\t\tvar browser = {},\n\t\t\tb_match = function(ua) {\n\t\t\tua = ua.toLowerCase();\n\n\t\t\tvar match =\t/(chrome)[ \\/]([\\w.]+)/.exec( ua ) ||\n\t\t\t\t\t\t/(webkit)[ \\/]([\\w.]+)/.exec( ua ) ||\n\t\t\t\t\t\t/(opera)(?:.*version|)[ \\/]([\\w.]+)/.exec( ua ) ||\n\t\t\t\t\t\t/(msie) ([\\w.]+)/.exec( ua ) ||\n\t\t\t\t\t\t(ua.indexOf(\"compatible\") < 0 && /(mozilla)(?:.*? rv:([\\w.]+)|)/.exec( ua )) ||\n\t\t\t\t\t\t[];\n\t\t\t\treturn {\n\t\t\t\t\tbrowser: match[1] || \"\",\n\t\t\t\t\tversion: match[2] || \"0\"\n\t\t\t\t};\n\t\t\t},\n\t\t\tmatched = b_match(window.navigator.userAgent);\n\t\tif(matched.browser) {\n\t\t\tbrowser[ matched.browser ] = true;\n\t\t\tbrowser.version = matched.version;\n\t\t}\n\t\tif(browser.chrome) {\n\t\t\tbrowser.webkit = true;\n\t\t}\n\t\telse if(browser.webkit) {\n\t\t\tbrowser.safari = true;\n\t\t}\n\t\t$.vakata.browser = browser;\n\t}());\n\tif($.vakata.browser.msie && $.vakata.browser.version < 8) {\n\t\t$.jstree.defaults.core.animation = 0;\n\t}\n\t(function ($, undefined) {\n\t\t// private function for json quoting strings\n\t\tvar _quote = function (str) {\n\t\t\tvar escapeable\t= /[\"\\\\\\x00-\\x1f\\x7f-\\x9f]/g,\n\t\t\t\tmeta\t\t= { '\\b':'\\\\b','\\t':'\\\\t','\\n':'\\\\n','\\f':'\\\\f','\\r':'\\\\r','\"' :'\\\\\"','\\\\':'\\\\\\\\' };\n\t\t\tif(str.match(escapeable)) {\n\t\t\t\treturn '\"' + str.replace(escapeable, function (a) {\n\t\t\t\t\t\tvar c = meta[a];\n\t\t\t\t\t\tif(typeof c === 'string') { return c; }\n\t\t\t\t\t\tc = a.charCodeAt();\n\t\t\t\t\t\treturn '\\\\u00' + Math.floor(c / 16).toString(16) + (c % 16).toString(16);\n\t\t\t\t\t}) + '\"';\n\t\t\t}\n\t\t\treturn '\"' + str + '\"';\n\t\t};\n\t\t$.vakata.json = {\n\t\t\tencode : (JSON && JSON.stringify ? JSON.stringify : function (o) {\n\t\t\t\tif (o === null) { return \"null\"; }\n\n\t\t\t\tvar tmp = [], i;\n\t\t\t\tswitch(typeof o) {\n\t\t\t\t\tcase \"undefined\":\n\t\t\t\t\t\treturn undefined;\n\t\t\t\t\tcase \"number\":\n\t\t\t\t\tcase \"boolean\":\n\t\t\t\t\t\treturn o.toString();\n\t\t\t\t\tcase \"string\":\n\t\t\t\t\t\treturn _quote(o);\n\t\t\t\t\tcase \"object\":\n\t\t\t\t\t\tif($.isFunction(o.toJSON)) {\n\t\t\t\t\t\t\treturn $.vakata.json.encode(o.toJSON());\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(o.constructor === Date) {\n\t\t\t\t\t\t\treturn '\"' +\n\t\t\t\t\t\t\t\to.getUTCFullYear() + '-' +\n\t\t\t\t\t\t\t\tString(\"0\" + (o.getUTCMonth() + 1)).slice(-2) + '-' +\n\t\t\t\t\t\t\t\tString(\"0\" + o.getUTCDate()).slice(-2) + 'T' +\n\t\t\t\t\t\t\t\tString(\"0\" + o.getUTCHours()).slice(-2) + ':' +\n\t\t\t\t\t\t\t\tString(\"0\" + o.getUTCMinutes()).slice(-2) + ':' +\n\t\t\t\t\t\t\t\tString(\"0\" + o.getUTCSeconds()).slice(-2) + '.' +\n\t\t\t\t\t\t\t\tString(\"00\" + o.getUTCMilliseconds()).slice(-3) + 'Z\"';\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(o.constructor === Array) {\n\t\t\t\t\t\t\tfor(i = 0; i < o.length; i++) {\n\t\t\t\t\t\t\t\ttmp.push( $.vakata.json.encode(o[i]) || \"null\" );\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\treturn \"[\" + tmp.join(\",\") + \"]\";\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\t$.each(o, function (i, v) {\n\t\t\t\t\t\t\tif($.isFunction(v)) { return true; }\n\t\t\t\t\t\t\ti = typeof i === \"number\" ? '\"' + i + '\"' : _quote(i);\n\t\t\t\t\t\t\tv = $.vakata.json.encode(v);\n\t\t\t\t\t\t\ttmp.push(i + \":\" + v);\n\t\t\t\t\t\t});\n\t\t\t\t\t\treturn \"{\" + tmp.join(\", \") + \"}\";\n\t\t\t\t}\n\t\t\t}),\n\t\t\tdecode : (JSON && JSON.parse ? JSON.parse : function (json) {\n\t\t\t\treturn $.parseJSON(json);\n\t\t\t})\n\t\t};\n\t}(jQuery));"
+		"code": "show_icon : function (obj) {\n\t\t\tvar t1, t2, dom;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.show_icon(obj[t1]);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj === '#') { return false; }\n\t\t\tdom = this.get_node(obj, true);\n\t\t\tobj.icon = dom.length ? dom.children(\"a\").children(\".jstree-themeicon\").attr('rel') : true;\n\t\t\tif(!obj.icon) { obj.icon = true; }\n\t\t\tdom.children(\"a\").children(\".jstree-themeicon\").removeClass('jstree-themeicon-hidden');\n\t\t\treturn true;\n\t\t}\n\t};\n\n\t// helpers\n\t$.vakata = {};\n\t// reverse\n\t$.fn.vakata_reverse = [].reverse;\n\t// collect attributes\n\t$.vakata.attributes = function(node, with_values) {\n\t\tnode = $(node)[0];\n\t\tvar attr = with_values ? {} : [];\n\t\tif(node && node.attributes) {\n\t\t\t$.each(node.attributes, function (i, v) {\n\t\t\t\tif($.inArray(v.nodeName.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }\n\t\t\t\tif(v.nodeValue !== null && $.trim(v.nodeValue) !== '') {\n\t\t\t\t\tif(with_values) { attr[v.nodeName] = v.nodeValue; }\n\t\t\t\t\telse { attr.push(v.nodeName); }\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t\treturn attr;\n\t};\n\t$.vakata.array_unique = function(array) {\n\t\tvar a = [], i, j, l;\n\t\tfor(i = 0, l = array.length; i < l; i++) {\n\t\t\tfor(j = 0; j <= i; j++) {\n\t\t\t\tif(array[i] === array[j]) {\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\t}\n\t\t\tif(j === i) { a.push(array[i]); }\n\t\t}\n\t\treturn a;\n\t};\n\t// remove item from array\n\t$.vakata.array_remove = function(array, from, to) {\n\t\tvar rest = array.slice((to || from) + 1 || array.length);\n\t\tarray.length = from < 0 ? array.length + from : from;\n\t\tarray.push.apply(array, rest);\n\t\treturn array;\n\t};\n\t// remove item from array\n\t$.vakata.array_remove_item = function(array, item) {\n\t\tvar tmp = $.inArray(item, array);\n\t\treturn tmp !== -1 ? $.vakata.array_remove(array, tmp) : array;\n\t};\n\t// browser sniffing\n\t(function () {\n\t\tvar browser = {},\n\t\t\tb_match = function(ua) {\n\t\t\tua = ua.toLowerCase();\n\n\t\t\tvar match =\t/(chrome)[ \\/]([\\w.]+)/.exec( ua ) ||\n\t\t\t\t\t\t/(webkit)[ \\/]([\\w.]+)/.exec( ua ) ||\n\t\t\t\t\t\t/(opera)(?:.*version|)[ \\/]([\\w.]+)/.exec( ua ) ||\n\t\t\t\t\t\t/(msie) ([\\w.]+)/.exec( ua ) ||\n\t\t\t\t\t\t(ua.indexOf(\"compatible\") < 0 && /(mozilla)(?:.*? rv:([\\w.]+)|)/.exec( ua )) ||\n\t\t\t\t\t\t[];\n\t\t\t\treturn {\n\t\t\t\t\tbrowser: match[1] || \"\",\n\t\t\t\t\tversion: match[2] || \"0\"\n\t\t\t\t};\n\t\t\t},\n\t\t\tmatched = b_match(window.navigator.userAgent);\n\t\tif(matched.browser) {\n\t\t\tbrowser[ matched.browser ] = true;\n\t\t\tbrowser.version = matched.version;\n\t\t}\n\t\tif(browser.chrome) {\n\t\t\tbrowser.webkit = true;\n\t\t}\n\t\telse if(browser.webkit) {\n\t\t\tbrowser.safari = true;\n\t\t}\n\t\t$.vakata.browser = browser;\n\t}());\n\tif($.vakata.browser.msie && $.vakata.browser.version < 8) {\n\t\t$.jstree.defaults.core.animation = 0;\n\t}\n\t(function ($, undefined) {\n\t\t$.vakata.json = {\n\t\t\tencode : window.JSON.stringify,\n\t\t\tdecode : window.JSON.parse\n\t\t};\n\t}(jQuery));"
 	},
 	{
 		"tags": [],
@@ -6282,7 +6282,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "filter\t: false\n\t};\n\t$.jstree.plugins.state = function (options, parent) {\n\t\tthis.bind = function () {\n\t\t\tparent.bind.call(this);\n\n\t\t\tthis.element\n\t\t\t\t.on(\"ready.jstree\", $.proxy(function (e, data) {\n\t\t\t\t\t\tthis.element.one(\"restore_state.jstree set_state.jstree\", $.proxy(function () {\n\t\t\t\t\t\t\tthis.element.on(this.settings.state.events, $.proxy(function () {\n\t\t\t\t\t\t\t\tif(to) { clearTimeout(to); }\n\t\t\t\t\t\t\t\tto = setTimeout($.proxy(function () { this.save_state(); }, this), 100);\n\t\t\t\t\t\t\t}, this));\n\t\t\t\t\t\t}, this));\n\t\t\t\t\t\tthis.restore_state();\n\t\t\t\t\t}, this));\n\t\t};"
+		"code": "filter\t: false\n\t};\n\t$.jstree.plugins.state = function (options, parent) {\n\t\tthis.bind = function () {\n\t\t\tparent.bind.call(this);\n\t\t\tvar bind = $.proxy(function () {\n\t\t\t\tthis.element.on(this.settings.state.events, $.proxy(function () {\n\t\t\t\t\tif(to) { clearTimeout(to); }\n\t\t\t\t\tto = setTimeout($.proxy(function () { this.save_state(); }, this), 100);\n\t\t\t\t}, this));\n\t\t\t}, this);\n\t\t\tthis.element\n\t\t\t\t.on(\"ready.jstree\", $.proxy(function (e, data) {\n\t\t\t\t\t\tthis.element.one(\"restore_state.jstree\", bind);\n\t\t\t\t\t\tif(!this.restore_state()) { bind(); }\n\t\t\t\t\t}, this));\n\t\t};"
 	},
 	{
 		"tags": [
@@ -6302,7 +6302,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.save_state = function () {\n\t\t\t$.vakata.storage.set(this.settings.state.key, this.get_state(), this.settings.state.ttl);\n\t\t};",
+		"code": "this.save_state = function () {\n\t\t\tvar st = { 'state' : this.get_state(), 'ttl' : this.settings.state.ttl, 'sec' : +(new Date()) };\n\t\t\t$.vakata.storage.set(this.settings.state.key, $.vakata.json.encode(st));\n\t\t};",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
@@ -6328,7 +6328,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.restore_state = function () {\n\t\t\tvar k = $.vakata.storage.get(this.settings.state.key);\n\t\t\tif(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }\n\n\t\t\tif(!!k) { this.set_state(k); }\n\t\t\tthis.trigger('restore_state', { 'state' : k });\n\t\t};",
+		"code": "this.restore_state = function () {\n\t\t\tvar k = $.vakata.storage.get(this.settings.state.key);\n\t\t\tif(!!k) { try { k = $.vakata.json.decode(k); } catch(ex) { return false; } }\n\t\t\tif(!!k && k.ttl && k.sec && +(new Date()) - k.sec > k.ttl) { return false; }\n\t\t\telse { k = k.state; }\n\t\t\tif(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }\n\t\t\tif(!!k) {\n\t\t\t\tthis.element.one(\"set_state.jstree\", function (e, data) { data.instance.trigger('restore_state', { 'state' : $.extend(true, {}, k) }); });\n\t\t\t\tthis.set_state(k);\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\treturn false;\n\t\t};",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
@@ -6354,153 +6354,13 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.clear_state = function () {\n\t\t\treturn $.vakata.storage.del(this.settings.state.key);\n\t\t};\n\t};\n\n\t(function ($, document, undefined) {\n\t\tvar raw\t\t= function (s) { return s; },\n\t\t\tdecoded\t= function (s) { return decodeURIComponent(s.replace(/\\+/g, ' ')); },\n\t\t\tconfig = $.vakata.cookie = function (key, value, options) {\n\t\t\t\tvar days, t, decode, cookies, i, l, parts, cookie;\n\t\t\t\t// write\n\t\t\t\tif (value !== undefined) {\n\t\t\t\t\toptions = $.extend({}, config.defaults, options);\n\n\t\t\t\t\tif (value === null) {\n\t\t\t\t\t\toptions.expires = -1;\n\t\t\t\t\t}\n\n\t\t\t\t\tif (typeof options.expires === 'number') {\n\t\t\t\t\t\tdays = options.expires;\n\t\t\t\t\t\tt = options.expires = new Date();\n\t\t\t\t\t\tt.setDate(t.getDate() + days);\n\t\t\t\t\t}\n\n\t\t\t\t\tvalue = config.json ? $.vakata.json.encode(value) : String(value);\n\t\t\t\t\tvalue = [\n\t\t\t\t\t\tencodeURIComponent(key), '=', config.raw ? value : encodeURIComponent(value),\n\t\t\t\t\t\toptions.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE\n\t\t\t\t\t\toptions.path    ? '; path=' + options.path : '',\n\t\t\t\t\t\toptions.domain  ? '; domain=' + options.domain : '',\n\t\t\t\t\t\toptions.secure  ? '; secure' : ''\n\t\t\t\t\t].join('');\n\t\t\t\t\tdocument.cookie = value;\n\t\t\t\t\treturn value;\n\t\t\t\t}\n\t\t\t\t// read\n\t\t\t\tdecode = config.raw ? raw : decoded;\n\t\t\t\tcookies = document.cookie.split('; ');\n\t\t\t\tfor (i = 0, l = cookies.length; i < l; i++) {\n\t\t\t\t\tparts = cookies[i].split('=');\n\t\t\t\t\tif (decode(parts.shift()) === key) {\n\t\t\t\t\t\tcookie = decode(parts.join('='));\n\t\t\t\t\t\treturn config.json ? $.vakata.json.decode(cookie) : cookie;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\treturn null;\n\t\t\t};\n\t\tconfig.defaults = {};\n\t\t$.vakata.removeCookie = function (key, options) {\n\t\t\tif ($.vakata.cookie(key) !== null) {\n\t\t\t\t$.vakata.cookie(key, null, options);\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\treturn false;\n\t\t};\n\t}(jQuery, document));\n\n\t(function ($, undefined) {\n\t\tvar _storage = {},\n\t\t\t_storage_service = {jStorage:\"{}\"},\n\t\t\t_storage_elm = null,\n\t\t\t_storage_size = 0,\n\t\t\tjson_encode = $.vakata.json.encode,\n\t\t\tjson_decode = $.vakata.json.decode,\n\t\t\t_backend = false,\n\t\t\t_ttl_timeout = false;\n\n\t\tfunction _load_storage() {\n\t\t\tif(_storage_service.jStorage) {\n\t\t\t\ttry {\n\t\t\t\t\t_storage = json_decode(String(_storage_service.jStorage));\n\t\t\t\t} catch(ex) { _storage_service.jStorage = \"{}\"; }\n\t\t\t} else {\n\t\t\t\t_storage_service.jStorage = \"{}\";\n\t\t\t}\n\t\t\t_storage_size = _storage_service.jStorage ? String(_storage_service.jStorage).length : 0;\n\t\t}\n\n\t\tfunction _save() {\n\t\t\ttry {\n\t\t\t\t_storage_service.jStorage = json_encode(_storage);\n\t\t\t\tif(_backend === 'userDataBehavior') {\n\t\t\t\t\t_storage_elm.setAttribute(\"jStorage\", _storage_service.jStorage);\n\t\t\t\t\t_storage_elm.save(\"jStorage\");\n\t\t\t\t}\n\t\t\t\tif(_backend === 'cookie') {\n\t\t\t\t\t$.vakata.cookie('__vjstorage', _storage_service.jStorage, { 'expires' : 365 });\n\t\t\t\t}\n\t\t\t\t_storage_size = _storage_service.jStorage?String(_storage_service.jStorage).length:0;\n\t\t\t} catch(ignore) {",
+		"code": "this.clear_state = function () {\n\t\t\treturn $.vakata.storage.del(this.settings.state.key);\n\t\t};\n\t};\n\n\t(function ($, undefined) {\n\t\t$.vakata.storage = {\n\t\t\t// simply specifying the functions in FF throws an error\n\t\t\tset : function (key, val) { return window.localStorage.setItem(key, val); },\n\t\t\tget : function (key) { return window.localStorage.getItem(key); },\n\t\t\tdel : function (key) { return window.localStorage.removeItem(key); }\n\t\t};\n\t}(jQuery));\n\n\t// include the state plugin by default\n\t// $.jstree.defaults.plugins.push(\"state\");",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
 			"name": "clear_state",
 			"string": "this.clear_state()"
 		}
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>probably cache is full, nothing is saved this way</p>",
-			"summary": "<p>probably cache is full, nothing is saved this way</p>",
-			"body": ""
-		},
-		"ignore": true,
-		"code": "}\n\t\t}\n\n\t\tfunction _checkKey(key) {\n\t\t\tif(!key || (typeof key !== \"string\" && typeof key !== \"number\")){\n\t\t\t\tthrow new TypeError('Key name must be string or numeric');\n\t\t\t}\n\t\t\tif(key === \"__jstorage_meta\") {\n\t\t\t\tthrow new TypeError('Reserved key name');\n\t\t\t}\n\t\t\treturn true;\n\t\t}\n\n\t\tfunction _handleTTL() {\n\t\t\tvar curtime = +new Date(),\n\t\t\t\ti,\n\t\t\t\tTTL,\n\t\t\t\tnextExpire = Infinity,\n\t\t\t\tchanged = false;\n\n\t\t\tif(_ttl_timeout !== false) {\n\t\t\t\tclearTimeout(_ttl_timeout);\n\t\t\t}\n\t\t\tif(!_storage.__jstorage_meta || typeof _storage.__jstorage_meta.TTL !== \"object\"){\n\t\t\t\treturn;\n\t\t\t}\n\t\t\tTTL = _storage.__jstorage_meta.TTL;\n\t\t\tfor(i in TTL) {\n\t\t\t\tif(TTL.hasOwnProperty(i)) {\n\t\t\t\t\tif(TTL[i] <= curtime) {\n\t\t\t\t\t\tdelete TTL[i];\n\t\t\t\t\t\tdelete _storage[i];\n\t\t\t\t\t\tchanged = true;\n\t\t\t\t\t}\n\t\t\t\t\telse if(TTL[i] < nextExpire) {\n\t\t\t\t\t\tnextExpire = TTL[i];\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\n\t\t\t// set next check\n\t\t\tif(nextExpire !== Infinity) {\n\t\t\t\t_ttl_timeout = setTimeout(_handleTTL, nextExpire - curtime);\n\t\t\t}\n\t\t\t// save changes\n\t\t\tif(changed) {\n\t\t\t\t_save();\n\t\t\t}\n\t\t}\n\n\t\tfunction _init() {\n\t\t\tvar localStorageReallyWorks = false, data;\n\t\t\t//if(window.hasOwnProperty(\"localStorage\")){\n\t\t\tif(\"localStorage\" in window){\n\t\t\t\ttry {\n\t\t\t\t\twindow.localStorage.setItem('_tmptest', 'tmpval');\n\t\t\t\t\tlocalStorageReallyWorks = true;\n\t\t\t\t\twindow.localStorage.removeItem('_tmptest');\n\t\t\t\t} catch(ignore) {\n\t\t\t\t\t// Thanks be to iOS5 Private Browsing mode which throws\n\t\t\t\t\t// QUOTA_EXCEEDED_ERRROR DOM Exception 22.\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tif(localStorageReallyWorks){\n\t\t\t\ttry {\n\t\t\t\t\tif(window.localStorage) {\n\t\t\t\t\t\t_storage_service = window.localStorage;\n\t\t\t\t\t\t_backend = \"localStorage\";\n\t\t\t\t\t}\n\t\t\t\t} catch(ignore) {"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Firefox fails when touching localStorage and cookies are disabled</p>",
-			"summary": "<p>Firefox fails when touching localStorage and cookies are disabled</p>",
-			"body": ""
-		},
-		"ignore": true,
-		"code": "}\n\t\t\t//else if(window.hasOwnProperty(\"globalStorage\")) {\n\t\t\telse if(\"globalStorage\" in window) {\n\t\t\t\ttry {\n\t\t\t\t\tif(window.globalStorage) {\n\t\t\t\t\t\t_storage_service = window.globalStorage[window.location.hostname];\n\t\t\t\t\t\t_backend = \"globalStorage\";\n\t\t\t\t\t}\n\t\t\t\t} catch(ignore) {"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Firefox fails when touching localStorage and cookies are disabled</p>",
-			"summary": "<p>Firefox fails when touching localStorage and cookies are disabled</p>",
-			"body": ""
-		},
-		"ignore": true,
-		"code": "}\n\t\t\telse {\n\t\t\t\t_storage_elm = document.createElement('link');\n\t\t\t\tif(_storage_elm.addBehavior) {\n\t\t\t\t\t_storage_elm.style.behavior = 'url(#default#userData)';\n\t\t\t\t\tdocument.getElementsByTagName('head')[0].appendChild(_storage_elm);\n\t\t\t\t\ttry {\n\t\t\t\t\t\t_storage_elm.load(\"jStorage\");\n\t\t\t\t\t\tdata = \"{}\";\n\t\t\t\t\t\tdata = _storage_elm.getAttribute(\"jStorage\");\n\t\t\t\t\t\t_storage_service.jStorage = data;\n\t\t\t\t\t\t_backend = \"userDataBehavior\";\n\t\t\t\t\t} catch(ignore) {}\n\t\t\t\t}\n\t\t\t\tif(\n\t\t\t\t\t!_backend && (\n\t\t\t\t\t\t!!$.vakata.cookie('__vjstorage') ||\n\t\t\t\t\t\t($.vakata.cookie('__vjstorage', '{}', { 'expires' : 365 }) && $.vakata.cookie('__vjstorage') === '{}')\n\t\t\t\t\t)\n\t\t\t\t) {\n\t\t\t\t\t_storage_elm = null;\n\t\t\t\t\t_storage_service.jStorage = $.vakata.cookie('__vjstorage');\n\t\t\t\t\t_backend = \"cookie\";\n\t\t\t\t}\n\n\t\t\t\tif(!_backend) {\n\t\t\t\t\t_storage_elm = null;\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t}\n\t\t\t_load_storage();\n\t\t\t_handleTTL();\n\t\t}"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Variable: $.vakata.storage<br />object* holds all storage related functions and properties.</p>",
-			"summary": "<p>Variable: $.vakata.storage<br />object* holds all storage related functions and properties.</p>",
-			"body": ""
-		},
-		"ignore": true,
-		"code": "$.vakata.storage = {"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Variable: $.vakata.storage.version<br />string* the version of jstorage used HEAVILY MODIFIED</p>",
-			"summary": "<p>Variable: $.vakata.storage.version<br />string* the version of jstorage used HEAVILY MODIFIED</p>",
-			"body": ""
-		},
-		"ignore": true,
-		"code": "version: \"0.3.0\","
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Function: $.vakata.storage.set<br />                Set a key to a value</p>\n\n<pre><code>            Parameters:\n                key - the key\n                value - the value\n\n            Returns:\n                _value_\n</code></pre>",
-			"summary": "<p>Function: $.vakata.storage.set<br />                Set a key to a value</p>",
-			"body": "<pre><code>            Parameters:\n                key - the key\n                value - the value\n\n            Returns:\n                _value_\n</code></pre>"
-		},
-		"ignore": true,
-		"code": "set : function (key, value, ttl) {\n\t\t\t\t_checkKey(key);\n\t\t\t\tif(typeof value === \"object\") {\n\t\t\t\t\tvalue = json_decode(json_encode(value));\n\t\t\t\t}\n\t\t\t\t_storage[key] = value;\n\t\t\t\t_save();\n\t\t\t\tif(ttl && parseInt(ttl, 10)) {\n\t\t\t\t\t$.vakata.storage.setTTL(key, parseInt(ttl, 10));\n\t\t\t\t}\n\t\t\t\treturn value;\n\t\t\t},"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Function: $.vakata.storage.get<br />                Get a value by key.</p>\n\n<pre><code>            Parameters:\n                key - the key\n                def - the value to return if _key_ is not found\n\n            Returns:\n                The found value, _def_ if key not found or _null_ if _def_ is not supplied.\n</code></pre>",
-			"summary": "<p>Function: $.vakata.storage.get<br />                Get a value by key.</p>",
-			"body": "<pre><code>            Parameters:\n                key - the key\n                def - the value to return if _key_ is not found\n\n            Returns:\n                The found value, _def_ if key not found or _null_ if _def_ is not supplied.\n</code></pre>"
-		},
-		"ignore": true,
-		"code": "get : function (key, def) {\n\t\t\t\t_checkKey(key);\n\t\t\t\tif(_storage.hasOwnProperty(key)){\n\t\t\t\t\treturn _storage[key];\n\t\t\t\t}\n\t\t\t\treturn def === undefined ? null : def;\n\t\t\t},"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Function: $.vakata.storage.del<br />                Remove a key.</p>\n\n<pre><code>            Parameters:\n                key - the key\n\n            Returns:\n</code></pre>\n\n<p>boolean*</p>",
-			"summary": "<p>Function: $.vakata.storage.del<br />                Remove a key.</p>",
-			"body": "<pre><code>            Parameters:\n                key - the key\n\n            Returns:\n</code></pre>\n\n<p>boolean*</p>"
-		},
-		"ignore": true,
-		"code": "del : function (key) {\n\t\t\t\t_checkKey(key);\n\t\t\t\tif(_storage.hasOwnProperty(key)) {\n\t\t\t\t\tdelete _storage[key];\n\n\t\t\t\t\tif(_storage.__jstorage_meta && typeof _storage.__jstorage_meta.TTL === \"object\" && _storage.__jstorage_meta.TTL.hasOwnProperty(key)) {\n\t\t\t\t\t\tdelete _storage.__jstorage_meta.TTL[key];\n\t\t\t\t\t}\n\t\t\t\t\t_save();\n\t\t\t\t\treturn true;\n\t\t\t\t}\n\t\t\t\treturn false;\n\t\t\t},\n\n\t\t\tsetTTL: function(key, ttl){\n\t\t\t\tvar curtime = +new Date();\n\n\t\t\t\t_checkKey(key);\n\t\t\t\tttl = Number(ttl) || 0;\n\t\t\t\tif(_storage.hasOwnProperty(key)){\n\t\t\t\t\tif(!_storage.__jstorage_meta){\n\t\t\t\t\t\t_storage.__jstorage_meta = {};\n\t\t\t\t\t}\n\t\t\t\t\tif(!_storage.__jstorage_meta.TTL) {\n\t\t\t\t\t\t_storage.__jstorage_meta.TTL = {};\n\t\t\t\t\t}\n\t\t\t\t\tif(ttl > 0) {\n\t\t\t\t\t\t_storage.__jstorage_meta.TTL[key] = curtime + ttl;\n\t\t\t\t\t}\n\t\t\t\t\telse {\n\t\t\t\t\t\tdelete _storage.__jstorage_meta.TTL[key];\n\t\t\t\t\t}\n\t\t\t\t\t_save();\n\t\t\t\t\t_handleTTL();\n\t\t\t\t\treturn true;\n\t\t\t\t}\n\t\t\t\treturn false;\n\t\t\t},\n\t\t\tgetTTL: function(key){\n\t\t\t\tvar curtime = +new Date(), ttl;\n\t\t\t\t_checkKey(key);\n\t\t\t\tif(_storage.hasOwnProperty(key) && _storage.__jstorage_meta.TTL && _storage.__jstorage_meta.TTL[key]) {\n\t\t\t\t\tttl = _storage.__jstorage_meta.TTL[key] - curtime;\n\t\t\t\t\treturn ttl || 0;\n\t\t\t\t}\n\t\t\t\treturn 0;\n\t\t\t},"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Function: $.vakata.storage.flush<br />                Empty the storage.</p>\n\n<pre><code>            Returns:\n                _true_\n</code></pre>",
-			"summary": "<p>Function: $.vakata.storage.flush<br />                Empty the storage.</p>",
-			"body": "<pre><code>            Returns:\n                _true_\n</code></pre>"
-		},
-		"ignore": true,
-		"code": "flush : function(){\n\t\t\t\t_storage = {};\n\t\t\t\t_save();\n\t\t\t\t// try{ window.localStorage.clear(); } catch(E8) { }\n\t\t\t\treturn true;\n\t\t\t},"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Function: $.vakata.storage.storageObj<br />                Get a read only copy of the whole storage.</p>\n\n<pre><code>            Returns:\n</code></pre>\n\n<p>object*</p>",
-			"summary": "<p>Function: $.vakata.storage.storageObj<br />                Get a read only copy of the whole storage.</p>",
-			"body": "<pre><code>            Returns:\n</code></pre>\n\n<p>object*</p>"
-		},
-		"ignore": true,
-		"code": "storageObj : function(){\n\t\t\t\treturn $.extend(true, {}, _storage);\n\t\t\t},"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Function: $.vakata.storage.index<br />                Get an array of all the set keys in the storage.</p>\n\n<pre><code>            Returns:\n</code></pre>\n\n<p>array*</p>",
-			"summary": "<p>Function: $.vakata.storage.index<br />                Get an array of all the set keys in the storage.</p>",
-			"body": "<pre><code>            Returns:\n</code></pre>\n\n<p>array*</p>"
-		},
-		"ignore": true,
-		"code": "index : function(){\n\t\t\t\tvar index = [];\n\t\t\t\t$.each(_storage, function (i, v) { if(i !== \"__jstorage_meta\") { index.push(i); } });\n\t\t\t\treturn index;\n\t\t\t},"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Function: $.vakata.storage.storageSize<br />                Get the size of all items in the storage in bytes.</p>\n\n<pre><code>            Returns:\n</code></pre>\n\n<p>number*</p>",
-			"summary": "<p>Function: $.vakata.storage.storageSize<br />                Get the size of all items in the storage in bytes.</p>",
-			"body": "<pre><code>            Returns:\n</code></pre>\n\n<p>number*</p>"
-		},
-		"ignore": true,
-		"code": "storageSize : function(){\n\t\t\t\treturn _storage_size;\n\t\t\t},"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Function: $.vakata.storage.currentBackend<br />                Get the current backend used.</p>\n\n<pre><code>            Returns:\n</code></pre>\n\n<p>string*</p>",
-			"summary": "<p>Function: $.vakata.storage.currentBackend<br />                Get the current backend used.</p>",
-			"body": "<pre><code>            Returns:\n</code></pre>\n\n<p>string*</p>"
-		},
-		"ignore": true,
-		"code": "currentBackend : function(){\n\t\t\t\treturn _backend;\n\t\t\t},"
-	},
-	{
-		"tags": [],
-		"description": {
-			"full": "<p>Function: $.vakata.storage.storageAvailable<br />                See if storage functionality is available.</p>\n\n<pre><code>            Returns:\n</code></pre>\n\n<p>boolean*</p>",
-			"summary": "<p>Function: $.vakata.storage.storageAvailable<br />                See if storage functionality is available.</p>",
-			"body": "<pre><code>            Returns:\n</code></pre>\n\n<p>boolean*</p>"
-		},
-		"ignore": true,
-		"code": "storageAvailable : function(){\n\t\t\t\treturn !!_backend;\n\t\t\t}\n\t\t};\n\t\t_init();\n\t}(jQuery));\n\n\t// include the state plugin by default\n\t// $.jstree.defaults.plugins.push(\"state\");"
 	},
 	{
 		"tags": [],
