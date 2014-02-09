@@ -63,7 +63,7 @@
 								c = m[dpc[i]].data.jstree.type;
 							}
 							m[dpc[i]].type = c;
-							if(m[dpc[i]].icon === true && t[c].icon) {
+							if(m[dpc[i]].icon === true && t[c].icon !== undefined) {
 								m[dpc[i]].icon = t[c].icon;
 							}
 						}
@@ -187,7 +187,7 @@
 			old_icon = this.get_icon(obj);
 			obj.type = type;
 			if(old_icon === true || (t[old_type] && t[old_type].icon && old_icon === t[old_type].icon)) {
-				this.set_icon(obj, t[type].icon || true);
+				this.set_icon(obj, t[type].icon !== undefined ? t[type].icon : true);
 			}
 			return true;
 		};
