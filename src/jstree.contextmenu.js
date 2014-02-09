@@ -170,7 +170,7 @@
 				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e) {
 						e.preventDefault();
 						if(!this.is_loading(e.currentTarget)) {
-							this.show_contextmenu(e.currentTarget, e.pageX, e.pageY);
+							this.show_contextmenu(e.currentTarget, e.pageX, e.pageY, e);
 						}
 					}, this))
 				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
@@ -214,10 +214,11 @@
 		 * @param {mixed} obj the node
 		 * @param {Number} x the x-coordinate relative to the document to show the menu at
 		 * @param {Number} y the y-coordinate relative to the document to show the menu at
+		 * @param {Object} e the event if available that triggered the contextmenu
 		 * @plugin contextmenu
 		 * @trigger show_contextmenu.jstree
 		 */
-		this.show_contextmenu = function (obj, x, y) {
+		this.show_contextmenu = function (obj, x, y, e) {
 			obj = this.get_node(obj);
 			if(!obj || obj.id === '#') { return false; }
 			var s = this.settings.contextmenu,
@@ -232,7 +233,7 @@
 			}
 			if(this.settings.contextmenu.select_node && !this.is_selected(obj)) {
 				this.deselect_all();
-				this.select_node(obj);
+				this.select_node(obj, false, false, e);
 			}
 
 			i = s.items;
