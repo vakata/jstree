@@ -5394,6 +5394,13 @@
 
 	$.jstree.plugins.types = function (options, parent) {
 		this.init = function (el, options) {
+			if(options && options.types && options.types['default']) {
+				for(var i in options.types) {
+					if(i !== "default" && i !== "#" && options.types.hasOwnProperty(i)) {
+						options.types[i] = $.extend(true, {}, options.types['default'], options.types[i]);
+					}
+				}
+			}
 			parent.init.call(this, el, options);
 			this._model.data['#'].type = '#';
 		};
