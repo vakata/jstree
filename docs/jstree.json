@@ -2576,7 +2576,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "hover_node : function (obj) {\n\t\t\tobj = this.get_node(obj, true);\n\t\t\tif(!obj || !obj.length || obj.children('.jstree-hovered').length) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tvar o = this.element.find('.jstree-hovered');\n\t\t\tif(o && o.length) { this.dehover_node(o); }\n\n\t\t\tobj.children('.jstree-anchor').addClass('jstree-hovered');"
+		"code": "hover_node : function (obj) {\n\t\t\tobj = this.get_node(obj, true);\n\t\t\tif(!obj || !obj.length || obj.children('.jstree-hovered').length) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tvar o = this.element.find('.jstree-hovered');\n\t\t\tif(o && o.length) { this.dehover_node(o); }\n\n\t\t\tobj.attr('aria-selected', true).children('.jstree-anchor').addClass('jstree-hovered');\n\t\t\tthis.element.attr('aria-activedescendant', obj[0].id);"
 	},
 	{
 		"tags": [
@@ -2636,7 +2636,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "dehover_node : function (obj) {\n\t\t\tobj = this.get_node(obj, true);\n\t\t\tif(!obj || !obj.length || !obj.children('.jstree-hovered').length) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tobj.children('.jstree-anchor').removeClass('jstree-hovered');"
+		"code": "dehover_node : function (obj) {\n\t\t\tobj = this.get_node(obj, true);\n\t\t\tif(!obj || !obj.length || !obj.children('.jstree-hovered').length) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tobj.attr('aria-selected', false).children('.jstree-anchor').removeClass('jstree-hovered');"
 	},
 	{
 		"tags": [

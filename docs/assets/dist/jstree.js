@@ -2071,7 +2071,8 @@
 			var o = this.element.find('.jstree-hovered');
 			if(o && o.length) { this.dehover_node(o); }
 
-			obj.children('.jstree-anchor').addClass('jstree-hovered');
+			obj.attr('aria-selected', true).children('.jstree-anchor').addClass('jstree-hovered');
+			this.element.attr('aria-activedescendant', obj[0].id);
 			/**
 			 * triggered when an node is hovered
 			 * @event
@@ -2092,7 +2093,7 @@
 			if(!obj || !obj.length || !obj.children('.jstree-hovered').length) {
 				return false;
 			}
-			obj.children('.jstree-anchor').removeClass('jstree-hovered');
+			obj.attr('aria-selected', false).children('.jstree-anchor').removeClass('jstree-hovered');
 			/**
 			 * triggered when an node is no longer hovered
 			 * @event
