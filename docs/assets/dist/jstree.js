@@ -1603,6 +1603,7 @@
 			}
 			else {
 				c += obj.state.opened ? ' jstree-open' : ' jstree-closed';
+				node.setAttribute('aria-expanded', obj.state.opened);
 			}
 			if(obj.parent !== null && m[obj.parent].children[m[obj.parent].children.length - 1] === obj.id) {
 				c += ' jstree-last';
@@ -1728,11 +1729,12 @@
 					}
 					if(!animation) {
 						d[0].className = d[0].className.replace('jstree-closed', 'jstree-open');
+						d[0].setAttribute("aria-expanded", true);
 					}
 					else {
 						d
 							.children("ul").css("display","none").end()
-							.removeClass("jstree-closed").addClass("jstree-open")
+							.removeClass("jstree-closed").addClass("jstree-open").attr("aria-expanded", true)
 							.children("ul").stop(true, true)
 								.slideDown(animation, function () {
 									this.style.display = "";
@@ -1807,12 +1809,12 @@
 			if(d.length) {
 				if(!animation) {
 					d[0].className = d[0].className.replace('jstree-open', 'jstree-closed');
-					d.children('ul').remove();
+					d.attr("aria-expanded", false).children('ul').remove();
 				}
 				else {
 					d
 						.children("ul").attr("style","display:block !important").end()
-						.removeClass("jstree-open").addClass("jstree-closed")
+						.removeClass("jstree-open").addClass("jstree-closed").attr("aria-expanded", false)
 						.children("ul").stop(true, true).slideUp(animation, function () {
 							this.style.display = "";
 							d.children('ul').remove();
