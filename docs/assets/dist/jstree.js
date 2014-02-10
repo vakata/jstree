@@ -67,7 +67,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.0.0-beta5',
+		version : '3.0.0-beta6',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
