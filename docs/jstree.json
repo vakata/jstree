@@ -6336,7 +6336,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.restore_state = function () {\n\t\t\tvar k = $.vakata.storage.get(this.settings.state.key);\n\t\t\tif(!!k) { try { k = $.vakata.json.decode(k); } catch(ex) { return false; } }\n\t\t\tif(!!k && k.ttl && k.sec && +(new Date()) - k.sec > k.ttl) { return false; }\n\t\t\telse { k = k.state; }\n\t\t\tif(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }\n\t\t\tif(!!k) {\n\t\t\t\tthis.element.one(\"set_state.jstree\", function (e, data) { data.instance.trigger('restore_state', { 'state' : $.extend(true, {}, k) }); });\n\t\t\t\tthis.set_state(k);\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\treturn false;\n\t\t};",
+		"code": "this.restore_state = function () {\n\t\t\tvar k = $.vakata.storage.get(this.settings.state.key);\n\t\t\tif(!!k) { try { k = $.vakata.json.decode(k); } catch(ex) { return false; } }\n\t\t\tif(!!k && k.ttl && k.sec && +(new Date()) - k.sec > k.ttl) { return false; }\n\t\t\tif(!!k && k.state) { k = k.state; }\n\t\t\tif(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }\n\t\t\tif(!!k) {\n\t\t\t\tthis.element.one(\"set_state.jstree\", function (e, data) { data.instance.trigger('restore_state', { 'state' : $.extend(true, {}, k) }); });\n\t\t\t\tthis.set_state(k);\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\treturn false;\n\t\t};",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
