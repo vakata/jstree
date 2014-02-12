@@ -3182,6 +3182,14 @@
 				"string": "refresh()"
 			},
 			{
+				"type": "param",
+				"types": [
+					"Boolean"
+				],
+				"name": "skip_loading",
+				"description": "an option to skip showing the loading indicator"
+			},
+			{
 				"type": "trigger",
 				"string": "refresh.jstree"
 			}
@@ -3193,7 +3201,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "refresh : function () {\n\t\t\tthis._data.core.state = this.get_state();\n\t\t\tthis._cnt = 0;\n\t\t\tthis._model.data = {\n\t\t\t\t'#' : {\n\t\t\t\t\tid : '#',\n\t\t\t\t\tparent : null,\n\t\t\t\t\tparents : [],\n\t\t\t\t\tchildren : [],\n\t\t\t\t\tchildren_d : [],\n\t\t\t\t\tstate : { loaded : false }\n\t\t\t\t}\n\t\t\t};\n\t\t\tvar c = this.get_container_ul()[0].className;\n\t\t\tthis.element.html(\"<\"+\"ul class='jstree-container-ul'><\"+\"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><\"+\"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>\" + this.get_string(\"Loading ...\") + \"</a></li></ul>\");\n\t\t\tthis.load_node('#', function (o, s) {\n\t\t\t\tif(s) {\n\t\t\t\t\tthis.get_container_ul()[0].className = c;\n\t\t\t\t\tthis.set_state($.extend(true, {}, this._data.core.state), function () {"
+		"code": "refresh : function (skip_loading) {\n\t\t\tthis._data.core.state = this.get_state();\n\t\t\tthis._cnt = 0;\n\t\t\tthis._model.data = {\n\t\t\t\t'#' : {\n\t\t\t\t\tid : '#',\n\t\t\t\t\tparent : null,\n\t\t\t\t\tparents : [],\n\t\t\t\t\tchildren : [],\n\t\t\t\t\tchildren_d : [],\n\t\t\t\t\tstate : { loaded : false }\n\t\t\t\t}\n\t\t\t};\n\t\t\tvar c = this.get_container_ul()[0].className;\n\t\t\tif(!skip_loading) {\n\t\t\t\tthis.element.html(\"<\"+\"ul class='jstree-container-ul'><\"+\"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><\"+\"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>\" + this.get_string(\"Loading ...\") + \"</a></li></ul>\");\n\t\t\t}\n\t\t\tthis.load_node('#', function (o, s) {\n\t\t\t\tif(s) {\n\t\t\t\t\tthis.get_container_ul()[0].className = c;\n\t\t\t\t\tthis.set_state($.extend(true, {}, this._data.core.state), function () {"
 	},
 	{
 		"tags": [

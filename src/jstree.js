@@ -2419,9 +2419,10 @@
 		/**
 		 * refreshes the tree - all nodes are reloaded with calls to `load_node`.
 		 * @name refresh()
+		 * @param {Boolean} skip_loading an option to skip showing the loading indicator
 		 * @trigger refresh.jstree
 		 */
-		refresh : function () {
+		refresh : function (skip_loading) {
 			this._data.core.state = this.get_state();
 			this._cnt = 0;
 			this._model.data = {
@@ -2435,7 +2436,9 @@
 				}
 			};
 			var c = this.get_container_ul()[0].className;
-			this.element.html("<"+"ul class='jstree-container-ul'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
+			if(!skip_loading) {
+				this.element.html("<"+"ul class='jstree-container-ul'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
+			}
 			this.load_node('#', function (o, s) {
 				if(s) {
 					this.get_container_ul()[0].className = c;
