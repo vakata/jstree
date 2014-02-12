@@ -101,11 +101,24 @@
 			else {
 				tmp.type = tmp.id && m[tmp.id] && m[tmp.id].type ? m[tmp.id].type : "default";
 				if(options && options.no_id) {
-					delete tmp.id;
-					if(tmp.li_attr && tmp.li_attr.id) {
-						delete tmp.li_attr.id;
-					}
+					tmp = this._delete_ids(tmp);
 				}
+			}
+			return tmp;
+		};
+		this._delete_ids = function (tmp) {
+			if($.isArray(tmp)) {
+				for(var i = 0, j = tmp.length; i < j; i++) {
+					tmp[i] = this._delete_ids(tmp[i]);
+				}
+				return tmp;
+			}
+			delete tmp.id;
+			if(tmp.li_attr && tmp.li_attr.id) {
+				delete tmp.li_attr.id;
+			}
+			if(tmp.children && $.isArray(tmp.children)) {
+				tmp.children = this._delete_ids(tmp.children);
 			}
 			return tmp;
 		};
