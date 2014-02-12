@@ -43,10 +43,15 @@
 
 	$.jstree.plugins.types = function (options, parent) {
 		this.init = function (el, options) {
+			var i, j;
 			if(options && options.types && options.types['default']) {
-				for(var i in options.types) {
+				for(i in options.types) {
 					if(i !== "default" && i !== "#" && options.types.hasOwnProperty(i)) {
-						options.types[i] = $.extend(true, {}, options.types['default'], options.types[i]);
+						for(j in options.types['default']) {
+							if(options.types['default'].hasOwnProperty(j) && options.types[i][j] === undefined) {
+								options.types[i][j] = options.types['default'][j];
+							}
+						}
 					}
 				}
 			}
