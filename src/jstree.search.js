@@ -110,7 +110,7 @@
 			if(!skip_async && a !== false) {
 				if(!a.data) { a.data = {}; }
 				a.data.str = str;
-				return $.ajax(s.ajax).done($.proxy(function (d) {
+				return $.ajax(a).done($.proxy(function (d) {
 					if(d && d.d) { d = d.d; }
 					this._data.search.sln = !$.isArray(d) ? [] : d;
 					this._search_load(str);
