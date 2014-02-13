@@ -1084,6 +1084,53 @@
 		"tags": [
 			{
 				"type": "name",
+				"string": "get_path(obj [, glue, ids])"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "obj",
+				"description": "the node"
+			},
+			{
+				"type": "param",
+				"types": [
+					"String"
+				],
+				"name": "glue",
+				"description": "if you want the path as a string - pass the glue here (for example '/'), if a falsy value is supplied here, an array is returned"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Boolean"
+				],
+				"name": "ids",
+				"description": "if set to true build the path using ID, otherwise node text is used"
+			},
+			{
+				"type": "return",
+				"types": [
+					"mixed"
+				],
+				"description": ""
+			}
+		],
+		"description": {
+			"full": "<p>get the path to a node, either consisting of node texts, or of node IDs, optionally glued together (otherwise an array)</p>",
+			"summary": "<p>get the path to a node, either consisting of node texts, or of node IDs, optionally glued together (otherwise an array)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "get_path : function (obj, glue, ids) {\n\t\t\tobj = obj.parents ? obj : this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#' || !obj.parents) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tvar i, j, p = [];\n\t\t\tp.push(ids ? obj.id : obj.text);\n\t\t\tfor(i = 0, j = obj.parents.length; i < j; i++) {\n\t\t\t\tp.push(ids ? obj.parents[i] : this.get_text(obj.parents[i]));\n\t\t\t}\n\t\t\tp = p.reverse().slice(1);\n\t\t\treturn glue ? p.join(glue) : p;\n\t\t},"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
 				"string": "get_next_dom(obj [, strict])"
 			},
 			{
