@@ -2623,7 +2623,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "hover_node : function (obj) {\n\t\t\tobj = this.get_node(obj, true);\n\t\t\tif(!obj || !obj.length || obj.children('.jstree-hovered').length) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tvar o = this.element.find('.jstree-hovered');\n\t\t\tif(o && o.length) { this.dehover_node(o); }\n\n\t\t\tobj.attr('aria-selected', true).children('.jstree-anchor').addClass('jstree-hovered');\n\t\t\tthis.element.attr('aria-activedescendant', obj[0].id);"
+		"code": "hover_node : function (obj) {\n\t\t\tobj = this.get_node(obj, true);\n\t\t\tif(!obj || !obj.length || obj.children('.jstree-hovered').length) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tvar o = this.element.find('.jstree-hovered');\n\t\t\tif(o && o.length) { this.dehover_node(o); }\n\n\t\t\tthis.element.attr('aria-activedescendant', obj[0].id);\n\t\t\tobj.attr('aria-selected', true).children('.jstree-anchor').addClass('jstree-hovered');"
 	},
 	{
 		"tags": [

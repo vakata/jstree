@@ -437,9 +437,6 @@
 			value: function(value) {
 				if (value !== UNDEFINED) {
 					value = _strict(value);
-					if (value == '/') {
-						value = '';
-					}
 					if (_value == value && !_updating) {
 						return;
 					}

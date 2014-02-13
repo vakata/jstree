@@ -2092,8 +2092,8 @@
 			var o = this.element.find('.jstree-hovered');
 			if(o && o.length) { this.dehover_node(o); }
 
-			obj.attr('aria-selected', true).children('.jstree-anchor').addClass('jstree-hovered');
 			this.element.attr('aria-activedescendant', obj[0].id);
+			obj.attr('aria-selected', true).children('.jstree-anchor').addClass('jstree-hovered');
 			/**
 			 * triggered when an node is hovered
 			 * @event
