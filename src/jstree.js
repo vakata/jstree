@@ -2365,7 +2365,7 @@
 								}
 								else {
 									if(!t.is_loading(v)) {
-										t.open_node(v, $.proxy(function () { this.set_state(state); }, t), 0);
+										t.open_node(v, $.proxy(function () { this.set_state(state, callback); }, t), 0);
 									}
 									// there will be some async activity - so wait for it
 									res = false;
