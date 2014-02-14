@@ -2033,9 +2033,14 @@
 				return false;
 			}
 			if(!this.settings.core.multiple || (!e.metaKey && !e.ctrlKey && !e.shiftKey) || (e.shiftKey && (!this._data.core.last_clicked || !this.get_parent(obj) || this.get_parent(obj) !== this._data.core.last_clicked.parent ) )) {
-				this.deselect_all(true);
-				this.select_node(obj, false, false, e);
-				this._data.core.last_clicked = this.get_node(obj);
+				if(!this.settings.core.multiple && (e.metaKey || e.ctrlKey || e.shiftKey) && this.is_selected(obj)) {
+					this.deselect_node(obj, false, false, e);
+				}
+				else {
+					this.deselect_all(true);
+					this.select_node(obj, false, false, e);
+					this._data.core.last_clicked = this.get_node(obj);
+				}
 			}
 			else {
 				if(e.shiftKey) {
