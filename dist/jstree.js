@@ -5532,7 +5532,7 @@
 							}
 							d = d - obj.parents.length + 1;
 						}
-						if(d <= 0) { d = 1; }
+						if(d <= 0 || d === undefined) { d = 1; }
 						do {
 							if(tmp.max_depth !== undefined && tmp.max_depth !== -1 && tmp.max_depth < d) {
 								return false;
