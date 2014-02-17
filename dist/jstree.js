@@ -2596,7 +2596,7 @@
 				'data' : options && options.no_data ? false : obj.data
 				//( this.get_node(obj, true).length ? this.get_node(obj, true).data() : obj.data ),
 			}, i, j;
-			if(options.flat) {
+			if(options && options.flat) {
 				tmp.parent = obj.parent;
 			}
 			else {
@@ -2615,12 +2615,12 @@
 					delete tmp.li_attr.id;
 				}
 			}
-			if(options.flat && obj.id !== '#') {
+			if(options && options.flat && obj.id !== '#') {
 				flat.push(tmp);
 			}
 			if(!options || !options.no_children) {
 				for(i = 0, j = obj.children.length; i < j; i++) {
-					if(options.flat) {
+					if(options && options.flat) {
 						this.get_json(obj.children[i], options, flat);
 					}
 					else {
@@ -2628,7 +2628,7 @@
 					}
 				}
 			}
-			return options.flat ? flat : (obj.id === '#' ? tmp.children : tmp);
+			return options && options.flat ? flat : (obj.id === '#' ? tmp.children : tmp);
 		},
 		/**
 		 * create a new node (do not confuse with load_node)
