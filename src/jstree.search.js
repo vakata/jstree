@@ -110,11 +110,16 @@
 			if(!skip_async && a !== false) {
 				if(!a.data) { a.data = {}; }
 				a.data.str = str;
-				return $.ajax(a).done($.proxy(function (d) {
-					if(d && d.d) { d = d.d; }
-					this._data.search.sln = !$.isArray(d) ? [] : d;
-					this._search_load(str);
-				}, this));
+				return $.ajax(a)
+					.fail($.proxy(function () {
+						this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'search', 'id' : 'search_01', 'reason' : 'Could not load search parents', 'data' : JSON.stringify(a) };
+						this.settings.core.error.call(this, this._data.core.last_error);
+					}, this))
+					.done($.proxy(function (d) {
+						if(d && d.d) { d = d.d; }
+						this._data.search.sln = !$.isArray(d) ? [] : d;
+						this._search_load(str);
+					}, this));
 			}
 			this._data.search.str = str;
 			this._data.search.dom = $();

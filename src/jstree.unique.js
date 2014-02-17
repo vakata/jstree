@@ -37,9 +37,17 @@
 					return true;
 				case "rename_node":
 				case "copy_node":
-					return ($.inArray(n, c) === -1);
+					i = ($.inArray(n, c) === -1);
+					if(!i) {
+						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify(arguments) };
+					}
+					return i;
 				case "move_node":
-					return (obj.parent === par.id || $.inArray(n, c) === -1);
+					i = (obj.parent === par.id || $.inArray(n, c) === -1);
+					if(!i) {
+						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify(arguments) };
+					}
+					return i;
 			}
 			return true;
 		};

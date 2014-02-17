@@ -74,6 +74,7 @@
 	$(function() {
 		// bind only once for all instances
 		var lastmv = false,
+			laster = false,
 			opento = false,
 			marker = $('<div id="jstree-marker">&#160;</div>').hide().appendTo('body');
 
@@ -188,6 +189,7 @@
 					}
 				}
 				lastmv = false;
+				laster = ins.last_error();
 				data.helper.find('.jstree-icon').removeClass('jstree-ok').addClass('jstree-er');
 				marker.hide();
 			})
@@ -201,12 +203,21 @@
 				if(opento) { clearTimeout(opento); }
 				if(!data.data.jstree) { return; }
 				marker.hide();
+				var i, j, nodes = [];
 				if(lastmv) {
-					var i, j, nodes = [];
 					for(i = 0, j = data.data.nodes.length; i < j; i++) {
 						nodes[i] = data.data.origin ? data.data.origin.get_node(data.data.nodes[i]) : data.data.nodes[i];
 					}
 					lastmv.ins[ data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);
+				}
+				else {
+					i = $(data.event.target).closest('.jstree');
+					if(i.length && laster && laster.error && laster.error === 'check') {
+						i = i.jstree(true);
+						if(i) {
+							i.settings.core.error.call(this, laster);
+						}
+					}
 				}
 			})
 			.bind('keyup keydown', function (e, data) {
