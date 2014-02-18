@@ -1040,7 +1040,7 @@
 								this.settings.core.error.call(this, this._data.core.last_error);
 							}, this));
 				}
-				t = ($.isArray(s) || $.isPlainObject(s)) ? $.vakata.json.decode($.vakata.json.encode(s)) : s;
+				t = ($.isArray(s) || $.isPlainObject(s)) ? JSON.parse(JSON.stringify(s)) : s;
 				return callback.call(this, this._append_json_data(obj, t));
 			}
 			if(typeof s === 'string') {
@@ -1141,7 +1141,7 @@
 			if(dat.d) {
 				dat = dat.d;
 				if(typeof dat === "string") {
-					dat = $.vakata.json.decode(dat);
+					dat = JSON.parse(dat);
 				}
 			}
 			if(!$.isArray(dat)) { dat = [dat]; }
@@ -2102,11 +2102,10 @@
 			if(!obj || !obj.length || obj.children('.jstree-hovered').length) {
 				return false;
 			}
-			var o = this.element.find('.jstree-hovered');
+			var o = this.element.find('.jstree-hovered'), t = this.element;
 			if(o && o.length) { this.dehover_node(o); }
 
-			this.element.attr('aria-activedescendant', obj[0].id);
-			obj.attr('aria-selected', true).children('.jstree-anchor').addClass('jstree-hovered');
+			obj.children('.jstree-anchor').addClass('jstree-hovered');
 			/**
 			 * triggered when an node is hovered
 			 * @event
@@ -2114,6 +2113,7 @@
 			 * @param {Object} node
 			 */
 			this.trigger('hover_node', { 'node' : this.get_node(obj) });
+			setTimeout(function () { t.attr('aria-activedescendant', obj[0].id); obj.attr('aria-selected', true); }, 0);
 		},
 		/**
 		 * removes the hover state from a nodecalled when a node is no longer hovered by the user. Used internally.
@@ -3556,12 +3556,6 @@
 	if($.vakata.browser.msie && $.vakata.browser.version < 8) {
 		$.jstree.defaults.core.animation = 0;
 	}
-	(function ($, undefined) {
-		$.vakata.json = {
-			encode : window.JSON.stringify,
-			decode : window.JSON.parse
-		};
-	}(jQuery));
 
 /**
  * ### Checkbox plugin
@@ -5412,7 +5406,7 @@
 		 */
 		this.save_state = function () {
 			var st = { 'state' : this.get_state(), 'ttl' : this.settings.state.ttl, 'sec' : +(new Date()) };
-			$.vakata.storage.set(this.settings.state.key, $.vakata.json.encode(st));
+			$.vakata.storage.set(this.settings.state.key, JSON.stringify(st));
 		};
 		/**
 		 * restore the state from the user's computer
@@ -5421,7 +5415,7 @@
 		 */
 		this.restore_state = function () {
 			var k = $.vakata.storage.get(this.settings.state.key);
-			if(!!k) { try { k = $.vakata.json.decode(k); } catch(ex) { return false; } }
+			if(!!k) { try { k = JSON.parse(k); } catch(ex) { return false; } }
 			if(!!k && k.ttl && k.sec && +(new Date()) - k.sec > k.ttl) { return false; }
 			if(!!k && k.state) { k = k.state; }
 			if(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }

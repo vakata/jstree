@@ -74,7 +74,7 @@
 		 */
 		this.save_state = function () {
 			var st = { 'state' : this.get_state(), 'ttl' : this.settings.state.ttl, 'sec' : +(new Date()) };
-			$.vakata.storage.set(this.settings.state.key, $.vakata.json.encode(st));
+			$.vakata.storage.set(this.settings.state.key, JSON.stringify(st));
 		};
 		/**
 		 * restore the state from the user's computer
@@ -83,7 +83,7 @@
 		 */
 		this.restore_state = function () {
 			var k = $.vakata.storage.get(this.settings.state.key);
-			if(!!k) { try { k = $.vakata.json.decode(k); } catch(ex) { return false; } }
+			if(!!k) { try { k = JSON.parse(k); } catch(ex) { return false; } }
 			if(!!k && k.ttl && k.sec && +(new Date()) - k.sec > k.ttl) { return false; }
 			if(!!k && k.state) { k = k.state; }
 			if(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }
