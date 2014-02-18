@@ -2833,7 +2833,7 @@
 				chc = this.settings.core.check_callback;
 			if(chk === "move_node") {
 				if(obj.id === par.id || $.inArray(obj.id, par.children) === pos || $.inArray(par.id, obj.children_d) !== -1) {
-					this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_01', 'reason' : 'Moving parent inside child', 'data' : JSON.stringify(arguments) };
+					this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_01', 'reason' : 'Moving parent inside child', 'data' : JSON.stringify($.makeArray(arguments)) };
 					return false;
 				}
 			}
@@ -2841,12 +2841,12 @@
 			if(tmp.length) { tmp = tmp.data('jstree'); }
 			if(tmp && tmp.functions && (tmp.functions[chk] === false || tmp.functions[chk] === true)) {
 				if(tmp.functions[chk] === false) {
-					this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_02', 'reason' : 'Node data prevents function: ' + chk, 'data' : JSON.stringify(arguments) };
+					this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_02', 'reason' : 'Node data prevents function: ' + chk, 'data' : JSON.stringify($.makeArray(arguments)) };
 				}
 				return tmp.functions[chk];
 			}
 			if(chc === false || ($.isFunction(chc) && chc.call(this, chk, obj, par, pos) === false) || (chc && chc[chk] === false)) {
-				this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_03', 'reason' : 'User config for core.check_callback prevents function: ' + chk, 'data' : JSON.stringify(arguments) };
+				this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_03', 'reason' : 'User config for core.check_callback prevents function: ' + chk, 'data' : JSON.stringify($.makeArray(arguments)) };
 				return false;
 			}
 			return true;

@@ -171,7 +171,10 @@
 										}
 									}
 									ok = ok && ( (ins && ins.settings && ins.settings.dnd && ins.settings.dnd.check_while_dragging === false) || ins.check(op, (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), p, ps) );
-									if(!ok) { break; }
+									if(!ok) {
+										if(ins && ins.last_error) { laster = ins.last_error(); }
+										break;
+									}
 								}
 								if(ok) {
 									if(v === 'i' && ref.parent().is('.jstree-closed') && ins.settings.dnd.open_timeout) {
@@ -180,6 +183,7 @@
 									lastmv = { 'ins' : ins, 'par' : p, 'pos' : i };
 									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
 									data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');
+									laster = {};
 									o = true;
 									return false;
 								}
@@ -189,7 +193,6 @@
 					}
 				}
 				lastmv = false;
-				laster = ins.last_error();
 				data.helper.find('.jstree-icon').removeClass('jstree-ok').addClass('jstree-er');
 				marker.hide();
 			})

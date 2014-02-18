@@ -39,13 +39,13 @@
 				case "copy_node":
 					i = ($.inArray(n, c) === -1);
 					if(!i) {
-						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify(arguments) };
+						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify($.makeArray(arguments)) };
 					}
 					return i;
 				case "move_node":
 					i = (obj.parent === par.id || $.inArray(n, c) === -1);
 					if(!i) {
-						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify(arguments) };
+						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify($.makeArray(arguments)) };
 					}
 					return i;
 			}
