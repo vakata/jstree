@@ -5515,11 +5515,11 @@
 						}
 					}, this));
 		};
-		this.get_json = function (obj, options) {
+		this.get_json = function (obj, options, flat) {
 			var i, j,
 				m = this._model.data,
 				opt = options ? $.extend(true, {}, options, {no_id:false}) : {},
-				tmp = parent.get_json.call(this, obj, opt);
+				tmp = parent.get_json.call(this, obj, opt, flat);
 			if(tmp === false) { return false; }
 			if($.isArray(tmp)) {
 				for(i = 0, j = tmp.length; i < j; i++) {
