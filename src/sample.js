@@ -1,5 +1,6 @@
+/*global jQuery */
 // wrap in IIFE and pass jQuery as $
-(function ($) {
+(function ($, undefined) {
 	"use strict";
 
 	// some private plugin stuff if needed
@@ -39,14 +40,6 @@
 			// do not forget parent
 			parent.teardown.call(this);
 		};
-		// very heavy - use only if needed and be careful (will be replaced bt redraw_node!!!)
-		this.clean_node = function(obj) {
-			// always get the cleaned node from the parent
-			obj = parent.clean_node.call(this, obj);
-			return obj.each(function () {
-				// process nodes
-			});
-		};
 		// state management - get and restore
 		this.get_state = function () {
 			// always get state from parent first
@@ -74,15 +67,19 @@
 			return false;
 		};
 		// node transportation
-		this.get_json = function (obj, is_callback) {
+		this.get_json = function (obj, options, flat) {
 			// get the node from the parent
-			var r = parent.get_json.call(this, obj, is_callback);
-			// only modify the node if is_callback is true
-			if(is_callback) {
-				r.data.sample = 'value';
+			var tmp = parent.get_json.call(this, obj, options, flat), i, j;
+			if($.isArray(tmp)) {
+				for(i = 0, j = tmp.length; i < j; i++) {
+					tmp[i].sample = 'value';
+				}
+			}
+			else {
+				tmp.sample = 'value';
 			}
 			// return the original / modified node
-			return r;
+			return tmp;
 		};
 	};
 
