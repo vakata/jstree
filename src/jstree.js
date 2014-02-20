@@ -905,7 +905,7 @@
 		 */
 		is_parent : function (obj) {
 			obj = this.get_node(obj);
-			return obj && (obj.state.loaded === false || obj.children.length);
+			return obj && (obj.state.loaded === false || obj.children.length > 0);
 		},
 		/**
 		 * checks if a node is loaded (its children are available)

@@ -1312,7 +1312,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "is_parent : function (obj) {\n\t\t\tobj = this.get_node(obj);\n\t\t\treturn obj && (obj.state.loaded === false || obj.children.length);\n\t\t},"
+		"code": "is_parent : function (obj) {\n\t\t\tobj = this.get_node(obj);\n\t\t\treturn obj && (obj.state.loaded === false || obj.children.length > 0);\n\t\t},"
 	},
 	{
 		"tags": [
