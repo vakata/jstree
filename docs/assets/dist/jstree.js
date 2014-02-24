@@ -1576,7 +1576,9 @@
 				k = false,
 				c = '',
 				d = document,
-				m = this._model.data;
+				m = this._model.data,
+				f = false,
+				s = false;
 			if(!obj) { return false; }
 			if(obj.id === '#') {  return this.redraw(true); }
 			deep = deep || obj.children.length === 0;
@@ -1608,6 +1610,8 @@
 				if(!deep) {
 					old = node.children('UL')[0];
 				}
+				s = node.attr('aria-selected');
+				f = node.children('.jstree-anchor')[0] === document.activeElement;
 				node.remove();
 				//node = d.createElement('LI');
 				//node = node[0];
@@ -1626,6 +1630,9 @@
 						c += obj.li_attr[i];
 					}
 				}
+			}
+			if(s && s !== "false") {
+				node.setAttribute('aria-selected', true);
 			}
 			if(!obj.children.length && obj.state.loaded) {
 				c += ' jstree-leaf';
@@ -1705,6 +1712,9 @@
 				}
 				else {
 					par.appendChild(node);
+				}
+				if(f) {
+					node.childNodes[1].focus();
 				}
 			}
 			return node;
