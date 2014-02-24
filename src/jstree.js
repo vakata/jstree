@@ -1662,7 +1662,9 @@
 					node.childNodes[1].childNodes[0].className += ' ' + obj.icon + ' jstree-themeicon-custom';
 				}
 				else {
-					node.childNodes[1].childNodes[0].style.backgroundImage = 'url('+obj.icon+')';
+					// ensure that the option is a string before using it when building to the background url
+					var base_icons_url = this.settings.core.themes.iconsurl ? this.settings.core.themes.iconsurl : "";
+					node.childNodes[1].childNodes[0].style.backgroundImage = 'url(' + base_icons_url + obj.icon + ')';
 					node.childNodes[1].childNodes[0].style.backgroundPosition = 'center center';
 					node.childNodes[1].childNodes[0].style.backgroundSize = 'auto';
 					node.childNodes[1].childNodes[0].className += ' jstree-themeicon-custom';
