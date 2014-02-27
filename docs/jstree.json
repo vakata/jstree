@@ -75,7 +75,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "version : '3.0.0-beta8',"
+		"code": "version : '3.0.0-beta9',"
 	},
 	{
 		"tags": [
@@ -3123,13 +3123,44 @@
 			}
 		],
 		"description": {
-			"full": "<p>get an array of all selected node IDs</p>",
-			"summary": "<p>get an array of all selected node IDs</p>",
+			"full": "<p>get an array of all selected nodes</p>",
+			"summary": "<p>get an array of all selected nodes</p>",
 			"body": ""
 		},
 		"isPrivate": false,
 		"ignore": false,
 		"code": "get_selected : function (full) {\n\t\t\treturn full ? $.map(this._data.core.selected, $.proxy(function (i) { return this.get_node(i); }, this)) : this._data.core.selected;\n\t\t},"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "get_top_selected([full])"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "full",
+				"description": "if set to `true` the returned array will consist of the full node objects, otherwise - only IDs will be returned"
+			},
+			{
+				"type": "return",
+				"types": [
+					"Array"
+				],
+				"description": ""
+			}
+		],
+		"description": {
+			"full": "<p>get an array of all top level selected nodes (ignoring children of selected nodes)</p>",
+			"summary": "<p>get an array of all top level selected nodes (ignoring children of selected nodes)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "get_top_selected : function (full) {\n\t\t\tvar tmp = this.get_selected(true),\n\t\t\t\tobj = {}, i, j, k, l;\n\t\t\tfor(i = 0, j = tmp.length; i < j; i++) {\n\t\t\t\tobj[tmp[i].id] = tmp[i];\n\t\t\t}\n\t\t\tfor(i = 0, j = tmp.length; i < j; i++) {\n\t\t\t\tfor(k = 0, l = tmp[i].children_d.length; k < l; k++) {\n\t\t\t\t\tif(obj[tmp[i].children_d[k]]) {\n\t\t\t\t\t\tdelete obj[tmp[i].children_d[k]];\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\ttmp = [];\n\t\t\tfor(i in obj) {\n\t\t\t\tif(obj.hasOwnProperty(i)) {\n\t\t\t\t\ttmp.push(i);\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn full ? $.map(tmp, $.proxy(function (i) { return this.get_node(i); }, this)) : tmp;\n\t\t},"
 	},
 	{
 		"tags": [
@@ -5638,7 +5669,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "$.vakata.dnd._trigger(\"scroll\", vakata_dnd.scroll_e);\n\t\t\t\t}\n\t\t\t},\n\t\t\tstart : function (e, data, html) {\n\t\t\t\tif(e.type === \"touchstart\" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.targetTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.targetTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(vakata_dnd.is_drag) { $.vakata.dnd.stop({}); }\n\t\t\t\ttry {\n\t\t\t\t\te.currentTarget.unselectable = \"on\";\n\t\t\t\t\te.currentTarget.onselectstart = function() { return false; };\n\t\t\t\t\tif(e.currentTarget.style) { e.currentTarget.style.MozUserSelect = \"none\"; }\n\t\t\t\t} catch(ignore) { }\n\t\t\t\tvakata_dnd.init_x\t= e.pageX;\n\t\t\t\tvakata_dnd.init_y\t= e.pageY;\n\t\t\t\tvakata_dnd.data\t\t= data;\n\t\t\t\tvakata_dnd.is_down\t= true;\n\t\t\t\tvakata_dnd.element\t= e.currentTarget;\n\t\t\t\tif(html !== false) {\n\t\t\t\t\tvakata_dnd.helper = $(\"<div id='vakata-dnd'></div>\").html(html).css({\n\t\t\t\t\t\t\"display\"\t\t: \"block\",\n\t\t\t\t\t\t\"margin\"\t\t: \"0\",\n\t\t\t\t\t\t\"padding\"\t\t: \"0\",\n\t\t\t\t\t\t\"position\"\t\t: \"absolute\",\n\t\t\t\t\t\t\"top\"\t\t\t: \"-2000px\",\n\t\t\t\t\t\t\"lineHeight\"\t: \"16px\",\n\t\t\t\t\t\t\"zIndex\"\t\t: \"10000\"\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t\t$(document).bind(\"mousemove touchmove\", $.vakata.dnd.drag);\n\t\t\t\t$(document).bind(\"mouseup touchend\", $.vakata.dnd.stop);\n\t\t\t\treturn false;\n\t\t\t},\n\t\t\tdrag : function (e) {\n\t\t\t\tif(e.type === \"touchmove\" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.targetTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.targetTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(!vakata_dnd.is_down) { return; }\n\t\t\t\tif(!vakata_dnd.is_drag) {\n\t\t\t\t\tif(\n\t\t\t\t\t\tMath.abs(e.pageX - vakata_dnd.init_x) > $.vakata.dnd.settings.threshold ||\n\t\t\t\t\t\tMath.abs(e.pageY - vakata_dnd.init_y) > $.vakata.dnd.settings.threshold\n\t\t\t\t\t) {\n\t\t\t\t\t\tif(vakata_dnd.helper) {\n\t\t\t\t\t\t\tvakata_dnd.helper.appendTo(\"body\");\n\t\t\t\t\t\t\tvakata_dnd.helper_w = vakata_dnd.helper.outerWidth();\n\t\t\t\t\t\t}\n\t\t\t\t\t\tvakata_dnd.is_drag = true;"
+		"code": "$.vakata.dnd._trigger(\"scroll\", vakata_dnd.scroll_e);\n\t\t\t\t}\n\t\t\t},\n\t\t\tstart : function (e, data, html) {\n\t\t\t\tif(e.type === \"touchstart\" && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.changedTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.changedTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.changedTouches[0].pageX - window.pageXOffset, e.originalEvent.changedTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(vakata_dnd.is_drag) { $.vakata.dnd.stop({}); }\n\t\t\t\ttry {\n\t\t\t\t\te.currentTarget.unselectable = \"on\";\n\t\t\t\t\te.currentTarget.onselectstart = function() { return false; };\n\t\t\t\t\tif(e.currentTarget.style) { e.currentTarget.style.MozUserSelect = \"none\"; }\n\t\t\t\t} catch(ignore) { }\n\t\t\t\tvakata_dnd.init_x\t= e.pageX;\n\t\t\t\tvakata_dnd.init_y\t= e.pageY;\n\t\t\t\tvakata_dnd.data\t\t= data;\n\t\t\t\tvakata_dnd.is_down\t= true;\n\t\t\t\tvakata_dnd.element\t= e.currentTarget;\n\t\t\t\tif(html !== false) {\n\t\t\t\t\tvakata_dnd.helper = $(\"<div id='vakata-dnd'></div>\").html(html).css({\n\t\t\t\t\t\t\"display\"\t\t: \"block\",\n\t\t\t\t\t\t\"margin\"\t\t: \"0\",\n\t\t\t\t\t\t\"padding\"\t\t: \"0\",\n\t\t\t\t\t\t\"position\"\t\t: \"absolute\",\n\t\t\t\t\t\t\"top\"\t\t\t: \"-2000px\",\n\t\t\t\t\t\t\"lineHeight\"\t: \"16px\",\n\t\t\t\t\t\t\"zIndex\"\t\t: \"10000\"\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t\t$(document).bind(\"mousemove touchmove\", $.vakata.dnd.drag);\n\t\t\t\t$(document).bind(\"mouseup touchend\", $.vakata.dnd.stop);\n\t\t\t\treturn false;\n\t\t\t},\n\t\t\tdrag : function (e) {\n\t\t\t\tif(e.type === \"touchmove\" && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.changedTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.changedTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.changedTouches[0].pageX - window.pageXOffset, e.originalEvent.changedTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(!vakata_dnd.is_down) { return; }\n\t\t\t\tif(!vakata_dnd.is_drag) {\n\t\t\t\t\tif(\n\t\t\t\t\t\tMath.abs(e.pageX - vakata_dnd.init_x) > $.vakata.dnd.settings.threshold ||\n\t\t\t\t\t\tMath.abs(e.pageY - vakata_dnd.init_y) > $.vakata.dnd.settings.threshold\n\t\t\t\t\t) {\n\t\t\t\t\t\tif(vakata_dnd.helper) {\n\t\t\t\t\t\t\tvakata_dnd.helper.appendTo(\"body\");\n\t\t\t\t\t\t\tvakata_dnd.helper_w = vakata_dnd.helper.outerWidth();\n\t\t\t\t\t\t}\n\t\t\t\t\t\tvakata_dnd.is_drag = true;"
 	},
 	{
 		"tags": [
@@ -5750,7 +5781,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "$.vakata.dnd._trigger(\"move\", e);\n\t\t\t},\n\t\t\tstop : function (e) {\n\t\t\t\tif(e.type === \"touchend\" && e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.targetTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.targetTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.targetTouches[0].pageX - window.pageXOffset, e.originalEvent.targetTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(vakata_dnd.is_drag) {"
+		"code": "$.vakata.dnd._trigger(\"move\", e);\n\t\t\t},\n\t\t\tstop : function (e) {\n\t\t\t\tif(e.type === \"touchend\" && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0]) {\n\t\t\t\t\te.pageX = e.originalEvent.changedTouches[0].pageX;\n\t\t\t\t\te.pageY = e.originalEvent.changedTouches[0].pageY;\n\t\t\t\t\te.target = document.elementFromPoint(e.originalEvent.changedTouches[0].pageX - window.pageXOffset, e.originalEvent.changedTouches[0].pageY - window.pageYOffset);\n\t\t\t\t}\n\t\t\t\tif(vakata_dnd.is_drag) {"
 	},
 	{
 		"tags": [
