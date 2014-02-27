@@ -3123,13 +3123,44 @@
 			}
 		],
 		"description": {
-			"full": "<p>get an array of all selected node IDs</p>",
-			"summary": "<p>get an array of all selected node IDs</p>",
+			"full": "<p>get an array of all selected nodes</p>",
+			"summary": "<p>get an array of all selected nodes</p>",
 			"body": ""
 		},
 		"isPrivate": false,
 		"ignore": false,
 		"code": "get_selected : function (full) {\n\t\t\treturn full ? $.map(this._data.core.selected, $.proxy(function (i) { return this.get_node(i); }, this)) : this._data.core.selected;\n\t\t},"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "get_top_selected([full])"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "full",
+				"description": "if set to `true` the returned array will consist of the full node objects, otherwise - only IDs will be returned"
+			},
+			{
+				"type": "return",
+				"types": [
+					"Array"
+				],
+				"description": ""
+			}
+		],
+		"description": {
+			"full": "<p>get an array of all top level selected nodes (ignoring children of selected nodes)</p>",
+			"summary": "<p>get an array of all top level selected nodes (ignoring children of selected nodes)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "get_top_selected : function (full) {\n\t\t\tvar tmp = this.get_selected(true),\n\t\t\t\tobj = {}, i, j, k, l;\n\t\t\tfor(i = 0, j = tmp.length; i < j; i++) {\n\t\t\t\tobj[tmp[i].id] = tmp[i];\n\t\t\t}\n\t\t\tfor(i = 0, j = tmp.length; i < j; i++) {\n\t\t\t\tfor(k = 0, l = tmp[i].children_d.length; k < l; k++) {\n\t\t\t\t\tif(obj[tmp[i].children_d[k]]) {\n\t\t\t\t\t\tdelete obj[tmp[i].children_d[k]];\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\ttmp = [];\n\t\t\tfor(i in obj) {\n\t\t\t\tif(obj.hasOwnProperty(i)) {\n\t\t\t\t\ttmp.push(i);\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn full ? $.map(tmp, $.proxy(function (i) { return this.get_node(i); }, this)) : tmp;\n\t\t},"
 	},
 	{
 		"tags": [
