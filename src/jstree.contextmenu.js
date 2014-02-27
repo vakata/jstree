@@ -319,6 +319,12 @@
 							}
 						}) : false;
 			},
+			_getLabel : function(o) {
+				if (o && $.isFunction(o.label))
+					return o.label();
+				else
+					return = o.label;
+			},
 			_parse : function (o, is_callback) {
 				if(!o) { return false; }
 				if(!is_callback) {
@@ -347,7 +353,7 @@
 						}
 						str += "><"+"/i><"+"span class='vakata-contextmenu-sep'>&#160;<"+"/span>";
 					}
-					str += val.label + (val.shortcut?' <span class="vakata-contextmenu-shortcut vakata-contextmenu-shortcut-'+val.shortcut+'">'+ (val.shortcut_label || '') +'</span>':'') + "<"+"/a>";
+					str += $.vakata.context._getLabel(val) + (val.shortcut?' <span class="vakata-contextmenu-shortcut vakata-contextmenu-shortcut-'+val.shortcut+'">'+ (val.shortcut_label || '') +'</span>':'') + "<"+"/a>";
 					if(val.submenu) {
 						tmp = $.vakata.context._parse(val.submenu, true);
 						if(tmp) { str += tmp; }
