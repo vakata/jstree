@@ -75,7 +75,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "version : '3.0.0-beta8',"
+		"code": "version : '3.0.0-beta9',"
 	},
 	{
 		"tags": [
