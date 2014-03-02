@@ -1510,7 +1510,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "load_node : function (obj, callback) {\n\t\t\tvar t1, t2;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.load_node(obj[t1], callback);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj) {\n\t\t\t\tcallback.call(this, obj, false);\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tthis.get_node(obj, true).addClass(\"jstree-loading\");\n\t\t\tthis._load_node(obj, $.proxy(function (status) {\n\t\t\t\tobj.state.loaded = status;\n\t\t\t\tthis.get_node(obj, true).removeClass(\"jstree-loading\");"
+		"code": "load_node : function (obj, callback) {\n\t\t\tvar t1, t2, k, l, i, j, c;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.load_node(obj[t1], callback);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj) {\n\t\t\t\tcallback.call(this, obj, false);\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tif(obj.state.loaded) {\n\t\t\t\tobj.state.loaded = false;\n\t\t\t\tfor(k = 0, l = obj.children_d.length; k < l; k++) {\n\t\t\t\t\tfor(i = 0, j = obj.parents.length; i < j; i++) {\n\t\t\t\t\t\tthis._model.data[obj.parents[i]].children_d = $.vakata.array_remove_item(this._model.data[obj.parents[i]].children_d, obj.children_d[k]);\n\t\t\t\t\t}\n\t\t\t\t\tif(this._model.data[obj.children_d[k]].state.selected) {\n\t\t\t\t\t\tc = true;\n\t\t\t\t\t\tthis._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, obj.children_d[k]);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tobj.children = [];\n\t\t\t\tobj.children_d = [];\n\t\t\t\tif(c) {\n\t\t\t\t\tthis.trigger('changed', { 'action' : 'load_node', 'node' : obj, 'selected' : this._data.core.selected });\n\t\t\t\t}\n\t\t\t}\n\t\t\tthis.get_node(obj, true).addClass(\"jstree-loading\");\n\t\t\tthis._load_node(obj, $.proxy(function (status) {\n\t\t\t\tobj.state.loaded = status;\n\t\t\t\tthis.get_node(obj, true).removeClass(\"jstree-loading\");"
 	},
 	{
 		"tags": [
@@ -3161,6 +3161,37 @@
 		"isPrivate": false,
 		"ignore": false,
 		"code": "get_top_selected : function (full) {\n\t\t\tvar tmp = this.get_selected(true),\n\t\t\t\tobj = {}, i, j, k, l;\n\t\t\tfor(i = 0, j = tmp.length; i < j; i++) {\n\t\t\t\tobj[tmp[i].id] = tmp[i];\n\t\t\t}\n\t\t\tfor(i = 0, j = tmp.length; i < j; i++) {\n\t\t\t\tfor(k = 0, l = tmp[i].children_d.length; k < l; k++) {\n\t\t\t\t\tif(obj[tmp[i].children_d[k]]) {\n\t\t\t\t\t\tdelete obj[tmp[i].children_d[k]];\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\ttmp = [];\n\t\t\tfor(i in obj) {\n\t\t\t\tif(obj.hasOwnProperty(i)) {\n\t\t\t\t\ttmp.push(i);\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn full ? $.map(tmp, $.proxy(function (i) { return this.get_node(i); }, this)) : tmp;\n\t\t},"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "get_top_selected([full])"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "full",
+				"description": "if set to `true` the returned array will consist of the full node objects, otherwise - only IDs will be returned"
+			},
+			{
+				"type": "return",
+				"types": [
+					"Array"
+				],
+				"description": ""
+			}
+		],
+		"description": {
+			"full": "<p>get an array of all bottom level selected nodes (ignoring selected parents)</p>",
+			"summary": "<p>get an array of all bottom level selected nodes (ignoring selected parents)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "get_bottom_selected : function (full) {\n\t\t\tvar tmp = this.get_selected(true),\n\t\t\t\tobj = [], i, j;\n\t\t\tfor(i = 0, j = tmp.length; i < j; i++) {\n\t\t\t\tif(!tmp[i].children.length) {\n\t\t\t\t\tobj.push(tmp[i].id);\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn full ? $.map(obj, $.proxy(function (i) { return this.get_node(i); }, this)) : obj;\n\t\t},"
 	},
 	{
 		"tags": [
