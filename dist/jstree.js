@@ -2327,8 +2327,6 @@
 				obj = {}, i, j, k, l;
 			for(i = 0, j = tmp.length; i < j; i++) {
 				obj[tmp[i].id] = tmp[i];
-			}
-			for(i = 0, j = tmp.length; i < j; i++) {
 				for(k = 0, l = tmp[i].children_d.length; k < l; k++) {
 					if(obj[tmp[i].children_d[k]]) {
 						delete obj[tmp[i].children_d[k]];
