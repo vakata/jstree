@@ -988,6 +988,7 @@
 						c = true;
 						this._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, obj.children_d[k]);
 					}
+					delete this._model.data[obj.children_d[k]];
 				}
 				obj.children = [];
 				obj.children_d = [];
