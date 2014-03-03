@@ -975,7 +975,7 @@
 			}
 			obj = this.get_node(obj);
 			if(!obj) {
-				callback.call(this, obj, false);
+				if(callback) { callback.call(this, obj, false); }
 				return false;
 			}
 			if(obj.state.loaded) {
