@@ -193,7 +193,7 @@
 		this._search_open = function (d) {
 			var t = this;
 			$.each(d.concat([]), function (i, v) {
-				v = document.getElementById(v);
+				v = t.element[0].querySelector('#' + v);
 				if(v) {
 					if(t.is_closed(v)) {
 						t._data.search.opn.push(v.id);

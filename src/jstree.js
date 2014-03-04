@@ -781,7 +781,7 @@
 				}
 
 				if(as_dom) {
-					obj = obj.id === '#' ? this.element : $(document.getElementById(obj.id));
+					obj = obj.id === '#' ? this.element : $(this.element[0].querySelector('#' + obj.id));
 				}
 				return obj;
 			} catch (ex) { return false; }
@@ -1600,7 +1600,7 @@
 			if(!obj) { return false; }
 			if(obj.id === '#') {  return this.redraw(true); }
 			deep = deep || obj.children.length === 0;
-			node = d.getElementById(obj.id); //, this.element);
+			node = this.element[0].querySelector('#' + obj.id); //, this.element);
 			if(!node) {
 				deep = true;
 				//node = d.createElement('LI');
@@ -1838,7 +1838,7 @@
 					this.open_node(p[i], false, 0);
 				}
 			}
-			return $(document.getElementById(obj.id));
+			return $(this.element[0].querySelector('#' + obj.id));
 		},
 		/**
 		 * closes a node, hiding its children
