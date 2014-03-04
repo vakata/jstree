@@ -781,7 +781,7 @@
 				}
 
 				if(as_dom) {
-					obj = obj.id === '#' ? this.element : $(this.element[0].querySelector('#' + obj.id));
+					obj = obj.id === '#' ? this.element : $('#' + obj.id, this.element);
 				}
 				return obj;
 			} catch (ex) { return false; }
@@ -1600,7 +1600,7 @@
 			if(!obj) { return false; }
 			if(obj.id === '#') {  return this.redraw(true); }
 			deep = deep || obj.children.length === 0;
-			node = this.element[0].querySelector('#' + obj.id); //, this.element);
+			node = this.element[0].querySelector('#' + ("0123456789".indexOf(obj.id[0]) !== -1 ? '\\3' + obj.id[0] + ' ' + obj.id.substr(1) : obj.id) ); //, this.element);
 			if(!node) {
 				deep = true;
 				//node = d.createElement('LI');
@@ -1838,7 +1838,7 @@
 					this.open_node(p[i], false, 0);
 				}
 			}
-			return $(this.element[0].querySelector('#' + obj.id));
+			return $('#' + obj.id, this.element[0]);
 		},
 		/**
 		 * closes a node, hiding its children
