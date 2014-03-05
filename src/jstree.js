@@ -1652,12 +1652,12 @@
 			if(s && s !== "false") {
 				node.setAttribute('aria-selected', true);
 			}
-			if(!obj.children.length && obj.state.loaded) {
+			if(obj.state.loaded && !obj.children.length) {
 				c += ' jstree-leaf';
 			}
 			else {
-				c += obj.state.opened ? ' jstree-open' : ' jstree-closed';
-				node.setAttribute('aria-expanded', obj.state.opened);
+				c += obj.state.opened && obj.state.loaded ? ' jstree-open' : ' jstree-closed';
+				node.setAttribute('aria-expanded', (obj.state.opened && obj.state.loaded) );
 			}
 			if(obj.parent !== null && m[obj.parent].children[m[obj.parent].children.length - 1] === obj.id) {
 				c += ' jstree-last';
@@ -1697,7 +1697,7 @@
 			node.childNodes[1].innerHTML += obj.text;
 			// if(obj.data) { $.data(node, obj.data); } // always work with node's data, no need to touch jquery store
 
-			if(deep && obj.children.length && obj.state.opened) {
+			if(deep && obj.children.length && obj.state.opened && obj.state.loaded) {
 				k = d.createElement('UL');
 				k.setAttribute('role', 'group');
 				k.className = 'jstree-children';
@@ -1734,6 +1734,12 @@
 				if(f) {
 					node.childNodes[1].focus();
 				}
+			}
+			if(obj.state.opened && !obj.state.loaded) {
+				obj.state.opened = false;
+				setTimeout($.proxy(function () {
+					this.open_node(obj.id, false, 0);
+				}, this), 0);
 			}
 			return node;
 		},
