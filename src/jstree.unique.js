@@ -21,8 +21,8 @@
 	if($.jstree.plugins.unique) { return; }
 
 	$.jstree.plugins.unique = function (options, parent) {
-		this.check = function (chk, obj, par, pos) {
-			if(parent.check.call(this, chk, obj, par, pos) === false) { return false; }
+		this.check = function (chk, obj, par, pos, more) {
+			if(parent.check.call(this, chk, obj, par, pos, more) === false) { return false; }
 			obj = obj && obj.id ? obj : this.get_node(obj);
 			par = par && par.id ? par : this.get_node(par);
 			if(!par || !par.children) { return true; }

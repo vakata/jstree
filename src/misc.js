@@ -64,3 +64,37 @@
 		};
 	};
 })(jQuery);
+
+// additional icon on node (outside of anchor)
+(function ($, undefined) {
+	"use strict";
+	var img = document.createElement('IMG');
+	img.src = "http://www.dpcd.vic.gov.au/__data/assets/image/0004/30667/help.gif";
+	img.className = "jstree-questionmark";
+
+	$.jstree.defaults.questionmark = $.noop;
+	$.jstree.plugins.questionmark = function (options, parent) {
+		this.bind = function () {
+			parent.bind.call(this);
+			this.element
+				.on("click.jstree", ".jstree-questionmark", $.proxy(function (e) {
+						e.stopImmediatePropagation();
+						this.settings.questionmark.call(this, this.get_node(e.target));
+					}, this));
+		};
+		this.teardown = function () {
+			if(this.settings.questionmark) {
+				this.element.find(".jstree-questionmark").remove();
+			}
+			parent.teardown.call(this);
+		};
+		this.redraw_node = function(obj, deep, callback) {
+			obj = parent.redraw_node.call(this, obj, deep, callback);
+			if(obj) {
+				var tmp = img.cloneNode(true);
+				obj.insertBefore(tmp, obj.childNodes[2]);
+			}
+			return obj;
+		};
+	};
+})(jQuery);
