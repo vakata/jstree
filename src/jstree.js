@@ -1259,7 +1259,7 @@
 				if(!v.length) { return true; }
 				data.li_attr[i] = v;
 				if(i === 'id') {
-					data.id = v;
+					data.id = v.toString();
 				}
 			});
 			tmp = d.children('a').eq(0);
@@ -1300,7 +1300,7 @@
 			do {
 				tid = 'j' + this._id + '_' + (++this._cnt);
 			} while(m[tid]);
-			data.id = data.li_attr.id || tid;
+			data.id = data.li_attr.id ? data.li_attr.id.toString() : tid;
 			if(tmp.length) {
 				tmp.each($.proxy(function (i, v) {
 					c = this._parse_model_from_html($(v), data.id, ps);
@@ -1342,7 +1342,7 @@
 			if(!ps) { ps = []; }
 			else { ps = ps.concat(); }
 			if(p) { ps.unshift(p); }
-			var tid = d.id,
+			var tid = d.id.toString(),
 				m = this._model.data,
 				df = this._model.default_state,
 				i, j, c, e,
@@ -1461,7 +1461,7 @@
 					tmp.state[i] = df[i];
 				}
 			}
-			if(d && d.id) { tmp.id = d.id; }
+			if(d && d.id) { tmp.id = d.id.toString(); }
 			if(d && d.text) { tmp.text = d.text; }
 			if(d && d.data && d.data.jstree && d.data.jstree.icon) {
 				tmp.icon = d.data.jstree.icon;
@@ -1491,7 +1491,7 @@
 				}
 			}
 			if(tmp.li_attr.id && !tmp.id) {
-				tmp.id = tmp.li_attr.id;
+				tmp.id = tmp.li_attr.id.toString();
 			}
 			if(!tmp.id) {
 				tmp.id = tid;
