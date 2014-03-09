@@ -2,8 +2,8 @@
 	"name": "jstree",
 	"version": "3.0.0-beta9",
 	"main" : [
-		"./dist/jstree.min.js",
-		"./dist/themes/default/style.min.css"
+		"./dist/jstree.js",
+		"./dist/themes/default/style.css"
 	],
 	"ignore": [
 		"**/.*",
