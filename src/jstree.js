@@ -1170,13 +1170,13 @@
 					if(!dat[i].children) {
 						dat[i].children = [];
 					}
-					m[dat[i].id] = dat[i];
+					m[dat[i].id.toString()] = dat[i];
 				}
 				// 2) populate children (foreach)
 				for(i = 0, j = dat.length; i < j; i++) {
-					m[dat[i].parent].children.push(dat[i].id);
+					m[dat[i].parent.toString()].children.push(dat[i].id.toString());
 					// populate parent.children_d
-					p.children_d.push(dat[i].id);
+					p.children_d.push(dat[i].id.toString());
 				}
 				// 3) normalize && populate parents and children_d with recursion
 				for(i = 0, j = p.children.length; i < j; i++) {
