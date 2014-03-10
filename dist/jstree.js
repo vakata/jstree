@@ -1062,7 +1062,7 @@
 				return callback.call(this, this._append_json_data(obj, t));
 			}
 			if(typeof s === 'string') {
-				return callback.call(this, this._append_html_data(obj, s));
+				return callback.call(this, this._append_html_data(obj, $(s)));
 			}
 			return callback.call(this, false);
 		},

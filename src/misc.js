@@ -98,3 +98,14 @@
 		};
 	};
 })(jQuery);
+
+// selecting a node opens it
+(function ($, undefined) {
+	"use strict";
+	$.jstree.plugins.selectopens = function (options, parent) {
+		this.bind = function () {
+			parent.bind.call(this);
+			this.element.on('select_node.jstree', function (e, data) { data.instance.open_node(data.node); });
+		};
+	};
+})(jQuery);
