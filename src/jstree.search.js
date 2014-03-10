@@ -193,7 +193,7 @@
 		this._search_open = function (d) {
 			var t = this;
 			$.each(d.concat([]), function (i, v) {
-				v = $('#' + v, t.element);
+				v = $('#' + v.replace(/[\\:'". \/]/g,'\\$&'), t.element);
 				if(v.length) {
 					if(t.is_closed(v)) {
 						t._data.search.opn.push(v[0].id);
