@@ -3159,6 +3159,7 @@
 			node = this._parse_model_from_json(node, new_par.id, new_par.parents.concat());
 			if(!node) { return false; }
 			tmp = this.get_node(node);
+			if(obj && obj.state && obj.state.loaded === false) { tmp.state.loaded = false; }
 			dpc = [];
 			dpc.push(node);
 			dpc = dpc.concat(tmp.children_d);
