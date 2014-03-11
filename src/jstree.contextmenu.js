@@ -36,9 +36,21 @@
 		/**
 		 * a boolean indicating if the menu should be shown aligned with the node. Defaults to `true`, otherwise the mouse coordinates are used.
 		 * @name $.jstree.defaults.contextmenu.show_at_node
-		 * @plugin contextmenu
+		 * @plugin contexstmenu
 		 */
 		show_at_node : true,
+		/**
+		 * Default labels for default items
+		 */
+		item_labels : {
+			"create"        : "Create",
+			"rename"        : "Rename",
+			"remove"        : "Remove",
+			"cpp"           : "Edit",
+			"cut"           : "Cut",
+			"copy"          : "Copy",
+			"paste"         : "Paste"
+		}
 		/**
 		 * an object of actions, or a function that accepts a node and a callback function and calls the callback function with an object of actions available for that node (you can also return the items too).
 		 * 
@@ -62,7 +74,7 @@
 					"separator_before"	: false,
 					"separator_after"	: true,
 					"_disabled"			: false, //(this.check("create_node", data.reference, {}, "last")),
-					"label"				: "Create",
+					"label"				: this.settings.contextmenu.item_labels["create"],
 					"action"			: function (data) {
 						var inst = $.jstree.reference(data.reference),
 							obj = inst.get_node(data.reference);
@@ -75,7 +87,7 @@
 					"separator_before"	: false,
 					"separator_after"	: false,
 					"_disabled"			: false, //(this.check("rename_node", data.reference, this.get_parent(data.reference), "")),
-					"label"				: "Rename",
+					"label"				: this.settings.contextmenu.item_labels["rename"],
 					/*
 					"shortcut"			: 113,
 					"shortcut_label"	: 'F2',
@@ -92,7 +104,7 @@
 					"icon"				: false,
 					"separator_after"	: false,
 					"_disabled"			: false, //(this.check("delete_node", data.reference, this.get_parent(data.reference), "")),
-					"label"				: "Delete",
+					"label"				: this.settings.contextmenu.item_labels["delete"],
 					"action"			: function (data) {
 						var inst = $.jstree.reference(data.reference),
 							obj = inst.get_node(data.reference);
@@ -114,7 +126,7 @@
 						"cut" : {
 							"separator_before"	: false,
 							"separator_after"	: false,
-							"label"				: "Cut",
+							"label"				: this.settings.contextmenu.item_labels["cut"],
 							"action"			: function (data) {
 								var inst = $.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
@@ -130,7 +142,7 @@
 							"separator_before"	: false,
 							"icon"				: false,
 							"separator_after"	: false,
-							"label"				: "Copy",
+							"label"				: this.settings.contextmenu.item_labels["copy"],
 							"action"			: function (data) {
 								var inst = $.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
@@ -149,7 +161,7 @@
 								return !$.jstree.reference(data.reference).can_paste();
 							},
 							"separator_after"	: false,
-							"label"				: "Paste",
+							"label"				: this.settings.contextmenu.item_labels["paste"],
 							"action"			: function (data) {
 								var inst = $.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
