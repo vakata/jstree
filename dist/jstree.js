@@ -4294,7 +4294,7 @@
 					vakata_context.items	= [];
 				}
 				var str = "",
-					sep = false,
+					sep = true,
 					tmp;
 
 				if(is_callback) { str += "<"+"ul>"; }
