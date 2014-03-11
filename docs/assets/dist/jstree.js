@@ -3945,7 +3945,7 @@
 			obj = parent.redraw_node.call(this, obj, deep, is_callback);
 			if(obj) {
 				var tmp = obj.getElementsByTagName('A')[0];
-				tmp.insertBefore(_i.cloneNode(), tmp.childNodes[0]);
+				tmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);
 			}
 			if(!is_callback && this.settings.checkbox.three_state) {
 				if(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }
