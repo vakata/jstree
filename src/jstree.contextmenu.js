@@ -36,7 +36,7 @@
 		/**
 		 * a boolean indicating if the menu should be shown aligned with the node. Defaults to `true`, otherwise the mouse coordinates are used.
 		 * @name $.jstree.defaults.contextmenu.show_at_node
-		 * @plugin contexstmenu
+		 * @plugin contextmenu
 		 */
 		show_at_node : true,
 		/**
