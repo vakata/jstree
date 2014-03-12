@@ -2953,7 +2953,7 @@
 		 * @name move_node(obj, par [, pos, callback, is_loaded])
 		 * @param  {mixed} obj the node to move, pass an array to move multiple nodes
 		 * @param  {mixed} par the new parent
-		 * @param  {mixed} pos the position to insert at ("first" and "last" are supported, as well as "before" and "after"), defaults to `0`
+		 * @param  {mixed} pos the position to insert at (besides integer values, "first" and "last" are supported, as well as "before" and "after"), defaults to integer `0`
 		 * @param  {function} callback a function to call once the move is completed, receives 3 arguments - the node, the new parent and the position
 		 * @param  {Boolean} internal parameter indicating if the parent node has been loaded
 		 * @trigger move_node.jstree
@@ -3099,7 +3099,7 @@
 		 * @name copy_node(obj, par [, pos, callback, is_loaded])
 		 * @param  {mixed} obj the node to copy, pass an array to copy multiple nodes
 		 * @param  {mixed} par the new parent
-		 * @param  {mixed} pos the position to insert at ("first" and "last" are supported, as well as "before" and "after"), defaults to `0`
+		 * @param  {mixed} pos the position to insert at (besides integer values, "first" and "last" are supported, as well as "before" and "after"), defaults to integer `0`
 		 * @param  {function} callback a function to call once the move is completed, receives 3 arguments - the node, the new parent and the position
 		 * @param  {Boolean} internal parameter indicating if the parent node has been loaded
 		 * @trigger model.jstree copy_node.jstree
@@ -3269,14 +3269,15 @@
 		},
 		/**
 		 * copy or move the previously cut or copied nodes to a new parent
-		 * @name paste(obj)
+		 * @name paste(obj [, pos])
 		 * @param  {mixed} obj the new parent
+		 * @param  {mixed} pos the position to insert at (besides integer, "first" and "last" are supported), defaults to integer `0`
 		 * @trigger paste.jstree
 		 */
-		paste : function (obj) {
+		paste : function (obj, pos) {
 			obj = this.get_node(obj);
 			if(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }
-			if(this[ccp_mode](ccp_node, obj)) {
+			if(this[ccp_mode](ccp_node, obj, pos)) {
 				/**
 				 * triggered when paste is invoked
 				 * @event

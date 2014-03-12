@@ -3967,7 +3967,7 @@
 					"mixed"
 				],
 				"name": "pos",
-				"description": "the position to insert at (\"first\" and \"last\" are supported, as well as \"before\" and \"after\"), defaults to `0`"
+				"description": "the position to insert at (besides integer values, \"first\" and \"last\" are supported, as well as \"before\" and \"after\"), defaults to integer `0`"
 			},
 			{
 				"type": "param",
@@ -4103,7 +4103,7 @@
 					"mixed"
 				],
 				"name": "pos",
-				"description": "the position to insert at (\"first\" and \"last\" are supported, as well as \"before\" and \"after\"), defaults to `0`"
+				"description": "the position to insert at (besides integer values, \"first\" and \"last\" are supported, as well as \"before\" and \"after\"), defaults to integer `0`"
 			},
 			{
 				"type": "param",
@@ -4381,7 +4381,7 @@
 		"tags": [
 			{
 				"type": "name",
-				"string": "paste(obj)"
+				"string": "paste(obj [, pos])"
 			},
 			{
 				"type": "param",
@@ -4390,6 +4390,14 @@
 				],
 				"name": "obj",
 				"description": "the new parent"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "pos",
+				"description": "the position to insert at (besides integer, \"first\" and \"last\" are supported), defaults to integer `0`"
 			},
 			{
 				"type": "trigger",
@@ -4403,7 +4411,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "paste : function (obj) {\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }\n\t\t\tif(this[ccp_mode](ccp_node, obj)) {"
+		"code": "paste : function (obj, pos) {\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }\n\t\t\tif(this[ccp_mode](ccp_node, obj, pos)) {"
 	},
 	{
 		"tags": [
