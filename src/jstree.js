@@ -1059,10 +1059,12 @@
 							}, this));
 				}
 				t = ($.isArray(s) || $.isPlainObject(s)) ? JSON.parse(JSON.stringify(s)) : s;
-				return callback.call(this, this._append_json_data(obj, t));
+				if(obj.id !== "#") { this._data.core.last_error = { 'error' : 'nodata', 'plugin' : 'core', 'id' : 'core_05', 'reason' : 'Could not load node', 'data' : JSON.stringify(obj.id) }; }
+				return callback.call(this, (obj.id === "#" ? this._append_json_data(obj, t) : false) );
 			}
 			if(typeof s === 'string') {
-				return callback.call(this, this._append_html_data(obj, $(s)));
+				if(obj.id !== "#") { this._data.core.last_error = { 'error' : 'nodata', 'plugin' : 'core', 'id' : 'core_06', 'reason' : 'Could not load node', 'data' : JSON.stringify(obj.id) }; }
+				return callback.call(this, (obj.id === "#" ? this._append_html_data(obj, $(s)) : false) );
 			}
 			return callback.call(this, false);
 		},

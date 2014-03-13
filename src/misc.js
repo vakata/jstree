@@ -109,3 +109,20 @@
 		};
 	};
 })(jQuery);
+
+// paste override
+(function ($, undefined) {
+	"use strict";
+	$.jstree.plugins.nohover = function () {
+		this.paste = function (obj, pos) {
+			obj = this.get_node(obj);
+			if(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }
+			if(this[ccp_mode](ccp_node, obj, pos)) {
+				this.trigger('paste', { "parent" : obj.id, "node" : ccp_node, "mode" : ccp_mode });
+			}
+			ccp_node = false;
+			ccp_mode = false;
+			ccp_inst = false;
+		};
+	};
+})(jQuery);
