@@ -1868,6 +1868,9 @@
 			if(!obj || obj.id === '#') {
 				return false;
 			}
+			if(this.is_closed(obj)) {
+				return false;
+			}
 			animation = animation === undefined ? this.settings.core.animation : animation;
 			t = this;
 			d = this.get_node(obj, true);
