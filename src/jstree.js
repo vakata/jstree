@@ -2592,6 +2592,7 @@
 			obj = this.get_node(obj);
 			if(!obj || obj.id === '#') { return false; }
 			var i, j, m = this._model.data;
+			id = id.toString();
 			// update parents (replace current ID with new one in children and children_d)
 			m[obj.parent].children[$.inArray(obj.id, m[obj.parent].children)] = id;
 			for(i = 0, j = obj.parents.length; i < j; i++) {
