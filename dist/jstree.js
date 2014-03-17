@@ -4141,15 +4141,17 @@
 		this.bind = function () {
 			parent.bind.call(this);
 
+			var last_ts = 0;
 			this.element
 				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e) {
 						e.preventDefault();
+						last_ts = e.ctrlKey ? e.timeStamp : 0;
 						if(!this.is_loading(e.currentTarget)) {
 							this.show_contextmenu(e.currentTarget, e.pageX, e.pageY, e);
 						}
 					}, this))
 				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
-						if(this._data.contextmenu.visible) {
+						if(this._data.contextmenu.visible && (!last_ts || e.timeStamp - last_ts > 250)) { // work around safari & macOS ctrl+click
 							$.vakata.context.hide();
 						}
 					}, this));
