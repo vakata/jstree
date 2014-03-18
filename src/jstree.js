@@ -1052,18 +1052,18 @@
 									return callback.call(this, this._append_html_data(obj, $(d)));
 								}
 							}, this))
-						.fail($.proxy(function () {
+						.fail($.proxy(function (f) {
 								callback.call(this, false);
-								this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'core', 'id' : 'core_04', 'reason' : 'Could not load node', 'data' : JSON.stringify(s) };
+								this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'core', 'id' : 'core_04', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id, 'xhr' : f }) };
 								this.settings.core.error.call(this, this._data.core.last_error);
 							}, this));
 				}
 				t = ($.isArray(s) || $.isPlainObject(s)) ? JSON.parse(JSON.stringify(s)) : s;
-				if(obj.id !== "#") { this._data.core.last_error = { 'error' : 'nodata', 'plugin' : 'core', 'id' : 'core_05', 'reason' : 'Could not load node', 'data' : JSON.stringify(obj.id) }; }
+				if(obj.id !== "#") { this._data.core.last_error = { 'error' : 'nodata', 'plugin' : 'core', 'id' : 'core_05', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id }) }; }
 				return callback.call(this, (obj.id === "#" ? this._append_json_data(obj, t) : false) );
 			}
 			if(typeof s === 'string') {
-				if(obj.id !== "#") { this._data.core.last_error = { 'error' : 'nodata', 'plugin' : 'core', 'id' : 'core_06', 'reason' : 'Could not load node', 'data' : JSON.stringify(obj.id) }; }
+				if(obj.id !== "#") { this._data.core.last_error = { 'error' : 'nodata', 'plugin' : 'core', 'id' : 'core_06', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id }) }; }
 				return callback.call(this, (obj.id === "#" ? this._append_html_data(obj, $(s)) : false) );
 			}
 			return callback.call(this, false);
