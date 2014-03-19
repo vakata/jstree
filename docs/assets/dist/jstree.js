@@ -5098,6 +5098,24 @@
 			this._data.search.opn = [];
 			this._data.search.sln = null;
 
+			this.element.on('open_node.jstree', $.proxy(function (e, data) {
+				var i, j, f, r = this._data.search.res;
+				if(r && r.length) {
+					this._data.search.dom = $();
+					for(i = 0, j = r.length; i < j; i++) {
+						f = this.get_node(r[i], true);
+						if(f) {
+							this._data.search.dom = this._data.search.dom.add(f);
+						}
+					}
+					this._data.search.dom.children(".jstree-anchor").addClass('jstree-search');
+					if(this.settings.search.show_only_matches && this._data.search.dom.length) {
+						this.element.find("li").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+						this._data.search.dom.parentsUntil(".jstree").addBack().show()
+							.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
+					}
+				}
+			}, this));
 			if(this.settings.search.show_only_matches) {
 				this.element
 					.on("search.jstree", function (e, data) {
