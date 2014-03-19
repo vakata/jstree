@@ -34,5 +34,18 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-imagemin": "~0.4.0",
     "grunt-contrib-qunit": "~v0.3.0"
-  }
+  },
+  "dependencies": {
+    "jquery": ">=1.9.1"
+  },
+  "npmName": "jstree",
+  "npmFileMap": [{
+    "basePath": "/dist/",
+    "files": [
+      "jstree.min.js",
+      "themes/**/*.png",
+      "themes/**/*.gif",
+      "themes/**/*.min.css"
+    ]
+  }]
 }
