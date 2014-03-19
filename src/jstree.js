@@ -538,6 +538,7 @@
 						this.activate_node(e.currentTarget, e);
 					}, this))
 				.on('keydown.jstree', '.jstree-anchor', $.proxy(function (e) {
+						if(e.target.tagName === "INPUT") { return true; }
 						var o = null;
 						switch(e.which) {
 							case 13:
