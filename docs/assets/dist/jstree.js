@@ -1000,7 +1000,11 @@
 			this.get_node(obj, true).addClass("jstree-loading");
 			this._load_node(obj, $.proxy(function (status) {
 				obj.state.loaded = status;
-				this.get_node(obj, true).removeClass("jstree-loading");
+				var dom = this.get_node(obj, true);
+				if(obj.state.loaded && !obj.children.length && dom && dom.length && !dom.hasClass('jstree-leaf')) {
+					dom.removeClass('jstree-closed jstree-open').addClass('jstree-leaf');
+				}
+				dom.removeClass("jstree-loading");
 				/**
 				 * triggered after a node is loaded
 				 * @event
