@@ -5099,19 +5099,29 @@
 			this._data.search.sln = null;
 
 			this.element.on('open_node.jstree', $.proxy(function (e, data) {
-				var i, j, f, r = this._data.search.res;
+				var i, j, f, r = this._data.search.res, s = [], o = $();
 				if(r && r.length) {
 					this._data.search.dom = $();
 					for(i = 0, j = r.length; i < j; i++) {
+						s = s.concat(this.get_node(r[i]).parents);
 						f = this.get_node(r[i], true);
 						if(f) {
 							this._data.search.dom = this._data.search.dom.add(f);
 						}
 					}
+					s = $.vakata.array_unique(s);
+					for(i = 0, j = s.length; i < j; i++) {
+						if(s[i] === "#") { continue; }
+						f = this.get_node(s[i], true);
+						if(f) {
+							o = o.add(f);
+						}
+					}
 					this._data.search.dom.children(".jstree-anchor").addClass('jstree-search');
-					if(this.settings.search.show_only_matches && this._data.search.dom.length) {
+					if(this.settings.search.show_only_matches && this._data.search.res.length) {
 						this.element.find("li").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
-						this._data.search.dom.parentsUntil(".jstree").addBack().show()
+						o = o.add(this._data.search.dom);
+						o.parentsUntil(".jstree").addBack().show()
 							.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
 					}
 				}
