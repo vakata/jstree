@@ -925,8 +925,8 @@
 		 * @return {Boolean}
 		 */
 		is_loading : function (obj) {
-			obj = this.get_node(obj, true);
-			return obj && obj.hasClass("jstree-loading");
+			obj = this.get_node(obj);
+			return obj && obj.state && obj.state.loading;
 		},
 		/**
 		 * check if a node is opened
@@ -997,8 +997,10 @@
 					this.trigger('changed', { 'action' : 'load_node', 'node' : obj, 'selected' : this._data.core.selected });
 				}
 			}
+			obj.state.loading = true;
 			this.get_node(obj, true).addClass("jstree-loading");
 			this._load_node(obj, $.proxy(function (status) {
+				obj.state.loading = false;
 				obj.state.loaded = status;
 				var dom = this.get_node(obj, true);
 				if(obj.state.loaded && !obj.children.length && dom && dom.length && !dom.hasClass('jstree-leaf')) {
