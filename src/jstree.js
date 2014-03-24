@@ -2734,7 +2734,7 @@
 		/**
 		 * create a new node (do not confuse with load_node)
 		 * @name create_node([obj, node, pos, callback, is_loaded])
-		 * @param  {mixed}   par       the parent node
+		 * @param  {mixed}   par       the parent node (to create a root node use either "#" (string) or `null`)
 		 * @param  {mixed}   node      the data for the new node (a valid JSON object, or a simple string with the name)
 		 * @param  {mixed}   pos       the index at which to insert the node, "first" and "last" are also supported, default is "last"
 		 * @param  {Function} callback a function to be called once the node is created
@@ -2743,6 +2743,7 @@
 		 * @trigger model.jstree, create_node.jstree
 		 */
 		create_node : function (par, node, pos, callback, is_loaded) {
+			if(par === null) { par = "#"; }
 			par = this.get_node(par);
 			if(!par) { return false; }
 			pos = pos === undefined ? "last" : pos;
