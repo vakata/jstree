@@ -771,7 +771,7 @@
 				if(this._model.data[obj]) {
 					obj = this._model.data[obj];
 				}
-				else if(((dom = $(obj, this.element)).length || (dom = $('#' + obj.replace(/[\\:&'". \/]/g,'\\$&'), this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {
+				else if(((dom = $(obj, this.element)).length || (dom = $('#' + obj.replace(/[\\:&'".,= \/]/g,'\\$&'), this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {
 					obj = this._model.data[dom.closest('li').attr('id')];
 				}
 				else if((dom = $(obj, this.element)).length && dom.hasClass('jstree')) {
@@ -782,7 +782,7 @@
 				}
 
 				if(as_dom) {
-					obj = obj.id === '#' ? this.element : $('#' + obj.id.replace(/[\\:'&". \/]/g,'\\$&'), this.element);
+					obj = obj.id === '#' ? this.element : $('#' + obj.id.replace(/[\\:'&".,= \/]/g,'\\$&'), this.element);
 				}
 				return obj;
 			} catch (ex) { return false; }
@@ -1614,7 +1614,7 @@
 				deep = true;
 				//node = d.createElement('LI');
 				if(!is_callback) {
-					par = obj.parent !== '#' ? $('#' + obj.parent.replace(/[\\:'&". \/]/g,'\\$&'), this.element)[0] : null;
+					par = obj.parent !== '#' ? $('#' + obj.parent.replace(/[\\:'&".,= \/]/g,'\\$&'), this.element)[0] : null;
 					if(par !== null && (!par || !m[obj.parent].state.opened)) {
 						return false;
 					}
@@ -1853,7 +1853,7 @@
 					this.open_node(p[i], false, 0);
 				}
 			}
-			return $('#' + obj.id.replace(/[\\:'&". \/]/g,'\\$&'), this.element);
+			return $('#' + obj.id.replace(/[\\:'&".,= \/]/g,'\\$&'), this.element);
 		},
 		/**
 		 * closes a node, hiding its children
@@ -5255,7 +5255,7 @@
 			var t = this;
 			$.each(d.concat([]), function (i, v) {
 				if(v === "#") { return true; }
-				try { v = $('#' + v.replace(/[\\:'&". \/]/g,'\\$&'), t.element); } catch(ignore) { }
+				try { v = $('#' + v.replace(/[\\:'&".,= \/]/g,'\\$&'), t.element); } catch(ignore) { }
 				if(v && v.length) {
 					if(t.is_closed(v)) {
 						t._data.search.opn.push(v[0].id);
