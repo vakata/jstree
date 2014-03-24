@@ -58,7 +58,7 @@
 			parent.bind.call(this);
 
 			this.element
-				.on('mousedown touchstart', '.jstree-anchor', $.proxy(function (e) {
+				.on('mousedown.jstree touchstart.jstree', '.jstree-anchor', $.proxy(function (e) {
 					var obj = this.get_node(e.target),
 						mlt = this.is_selected(obj) ? this.get_selected().length : 1;
 					if(obj && obj.id && obj.id !== "#" && (e.which === 1 || e.type === "touchstart") &&
