@@ -3049,17 +3049,25 @@
 				// clean old parent and up
 				tmp = obj.children_d.concat();
 				tmp.push(obj.id);
+
+                var map = {};
+                for (i = 0, j = tmp.length; i < j; i++) {
+                    map[tmp[i]] = 1;
+                }
+
 				for(i = 0, j = obj.parents.length; i < j; i++) {
 					dpc = [];
 					p = old_ins._model.data[obj.parents[i]].children_d;
 					for(k = 0, l = p.length; k < l; k++) {
-						if($.inArray(p[k], tmp) === -1) {
+						if(map[tmp[p[k]]] === 1) {
 							dpc.push(p[k]);
 						}
 					}
 					old_ins._model.data[obj.parents[i]].children_d = dpc;
 				}
 				old_ins._model.data[old_par].children = $.vakata.array_remove_item(old_ins._model.data[old_par].children, obj.id);
+
+                map = undefined;
 
 				// insert into new parent and up
 				for(i = 0, j = new_par.parents.length; i < j; i++) {
