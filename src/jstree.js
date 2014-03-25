@@ -1052,12 +1052,14 @@
 					return $.ajax(s)
 						.done($.proxy(function (d,t,x) {
 								var type = x.getResponseHeader('Content-Type');
-								if(type.indexOf('json') !== -1) {
+								if(type.indexOf('json') !== -1 || typeof d === "object") {
 									return callback.call(this, this._append_json_data(obj, d));
 								}
-								if(type.indexOf('html') !== -1) {
+								if(type.indexOf('html') !== -1 || typeof d === "string") {
 									return callback.call(this, this._append_html_data(obj, $(d)));
 								}
+								this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'core', 'id' : 'core_04', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id, 'xhr' : x }) };
+								return callback.call(this, false);
 							}, this))
 						.fail($.proxy(function (f) {
 								callback.call(this, false);
