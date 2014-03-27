@@ -208,8 +208,8 @@
 				$(this).data('jstree', new $.jstree.create(this, arg));
 			}
 			// if there is an instance and no method is called - return the instance
-			if(instance && !is_method) {
-				result = instance;
+			if( (instance && !is_method) || arg === true ) {
+				result = instance || false;
 			}
 			// if there was a method call which returned a result - break and return the value
 			if(result !== null && result !== undefined) {

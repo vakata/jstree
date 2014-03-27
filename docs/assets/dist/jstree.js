@@ -208,8 +208,8 @@
 				$(this).data('jstree', new $.jstree.create(this, arg));
 			}
 			// if there is an instance and no method is called - return the instance
-			if(instance && !is_method) {
-				result = instance;
+			if( (instance && !is_method) || arg === true ) {
+				result = instance || false;
 			}
 			// if there was a method call which returned a result - break and return the value
 			if(result !== null && result !== undefined) {
@@ -4816,7 +4816,6 @@
 
 	// helpers
 	(function ($) {
-		$.fn.vakata_reverse = [].reverse;
 		// private variable
 		var vakata_dnd = {
 			element	: false,
@@ -4974,8 +4973,7 @@
 				vakata_dnd.scroll_t = 0;
 				vakata_dnd.scroll_l = 0;
 				vakata_dnd.scroll_e = false;
-				$(e.target)
-					.parentsUntil("body").addBack().vakata_reverse()
+				$($(e.target).parentsUntil("body").addBack().get().reverse())
 					.filter(function () {
 						return	(/^auto|scroll$/).test($(this).css("overflow")) &&
 								(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);

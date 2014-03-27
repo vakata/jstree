@@ -233,7 +233,6 @@
 
 	// helpers
 	(function ($) {
-		$.fn.vakata_reverse = [].reverse;
 		// private variable
 		var vakata_dnd = {
 			element	: false,
@@ -391,8 +390,7 @@
 				vakata_dnd.scroll_t = 0;
 				vakata_dnd.scroll_l = 0;
 				vakata_dnd.scroll_e = false;
-				$(e.target)
-					.parentsUntil("body").addBack().vakata_reverse()
+				$($(e.target).parentsUntil("body").addBack().get().reverse())
 					.filter(function () {
 						return	(/^auto|scroll$/).test($(this).css("overflow")) &&
 								(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);
