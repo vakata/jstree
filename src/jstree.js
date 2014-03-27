@@ -201,7 +201,7 @@
 				method = is_method && instance ? instance[arg] : null;
 			// if calling a method, and method is available - execute on the instance
 			result = is_method && method ?
-				method.apply(instance, args) :
+				method.apply(instance, args[0]) :
 				null;
 			// if there is no instance and no method is being called - create one
 			if(!instance && !is_method && (arg === undefined || $.isPlainObject(arg))) {
