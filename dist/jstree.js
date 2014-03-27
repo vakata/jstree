@@ -3049,17 +3049,25 @@
 				// clean old parent and up
 				tmp = obj.children_d.concat();
 				tmp.push(obj.id);
+
+                var map = {};
+                for (i = 0, j = tmp.length; i < j; i++) {
+                    map[tmp[i]] = 1;
+                }
+
 				for(i = 0, j = obj.parents.length; i < j; i++) {
 					dpc = [];
 					p = old_ins._model.data[obj.parents[i]].children_d;
 					for(k = 0, l = p.length; k < l; k++) {
-						if($.inArray(p[k], tmp) === -1) {
+						if(map[tmp[p[k]]] === 1) {
 							dpc.push(p[k]);
 						}
 					}
 					old_ins._model.data[obj.parents[i]].children_d = dpc;
 				}
 				old_ins._model.data[old_par].children = $.vakata.array_remove_item(old_ins._model.data[old_par].children, obj.id);
+
+                map = undefined;
 
 				// insert into new parent and up
 				for(i = 0, j = new_par.parents.length; i < j; i++) {
@@ -5048,6 +5056,66 @@
 	// $.jstree.defaults.plugins.push("dnd");
 
 
+// gutter icons plugin for jstree
+// for codio
+
+    var gutter = document.createElement('I');
+    gutter.setAttribute('unselectable', 'on');
+    gutter.className = 'jstree-guttericon';
+    gutter.innerHTML = '';
+    $.jstree.plugins.guttericons = function (options, parent) {
+        this.gutters = {};
+        this.bind = function () {
+            parent.bind.call(this);
+            this.element
+                .on('click.jstree', '.jstree-guttericon', $.proxy(function (e) {
+                    var id = $(e.currentTarget).closest('.jstree-node').attr('id');
+                    var node = this.get_node(id);
+                    if (this.gutters[node.id]) {
+                        this.gutters[node.id].action();
+                    }
+                }, this) );
+        };
+        this.set_node_gutter = function (nodeId, gutterClass, action) {
+            var node = this.get_node(nodeId);
+            if (this.gutters[node.id] === undefined) {
+                this.gutters[node.id] = {};
+            }
+            this.gutters[node.id].class = gutterClass;
+            this.gutters[node.id].action = action;
+            this.redraw_node(node);
+        };
+        this.teardown = function () {
+            this.gutters = undefined;
+            if (this.settings.guttericons) {
+                this.element.find('.jstree-guttericon').remove();
+            }
+            parent.teardown.call(this);
+        };
+        this.redraw_node = function(obj, deep, callback) {
+            obj = parent.redraw_node.call(this, obj, deep, callback);
+            if (obj) {
+                var tmp = gutter.cloneNode(true);
+                var id = $(obj).closest('.jstree-node').attr('id');
+                var node = this.get_node(id);
+                if (this.gutters[node.id]) {
+                    tmp.className += ' icon ' + this.gutters[node.id].class;
+                }
+
+                obj.appendChild(tmp);
+                var pos = obj.childNodes.length - 1;
+                if (pos > 2) {
+                    pos = 2;
+                }
+                obj.insertBefore(tmp, obj.childNodes[pos]);
+            }
+            return obj;
+        };
+    };
+
+    // include the guttericons plugin by default
+    // $.jstree.defaults.plugins.push("guttericons");
+
 /**
  * ### Search plugin
  *
@@ -5811,23 +5879,29 @@
 			par = par && par.id ? par : this.get_node(par);
 			if(!par || !par.children) { return true; }
 			var n = chk === "rename_node" ? pos : obj.text,
-				c = [],
+                map = {},
 				m = this._model.data, i, j;
 			for(i = 0, j = par.children.length; i < j; i++) {
-				c.push(m[par.children[i]].text);
+				map[m[par.children[i]].text] = 1;
 			}
 			switch(chk) {
-				case "delete_node":
+                case "create_node":
+                    i = (map[n] === undefined);
+                    if(!i) {
+                        this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
+                    }
+                    return i;
+                case "delete_node":
 					return true;
 				case "rename_node":
 				case "copy_node":
-					i = ($.inArray(n, c) === -1);
+					i = (map[n] === undefined);
 					if(!i) {
 						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					}
 					return i;
 				case "move_node":
-					i = (obj.parent === par.id || $.inArray(n, c) === -1);
+					i = (obj.parent === par.id || map[n] === undefined);
 					if(!i) {
 						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					}
