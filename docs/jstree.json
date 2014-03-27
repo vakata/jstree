@@ -2050,7 +2050,7 @@
 			},
 			{
 				"type": "trigger",
-				"string": "open_node.jstree, after_open.jstree"
+				"string": "open_node.jstree, after_open.jstree, before_open.jstree"
 			}
 		],
 		"description": {
@@ -2060,7 +2060,35 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "open_node : function (obj, callback, animation) {\n\t\t\tvar t1, t2, d, t;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.open_node(obj[t1], callback, animation);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tanimation = animation === undefined ? this.settings.core.animation : animation;\n\t\t\tif(!this.is_closed(obj)) {\n\t\t\t\tif(callback) {\n\t\t\t\t\tcallback.call(this, obj, false);\n\t\t\t\t}\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tif(!this.is_loaded(obj)) {\n\t\t\t\tif(this.is_loading(obj)) {\n\t\t\t\t\treturn setTimeout($.proxy(function () {\n\t\t\t\t\t\tthis.open_node(obj, callback, animation);\n\t\t\t\t\t}, this), 500);\n\t\t\t\t}\n\t\t\t\tthis.load_node(obj, function (o, ok) {\n\t\t\t\t\treturn ok ? this.open_node(o, callback, animation) : (callback ? callback.call(this, o, false) : false);\n\t\t\t\t});\n\t\t\t}\n\t\t\telse {\n\t\t\t\td = this.get_node(obj, true);\n\t\t\t\tt = this;\n\t\t\t\tif(d.length) {\n\t\t\t\t\tif(obj.children.length && !this._firstChild(d.children('ul')[0])) {\n\t\t\t\t\t\tobj.state.opened = true;\n\t\t\t\t\t\tthis.redraw_node(obj, true);\n\t\t\t\t\t\td = this.get_node(obj, true);\n\t\t\t\t\t}\n\t\t\t\t\tif(!animation) {\n\t\t\t\t\t\td[0].className = d[0].className.replace('jstree-closed', 'jstree-open');\n\t\t\t\t\t\td[0].setAttribute(\"aria-expanded\", true);\n\t\t\t\t\t}\n\t\t\t\t\telse {\n\t\t\t\t\t\td\n\t\t\t\t\t\t\t.children(\"ul\").css(\"display\",\"none\").end()\n\t\t\t\t\t\t\t.removeClass(\"jstree-closed\").addClass(\"jstree-open\").attr(\"aria-expanded\", true)\n\t\t\t\t\t\t\t.children(\"ul\").stop(true, true)\n\t\t\t\t\t\t\t\t.slideDown(animation, function () {\n\t\t\t\t\t\t\t\t\tthis.style.display = \"\";\n\t\t\t\t\t\t\t\t\tt.trigger(\"after_open\", { \"node\" : obj });\n\t\t\t\t\t\t\t\t});\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tobj.state.opened = true;\n\t\t\t\tif(callback) {\n\t\t\t\t\tcallback.call(this, obj, true);\n\t\t\t\t}"
+		"code": "open_node : function (obj, callback, animation) {\n\t\t\tvar t1, t2, d, t;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.open_node(obj[t1], callback, animation);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tanimation = animation === undefined ? this.settings.core.animation : animation;\n\t\t\tif(!this.is_closed(obj)) {\n\t\t\t\tif(callback) {\n\t\t\t\t\tcallback.call(this, obj, false);\n\t\t\t\t}\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tif(!this.is_loaded(obj)) {\n\t\t\t\tif(this.is_loading(obj)) {\n\t\t\t\t\treturn setTimeout($.proxy(function () {\n\t\t\t\t\t\tthis.open_node(obj, callback, animation);\n\t\t\t\t\t}, this), 500);\n\t\t\t\t}\n\t\t\t\tthis.load_node(obj, function (o, ok) {\n\t\t\t\t\treturn ok ? this.open_node(o, callback, animation) : (callback ? callback.call(this, o, false) : false);\n\t\t\t\t});\n\t\t\t}\n\t\t\telse {\n\t\t\t\td = this.get_node(obj, true);\n\t\t\t\tt = this;\n\t\t\t\tif(d.length) {\n\t\t\t\t\tif(obj.children.length && !this._firstChild(d.children('ul')[0])) {\n\t\t\t\t\t\tobj.state.opened = true;\n\t\t\t\t\t\tthis.redraw_node(obj, true);\n\t\t\t\t\t\td = this.get_node(obj, true);\n\t\t\t\t\t}\n\t\t\t\t\tif(!animation) {\n\t\t\t\t\t\tthis.trigger('before_open', { \"node\" : obj });\n\t\t\t\t\t\td[0].className = d[0].className.replace('jstree-closed', 'jstree-open');\n\t\t\t\t\t\td[0].setAttribute(\"aria-expanded\", true);\n\t\t\t\t\t}\n\t\t\t\t\telse {\n\t\t\t\t\t\tthis.trigger('before_open', { \"node\" : obj });\n\t\t\t\t\t\td\n\t\t\t\t\t\t\t.children(\"ul\").css(\"display\",\"none\").end()\n\t\t\t\t\t\t\t.removeClass(\"jstree-closed\").addClass(\"jstree-open\").attr(\"aria-expanded\", true)\n\t\t\t\t\t\t\t.children(\"ul\").stop(true, true)\n\t\t\t\t\t\t\t\t.slideDown(animation, function () {\n\t\t\t\t\t\t\t\t\tthis.style.display = \"\";\n\t\t\t\t\t\t\t\t\tt.trigger(\"after_open\", { \"node\" : obj });\n\t\t\t\t\t\t\t\t});\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tobj.state.opened = true;\n\t\t\t\tif(callback) {\n\t\t\t\t\tcallback.call(this, obj, true);\n\t\t\t\t}\n\t\t\t\tif(!d.length) {"
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "name",
+				"string": "before_open.jstree"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "node",
+				"description": "the opened node"
+			}
+		],
+		"description": {
+			"full": "<p>triggered when a node is about to be opened (if the node is supposed to be in the DOM, it will be, but it won't be visible yet)</p>",
+			"summary": "<p>triggered when a node is about to be opened (if the node is supposed to be in the DOM, it will be, but it won't be visible yet)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.trigger('before_open', { \"node\" : obj });\n\t\t\t\t}"
 	},
 	{
 		"tags": [
@@ -6013,7 +6041,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "close_opened_onclear : true\n\t};\n\n\t$.jstree.plugins.search = function (options, parent) {\n\t\tthis.bind = function () {\n\t\t\tparent.bind.call(this);\n\n\t\t\tthis._data.search.str = \"\";\n\t\t\tthis._data.search.dom = $();\n\t\t\tthis._data.search.res = [];\n\t\t\tthis._data.search.opn = [];\n\t\t\tthis._data.search.sln = null;\n\n\t\t\tthis.element.on('open_node.jstree', $.proxy(function (e, data) {\n\t\t\t\tvar i, j, f, r = this._data.search.res, s = [], o = $();\n\t\t\t\tif(r && r.length) {\n\t\t\t\t\tthis._data.search.dom = $();\n\t\t\t\t\tfor(i = 0, j = r.length; i < j; i++) {\n\t\t\t\t\t\ts = s.concat(this.get_node(r[i]).parents);\n\t\t\t\t\t\tf = this.get_node(r[i], true);\n\t\t\t\t\t\tif(f) {\n\t\t\t\t\t\t\tthis._data.search.dom = this._data.search.dom.add(f);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\ts = $.vakata.array_unique(s);\n\t\t\t\t\tfor(i = 0, j = s.length; i < j; i++) {\n\t\t\t\t\t\tif(s[i] === \"#\") { continue; }\n\t\t\t\t\t\tf = this.get_node(s[i], true);\n\t\t\t\t\t\tif(f) {\n\t\t\t\t\t\t\to = o.add(f);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tthis._data.search.dom.children(\".jstree-anchor\").addClass('jstree-search');\n\t\t\t\t\tif(this.settings.search.show_only_matches && this._data.search.res.length) {\n\t\t\t\t\t\tthis.element.find(\"li\").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');\n\t\t\t\t\t\to = o.add(this._data.search.dom);\n\t\t\t\t\t\to.parentsUntil(\".jstree\").addBack().show()\n\t\t\t\t\t\t\t.filter(\"ul\").each(function () { $(this).children(\"li:visible\").eq(-1).addClass(\"jstree-last\"); });\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}, this));\n\t\t\tif(this.settings.search.show_only_matches) {\n\t\t\t\tthis.element\n\t\t\t\t\t.on(\"search.jstree\", function (e, data) {\n\t\t\t\t\t\tif(data.nodes.length) {\n\t\t\t\t\t\t\t$(this).find(\"li\").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');\n\t\t\t\t\t\t\tdata.nodes.parentsUntil(\".jstree\").addBack().show()\n\t\t\t\t\t\t\t\t.filter(\"ul\").each(function () { $(this).children(\"li:visible\").eq(-1).addClass(\"jstree-last\"); });\n\t\t\t\t\t\t}\n\t\t\t\t\t})\n\t\t\t\t\t.on(\"clear_search.jstree\", function (e, data) {\n\t\t\t\t\t\tif(data.nodes.length) {\n\t\t\t\t\t\t\t$(this).find(\"li\").css(\"display\",\"\").filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t}\n\t\t};"
+		"code": "close_opened_onclear : true\n\t};\n\n\t$.jstree.plugins.search = function (options, parent) {\n\t\tthis.bind = function () {\n\t\t\tparent.bind.call(this);\n\n\t\t\tthis._data.search.str = \"\";\n\t\t\tthis._data.search.dom = $();\n\t\t\tthis._data.search.res = [];\n\t\t\tthis._data.search.opn = [];\n\t\t\tthis._data.search.sln = null;\n\n\t\t\tthis.element.on('before_open.jstree', $.proxy(function (e, data) {\n\t\t\t\tvar i, j, f, r = this._data.search.res, s = [], o = $();\n\t\t\t\tif(r && r.length) {\n\t\t\t\t\tthis._data.search.dom = $();\n\t\t\t\t\tfor(i = 0, j = r.length; i < j; i++) {\n\t\t\t\t\t\ts = s.concat(this.get_node(r[i]).parents);\n\t\t\t\t\t\tf = this.get_node(r[i], true);\n\t\t\t\t\t\tif(f) {\n\t\t\t\t\t\t\tthis._data.search.dom = this._data.search.dom.add(f);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\ts = $.vakata.array_unique(s);\n\t\t\t\t\tfor(i = 0, j = s.length; i < j; i++) {\n\t\t\t\t\t\tif(s[i] === \"#\") { continue; }\n\t\t\t\t\t\tf = this.get_node(s[i], true);\n\t\t\t\t\t\tif(f) {\n\t\t\t\t\t\t\to = o.add(f);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tthis._data.search.dom.children(\".jstree-anchor\").addClass('jstree-search');\n\t\t\t\t\tif(this.settings.search.show_only_matches && this._data.search.res.length) {\n\t\t\t\t\t\tthis.element.find(\"li\").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');\n\t\t\t\t\t\to = o.add(this._data.search.dom);\n\t\t\t\t\t\to.parentsUntil(\".jstree\").addBack().show()\n\t\t\t\t\t\t\t.filter(\"ul\").each(function () { $(this).children(\"li:visible\").eq(-1).addClass(\"jstree-last\"); });\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}, this));\n\t\t\tif(this.settings.search.show_only_matches) {\n\t\t\t\tthis.element\n\t\t\t\t\t.on(\"search.jstree\", function (e, data) {\n\t\t\t\t\t\tif(data.nodes.length) {\n\t\t\t\t\t\t\t$(this).find(\"li\").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');\n\t\t\t\t\t\t\tdata.nodes.parentsUntil(\".jstree\").addBack().show()\n\t\t\t\t\t\t\t\t.filter(\"ul\").each(function () { $(this).children(\"li:visible\").eq(-1).addClass(\"jstree-last\"); });\n\t\t\t\t\t\t}\n\t\t\t\t\t})\n\t\t\t\t\t.on(\"clear_search.jstree\", function (e, data) {\n\t\t\t\t\t\tif(data.nodes.length) {\n\t\t\t\t\t\t\t$(this).find(\"li\").css(\"display\",\"\").filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t}\n\t\t};"
 	},
 	{
 		"tags": [

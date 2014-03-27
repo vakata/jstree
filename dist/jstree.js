@@ -1760,7 +1760,7 @@
 		 * @param {mixed} obj the node to open
 		 * @param {Function} callback a function to execute once the node is opened
 		 * @param {Number} animation the animation duration in milliseconds when opening the node (overrides the `core.animation` setting). Use `false` for no animation.
-		 * @trigger open_node.jstree, after_open.jstree
+		 * @trigger open_node.jstree, after_open.jstree, before_open.jstree
 		 */
 		open_node : function (obj, callback, animation) {
 			var t1, t2, d, t;
@@ -1802,10 +1802,12 @@
 						d = this.get_node(obj, true);
 					}
 					if(!animation) {
+						this.trigger('before_open', { "node" : obj });
 						d[0].className = d[0].className.replace('jstree-closed', 'jstree-open');
 						d[0].setAttribute("aria-expanded", true);
 					}
 					else {
+						this.trigger('before_open', { "node" : obj });
 						d
 							.children("ul").css("display","none").end()
 							.removeClass("jstree-closed").addClass("jstree-open").attr("aria-expanded", true)
@@ -1819,6 +1821,15 @@
 				obj.state.opened = true;
 				if(callback) {
 					callback.call(this, obj, true);
+				}
+				if(!d.length) {
+					/**
+					 * triggered when a node is about to be opened (if the node is supposed to be in the DOM, it will be, but it won't be visible yet)
+					 * @event
+					 * @name before_open.jstree
+					 * @param {Object} node the opened node
+					 */
+					this.trigger('before_open', { "node" : obj });
 				}
 				/**
 				 * triggered when a node is opened (if there is an animation it will not be completed yet)
@@ -5107,7 +5118,7 @@
 			this._data.search.opn = [];
 			this._data.search.sln = null;
 
-			this.element.on('open_node.jstree', $.proxy(function (e, data) {
+			this.element.on('before_open.jstree', $.proxy(function (e, data) {
 				var i, j, f, r = this._data.search.res, s = [], o = $();
 				if(r && r.length) {
 					this._data.search.dom = $();

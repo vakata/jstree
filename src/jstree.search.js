@@ -71,7 +71,7 @@
 			this._data.search.opn = [];
 			this._data.search.sln = null;
 
-			this.element.on('open_node.jstree', $.proxy(function (e, data) {
+			this.element.on('before_open.jstree', $.proxy(function (e, data) {
 				var i, j, f, r = this._data.search.res, s = [], o = $();
 				if(r && r.length) {
 					this._data.search.dom = $();
