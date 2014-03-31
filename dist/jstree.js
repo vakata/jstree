@@ -84,7 +84,8 @@
 		 * @name $.jstree.plugins
 		 */
 		plugins : {},
-		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : ''
+		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : '',
+		idregex : /[\\:&'".,=\- \/]/g
 	};
 	/**
 	 * creates a jstree instance
@@ -150,11 +151,20 @@
 	 * @return {jsTree|null} the instance or `null` if not found
 	 */
 	$.jstree.reference = function (needle) {
-		if(needle && !$(needle).length) {
-			if(needle.id) {
-				needle = needle.id;
-			}
-			var tmp = null;
+		var tmp = null,
+			obj = null;
+		if(needle && needle.id) { needle = needle.id; }
+
+		if(!obj || !obj.length) {
+			try { obj = $(needle); } catch (ignore) { }
+		}
+		if(!obj || !obj.length) {
+			try { obj = $('#' + needle.replace($.jstree.idregex,'\\$&')); } catch (ignore) { }
+		}
+		if(obj && obj.length && (obj = obj.closest('.jstree')).length && (obj = obj.data('jstree'))) {
+			tmp = obj;
+		}
+		else {
 			$('.jstree').each(function () {
 				var inst = $(this).data('jstree');
 				if(inst && inst._model.data[needle]) {
@@ -162,9 +172,8 @@
 					return false;
 				}
 			});
-			return tmp;
 		}
-		return $(needle).closest('.jstree').data('jstree');
+		return tmp;
 	};
 	/**
 	 * Create an instance, get an instance or invoke a command on a instance. 
@@ -771,7 +780,7 @@
 				if(this._model.data[obj]) {
 					obj = this._model.data[obj];
 				}
-				else if(((dom = $(obj, this.element)).length || (dom = $('#' + obj.replace(/[\\:&'".,=\- \/]/g,'\\$&'), this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {
+				else if(((dom = $(obj, this.element)).length || (dom = $('#' + obj.replace($.jstree.idregex,'\\$&'), this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {
 					obj = this._model.data[dom.closest('li').attr('id')];
 				}
 				else if((dom = $(obj, this.element)).length && dom.hasClass('jstree')) {
@@ -782,7 +791,7 @@
 				}
 
 				if(as_dom) {
-					obj = obj.id === '#' ? this.element : $('#' + obj.id.replace(/[\\:'&".,=\- \/]/g,'\\$&'), this.element);
+					obj = obj.id === '#' ? this.element : $('#' + obj.id.replace($.jstree.idregex,'\\$&'), this.element);
 				}
 				return obj;
 			} catch (ex) { return false; }
@@ -1611,12 +1620,12 @@
 			if(!obj) { return false; }
 			if(obj.id === '#') {  return this.redraw(true); }
 			deep = deep || obj.children.length === 0;
-			node = this.element[0].querySelector('#' + ("0123456789".indexOf(obj.id[0]) !== -1 ? '\\3' + obj.id[0] + ' ' + obj.id.substr(1).replace(/[\\:&'".,=\- \/]/g,'\\$&') : obj.id.replace(/[\\:'"&.,=\- \/]/g,'\\$&')) ); //, this.element);
+			node = this.element[0].querySelector('#' + ("0123456789".indexOf(obj.id[0]) !== -1 ? '\\3' + obj.id[0] + ' ' + obj.id.substr(1).replace($.jstree.idregex,'\\$&') : obj.id.replace($.jstree.idregex,'\\$&')) ); //, this.element);
 			if(!node) {
 				deep = true;
 				//node = d.createElement('LI');
 				if(!is_callback) {
-					par = obj.parent !== '#' ? $('#' + obj.parent.replace(/[\\:'&".,=\- \/]/g,'\\$&'), this.element)[0] : null;
+					par = obj.parent !== '#' ? $('#' + obj.parent.replace($.jstree.idregex,'\\$&'), this.element)[0] : null;
 					if(par !== null && (!par || !m[obj.parent].state.opened)) {
 						return false;
 					}
@@ -1866,7 +1875,7 @@
 					this.open_node(p[i], false, 0);
 				}
 			}
-			return $('#' + obj.id.replace(/[\\:'&".,=\- \/]/g,'\\$&'), this.element);
+			return $('#' + obj.id.replace($.jstree.idregex,'\\$&'), this.element);
 		},
 		/**
 		 * closes a node, hiding its children
@@ -5267,7 +5276,7 @@
 			var t = this;
 			$.each(d.concat([]), function (i, v) {
 				if(v === "#") { return true; }
-				try { v = $('#' + v.replace(/[\\:'&".,=\- \/]/g,'\\$&'), t.element); } catch(ignore) { }
+				try { v = $('#' + v.replace($.jstree.idregex,'\\$&'), t.element); } catch(ignore) { }
 				if(v && v.length) {
 					if(t.is_closed(v)) {
 						t._data.search.opn.push(v[0].id);
@@ -5645,7 +5654,6 @@
 			this._model.data['#'].type = '#';
 		};
 		this.bind = function () {
-			parent.bind.call(this);
 			this.element
 				.on('model.jstree', $.proxy(function (e, data) {
 						var m = this._model.data,
@@ -5666,6 +5674,7 @@
 							}
 						}
 					}, this));
+			parent.bind.call(this);
 		};
 		this.get_json = function (obj, options, flat) {
 			var i, j,
@@ -5725,6 +5734,8 @@
 							return false;
 						}
 						if(tmp.valid_children !== undefined && tmp.valid_children !== -1 && $.inArray(obj.type, tmp.valid_children) === -1) {
+							window.console.log(par);
+							window.console.log(tmp);
 							this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_02', 'reason' : 'valid_children prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 							return false;
 						}

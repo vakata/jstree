@@ -84,7 +84,8 @@
 		 * @name $.jstree.plugins
 		 */
 		plugins : {},
-		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : ''
+		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : '',
+		idregex : /[\\:&'".,=\- \/]/g
 	};
 	/**
 	 * creates a jstree instance
@@ -150,11 +151,20 @@
 	 * @return {jsTree|null} the instance or `null` if not found
 	 */
 	$.jstree.reference = function (needle) {
-		if(needle && !$(needle).length) {
-			if(needle.id) {
-				needle = needle.id;
-			}
-			var tmp = null;
+		var tmp = null,
+			obj = null;
+		if(needle && needle.id) { needle = needle.id; }
+
+		if(!obj || !obj.length) {
+			try { obj = $(needle); } catch (ignore) { }
+		}
+		if(!obj || !obj.length) {
+			try { obj = $('#' + needle.replace($.jstree.idregex,'\\$&')); } catch (ignore) { }
+		}
+		if(obj && obj.length && (obj = obj.closest('.jstree')).length && (obj = obj.data('jstree'))) {
+			tmp = obj;
+		}
+		else {
 			$('.jstree').each(function () {
 				var inst = $(this).data('jstree');
 				if(inst && inst._model.data[needle]) {
@@ -162,9 +172,8 @@
 					return false;
 				}
 			});
-			return tmp;
 		}
-		return $(needle).closest('.jstree').data('jstree');
+		return tmp;
 	};
 	/**
 	 * Create an instance, get an instance or invoke a command on a instance. 
@@ -771,7 +780,7 @@
 				if(this._model.data[obj]) {
 					obj = this._model.data[obj];
 				}
-				else if(((dom = $(obj, this.element)).length || (dom = $('#' + obj.replace(/[\\:&'".,=\- \/]/g,'\\$&'), this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {
+				else if(((dom = $(obj, this.element)).length || (dom = $('#' + obj.replace($.jstree.idregex,'\\$&'), this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {
 					obj = this._model.data[dom.closest('li').attr('id')];
 				}
 				else if((dom = $(obj, this.element)).length && dom.hasClass('jstree')) {
@@ -782,7 +791,7 @@
 				}
 
 				if(as_dom) {
-					obj = obj.id === '#' ? this.element : $('#' + obj.id.replace(/[\\:'&".,=\- \/]/g,'\\$&'), this.element);
+					obj = obj.id === '#' ? this.element : $('#' + obj.id.replace($.jstree.idregex,'\\$&'), this.element);
 				}
 				return obj;
 			} catch (ex) { return false; }
@@ -1611,12 +1620,12 @@
 			if(!obj) { return false; }
 			if(obj.id === '#') {  return this.redraw(true); }
 			deep = deep || obj.children.length === 0;
-			node = this.element[0].querySelector('#' + ("0123456789".indexOf(obj.id[0]) !== -1 ? '\\3' + obj.id[0] + ' ' + obj.id.substr(1).replace(/[\\:&'".,=\- \/]/g,'\\$&') : obj.id.replace(/[\\:'"&.,=\- \/]/g,'\\$&')) ); //, this.element);
+			node = this.element[0].querySelector('#' + ("0123456789".indexOf(obj.id[0]) !== -1 ? '\\3' + obj.id[0] + ' ' + obj.id.substr(1).replace($.jstree.idregex,'\\$&') : obj.id.replace($.jstree.idregex,'\\$&')) ); //, this.element);
 			if(!node) {
 				deep = true;
 				//node = d.createElement('LI');
 				if(!is_callback) {
-					par = obj.parent !== '#' ? $('#' + obj.parent.replace(/[\\:'&".,=\- \/]/g,'\\$&'), this.element)[0] : null;
+					par = obj.parent !== '#' ? $('#' + obj.parent.replace($.jstree.idregex,'\\$&'), this.element)[0] : null;
 					if(par !== null && (!par || !m[obj.parent].state.opened)) {
 						return false;
 					}
@@ -1866,7 +1875,7 @@
 					this.open_node(p[i], false, 0);
 				}
 			}
-			return $('#' + obj.id.replace(/[\\:'&".,=\- \/]/g,'\\$&'), this.element);
+			return $('#' + obj.id.replace($.jstree.idregex,'\\$&'), this.element);
 		},
 		/**
 		 * closes a node, hiding its children

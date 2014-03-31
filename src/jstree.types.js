@@ -63,7 +63,6 @@
 			this._model.data['#'].type = '#';
 		};
 		this.bind = function () {
-			parent.bind.call(this);
 			this.element
 				.on('model.jstree', $.proxy(function (e, data) {
 						var m = this._model.data,
@@ -84,6 +83,7 @@
 							}
 						}
 					}, this));
+			parent.bind.call(this);
 		};
 		this.get_json = function (obj, options, flat) {
 			var i, j,
@@ -143,6 +143,8 @@
 							return false;
 						}
 						if(tmp.valid_children !== undefined && tmp.valid_children !== -1 && $.inArray(obj.type, tmp.valid_children) === -1) {
+							window.console.log(par);
+							window.console.log(tmp);
 							this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_02', 'reason' : 'valid_children prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 							return false;
 						}
