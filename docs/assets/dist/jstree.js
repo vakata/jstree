@@ -5112,7 +5112,13 @@
 		 * @name $.jstree.defaults.search.close_opened_onclear
 		 * @plugin search
 		 */
-		close_opened_onclear : true
+		close_opened_onclear : true,
+		/**
+		 * Indicates if only leaf nodes should be included in search results. Default is `false`.
+		 * @name $.jstree.defaults.search.search_leaves_only
+		 * @plugin search
+		 */
+		search_leaves_only : false
 	};
 
 	$.jstree.plugins.search = function (options, parent) {
@@ -5211,7 +5217,7 @@
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
 
 			$.each(this._model.data, function (i, v) {
-				if(v.text && f.search(v.text).isMatch) {
+				if(v.text && f.search(v.text).isMatch && (!s.search_leaves_only || (v.state.loaded && v.children.length === 0)) ) {
 					r.push(i);
 					p = p.concat(v.parents);
 				}
