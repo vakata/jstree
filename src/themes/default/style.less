@@ -31,7 +31,7 @@
 	.jstree-closed > .jstree-ocl { background-position:-(@image-height * 3 + @correction) -@correction; }
 	.jstree-leaf > .jstree-ocl { background-position:-(@image-height * 2 + @correction) -@correction; }
 
-	.jstree-anchor > .jstree-themeicon { background-position:-(@image-height * 8 + @correction) -@correction; }
+	.jstree-themeicon { background-position:-(@image-height * 8 + @correction) -@correction; }
 
 	> .jstree-no-dots {
 		.jstree-node, 
@@ -85,9 +85,12 @@
 			.jstree-closed > .jstree-ocl { background-position:-@correction -(@image-height * 1 + @correction); }
 		}
 	}
-	.jstree-themeicon-custom { background-color:transparent; background-image:none; }
+	.jstree-themeicon-custom { background-color:transparent; background-image:none; background-position:0 0; }
 
 	> .jstree-container-ul .jstree-loading > .jstree-ocl { background:url("throbber.gif") center center no-repeat; }
+
+	.jstree-file { background:url("@{image}") -(@image-height * 3 + @correction) -(@image-height * 2 + @correction) no-repeat; }
+	.jstree-folder { background:url("@{image}") -(@image-height * 8 + @correction) -(@correction) no-repeat; }
 }
 
 .jstree-default {
@@ -180,7 +183,7 @@
 		.jstree-closed > .jstree-ocl { background-position:0 -(@base-height * 1) !important; }
 		&.jstree-rtl .jstree-closed > .jstree-ocl { background-position:-(@base-height * 1) 0px !important; }
 
-		.jstree-anchor > .jstree-themeicon { background-position:-(@base-height * 1) -(@base-height * 1); }
+		.jstree-themeicon { background-position:-(@base-height * 1) -(@base-height * 1); }
 
 		.jstree-checkbox, .jstree-checkbox:hover { background-position:-(@base-height * 1) -(@base-height * 2); }
 		.jstree-clicked > .jstree-checkbox, .jstree-clicked > .jstree-checkbox:hover { background-position:0 -(@base-height * 2); }
@@ -214,7 +217,9 @@
 		.jstree-closed > .jstree-ocl { border-radius:20px; background-color:white; }
 		*/
 
-		.jstree-themeicon-custom { background-color:transparent; background-image:none; }
+		.jstree-themeicon-custom { background-color:transparent; background-image:none; background-position:0 0; }
+		.jstree-file { background:url("@{base-height}.png") 0 -(@base-height * 4) no-repeat; background-size:(@base-height * 3) (@base-height * 5); }
+		.jstree-folder { background:url("@{base-height}.png") -(@base-height * 1) -(@base-height * 1) no-repeat; background-size:(@base-height * 3) (@base-height * 5); }
 	}
 }
 
