@@ -3806,8 +3806,13 @@
 								dom = this.get_node(obj, true),
 								i, j, c, tmp;
 							this._data.core.selected = $.vakata.array_unique(this._data.core.selected.concat(obj.children_d));
+
 							for(i = 0, j = obj.children_d.length; i < j; i++) {
-								m[obj.children_d[i]].state.selected = true;
+								tmp = m[obj.children_d[i]];
+								tmp.state.selected = true;
+								if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
+									tmp.original.state.undetermined = false;
+								}
 							}
 							while(par && par.id !== '#') {
 								c = 0;
@@ -3831,15 +3836,37 @@
 								dom.find('.jstree-anchor').addClass('jstree-clicked');
 							}
 						}, this))
+					.on('deselect_all.jstree', $.proxy(function (e, data) {
+							var obj = this.get_node('#'),
+								m = this._model.data,
+								i, j, tmp;
+							for(i = 0, j = obj.children_d.length; i < j; i++) {
+								tmp = m[obj.children_d[i]];
+								if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
+									tmp.original.state.undetermined = false;
+								}
+							}
+						}, this))
 					.on('deselect_node.jstree', $.proxy(function (e, data) {
 							var obj = data.node,
 								dom = this.get_node(obj, true),
 								i, j, tmp;
+							if(obj && obj.original && obj.original.state && obj.original.state.undetermined) {
+								obj.original.state.undetermined = false;
+							}
 							for(i = 0, j = obj.children_d.length; i < j; i++) {
-								this._model.data[obj.children_d[i]].state.selected = false;
+								tmp = this._model.data[obj.children_d[i]];
+								tmp.state.selected = false;
+								if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
+									tmp.original.state.undetermined = false;
+								}
 							}
 							for(i = 0, j = obj.parents.length; i < j; i++) {
-								this._model.data[obj.parents[i]].state.selected = false;
+								tmp = this._model.data[obj.parents[i]];
+								tmp.state.selected = false;
+								if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
+									tmp.original.state.undetermined = false;
+								}
 								tmp = this.get_node(obj.parents[i], true);
 								if(tmp && tmp.length) {
 									tmp.children('.jstree-anchor').removeClass('jstree-clicked');
@@ -3956,17 +3983,25 @@
 			// attempt for server side undetermined state
 			this.element.find('.jstree-closed').not(':has(ul)')
 				.each(function () {
-					var tmp = t.get_node(this);
-					if(!tmp.state.loaded && tmp.original && tmp.original.state && tmp.original.state.undetermined && tmp.original.state.undetermined === true) {
-						p.push(tmp.id);
-						p = p.concat(tmp.parents);
+					var tmp = t.get_node(this), tmp2;
+					if(!tmp.state.loaded) {
+						if(tmp.original && tmp.original.state && tmp.original.state.undetermined && tmp.original.state.undetermined === true) {
+							p.push(tmp.id);
+							p = p.concat(tmp.parents);
+						}
+					}
+					else {
+						for(i = 0, j = tmp.children_d.length; i < j; i++) {
+							tmp2 = m[tmp.children_d[i]];
+							if(!tmp2.state.loaded && tmp2.original && tmp2.original.state && tmp2.original.state.undetermined && tmp2.original.state.undetermined === true) {
+								p.push(tmp2.id);
+								p = p.concat(tmp2.parents);
+							}
+						}
 					}
 				});
 			p = $.vakata.array_unique(p);
-			i = $.inArray('#', p);
-			if(i !== -1) {
-				p = $.vakata.array_remove(p, i);
-			}
+			p = $.vakata.array_remove_item(p,'#');
 
 			this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
 			for(i = 0, j = p.length; i < j; i++) {
