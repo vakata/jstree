@@ -49,7 +49,13 @@
 		 * @name $.jstree.defaults.dnd.check_while_dragging
 		 * @plugin dnd
 		 */
-		check_while_dragging : true
+		check_while_dragging : true,
+		/**
+		 * a boolean indicating if nodes from this tree should only be copied with dnd (as opposed to moved), default is `false`
+		 * @name $.jstree.defaults.dnd.always_copy
+		 * @plugin dnd
+		 */
+		always_copy : false
 	};
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
 	// TODO: drop somewhere else - maybe demo only?
@@ -101,14 +107,14 @@
 					marker.attr('class', 'jstree-' + ins.get_theme());
 					data.helper
 						.children().attr('class', 'jstree-' + ins.get_theme())
-						.find('.jstree-copy:eq(0)')[ data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'show' : 'hide' ]();
+						.find('.jstree-copy:eq(0)')[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? 'show' : 'hide' ]();
 
 
 					// if are hovering the container itself add a new root node
 					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && ins.get_container_ul().children().length === 0) {
 						ok = true;
 						for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
-							ok = ok && ins.check( (data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"), (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), '#', 'last', { 'dnd' : true, 'ref' : ins.get_node('#'), 'pos' : 'i', 'is_multi' : (data.data.origin && data.data.origin !== ins), 'is_foreign' : (!data.data.origin) });
+							ok = ok && ins.check( (data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey)) ) ? "copy_node" : "move_node"), (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), '#', 'last', { 'dnd' : true, 'ref' : ins.get_node('#'), 'pos' : 'i', 'is_multi' : (data.data.origin && data.data.origin !== ins), 'is_foreign' : (!data.data.origin) });
 							if(!ok) { break; }
 						}
 						if(ok) {
@@ -162,7 +168,7 @@
 								*/
 								ok = true;
 								for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
-									op = data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node";
+									op = data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? "copy_node" : "move_node";
 									ps = i;
 									if(op === "move_node" && v === 'a' && (data.data.origin && data.data.origin === ins) && p === ins.get_parent(data.data.nodes[t1])) {
 										pr = ins.get_node(p);
@@ -211,7 +217,7 @@
 					for(i = 0, j = data.data.nodes.length; i < j; i++) {
 						nodes[i] = data.data.origin ? data.data.origin.get_node(data.data.nodes[i]) : data.data.nodes[i];
 					}
-					lastmv.ins[ data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);
+					lastmv.ins[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);
 				}
 				else {
 					i = $(data.event.target).closest('.jstree');
@@ -226,7 +232,7 @@
 			.bind('keyup keydown', function (e, data) {
 				data = $.vakata.dnd._get();
 				if(data.data && data.data.jstree) {
-					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin && data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey) ? 'show' : 'hide' ]();
+					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
 				}
 			});
 	});
