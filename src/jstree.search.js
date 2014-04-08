@@ -75,7 +75,6 @@
 			this._data.search.dom = $();
 			this._data.search.res = [];
 			this._data.search.opn = [];
-			this._data.search.sln = null;
 
 			this.element.on('before_open.jstree', $.proxy(function (e, data) {
 				var i, j, f, r = this._data.search.res, s = [], o = $();
@@ -151,8 +150,9 @@
 					}, this))
 					.done($.proxy(function (d) {
 						if(d && d.d) { d = d.d; }
-						this._data.search.sln = !$.isArray(d) ? [] : d;
-						this._search_load(str);
+						this._load_nodes(!$.isArray(d) ? [] : d, function () {
+							this.search(str, true);
+						});
 					}, this));
 			}
 			this._data.search.str = str;
@@ -236,40 +236,6 @@
 					}
 				}
 			});
-		};
-		/**
-		 * loads nodes that need to be opened to reveal the search results. Used only internally.
-		 * @private
-		 * @name _search_load(d, str)
-		 * @param {String} str the search string
-		 * @plugin search
-		 */
-		this._search_load = function (str) {
-			var res = true,
-				t = this,
-				m = t._model.data;
-			if($.isArray(this._data.search.sln)) {
-				if(!this._data.search.sln.length) {
-					this._data.search.sln = null;
-					this.search(str, true);
-				}
-				else {
-					$.each(this._data.search.sln, function (i, v) {
-						if(m[v]) {
-							if(!m[v].state.loaded) {
-								if(!t.is_loading(v)) {
-									t.load_node(v, function (o, s) { $.vakata.array_remove_item(t._data.search.sln, v); t._search_load(str); });
-								}
-								res = false;
-							}
-						}
-					});
-					if(res) {
-						this._data.search.sln = [];
-						this._search_load(str);
-					}
-				}
-			}
 		};
 	};
 

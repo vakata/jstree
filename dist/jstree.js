@@ -1031,11 +1031,37 @@
 			return true;
 		},
 		/**
+		 * load an array of nodes (will also load unavailable nodes as soon as the appear in the structure). Used internally.
+		 * @private
+		 * @name _load_nodes(nodes [, callback])
+		 * @param  {array} nodes
+		 * @param  {function} callback a function to be executed once loading is complete, the function is executed in the instance's scope and receives one argument - the array passed to _load_nodes
+		 */
+		_load_nodes : function (nodes, callback, is_callback) {
+			var r = true,
+				c = function () { this._load_nodes(nodes, callback, true); },
+				m = this._model.data, i, j;
+			for(i = 0, j = nodes.length; i < j; i++) {
+				if(m[nodes[i]] && (!m[nodes[i]].state.loaded || !is_callback)) {
+					if(!this.is_loading(nodes[i])) {
+						this.load_node(nodes[i], c);
+					}
+					r = false;
+				}
+			}
+			if(r) {
+				if(!callback.done) {
+					callback.call(this, nodes);
+					callback.done = true;
+				}
+			}
+		},
+		/**
 		 * handles the actual loading of a node. Used only internally.
 		 * @private
 		 * @name _load_node(obj [, callback])
 		 * @param  {mixed} obj
-		 * @param  {function} callback a function to be executed once loading is conplete, the function is executed in the instance's scope and receives one argument - a boolean status
+		 * @param  {function} callback a function to be executed once loading is complete, the function is executed in the instance's scope and receives one argument - a boolean status
 		 * @return {Boolean}
 		 */
 		_load_node : function (obj, callback) {
@@ -2609,6 +2635,31 @@
 				}
 				this._data.core.state = null;
 			});
+		},
+		/**
+		 * refreshes a node in the tree (reload its children) all opened nodes inside that node are reloaded with calls to `load_node`.
+		 * @name refresh_name(obj)
+		 * @param {Boolean} skip_loading an option to skip showing the loading indicator
+		 * @trigger refresh.jstree
+		 */
+		refresh_node : function (obj) {
+			obj = this.get_node(obj);
+			if(!obj || obj.id === '#') { return false; }
+			var opened = [], s = this._data.core.selected.concat([]);
+			if(obj.state.opened === true) { opened.push(obj.id); }
+			this.get_node(obj, true).find('.jstree-open').each(function() { opened.push(this.id); });
+			this._load_nodes(opened, $.proxy(function (nodes) {
+				this.open_node(nodes, false, 0);
+				this.select_node(this._data.core.selected);
+				/**
+				 * triggered when a node is refreshed
+				 * @event
+				 * @name move_node.jstree
+				 * @param {Object} node - the refreshed node
+				 * @param {Array} nodes - an array of the IDs of the nodes that were reloaded
+				 */
+				this.trigger('refresh_node', { 'node' : obj, 'nodes' : nodes });
+			}, this));
 		},
 		/**
 		 * set (change) the ID of a node
@@ -5168,7 +5219,6 @@
 			this._data.search.dom = $();
 			this._data.search.res = [];
 			this._data.search.opn = [];
-			this._data.search.sln = null;
 
 			this.element.on('before_open.jstree', $.proxy(function (e, data) {
 				var i, j, f, r = this._data.search.res, s = [], o = $();
@@ -5244,8 +5294,9 @@
 					}, this))
 					.done($.proxy(function (d) {
 						if(d && d.d) { d = d.d; }
-						this._data.search.sln = !$.isArray(d) ? [] : d;
-						this._search_load(str);
+						this._load_nodes(!$.isArray(d) ? [] : d, function () {
+							this.search(str, true);
+						});
 					}, this));
 			}
 			this._data.search.str = str;
@@ -5329,40 +5380,6 @@
 					}
 				}
 			});
-		};
-		/**
-		 * loads nodes that need to be opened to reveal the search results. Used only internally.
-		 * @private
-		 * @name _search_load(d, str)
-		 * @param {String} str the search string
-		 * @plugin search
-		 */
-		this._search_load = function (str) {
-			var res = true,
-				t = this,
-				m = t._model.data;
-			if($.isArray(this._data.search.sln)) {
-				if(!this._data.search.sln.length) {
-					this._data.search.sln = null;
-					this.search(str, true);
-				}
-				else {
-					$.each(this._data.search.sln, function (i, v) {
-						if(m[v]) {
-							if(!m[v].state.loaded) {
-								if(!t.is_loading(v)) {
-									t.load_node(v, function (o, s) { $.vakata.array_remove_item(t._data.search.sln, v); t._search_load(str); });
-								}
-								res = false;
-							}
-						}
-					});
-					if(res) {
-						this._data.search.sln = [];
-						this._search_load(str);
-					}
-				}
-			}
 		};
 	};
 
