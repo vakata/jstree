@@ -2019,7 +2019,7 @@
 				return this.trigger('close_all', { "node" : obj });
 			}
 			dom = this.is_open(obj) ? dom.find('li.jstree-open').addBack() : dom.find('li.jstree-open');
-			dom.vakata_reverse().each(function () { _this.close_node(this, animation || 0); });
+			$(dom.get().reverse()).each(function () { _this.close_node(this, animation || 0); });
 			/**
 			 * triggered when an `close_all` call completes
 			 * @event
@@ -3609,8 +3609,6 @@
 
 	// helpers
 	$.vakata = {};
-	// reverse
-	$.fn.vakata_reverse = [].reverse;
 	// collect attributes
 	$.vakata.attributes = function(node, with_values) {
 		node = $(node)[0];
