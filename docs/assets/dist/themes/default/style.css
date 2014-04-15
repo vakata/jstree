@@ -49,6 +49,9 @@
 .jstree-ocl {
   cursor: pointer;
 }
+.jstree-leaf > .jstree-ocl {
+  cursor: default;
+}
 .jstree .jstree-open > .jstree-children {
   display: block;
 }
@@ -80,6 +83,9 @@
   position: relative;
   display: inline-block;
   min-width: 100%;
+}
+.jstree-wholerow-ul .jstree-leaf > .jstree-ocl {
+  cursor: pointer;
 }
 .jstree-wholerow-ul .jstree-anchor,
 .jstree-wholerow-ul .jstree-icon {

@@ -7,6 +7,7 @@
 .jstree-icon { display:inline-block; text-decoration:none; margin:0; padding:0; vertical-align:top; text-align:center; }
 .jstree-icon:empty { display:inline-block; text-decoration:none; margin:0; padding:0; vertical-align:top; text-align:center; }
 .jstree-ocl { cursor:pointer; }
+.jstree-leaf > .jstree-ocl { cursor:default; }
 .jstree .jstree-open > .jstree-children { display:block; }
 .jstree .jstree-closed > .jstree-children,
 .jstree .jstree-leaf > .jstree-children { display:none; }
@@ -27,6 +28,7 @@
 	position:relative;
 	display:inline-block;
 	min-width:100%;
+	.jstree-leaf > .jstree-ocl { cursor:pointer; }
 	.jstree-anchor, .jstree-icon { position:relative; }
 	.jstree-wholerow { width:100%; cursor:pointer; position:absolute; left:0; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
 }
