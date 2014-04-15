@@ -5176,7 +5176,7 @@
 		 * a jQuery-like AJAX config, which jstree uses if a server should be queried for results. 
 		 * 
 		 * A `str` (which is the search string) parameter will be added with the request. The expected result is a JSON array with nodes that need to be opened so that matching nodes will be revealed.
-		 * Leave this setting as `false` to not query the server.
+		 * Leave this setting as `false` to not query the server. You can also set this to a function, which will be invoked in the instance's scope and receive 2 parameters - the search string and the callback to call with the array of nodes to load.
 		 * @name $.jstree.defaults.search.ajax
 		 * @plugin search
 		 */
@@ -5279,7 +5279,7 @@
 				return this.clear_search();
 			}
 			var s = this.settings.search,
-				a = s.ajax ? $.extend({}, s.ajax) : false,
+				a = s.ajax ? s.ajax : false,
 				f = null,
 				r = [],
 				p = [], i, j;
@@ -5287,19 +5287,30 @@
 				this.clear_search();
 			}
 			if(!skip_async && a !== false) {
-				if(!a.data) { a.data = {}; }
-				a.data.str = str;
-				return $.ajax(a)
-					.fail($.proxy(function () {
-						this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'search', 'id' : 'search_01', 'reason' : 'Could not load search parents', 'data' : JSON.stringify(a) };
-						this.settings.core.error.call(this, this._data.core.last_error);
-					}, this))
-					.done($.proxy(function (d) {
-						if(d && d.d) { d = d.d; }
-						this._load_nodes(!$.isArray(d) ? [] : d, function () {
-							this.search(str, true);
-						});
-					}, this));
+				if($.isFunction(a)) {
+					return a.call(this, str, $.proxy(function (d) {
+							if(d && d.d) { d = d.d; }
+							this._load_nodes(!$.isArray(d) ? [] : d, function () {
+								this.search(str, true);
+							});
+						}, this));
+				}
+				else {
+					a = $.extend({}, a);
+					if(!a.data) { a.data = {}; }
+					a.data.str = str;
+					return $.ajax(a)
+						.fail($.proxy(function () {
+							this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'search', 'id' : 'search_01', 'reason' : 'Could not load search parents', 'data' : JSON.stringify(a) };
+							this.settings.core.error.call(this, this._data.core.last_error);
+						}, this))
+						.done($.proxy(function (d) {
+							if(d && d.d) { d = d.d; }
+							this._load_nodes(!$.isArray(d) ? [] : d, function () {
+								this.search(str, true);
+							});
+						}, this));
+				}
 			}
 			this._data.search.str = str;
 			this._data.search.dom = $();
