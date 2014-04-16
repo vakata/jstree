@@ -793,7 +793,6 @@ $.jstree.reference('#jstree')
 		<!--..-->
 		<div class="row page" id="demo">
 			<div class="col-md-12">
-				<h3>Basic AJAX demo</h3>
 				<div class="row">
 					<div class="col-md-4 col-sm-8 col-xs-8">
 						<button type="button" class="btn btn-success btn-sm" onclick="demo_create();"><i class="glyphicon glyphicon-asterisk"></i> Create</button>
@@ -805,8 +804,8 @@ $.jstree.reference('#jstree')
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-12">
-						<div id="jstree_demo" class="demo" style="margin-top:1em; min-height:200px;"></div>
+					<div class="col-md-6">
+						<div id="jstree_demo" class="demo" style="margin-top:1em; min-height:400px;"></div>
 						<script>
 						function demo_create() {
 							var ref = $('#jstree_demo').jstree(true),
@@ -867,11 +866,8 @@ $.jstree.reference('#jstree')
 						});
 						</script>
 					</div>
-					<div class="col-md-12">
-						<p style="text-align:center; padding-top:1em;">
-							<button class="btn btn-info" onclick="$(this).blur().parent().next().slideToggle(); return false;">show the complete code</button>
-						</p>
-						<pre style="margin-top:1em; display:none;"><code>$('#jstree_demo').jstree({
+					<div class="col-md-6">
+						<pre style="margin-top:1em;"><code>$('#jstree_demo').jstree({
   "core" : {
     "animation" : 0,
     "check_callback" : true,
@@ -911,21 +907,9 @@ $.jstree.reference('#jstree')
 });</code></pre>
 					</div>
 				</div>
-				<div class="row" style="margin-top:2em;">
+				<div class="row" style="display:none;">
 					<div class="col-md-12">
-						<div class="alert alert-block alert-info" style="text-align:center;">You can see the code of the following demos in the <code>demo</code> folder of the download</div>
-					</div>
-				</div>
-				<div class="row" style="margin-top:2em;">
-					<div class="col-md-12">
-						<h3>Filebrowser demo</h3>
-						<iframe src="./../demo/filebrowser/index.php" style="border:0; display:block; height:450px; width:100%; border-radius:5px; box-shadow:0 0 5px #CCCCCC; padding:10px;" frameborder="0"></iframe>
-					</div>
-				</div>
-				<div class="row" style="margin-top:2em;">
-					<div class="col-md-12">
-						<h3>Database demo</h3>
-						<iframe src="./../demo/sitebrowser/index.php" style="border:0; display:block; height:450px; width:100%; border-radius:5px; box-shadow:0 0 5px #CCCCCC; padding:10px;" frameborder="0"></iframe>
+						<p style="text-align:center; margin-top:2em;"><a href="http://jsfiddle.net/vakata/3khw3/">This demo is available as a jsFiddle &raquo;</a></p>
 					</div>
 				</div>
 			</div>
