@@ -3416,7 +3416,7 @@
 		"tags": [
 			{
 				"type": "name",
-				"string": "refresh_name(obj)"
+				"string": "refresh_node(obj)"
 			},
 			{
 				"type": "param",

@@ -2638,7 +2638,7 @@
 		},
 		/**
 		 * refreshes a node in the tree (reload its children) all opened nodes inside that node are reloaded with calls to `load_node`.
-		 * @name refresh_name(obj)
+		 * @name refresh_node(obj)
 		 * @param {Boolean} skip_loading an option to skip showing the loading indicator
 		 * @trigger refresh.jstree
 		 */
