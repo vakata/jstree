@@ -126,7 +126,7 @@
 					}
 					else {
 						// if we are hovering a tree node
-						ref = $(data.event.target).closest('a');
+						ref = $(data.event.target).closest('.jstree-anchor');
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
 							off = ref.offset();
 							rel = data.event.pageY - off.top;

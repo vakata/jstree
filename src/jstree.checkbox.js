@@ -311,7 +311,7 @@
 				}
 			}
 			// attempt for server side undetermined state
-			this.element.find('.jstree-closed').not(':has(ul)')
+			this.element.find('.jstree-closed').not(':has(.jstree-children)')
 				.each(function () {
 					var tmp = t.get_node(this), tmp2;
 					if(!tmp.state.loaded) {
@@ -338,7 +338,7 @@
 				if(!m[p[i]].state.selected) {
 					s = this.get_node(p[i], true);
 					if(s && s.length) {
-						s.children('a').children('.jstree-checkbox').addClass('jstree-undetermined');
+						s.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-undetermined');
 					}
 				}
 			}
@@ -346,8 +346,16 @@
 		this.redraw_node = function(obj, deep, is_callback) {
 			obj = parent.redraw_node.call(this, obj, deep, is_callback);
 			if(obj) {
-				var tmp = obj.getElementsByTagName('A')[0];
-				tmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);
+				var i, j, tmp = null;
+				for(i = 0, j = obj.childNodes.length; i < j; i++) {
+					if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {
+						tmp = obj.childNodes[i];
+						break;
+					}
+				}
+				if(tmp) {
+					tmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);
+				}
 			}
 			if(!is_callback && this.settings.checkbox.three_state) {
 				if(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }
@@ -366,13 +374,13 @@
 		 * @name show_checkboxes()
 		 * @plugin checkbox
 		 */
-		this.show_checkboxes = function () { this._data.core.themes.checkboxes = true; this.element.children("ul").removeClass("jstree-no-checkboxes"); };
+		this.show_checkboxes = function () { this._data.core.themes.checkboxes = true; this.get_container_ul().removeClass("jstree-no-checkboxes"); };
 		/**
 		 * hide the node checkbox icons
 		 * @name hide_checkboxes()
 		 * @plugin checkbox
 		 */
-		this.hide_checkboxes = function () { this._data.core.themes.checkboxes = false; this.element.children("ul").addClass("jstree-no-checkboxes"); };
+		this.hide_checkboxes = function () { this._data.core.themes.checkboxes = false; this.get_container_ul().addClass("jstree-no-checkboxes"); };
 		/**
 		 * toggle the node icons
 		 * @name toggle_checkboxes()

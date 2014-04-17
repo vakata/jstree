@@ -484,7 +484,7 @@
 					return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue));
 				})
 				.remove();
-			this.element.html("<"+"ul class='jstree-container-ul'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
+			this.element.html("<"+"ul class='jstree-container-ul jstree-children'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
 			this._data.core.li_height = this.get_container_ul().children("li:eq(0)").height() || 18;
 			/**
 			 * triggered after the loading text is shown and before loading starts
@@ -707,7 +707,7 @@
 		 * @return {jQuery}
 		 */
 		get_container_ul : function () {
-			return this.element.children("ul:eq(0)");
+			return this.element.children(".jstree-children:eq(0)");
 		},
 		/**
 		 * gets string replacements (localization). Used internally.
@@ -780,8 +780,8 @@
 				if(this._model.data[obj]) {
 					obj = this._model.data[obj];
 				}
-				else if(((dom = $(obj, this.element)).length || (dom = $('#' + obj.replace($.jstree.idregex,'\\$&'), this.element)).length) && this._model.data[dom.closest('li').attr('id')]) {
-					obj = this._model.data[dom.closest('li').attr('id')];
+				else if(((dom = $(obj, this.element)).length || (dom = $('#' + obj.replace($.jstree.idregex,'\\$&'), this.element)).length) && this._model.data[dom.closest('.jstree-node').attr('id')]) {
+					obj = this._model.data[dom.closest('.jstree-node').attr('id')];
 				}
 				else if((dom = $(obj, this.element)).length && dom.hasClass('jstree')) {
 					obj = this._model.data['#'];
@@ -839,13 +839,13 @@
 				return tmp ? $(tmp) : false;
 			}
 			if(obj.hasClass("jstree-open")) {
-				tmp = this._firstChild(obj.children('ul')[0]);
+				tmp = this._firstChild(obj.children('.jstree-children')[0]);
 				return tmp ? $(tmp) : false;
 			}
 			if((tmp = this._nextSibling(obj[0])) !== null) {
 				return $(tmp);
 			}
-			return obj.parentsUntil(".jstree","li").next("li").eq(0);
+			return obj.parentsUntil(".jstree",".jstree-node").next(".jstree-node").eq(0);
 		},
 		/**
 		 * get the previous visible node that is above the `obj` node. If `strict` is set to `true` only sibling nodes are returned.
@@ -871,12 +871,12 @@
 			if((tmp = this._previousSibling(obj[0])) !== null) {
 				obj = $(tmp);
 				while(obj.hasClass("jstree-open")) {
-					obj = obj.children("ul:eq(0)").children("li:last");
+					obj = obj.children(".jstree-children:eq(0)").children(".jstree-node:last");
 				}
 				return obj;
 			}
 			tmp = obj[0].parentNode.parentNode;
-			return tmp && tmp.tagName === 'LI' ? $(tmp) : false;
+			return tmp && tmp.className && tmp.className.indexOf('jstree-node') !== -1 ? $(tmp) : false;
 		},
 		/**
 		 * get the parent ID of a node
@@ -900,12 +900,12 @@
 		get_children_dom : function (obj) {
 			obj = this.get_node(obj, true);
 			if(obj[0] === this.element[0]) {
-				return this.get_container_ul().children("li");
+				return this.get_container_ul().children(".jstree-node");
 			}
 			if(!obj || !obj.length) {
 				return false;
 			}
-			return obj.children("ul").children("li");
+			return obj.children(".jstree-children").children(".jstree-node");
 		},
 		/**
 		 * checks if a node has children
@@ -1642,7 +1642,8 @@
 				d = document,
 				m = this._model.data,
 				f = false,
-				s = false;
+				s = false,
+				tmp = null;
 			if(!obj) { return false; }
 			if(obj.id === '#') {  return this.redraw(true); }
 			deep = deep || obj.children.length === 0;
@@ -1668,11 +1669,11 @@
 					ind = node.index();
 				}
 				// m[obj.id].data = node.data(); // use only node's data, no need to touch jquery storage
-				if(!deep && obj.children.length && !node.children('ul').length) {
+				if(!deep && obj.children.length && !node.children('.jstree-children').length) {
 					deep = true;
 				}
 				if(!deep) {
-					old = node.children('UL')[0];
+					old = node.children('.jstree-children')[0];
 				}
 				s = node.attr('aria-selected');
 				f = node.children('.jstree-anchor')[0] === document.activeElement;
@@ -1760,16 +1761,19 @@
 				if(!par) {
 					par = this.element[0];
 				}
-				if(!par.getElementsByTagName('UL').length) {
-					i = d.createElement('UL');
-					i.setAttribute('role', 'group');
-					i.className = 'jstree-children';
-					par.appendChild(i);
-					par = i;
+				for(i = 0, j = par.childNodes.length; i < j; i++) {
+					if(par.childNodes[i] && par.childNodes[i].className && par.childNodes[i].className.indexOf('jstree-children') !== -1) {
+						tmp = par.childNodes[i];
+						break;
+					}
 				}
-				else {
-					par = par.getElementsByTagName('UL')[0];
+				if(!tmp) {
+					tmp = d.createElement('UL');
+					tmp.setAttribute('role', 'group');
+					tmp.className = 'jstree-children';
+					par.appendChild(tmp);
 				}
+				par = tmp;
 
 				if(ind < par.childNodes.length) {
 					par.insertBefore(node, par.childNodes[ind]);
@@ -1831,7 +1835,7 @@
 				d = this.get_node(obj, true);
 				t = this;
 				if(d.length) {
-					if(obj.children.length && !this._firstChild(d.children('ul')[0])) {
+					if(obj.children.length && !this._firstChild(d.children('.jstree-children')[0])) {
 						obj.state.opened = true;
 						this.redraw_node(obj, true);
 						d = this.get_node(obj, true);
@@ -1844,9 +1848,9 @@
 					else {
 						this.trigger('before_open', { "node" : obj });
 						d
-							.children("ul").css("display","none").end()
+							.children(".jstree-children").css("display","none").end()
 							.removeClass("jstree-closed").addClass("jstree-open").attr("aria-expanded", true)
-							.children("ul").stop(true, true)
+							.children(".jstree-children").stop(true, true)
 								.slideDown(animation, function () {
 									this.style.display = "";
 									t.trigger("after_open", { "node" : obj });
@@ -1932,15 +1936,15 @@
 			if(d.length) {
 				if(!animation) {
 					d[0].className = d[0].className.replace('jstree-open', 'jstree-closed');
-					d.attr("aria-expanded", false).children('ul').remove();
+					d.attr("aria-expanded", false).children('.jstree-children').remove();
 				}
 				else {
 					d
-						.children("ul").attr("style","display:block !important").end()
+						.children(".jstree-children").attr("style","display:block !important").end()
 						.removeClass("jstree-open").addClass("jstree-closed").attr("aria-expanded", false)
-						.children("ul").stop(true, true).slideUp(animation, function () {
+						.children(".jstree-children").stop(true, true).slideUp(animation, function () {
 							this.style.display = "";
-							d.children('ul').remove();
+							d.children('.jstree-children').remove();
 							t.trigger("after_close", { "node" : obj });
 						});
 				}
@@ -2007,7 +2011,7 @@
 			}
 			original_obj = original_obj || dom;
 			_this = this;
-			dom = this.is_closed(obj) ? dom.find('li.jstree-closed').addBack() : dom.find('li.jstree-closed');
+			dom = this.is_closed(obj) ? dom.find('.jstree-closed').addBack() : dom.find('.jstree-closed');
 			dom.each(function () {
 				_this.open_node(
 					this,
@@ -2015,7 +2019,7 @@
 					animation || 0
 				);
 			});
-			if(original_obj.find('li.jstree-closed').length === 0) {
+			if(original_obj.find('.jstree-closed').length === 0) {
 				/**
 				 * triggered when an `open_all` call completes
 				 * @event
@@ -2044,7 +2048,7 @@
 				}
 				return this.trigger('close_all', { "node" : obj });
 			}
-			dom = this.is_open(obj) ? dom.find('li.jstree-open').addBack() : dom.find('li.jstree-open');
+			dom = this.is_open(obj) ? dom.find('.jstree-open').addBack() : dom.find('.jstree-open');
 			$(dom.get().reverse()).each(function () { _this.close_node(this, animation || 0); });
 			/**
 			 * triggered when an `close_all` call completes
@@ -2619,7 +2623,7 @@
 			};
 			var c = this.get_container_ul()[0].className;
 			if(!skip_loading) {
-				this.element.html("<"+"ul class='jstree-container-ul'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
+				this.element.html("<"+"ul class='jstree-container-ul jstree-children'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
 			}
 			this.load_node('#', function (o, s) {
 				if(s) {
@@ -3630,7 +3634,7 @@
 			obj = this.get_node(obj);
 			if(!obj || obj === '#') { return false; }
 			obj.icon = false;
-			this.get_node(obj, true).children("a").children(".jstree-themeicon").addClass('jstree-themeicon-hidden');
+			this.get_node(obj, true).children(".jstree-anchor").children(".jstree-themeicon").addClass('jstree-themeicon-hidden');
 			return true;
 		},
 		/**
@@ -3650,9 +3654,9 @@
 			obj = this.get_node(obj);
 			if(!obj || obj === '#') { return false; }
 			dom = this.get_node(obj, true);
-			obj.icon = dom.length ? dom.children("a").children(".jstree-themeicon").attr('rel') : true;
+			obj.icon = dom.length ? dom.children(".jstree-anchor").children(".jstree-themeicon").attr('rel') : true;
 			if(!obj.icon) { obj.icon = true; }
-			dom.children("a").children(".jstree-themeicon").removeClass('jstree-themeicon-hidden');
+			dom.children(".jstree-anchor").children(".jstree-themeicon").removeClass('jstree-themeicon-hidden');
 			return true;
 		}
 	};
@@ -4029,7 +4033,7 @@
 				}
 			}
 			// attempt for server side undetermined state
-			this.element.find('.jstree-closed').not(':has(ul)')
+			this.element.find('.jstree-closed').not(':has(.jstree-children)')
 				.each(function () {
 					var tmp = t.get_node(this), tmp2;
 					if(!tmp.state.loaded) {
@@ -4056,7 +4060,7 @@
 				if(!m[p[i]].state.selected) {
 					s = this.get_node(p[i], true);
 					if(s && s.length) {
-						s.children('a').children('.jstree-checkbox').addClass('jstree-undetermined');
+						s.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-undetermined');
 					}
 				}
 			}
@@ -4064,8 +4068,16 @@
 		this.redraw_node = function(obj, deep, is_callback) {
 			obj = parent.redraw_node.call(this, obj, deep, is_callback);
 			if(obj) {
-				var tmp = obj.getElementsByTagName('A')[0];
-				tmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);
+				var i, j, tmp = null;
+				for(i = 0, j = obj.childNodes.length; i < j; i++) {
+					if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {
+						tmp = obj.childNodes[i];
+						break;
+					}
+				}
+				if(tmp) {
+					tmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);
+				}
 			}
 			if(!is_callback && this.settings.checkbox.three_state) {
 				if(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }
@@ -4084,13 +4096,13 @@
 		 * @name show_checkboxes()
 		 * @plugin checkbox
 		 */
-		this.show_checkboxes = function () { this._data.core.themes.checkboxes = true; this.element.children("ul").removeClass("jstree-no-checkboxes"); };
+		this.show_checkboxes = function () { this._data.core.themes.checkboxes = true; this.get_container_ul().removeClass("jstree-no-checkboxes"); };
 		/**
 		 * hide the node checkbox icons
 		 * @name hide_checkboxes()
 		 * @plugin checkbox
 		 */
-		this.hide_checkboxes = function () { this._data.core.themes.checkboxes = false; this.element.children("ul").addClass("jstree-no-checkboxes"); };
+		this.hide_checkboxes = function () { this._data.core.themes.checkboxes = false; this.get_container_ul().addClass("jstree-no-checkboxes"); };
 		/**
 		 * toggle the node icons
 		 * @name toggle_checkboxes()
@@ -4801,7 +4813,7 @@
 					}
 					else {
 						// if we are hovering a tree node
-						ref = $(data.event.target).closest('a');
+						ref = $(data.event.target).closest('.jstree-anchor');
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
 							off = ref.offset();
 							rel = data.event.pageY - off.top;
@@ -5243,10 +5255,10 @@
 					}
 					this._data.search.dom.children(".jstree-anchor").addClass('jstree-search');
 					if(this.settings.search.show_only_matches && this._data.search.res.length) {
-						this.element.find("li").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+						this.element.find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
 						o = o.add(this._data.search.dom);
 						o.parentsUntil(".jstree").addBack().show()
-							.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
+							.filter(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
 					}
 				}
 			}, this));
@@ -5254,14 +5266,14 @@
 				this.element
 					.on("search.jstree", function (e, data) {
 						if(data.nodes.length) {
-							$(this).find("li").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+							$(this).find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
 							data.nodes.parentsUntil(".jstree").addBack().show()
-								.filter("ul").each(function () { $(this).children("li:visible").eq(-1).addClass("jstree-last"); });
+								.filter(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
 						}
 					})
 					.on("clear_search.jstree", function (e, data) {
 						if(data.nodes.length) {
-							$(this).find("li").css("display","").filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+							$(this).find(".jstree-node").css("display","").filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
 						}
 					});
 			}
@@ -5982,17 +5994,17 @@
 				.on("contextmenu.jstree", ".jstree-wholerow", $.proxy(function (e) {
 						e.preventDefault();
 						var tmp = $.Event('contextmenu', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey, pageX : e.pageX, pageY : e.pageY });
-						$(e.currentTarget).closest("li").children("a:eq(0)").trigger(tmp);
+						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor:eq(0)").trigger(tmp);
 					}, this))
 				.on("click.jstree", ".jstree-wholerow", function (e) {
 						e.stopImmediatePropagation();
 						var tmp = $.Event('click', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey });
-						$(e.currentTarget).closest("li").children("a:eq(0)").trigger(tmp).focus();
+						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor:eq(0)").trigger(tmp).focus();
 					})
 				.on("click.jstree", ".jstree-leaf > .jstree-ocl", $.proxy(function (e) {
 						e.stopImmediatePropagation();
 						var tmp = $.Event('click', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey });
-						$(e.currentTarget).closest("li").children("a:eq(0)").trigger(tmp).focus();
+						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor:eq(0)").trigger(tmp).focus();
 					}, this))
 				.on("mouseover.jstree", ".jstree-wholerow, .jstree-icon", $.proxy(function (e) {
 						e.stopImmediatePropagation();
