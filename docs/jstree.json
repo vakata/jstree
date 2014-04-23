@@ -709,6 +709,14 @@
 			{
 				"type": "name",
 				"string": "destroy()"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Boolean"
+				],
+				"name": "keep_html",
+				"description": "if not set to `true` the container will be emptied, otherwise the current DOM elements will be kept intact"
 			}
 		],
 		"description": {
@@ -718,7 +726,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "destroy : function () {\n\t\t\tthis.element.unbind(\"destroyed\", this.teardown);\n\t\t\tthis.teardown();\n\t\t},"
+		"code": "destroy : function (keep_html) {\n\t\t\tif(!keep_html) { this.element.empty(); }\n\t\t\tthis.element.unbind(\"destroyed\", this.teardown);\n\t\t\tthis.teardown();\n\t\t},"
 	},
 	{
 		"tags": [

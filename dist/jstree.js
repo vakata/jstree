@@ -497,8 +497,10 @@
 		/**
 		 * destroy an instance
 		 * @name destroy()
+		 * @param  {Boolean} keep_html if not set to `true` the container will be emptied, otherwise the current DOM elements will be kept intact
 		 */
-		destroy : function () {
+		destroy : function (keep_html) {
+			if(!keep_html) { this.element.empty(); }
 			this.element.unbind("destroyed", this.teardown);
 			this.teardown();
 		},
