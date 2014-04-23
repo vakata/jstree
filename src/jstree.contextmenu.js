@@ -234,8 +234,7 @@
 				y = o.top + this._data.core.li_height;
 			}
 			if(this.settings.contextmenu.select_node && !this.is_selected(obj)) {
-				this.deselect_all();
-				this.select_node(obj, false, false, e);
+				this.activate_node(obj, e);
 			}
 
 			i = s.items;

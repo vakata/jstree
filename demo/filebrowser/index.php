@@ -115,6 +115,9 @@ class fs
 	}
 	public function rename($id, $name) {
 		$dir = $this->path($id);
+		if($dir === $this->base) {
+			throw new Exception('Cannot rename root');
+		}
 		if(preg_match('([^ a-zа-я-_0-9.]+)ui', $name) || !strlen($name)) {
 			throw new Exception('Invalid name: ' . $name);
 		}
@@ -128,6 +131,9 @@ class fs
 	}
 	public function remove($id) {
 		$dir = $this->path($id);
+		if($dir === $this->base) {
+			throw new Exception('Cannot remove root');
+		}
 		if(is_dir($dir)) {
 			foreach(array_diff(scandir($dir), array(".", "..")) as $f) {
 				$this->remove($this->id($dir . DIRECTORY_SEPARATOR . $f));
