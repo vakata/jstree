@@ -145,6 +145,7 @@
   -moz-border-radius: 1px;
   -webkit-border-radius: 1px;
   border-radius: 1px;
+  text-align: left;
 }
 .vakata-context li > a:hover {
   position: relative;
