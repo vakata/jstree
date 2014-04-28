@@ -5238,24 +5238,15 @@
 			this.element.on('before_open.jstree', $.proxy(function (e, data) {
 				var i, j, f, r = this._data.search.res, s = [], o = $();
 				if(r && r.length) {
-					this._data.search.dom = $();
-					for(i = 0, j = r.length; i < j; i++) {
-						s = s.concat(this.get_node(r[i]).parents);
-						f = this.get_node(r[i], true);
-						if(f) {
-							this._data.search.dom = this._data.search.dom.add(f);
-						}
-					}
-					s = $.vakata.array_unique(s);
-					for(i = 0, j = s.length; i < j; i++) {
-						if(s[i] === "#") { continue; }
-						f = this.get_node(s[i], true);
-						if(f) {
-							o = o.add(f);
-						}
-					}
+					this._data.search.dom = $(this.element[0].querySelectorAll('#' + $.map(r, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #')));
 					this._data.search.dom.children(".jstree-anchor").addClass('jstree-search');
 					if(this.settings.search.show_only_matches && this._data.search.res.length) {
+						for(i = 0, j = r.length; i < j; i++) {
+							s = s.concat(this.get_node(r[i]).parents);
+						}
+						s = $.vakata.array_remove_item($.vakata.array_unique(s),'#');
+						o = $(this.element[0].querySelectorAll('#' + $.map(s, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #')));
+
 						this.element.find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
 						o = o.add(this._data.search.dom);
 						o.parentsUntil(".jstree").addBack().show()
@@ -5341,12 +5332,7 @@
 			if(r.length) {
 				p = $.vakata.array_unique(p);
 				this._search_open(p);
-				for(i = 0, j = r.length; i < j; i++) {
-					f = this.get_node(r[i], true);
-					if(f) {
-						this._data.search.dom = this._data.search.dom.add(f);
-					}
-				}
+				this._data.search.dom = $(this.element[0].querySelectorAll('#' + $.map(r, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #')));
 				this._data.search.res = r;
 				this._data.search.dom.children(".jstree-anchor").addClass('jstree-search');
 			}
