@@ -5312,7 +5312,7 @@
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.isArray(d) ? [] : d, function () {
 								this.search(str, true);
-							});
+							}, true);
 						}, this));
 				}
 			}
