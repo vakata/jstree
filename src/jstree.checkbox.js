@@ -364,7 +364,7 @@
 			return obj;
 		};
 		this.activate_node = function (obj, e) {
-			if(this.settings.checkbox.whole_node || $(e.target).hasClass('jstree-checkbox')) {
+			if(this.settings.core.multiple) {
 				e.ctrlKey = true;
 			}
 			return parent.activate_node.call(this, obj, e);
