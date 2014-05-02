@@ -86,7 +86,7 @@
 							s = s.concat(this.get_node(r[i]).parents);
 						}
 						s = $.vakata.array_remove_item($.vakata.array_unique(s),'#');
-						o = $(this.element[0].querySelectorAll('#' + $.map(s, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #')));
+						o = s.length ? $(this.element[0].querySelectorAll('#' + $.map(s, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #'))) : $();
 
 						this.element.find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
 						o = o.add(this._data.search.dom);
