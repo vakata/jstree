@@ -3051,7 +3051,7 @@
 		 * @trigger move_node.jstree
 		 */
 		move_node : function (obj, par, pos, callback, is_loaded) {
-			var t1, t2, old_par, new_par, old_ins, is_multi, dpc, tmp, i, j, k, l, p;
+			var t1, t2, old_par, old_pos, new_par, old_ins, is_multi, dpc, tmp, i, j, k, l, p;
 			if($.isArray(obj)) {
 				obj = obj.reverse().slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -3072,6 +3072,7 @@
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
 			old_ins = obj.instance ? obj.instance : (this._model.data[obj.id] ? this : $.jstree.reference(obj.id));
 			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
+			old_pos = old_ins && old_ins._id && old_par && old_ins._model.data[old_par] && old_ins._model.data[old_par].children ? $.inArray(obj.id, old_ins._model.data[old_par].children) : -1;
 			if(is_multi) {
 				if(this.copy_node(obj, par, pos, callback, is_loaded)) {
 					if(old_ins) { old_ins.delete_node(obj); }
@@ -3179,11 +3180,12 @@
 			 * @param {String} parent the parent's ID
 			 * @param {Number} position the position of the node among the parent's children
 			 * @param {String} old_parent the old parent of the node
+			 * @param {Number} old_position the old position of the node
 			 * @param {Boolean} is_multi do the node and new parent belong to different instances
 			 * @param {jsTree} old_instance the instance the node came from
 			 * @param {jsTree} new_instance the instance of the new parent
 			 */
-			this.trigger('move_node', { "node" : obj, "parent" : new_par.id, "position" : pos, "old_parent" : old_par, 'is_multi' : (old_ins && old_ins._id && old_ins._id !== this._id), 'is_foreign' : (!old_ins || !old_ins._id), 'old_instance' : old_ins, 'new_instance' : this });
+			this.trigger('move_node', { "node" : obj, "parent" : new_par.id, "position" : pos, "old_parent" : old_par, "old_position" : old_pos, 'is_multi' : (old_ins && old_ins._id && old_ins._id !== this._id), 'is_foreign' : (!old_ins || !old_ins._id), 'old_instance' : old_ins, 'new_instance' : this });
 			return true;
 		},
 		/**
@@ -3282,11 +3284,12 @@
 			 * @param {String} parent the parent's ID
 			 * @param {Number} position the position of the node among the parent's children
 			 * @param {String} old_parent the old parent of the node
+			 * @param {Number} old_position the position of the original node
 			 * @param {Boolean} is_multi do the node and new parent belong to different instances
 			 * @param {jsTree} old_instance the instance the node came from
 			 * @param {jsTree} new_instance the instance of the new parent
 			 */
-			this.trigger('copy_node', { "node" : tmp, "original" : obj, "parent" : new_par.id, "position" : pos, "old_parent" : old_par, 'is_multi' : (old_ins && old_ins._id && old_ins._id !== this._id), 'is_foreign' : (!old_ins || !old_ins._id), 'old_instance' : old_ins, 'new_instance' : this });
+			this.trigger('copy_node', { "node" : tmp, "original" : obj, "parent" : new_par.id, "position" : pos, "old_parent" : old_par, "old_position" : old_ins && old_ins._id && old_par && old_ins._model.data[old_par] && old_ins._model.data[old_par].children ? $.inArray(obj.id, old_ins._model.data[old_par].children) : -1,'is_multi' : (old_ins && old_ins._id && old_ins._id !== this._id), 'is_foreign' : (!old_ins || !old_ins._id), 'old_instance' : old_ins, 'new_instance' : this });
 			return tmp.id;
 		},
 		/**
