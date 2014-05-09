@@ -65,6 +65,24 @@
 	};
 })(jQuery);
 
+// allow search results expanding
+(function ($, undefined) {
+	"use strict";
+	$.jstree.plugins.show_matches_children = function (options, parent) {
+		this.bind = function () {
+			parent.bind.call(this);
+			this.element
+				.on('search.jstree before_open.jstree', function (e, data) {
+					if(data.instance.settings.search && data.instance.settings.search.show_only_matches) {
+						data.instance._data.search.dom.find('.jstree-node')
+							.show().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last')
+							.end().end().end().find(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
+					}
+				});
+		};
+	};
+})(jQuery);
+
 // additional icon on node (outside of anchor)
 (function ($, undefined) {
 	"use strict";
