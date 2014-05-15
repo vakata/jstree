@@ -3238,7 +3238,7 @@
 		"tags": [
 			{
 				"type": "name",
-				"string": "get_top_selected([full])"
+				"string": "get_bottom_selected([full])"
 			},
 			{
 				"type": "param",

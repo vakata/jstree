@@ -2448,7 +2448,7 @@
 		},
 		/**
 		 * get an array of all bottom level selected nodes (ignoring selected parents)
-		 * @name get_top_selected([full])
+		 * @name get_bottom_selected([full])
 		 * @param  {mixed}  full if set to `true` the returned array will consist of the full node objects, otherwise - only IDs will be returned
 		 * @return {Array}
 		 */
