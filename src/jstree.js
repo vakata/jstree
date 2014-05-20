@@ -1800,6 +1800,10 @@
 					this.open_node(obj.id, false, 0);
 				}, this), 0);
 			}
+			
+			//Added to allow for authors to respond to the redraw_node event on a node level
+			this.trigger("redraw_node", { "data": obj, "node": node });
+			
 			return node;
 		},
 		/**
