@@ -3720,39 +3720,6 @@
 		var tmp = $.inArray(item, array);
 		return tmp !== -1 ? $.vakata.array_remove(array, tmp) : array;
 	};
-	// browser sniffing
-	(function () {
-		var browser = {},
-			b_match = function(ua) {
-			ua = ua.toLowerCase();
-
-			var match =	/(chrome)[ \/]([\w.]+)/.exec( ua ) ||
-						/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-						/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
-						/(msie) ([\w.]+)/.exec( ua ) ||
-						(ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua )) ||
-						[];
-				return {
-					browser: match[1] || "",
-					version: match[2] || "0"
-				};
-			},
-			matched = b_match(window.navigator.userAgent);
-		if(matched.browser) {
-			browser[ matched.browser ] = true;
-			browser.version = matched.version;
-		}
-		if(browser.chrome) {
-			browser.webkit = true;
-		}
-		else if(browser.webkit) {
-			browser.safari = true;
-		}
-		$.vakata.browser = browser;
-	}());
-	if($.vakata.browser.msie && $.vakata.browser.version < 8) {
-		$.jstree.defaults.core.animation = 0;
-	}
 
 /**
  * ### Checkbox plugin
