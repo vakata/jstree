@@ -85,7 +85,7 @@
 		 */
 		plugins : {},
 		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : '',
-		idregex : /[\\:&'".,=\- \/$]/g
+		idregex : /[\\:&@'".,=\- \/$]/g
 	};
 	/**
 	 * creates a jstree instance
@@ -1070,11 +1070,25 @@
 			var s = this.settings.core.data, t;
 			// use original HTML
 			if(!s) {
-				return callback.call(this, obj.id === '#' ? this._append_html_data(obj, this._data.core.original_container_html.clone(true)) : false);
+				if(obj.id === '#') {
+					return this._append_html_data(obj, this._data.core.original_container_html.clone(true), function (status) {
+						callback.call(this, status);
+					});
+				}
+				else {
+					return callback.call(this, false);
+				}
+				// return callback.call(this, obj.id === '#' ? this._append_html_data(obj, this._data.core.original_container_html.clone(true)) : false);
 			}
 			if($.isFunction(s)) {
 				return s.call(this, obj, $.proxy(function (d) {
-					return d === false ? callback.call(this, false) : callback.call(this, this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $(d) : d));
+					if(d === false) {
+						callback.call(this, false);
+					}
+					this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $(d) : d, function (status) {
+						callback.call(this, status);
+					});
+					// return d === false ? callback.call(this, false) : callback.call(this, this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $(d) : d));
 				}, this));
 			}
 			if(typeof s === 'object') {
@@ -1090,10 +1104,12 @@
 						.done($.proxy(function (d,t,x) {
 								var type = x.getResponseHeader('Content-Type');
 								if(type.indexOf('json') !== -1 || typeof d === "object") {
-									return callback.call(this, this._append_json_data(obj, d));
+									return this._append_json_data(obj, d, function (status) { callback.call(this, status); });
+									//return callback.call(this, this._append_json_data(obj, d));
 								}
 								if(type.indexOf('html') !== -1 || typeof d === "string") {
-									return callback.call(this, this._append_html_data(obj, $(d)));
+									return this._append_html_data(obj, d, function (status) { callback.call(this, status); });
+									// return callback.call(this, this._append_html_data(obj, $(d)));
 								}
 								this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'core', 'id' : 'core_04', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id, 'xhr' : x }) };
 								this.settings.core.error.call(this, this._data.core.last_error);
@@ -1106,18 +1122,30 @@
 							}, this));
 				}
 				t = ($.isArray(s) || $.isPlainObject(s)) ? JSON.parse(JSON.stringify(s)) : s;
-				if(obj.id !== "#") {
+				if(obj.id === '#') {
+					return this._append_json_data(obj, t, function (status) {
+						callback.call(this, status);
+					});
+				}
+				else {
 					this._data.core.last_error = { 'error' : 'nodata', 'plugin' : 'core', 'id' : 'core_05', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id }) };
 					this.settings.core.error.call(this, this._data.core.last_error);
+					return callback.call(this, false);
 				}
-				return callback.call(this, (obj.id === "#" ? this._append_json_data(obj, t) : false) );
+				//return callback.call(this, (obj.id === "#" ? this._append_json_data(obj, t) : false) );
 			}
 			if(typeof s === 'string') {
-				if(obj.id !== "#") {
+				if(obj.id === '#') {
+					return this._append_html_data(obj, $(s), function (status) {
+						callback.call(this, status);
+					});
+				}
+				else {
 					this._data.core.last_error = { 'error' : 'nodata', 'plugin' : 'core', 'id' : 'core_06', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id }) };
 					this.settings.core.error.call(this, this._data.core.last_error);
+					return callback.call(this, false);
 				}
-				return callback.call(this, (obj.id === "#" ? this._append_html_data(obj, $(s)) : false) );
+				//return callback.call(this, (obj.id === "#" ? this._append_html_data(obj, $(s)) : false) );
 			}
 			return callback.call(this, false);
 		},
@@ -1139,10 +1167,9 @@
 		 * @name _append_html_data(obj, data)
 		 * @param  {mixed} obj the node to append to
 		 * @param  {String} data the HTML string to parse and append
-		 * @return {Boolean}
 		 * @trigger model.jstree, changed.jstree
 		 */
-		_append_html_data : function (dom, data) {
+		_append_html_data : function (dom, data, cb) {
 			dom = this.get_node(dom);
 			dom.children = [];
 			dom.children_d = [];
@@ -1188,7 +1215,7 @@
 			if(this._data.core.selected.length !== s) {
 				this.trigger('changed', { 'action' : 'model', 'selected' : this._data.core.selected });
 			}
-			return true;
+			cb.call(this, true);
 		},
 		/**
 		 * appends JSON content to the tree. Used internally.
@@ -1196,9 +1223,9 @@
 		 * @name _append_json_data(obj, data)
 		 * @param  {mixed} obj the node to append to
 		 * @param  {String} data the JSON object to parse and append
-		 * @return {Boolean}
+		 * @trigger model.jstree, changed.jstree
 		 */
-		_append_json_data : function (dom, data) {
+		_append_json_data : function (dom, data, cb) {
 			dom = this.get_node(dom);
 			dom.children = [];
 			dom.children_d = [];
@@ -1273,7 +1300,7 @@
 			if(this._data.core.selected.length !== s) {
 				this.trigger('changed', { 'action' : 'model', 'selected' : this._data.core.selected });
 			}
-			return true;
+			cb.call(this, true);
 		},
 		/**
 		 * parses a node from a jQuery object and appends them to the in memory tree model. Used internally.
