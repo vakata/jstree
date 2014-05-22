@@ -85,7 +85,7 @@
 		 */
 		plugins : {},
 		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : '',
-		idregex : /[\\:&()@'".,=\- \/$]/g
+		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/$]/g
 	};
 	/**
 	 * creates a jstree instance
@@ -118,6 +118,7 @@
 	$.jstree.core = function (id) {
 		this._id = id;
 		this._cnt = 0;
+		this._wrk = null;
 		this._data = {
 			core : {
 				themes : {
@@ -408,7 +409,12 @@
 		 * if left as `true` all parents of all selected nodes will be opened once the tree loads (so that all selected nodes are visible to the user)
 		 * @name $.jstree.defaults.core.expand_selected_onload
 		 */
-		expand_selected_onload : true
+		expand_selected_onload : true,
+		/**
+		 * if left as `true` web workers will be used to parse incoming JSON data where possible, so that the UI will not be blocked by large requests. Workers are however about 30% slower. Defaults to `true`
+		 * @name $.jstree.defaults.core.worker
+		 */
+		worker : true
 	};
 	$.jstree.core.prototype = {
 		/**
@@ -485,7 +491,7 @@
 				})
 				.remove();
 			this.element.html("<"+"ul class='jstree-container-ul jstree-children'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
-			this._data.core.li_height = this.get_container_ul().children("li:eq(0)").height() || 18;
+			this._data.core.li_height = this.get_container_ul().children("li:eq(0)").height() || 24;
 			/**
 			 * triggered after the loading text is shown and before loading starts
 			 * @event
@@ -1011,6 +1017,7 @@
 			obj.state.loading = true;
 			this.get_node(obj, true).addClass("jstree-loading");
 			this._load_node(obj, $.proxy(function (status) {
+				obj = this._model.data[obj.id];
 				obj.state.loading = false;
 				obj.state.loaded = status;
 				var dom = this.get_node(obj, true);
@@ -1229,78 +1236,325 @@
 			dom = this.get_node(dom);
 			dom.children = [];
 			dom.children_d = [];
-			var dat = data,
-				par = dom.id,
-				chd = [],
-				dpc = [],
-				m = this._model.data,
-				p = m[par],
-				s = this._data.core.selected.length,
-				tmp, i, j;
 			// *%$@!!!
-			if(dat.d) {
-				dat = dat.d;
-				if(typeof dat === "string") {
-					dat = JSON.parse(dat);
+			if(data.d) {
+				data = data.d;
+				if(typeof data === "string") {
+					data = JSON.parse(data);
 				}
 			}
-			if(!$.isArray(dat)) { dat = [dat]; }
-			if(dat.length && dat[0].id !== undefined && dat[0].parent !== undefined) {
-				// Flat JSON support (for easy import from DB):
-				// 1) convert to object (foreach)
-				for(i = 0, j = dat.length; i < j; i++) {
-					if(!dat[i].children) {
-						dat[i].children = [];
-					}
-					m[dat[i].id.toString()] = dat[i];
-				}
-				// 2) populate children (foreach)
-				for(i = 0, j = dat.length; i < j; i++) {
-					m[dat[i].parent.toString()].children.push(dat[i].id.toString());
-					// populate parent.children_d
-					p.children_d.push(dat[i].id.toString());
-				}
-				// 3) normalize && populate parents and children_d with recursion
-				for(i = 0, j = p.children.length; i < j; i++) {
-					tmp = this._parse_model_from_flat_json(m[p.children[i]], par, p.parents.concat());
-					dpc.push(tmp);
-					if(m[tmp].children_d.length) {
-						dpc = dpc.concat(m[tmp].children_d);
-					}
-				}
-				// ?) three_state selection - p.state.selected && t - (if three_state foreach(dat => ch) -> foreach(parents) if(parent.selected) child.selected = true;
-			}
-			else {
-				for(i = 0, j = dat.length; i < j; i++) {
-					tmp = this._parse_model_from_json(dat[i], par, p.parents.concat());
-					if(tmp) {
-						chd.push(tmp);
-						dpc.push(tmp);
-						if(m[tmp].children_d.length) {
-							dpc = dpc.concat(m[tmp].children_d);
-						}
-					}
-				}
-				p.children = chd;
-				p.children_d = dpc;
-				for(i = 0, j = p.parents.length; i < j; i++) {
-					m[p.parents[i]].children_d = m[p.parents[i]].children_d.concat(dpc);
-				}
-			}
-			this.trigger('model', { "nodes" : dpc, 'parent' : par });
+			if(!$.isArray(data)) { data = [data]; }
+			var w = null,
+				args = {
+					'df'	: this._model.default_state,
+					'dat'	: data,
+					'par'	: dom.id,
+					'm'		: this._model.data,
+					't_id'	: this._id,
+					't_cnt'	: this._cnt,
+					'sel'	: this._data.core.selected
+				},
+				func = function (data, undefined) {
+					if(data.data) { data = JSON.parse(data.data); }
+					var dat = data.dat,
+						par = data.par,
+						chd = [],
+						dpc = [],
+						df = data.df,
+						t_id = data.t_id,
+						t_cnt = data.t_cnt,
+						m = data.m,
+						p = m[par],
+						sel = data.sel,
+						tmp, i, j, rslt,
+						parse_flat = function (d, p, ps) {
+							if(!ps) { ps = []; }
+							else { ps = ps.concat(); }
+							if(p) { ps.unshift(p); }
+							var tid = d.id.toString(),
+								i, j, c, e,
+								tmp = {
+									id			: tid,
+									text		: d.text || '',
+									icon		: d.icon !== undefined ? d.icon : true,
+									parent		: p,
+									parents		: ps,
+									children	: d.children || [],
+									children_d	: d.children_d || [],
+									data		: d.data,
+									state		: { },
+									li_attr		: { id : false },
+									a_attr		: { href : '#' },
+									original	: false
+								};
+							for(i in df) {
+								if(df.hasOwnProperty(i)) {
+									tmp.state[i] = df[i];
+								}
+							}
+							if(d && d.data && d.data.jstree && d.data.jstree.icon) {
+								tmp.icon = d.data.jstree.icon;
+							}
+							if(d && d.data) {
+								tmp.data = d.data;
+								if(d.data.jstree) {
+									for(i in d.data.jstree) {
+										if(d.data.jstree.hasOwnProperty(i)) {
+											tmp.state[i] = d.data.jstree[i];
+										}
+									}
+								}
+							}
+							if(d && typeof d.state === 'object') {
+								for (i in d.state) {
+									if(d.state.hasOwnProperty(i)) {
+										tmp.state[i] = d.state[i];
+									}
+								}
+							}
+							if(d && typeof d.li_attr === 'object') {
+								for (i in d.li_attr) {
+									if(d.li_attr.hasOwnProperty(i)) {
+										tmp.li_attr[i] = d.li_attr[i];
+									}
+								}
+							}
+							if(!tmp.li_attr.id) {
+								tmp.li_attr.id = tid;
+							}
+							if(d && typeof d.a_attr === 'object') {
+								for (i in d.a_attr) {
+									if(d.a_attr.hasOwnProperty(i)) {
+										tmp.a_attr[i] = d.a_attr[i];
+									}
+								}
+							}
+							if(d && d.children && d.children === true) {
+								tmp.state.loaded = false;
+								tmp.children = [];
+								tmp.children_d = [];
+							}
+							m[tmp.id] = tmp;
+							for(i = 0, j = tmp.children.length; i < j; i++) {
+								c = parse_flat(m[tmp.children[i]], tmp.id, ps);
+								e = m[c];
+								tmp.children_d.push(c);
+								if(e.children_d.length) {
+									tmp.children_d = tmp.children_d.concat(e.children_d);
+								}
+							}
+							delete d.data;
+							delete d.children;
+							m[tmp.id].original = d;
+							if(tmp.state.selected) {
+								sel.push(tmp.id);
+							}
+							return tmp.id;
+						},
+						parse_nest = function (d, p, ps) {
+							if(!ps) { ps = []; }
+							else { ps = ps.concat(); }
+							if(p) { ps.unshift(p); }
+							var tid = false, i, j, c, e, tmp;
+							do {
+								tid = 'j' + t_id + '_' + (++t_cnt);
+							} while(m[tid]);
 
-			if(par !== '#') {
-				this._node_changed(par);
-				this.redraw();
+							tmp = {
+								id			: false,
+								text		: typeof d === 'string' ? d : '',
+								icon		: typeof d === 'object' && d.icon !== undefined ? d.icon : true,
+								parent		: p,
+								parents		: ps,
+								children	: [],
+								children_d	: [],
+								data		: null,
+								state		: { },
+								li_attr		: { id : false },
+								a_attr		: { href : '#' },
+								original	: false
+							};
+							for(i in df) {
+								if(df.hasOwnProperty(i)) {
+									tmp.state[i] = df[i];
+								}
+							}
+							if(d && d.id) { tmp.id = d.id.toString(); }
+							if(d && d.text) { tmp.text = d.text; }
+							if(d && d.data && d.data.jstree && d.data.jstree.icon) {
+								tmp.icon = d.data.jstree.icon;
+							}
+							if(d && d.data) {
+								tmp.data = d.data;
+								if(d.data.jstree) {
+									for(i in d.data.jstree) {
+										if(d.data.jstree.hasOwnProperty(i)) {
+											tmp.state[i] = d.data.jstree[i];
+										}
+									}
+								}
+							}
+							if(d && typeof d.state === 'object') {
+								for (i in d.state) {
+									if(d.state.hasOwnProperty(i)) {
+										tmp.state[i] = d.state[i];
+									}
+								}
+							}
+							if(d && typeof d.li_attr === 'object') {
+								for (i in d.li_attr) {
+									if(d.li_attr.hasOwnProperty(i)) {
+										tmp.li_attr[i] = d.li_attr[i];
+									}
+								}
+							}
+							if(tmp.li_attr.id && !tmp.id) {
+								tmp.id = tmp.li_attr.id.toString();
+							}
+							if(!tmp.id) {
+								tmp.id = tid;
+							}
+							if(!tmp.li_attr.id) {
+								tmp.li_attr.id = tmp.id;
+							}
+							if(d && typeof d.a_attr === 'object') {
+								for (i in d.a_attr) {
+									if(d.a_attr.hasOwnProperty(i)) {
+										tmp.a_attr[i] = d.a_attr[i];
+									}
+								}
+							}
+							if(d && d.children && d.children.length) {
+								for(i = 0, j = d.children.length; i < j; i++) {
+									c = parse_nest(d.children[i], tmp.id, ps);
+									e = m[c];
+									tmp.children.push(c);
+									if(e.children_d.length) {
+										tmp.children_d = tmp.children_d.concat(e.children_d);
+									}
+								}
+								tmp.children_d = tmp.children_d.concat(tmp.children);
+							}
+							if(d && d.children && d.children === true) {
+								tmp.state.loaded = false;
+								tmp.children = [];
+								tmp.children_d = [];
+							}
+							delete d.data;
+							delete d.children;
+							tmp.original = d;
+							m[tmp.id] = tmp;
+							if(tmp.state.selected) {
+								sel.push(tmp.id);
+							}
+							return tmp.id;
+						};
+
+					if(dat.length && dat[0].id !== undefined && dat[0].parent !== undefined) {
+						// Flat JSON support (for easy import from DB):
+						// 1) convert to object (foreach)
+						for(i = 0, j = dat.length; i < j; i++) {
+							if(!dat[i].children) {
+								dat[i].children = [];
+							}
+							m[dat[i].id.toString()] = dat[i];
+						}
+						// 2) populate children (foreach)
+						for(i = 0, j = dat.length; i < j; i++) {
+							m[dat[i].parent.toString()].children.push(dat[i].id.toString());
+							// populate parent.children_d
+							p.children_d.push(dat[i].id.toString());
+						}
+						// 3) normalize && populate parents and children_d with recursion
+						for(i = 0, j = p.children.length; i < j; i++) {
+							tmp = parse_flat(m[p.children[i]], par, p.parents.concat());
+							dpc.push(tmp);
+							if(m[tmp].children_d.length) {
+								dpc = dpc.concat(m[tmp].children_d);
+							}
+						}
+						// ?) three_state selection - p.state.selected && t - (if three_state foreach(dat => ch) -> foreach(parents) if(parent.selected) child.selected = true;
+						rslt = {
+							'cnt' : t_cnt,
+							'mod' : m,
+							'sel' : sel,
+							'par' : par,
+							'dpc' : dpc
+						};
+					}
+					else {
+						for(i = 0, j = dat.length; i < j; i++) {
+							tmp = parse_nest(dat[i], par, p.parents.concat());
+							if(tmp) {
+								chd.push(tmp);
+								dpc.push(tmp);
+								if(m[tmp].children_d.length) {
+									dpc = dpc.concat(m[tmp].children_d);
+								}
+							}
+						}
+						p.children = chd;
+						p.children_d = dpc;
+						for(i = 0, j = p.parents.length; i < j; i++) {
+							m[p.parents[i]].children_d = m[p.parents[i]].children_d.concat(dpc);
+						}
+						rslt = {
+							'cnt' : t_cnt,
+							'mod' : m,
+							'sel' : sel,
+							'par' : par,
+							'dpc' : dpc
+						};
+					}
+					return rslt;
+				},
+				rslt = function (rslt) {
+					this._cnt = rslt.cnt;
+					this._model.data = rslt.mod; // breaks the reference in load_node - careful
+					this.trigger('model', { "nodes" : rslt.dpc, 'parent' : rslt.par });
+
+					var chg = false;
+					// TODO: changes to selection while worker was computing WILL be lost
+					// need to store changes from inside worker beside `sel`
+					// then compare arrays and update state.selected in model.data
+					if(this._data.core.selected.length !== rslt.sel.length) {
+						this._data.core.selected = rslt.sel;
+						chg = true;
+					}
+					if(rslt.par !== '#') {
+						this._node_changed(rslt.par);
+						this.redraw();
+					}
+					else {
+						// this.get_container_ul().children('.jstree-initial-node').remove();
+						this.redraw(true);
+					}
+					if(chg) {
+						this.trigger('changed', { 'action' : 'model', 'selected' : this._data.core.selected });
+					}
+					cb.call(this, true);
+				};
+			if(this.settings.core.worker && window.Blob && window.URL && window.Worker) {
+				try {
+					if(this._wrk === null) {
+						this._wrk = window.URL.createObjectURL(
+							new window.Blob(
+								['self.onmessage = ' + func.toString().replace(/return ([^;}]+)[\s;}]+$/, 'postMessage(JSON.stringify($1));}')],
+								{type:"text/javascript"}
+							)
+						);
+					}
+					w = new window.Worker(this._wrk);
+					w.onmessage = $.proxy(function (e) { rslt.call(this, JSON.parse(e.data)); }, this);
+					w.postMessage(JSON.stringify(args));
+				}
+				catch(e) {
+					rslt.call(this, func(args));
+				}
 			}
 			else {
-				// this.get_container_ul().children('.jstree-initial-node').remove();
-				this.redraw(true);
+				rslt.call(this, func(args));
 			}
-			if(this._data.core.selected.length !== s) {
-				this.trigger('changed', { 'action' : 'model', 'selected' : this._data.core.selected });
-			}
-			cb.call(this, true);
 		},
 		/**
 		 * parses a node from a jQuery object and appends them to the in memory tree model. Used internally.
@@ -5973,13 +6227,11 @@
 			parent.bind.call(this);
 
 			this.element
-				.on('loading', $.proxy(function () {
-						div.style.height = this._data.core.li_height + 'px';
-					}, this))
 				.on('ready.jstree set_state.jstree', $.proxy(function () {
 						this.hide_dots();
 					}, this))
-				.on("ready.jstree", $.proxy(function () {
+				.on("init.jstree loading.jstree ready.jstree", $.proxy(function () {
+						div.style.height = this._data.core.li_height + 'px';
 						this.get_container_ul().addClass('jstree-wholerow-ul');
 					}, this))
 				.on("deselect_all.jstree", $.proxy(function (e, data) {

@@ -29,13 +29,11 @@
 			parent.bind.call(this);
 
 			this.element
-				.on('loading', $.proxy(function () {
-						div.style.height = this._data.core.li_height + 'px';
-					}, this))
 				.on('ready.jstree set_state.jstree', $.proxy(function () {
 						this.hide_dots();
 					}, this))
-				.on("ready.jstree", $.proxy(function () {
+				.on("init.jstree loading.jstree ready.jstree", $.proxy(function () {
+						div.style.height = this._data.core.li_height + 'px';
 						this.get_container_ul().addClass('jstree-wholerow-ul');
 					}, this))
 				.on("deselect_all.jstree", $.proxy(function (e, data) {
