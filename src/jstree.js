@@ -1255,7 +1255,7 @@
 					'sel'	: this._data.core.selected
 				},
 				func = function (data, undefined) {
-					if(data.data) { data = JSON.parse(data.data); }
+					if(data.data) { data = data.data; }
 					var dat = data.dat,
 						par = data.par,
 						chd = [],
@@ -1557,14 +1557,14 @@
 					if(this._wrk === null) {
 						this._wrk = window.URL.createObjectURL(
 							new window.Blob(
-								['self.onmessage = ' + func.toString().replace(/return ([^;}]+)[\s;}]+$/, 'postMessage(JSON.stringify($1));}')],
+								['self.onmessage = ' + func.toString().replace(/return ([^;}]+)[\s;}]+$/, 'postMessage($1);}')],
 								{type:"text/javascript"}
 							)
 						);
 					}
 					w = new window.Worker(this._wrk);
-					w.onmessage = $.proxy(function (e) { rslt.call(this, JSON.parse(e.data), true); }, this);
-					w.postMessage(JSON.stringify(args));
+					w.onmessage = $.proxy(function (e) { rslt.call(this, e.data, true); }, this);
+					w.postMessage(args);
 				}
 				catch(e) {
 					rslt.call(this, func(args), false);
