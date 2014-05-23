@@ -1260,6 +1260,7 @@
 						par = data.par,
 						chd = [],
 						dpc = [],
+						add = [],
 						df = data.df,
 						t_id = data.t_id,
 						t_cnt = data.t_cnt,
@@ -1347,7 +1348,7 @@
 							delete d.children;
 							m[tmp.id].original = d;
 							if(tmp.state.selected) {
-								sel.push(tmp.id);
+								add.push(tmp.id);
 							}
 							return tmp.id;
 						},
@@ -1445,7 +1446,7 @@
 							tmp.original = d;
 							m[tmp.id] = tmp;
 							if(tmp.state.selected) {
-								sel.push(tmp.id);
+								add.push(tmp.id);
 							}
 							return tmp.id;
 						};
@@ -1479,7 +1480,8 @@
 							'mod' : m,
 							'sel' : sel,
 							'par' : par,
-							'dpc' : dpc
+							'dpc' : dpc,
+							'add' : add
 						};
 					}
 					else {
@@ -1503,24 +1505,40 @@
 							'mod' : m,
 							'sel' : sel,
 							'par' : par,
-							'dpc' : dpc
+							'dpc' : dpc,
+							'add' : add
 						};
 					}
 					return rslt;
 				},
-				rslt = function (rslt) {
+				rslt = function (rslt, worker) {
 					this._cnt = rslt.cnt;
 					this._model.data = rslt.mod; // breaks the reference in load_node - careful
+
+					if(worker) {
+						var i, j, a = rslt.add, r = rslt.sel, s = this._data.core.selected.slice(), m = this._model.data;
+						// if selection was changed while calculating in worker
+						if(r.length !== s.length || $.vakata.array_unique(r.concat(s)).length !== r.length) {
+							// deselect nodes that are no longer selected
+							for(i = 0, j = r.length; i < j; i++) {
+								if($.inArray(r[i], a) === -1 && $.inArray(r[i], s) === -1) {
+									m[r[i]].state.selected = false;
+								}
+							}
+							// select nodes that were selected in the mean time
+							for(i = 0, j = s.length; i < j; i++) {
+								if($.inArray(s[i], r) === -1) {
+									m[s[i]].state.selected = true;
+								}
+							}
+						}
+					}
+					if(rslt.add.length) {
+						this._data.core.selected = this._data.core.selected.concat(rslt.add);
+					}
+
 					this.trigger('model', { "nodes" : rslt.dpc, 'parent' : rslt.par });
 
-					var chg = false;
-					// TODO: changes to selection while worker was computing WILL be lost
-					// need to store changes from inside worker beside `sel`
-					// then compare arrays and update state.selected in model.data
-					if(this._data.core.selected.length !== rslt.sel.length) {
-						this._data.core.selected = rslt.sel;
-						chg = true;
-					}
 					if(rslt.par !== '#') {
 						this._node_changed(rslt.par);
 						this.redraw();
@@ -1529,7 +1547,7 @@
 						// this.get_container_ul().children('.jstree-initial-node').remove();
 						this.redraw(true);
 					}
-					if(chg) {
+					if(rslt.add.length) {
 						this.trigger('changed', { 'action' : 'model', 'selected' : this._data.core.selected });
 					}
 					cb.call(this, true);
@@ -1545,15 +1563,15 @@
 						);
 					}
 					w = new window.Worker(this._wrk);
-					w.onmessage = $.proxy(function (e) { rslt.call(this, JSON.parse(e.data)); }, this);
+					w.onmessage = $.proxy(function (e) { rslt.call(this, JSON.parse(e.data), true); }, this);
 					w.postMessage(JSON.stringify(args));
 				}
 				catch(e) {
-					rslt.call(this, func(args));
+					rslt.call(this, func(args), false);
 				}
 			}
 			else {
-				rslt.call(this, func(args));
+				rslt.call(this, func(args), false);
 			}
 		},
 		/**
