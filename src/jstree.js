@@ -1115,7 +1115,7 @@
 									//return callback.call(this, this._append_json_data(obj, d));
 								}
 								if(type.indexOf('html') !== -1 || typeof d === "string") {
-									return this._append_html_data(obj, d, function (status) { callback.call(this, status); });
+									return this._append_html_data(obj, $(d), function (status) { callback.call(this, status); });
 									// return callback.call(this, this._append_html_data(obj, $(d)));
 								}
 								this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'core', 'id' : 'core_04', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id, 'xhr' : x }) };
