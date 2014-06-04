@@ -350,7 +350,7 @@
 		 */
 		error			: $.noop,
 		/**
-		 * the open / close animation duration in milliseconds - set this to `false` to disable the animation (default is `200`)
+		 * the open / close animation duration in milliseconds - set this to `false` to disable the animation (defanodult is `200`)
 		 * @name $.jstree.defaults.core.animation
 		 */
 		animation		: 200,
@@ -3987,8 +3987,8 @@
 		if(node && node.attributes) {
 			$.each(node.attributes, function (i, v) {
 				if($.inArray(v.nodeName.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }
-				if(v.nodeValue !== null && $.trim(v.nodeValue) !== '') {
-					if(with_values) { attr[v.nodeName] = v.nodeValue; }
+				if(v.value !== null && $.trim(v.value) !== '') {
+					if(with_values) { attr[v.nodeName] = v.value; }
 					else { attr.push(v.nodeName); }
 				}
 			});
