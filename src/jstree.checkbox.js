@@ -52,12 +52,23 @@
 		 * @name $.jstree.defaults.checkbox.keep_selected_style
 		 * @plugin checkbox
 		 */
-		keep_selected_style	: true
+		keep_selected_style	: true,
+		/**
+		 * This setting controls how cascading and undetermined nodes are applied. 
+		 * If 'up' is in the string - cascading up is enabled, if 'down' is in the string - cascading down is enabled, if 'undetermined' is in the string - undetermined nodes will be used. 
+		 * If `three_state` is set to `true` this setting is automatically set to 'up+down+undetermined'. Defaults to ''.
+		 * @name $.jstree.defaults.checkbox.cascade
+		 * @plugin checkbox
+		 */
+		cascade				: ''
 	};
 	$.jstree.plugins.checkbox = function (options, parent) {
 		this.bind = function () {
 			parent.bind.call(this);
 			this._data.checkbox.uto = false;
+			if(this.settings.checkbox.three_state) {
+				this.settings.checkbox.cascade = 'up+down+undetermined';
+			}
 			this.element
 				.on("init.jstree", $.proxy(function () {
 						this._data.checkbox.visible = this.settings.checkbox.visible;
@@ -68,65 +79,74 @@
 				.on("loading.jstree", $.proxy(function () {
 						this[ this._data.checkbox.visible ? 'show_checkboxes' : 'hide_checkboxes' ]();
 					}, this));
-			if(this.settings.checkbox.three_state) {
+			if(this.settings.checkbox.cascade.indexOf('undetermined') !== -1) {
 				this.element
 					.on('changed.jstree move_node.jstree copy_node.jstree redraw.jstree open_node.jstree', $.proxy(function () {
+							// only if undetermined is in setting
 							if(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }
 							this._data.checkbox.uto = setTimeout($.proxy(this._undetermined, this), 50);
-						}, this))
+						}, this));
+			}
+			if(this.settings.checkbox.cascade.indexOf('up') !== -1 || this.settings.checkbox.cascade.indexOf('down') !== -1) {
+				this.element
 					.on('model.jstree', $.proxy(function (e, data) {
 							var m = this._model.data,
 								p = m[data.parent],
 								dpc = data.nodes,
 								chd = [],
-								c, i, j, k, l, tmp;
+								c, i, j, k, l, tmp, s = this.settings.checkbox.cascade;
 
-							// apply down
-							if(p.state.selected) {
-								for(i = 0, j = dpc.length; i < j; i++) {
-									m[dpc[i]].state.selected = true;
-								}
-								this._data.core.selected = this._data.core.selected.concat(dpc);
-							}
-							else {
-								for(i = 0, j = dpc.length; i < j; i++) {
-									if(m[dpc[i]].state.selected) {
-										for(k = 0, l = m[dpc[i]].children_d.length; k < l; k++) {
-											m[m[dpc[i]].children_d[k]].state.selected = true;
-										}
-										this._data.core.selected = this._data.core.selected.concat(m[dpc[i]].children_d);
+							if(s.indexOf('down') !== -1) {
+								// apply down
+								if(p.state.selected) {
+									for(i = 0, j = dpc.length; i < j; i++) {
+										m[dpc[i]].state.selected = true;
 									}
+									this._data.core.selected = this._data.core.selected.concat(dpc);
 								}
-							}
-
-							// apply up
-							for(i = 0, j = p.children_d.length; i < j; i++) {
-								if(!m[p.children_d[i]].children.length) {
-									chd.push(m[p.children_d[i]].parent);
-								}
-							}
-							chd = $.vakata.array_unique(chd);
-							for(k = 0, l = chd.length; k < l; k++) {
-								p = m[chd[k]];
-								while(p && p.id !== '#') {
-									c = 0;
-									for(i = 0, j = p.children.length; i < j; i++) {
-										c += m[p.children[i]].state.selected;
-									}
-									if(c === j) {
-										p.state.selected = true;
-										this._data.core.selected.push(p.id);
-										tmp = this.get_node(p, true);
-										if(tmp && tmp.length) {
-											tmp.children('.jstree-anchor').addClass('jstree-clicked');
+								else {
+									for(i = 0, j = dpc.length; i < j; i++) {
+										if(m[dpc[i]].state.selected) {
+											for(k = 0, l = m[dpc[i]].children_d.length; k < l; k++) {
+												m[m[dpc[i]].children_d[k]].state.selected = true;
+											}
+											this._data.core.selected = this._data.core.selected.concat(m[dpc[i]].children_d);
 										}
 									}
-									else {
-										break;
-									}
-									p = this.get_node(p.parent);
 								}
 							}
+
+							if(s.indexOf('up') !== -1) {
+								// apply up
+								for(i = 0, j = p.children_d.length; i < j; i++) {
+									if(!m[p.children_d[i]].children.length) {
+										chd.push(m[p.children_d[i]].parent);
+									}
+								}
+								chd = $.vakata.array_unique(chd);
+								for(k = 0, l = chd.length; k < l; k++) {
+									p = m[chd[k]];
+									while(p && p.id !== '#') {
+										c = 0;
+										for(i = 0, j = p.children.length; i < j; i++) {
+											c += m[p.children[i]].state.selected;
+										}
+										if(c === j) {
+											p.state.selected = true;
+											this._data.core.selected.push(p.id);
+											tmp = this.get_node(p, true);
+											if(tmp && tmp.length) {
+												tmp.children('.jstree-anchor').addClass('jstree-clicked');
+											}
+										}
+										else {
+											break;
+										}
+										p = this.get_node(p.parent);
+									}
+								}
+							}
+
 							this._data.core.selected = $.vakata.array_unique(this._data.core.selected);
 						}, this))
 					.on('select_node.jstree', $.proxy(function (e, data) {
@@ -134,35 +154,44 @@
 								m = this._model.data,
 								par = this.get_node(obj.parent),
 								dom = this.get_node(obj, true),
-								i, j, c, tmp;
-							this._data.core.selected = $.vakata.array_unique(this._data.core.selected.concat(obj.children_d));
+								i, j, c, tmp, s = this.settings.checkbox.cascade;
 
-							for(i = 0, j = obj.children_d.length; i < j; i++) {
-								tmp = m[obj.children_d[i]];
-								tmp.state.selected = true;
-								if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
-									tmp.original.state.undetermined = false;
-								}
-							}
-							while(par && par.id !== '#') {
-								c = 0;
-								for(i = 0, j = par.children.length; i < j; i++) {
-									c += m[par.children[i]].state.selected;
-								}
-								if(c === j) {
-									par.state.selected = true;
-									this._data.core.selected.push(par.id);
-									tmp = this.get_node(par, true);
-									if(tmp && tmp.length) {
-										tmp.children('.jstree-anchor').addClass('jstree-clicked');
+							// apply down
+							if(s.indexOf('down') !== -1) {
+								this._data.core.selected = $.vakata.array_unique(this._data.core.selected.concat(obj.children_d));
+								for(i = 0, j = obj.children_d.length; i < j; i++) {
+									tmp = m[obj.children_d[i]];
+									tmp.state.selected = true;
+									if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
+										tmp.original.state.undetermined = false;
 									}
 								}
-								else {
-									break;
-								}
-								par = this.get_node(par.parent);
 							}
-							if(dom.length) {
+
+							// apply up
+							if(s.indexOf('up') !== -1) {
+								while(par && par.id !== '#') {
+									c = 0;
+									for(i = 0, j = par.children.length; i < j; i++) {
+										c += m[par.children[i]].state.selected;
+									}
+									if(c === j) {
+										par.state.selected = true;
+										this._data.core.selected.push(par.id);
+										tmp = this.get_node(par, true);
+										if(tmp && tmp.length) {
+											tmp.children('.jstree-anchor').addClass('jstree-clicked');
+										}
+									}
+									else {
+										break;
+									}
+									par = this.get_node(par.parent);
+								}
+							}
+
+							// apply down (process .children separately?)
+							if(s.indexOf('down') !== -1 && dom.length) {
 								dom.find('.jstree-anchor').addClass('jstree-clicked');
 							}
 						}, this))
@@ -180,40 +209,58 @@
 					.on('deselect_node.jstree', $.proxy(function (e, data) {
 							var obj = data.node,
 								dom = this.get_node(obj, true),
-								i, j, tmp;
+								i, j, tmp, s = this.settings.checkbox.cascade;
 							if(obj && obj.original && obj.original.state && obj.original.state.undetermined) {
 								obj.original.state.undetermined = false;
 							}
-							for(i = 0, j = obj.children_d.length; i < j; i++) {
-								tmp = this._model.data[obj.children_d[i]];
-								tmp.state.selected = false;
-								if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
-									tmp.original.state.undetermined = false;
+
+							// apply down
+							if(s.indexOf('down') !== -1) {
+								for(i = 0, j = obj.children_d.length; i < j; i++) {
+									tmp = this._model.data[obj.children_d[i]];
+									tmp.state.selected = false;
+									if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
+										tmp.original.state.undetermined = false;
+									}
 								}
 							}
-							for(i = 0, j = obj.parents.length; i < j; i++) {
-								tmp = this._model.data[obj.parents[i]];
-								tmp.state.selected = false;
-								if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
-									tmp.original.state.undetermined = false;
-								}
-								tmp = this.get_node(obj.parents[i], true);
-								if(tmp && tmp.length) {
-									tmp.children('.jstree-anchor').removeClass('jstree-clicked');
+
+							// apply up
+							if(s.indexOf('up') !== -1) {
+								for(i = 0, j = obj.parents.length; i < j; i++) {
+									tmp = this._model.data[obj.parents[i]];
+									tmp.state.selected = false;
+									if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
+										tmp.original.state.undetermined = false;
+									}
+									tmp = this.get_node(obj.parents[i], true);
+									if(tmp && tmp.length) {
+										tmp.children('.jstree-anchor').removeClass('jstree-clicked');
+									}
 								}
 							}
 							tmp = [];
 							for(i = 0, j = this._data.core.selected.length; i < j; i++) {
-								if($.inArray(this._data.core.selected[i], obj.children_d) === -1 && $.inArray(this._data.core.selected[i], obj.parents) === -1) {
+								// apply down + apply up
+								if(
+									(s.indexOf('down') === -1 || $.inArray(this._data.core.selected[i], obj.children_d) === -1) &&
+									(s.indexOf('up') === -1 || $.inArray(this._data.core.selected[i], obj.parents) === -1)
+								) {
 									tmp.push(this._data.core.selected[i]);
 								}
 							}
 							this._data.core.selected = $.vakata.array_unique(tmp);
-							if(dom.length) {
+
+							// apply down (process .children separately?)
+							if(s.indexOf('down') !== -1 && dom.length) {
 								dom.find('.jstree-anchor').removeClass('jstree-clicked');
 							}
-						}, this))
+						}, this));
+			}
+			if(this.settings.checkbox.cascade.indexOf('up') !== -1) {
+				this.element
 					.on('delete_node.jstree', $.proxy(function (e, data) {
+							// apply up (whole handler)
 							var p = this.get_node(data.parent),
 								m = this._model.data,
 								i, j, c, tmp;
@@ -237,6 +284,7 @@
 							}
 						}, this))
 					.on('move_node.jstree', $.proxy(function (e, data) {
+							// apply up (whole handler)
 							var is_multi = data.is_multi,
 								old_par = data.old_parent,
 								new_par = this.get_node(data.parent),
@@ -357,7 +405,7 @@
 					tmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);
 				}
 			}
-			if(!is_callback && this.settings.checkbox.three_state) {
+			if(!is_callback && this.settings.checkbox.cascade.indexOf('undetermined') !== -1) {
 				if(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }
 				this._data.checkbox.uto = setTimeout($.proxy(this._undetermined, this), 50);
 			}
