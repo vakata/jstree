@@ -400,7 +400,7 @@
 			 */
 			variant			: false,
 			/**
-			 * a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to `true`.
+			 * a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to `false`.
 			 * @name $.jstree.defaults.core.themes.responsive
 			 */
 			responsive		: false
@@ -5533,7 +5533,7 @@
 		 */
 		ajax : false,
 		/**
-		 * Indicates if the search should be fuzzy or not (should `chnd3` match `child node 3`). Default is `true`.
+		 * Indicates if the search should be fuzzy or not (should `chnd3` match `child node 3`). Default is `false`.
 		 * @name $.jstree.defaults.search.fuzzy
 		 * @plugin search
 		 */

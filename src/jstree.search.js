@@ -36,7 +36,7 @@
 		 */
 		ajax : false,
 		/**
-		 * Indicates if the search should be fuzzy or not (should `chnd3` match `child node 3`). Default is `true`.
+		 * Indicates if the search should be fuzzy or not (should `chnd3` match `child node 3`). Default is `false`.
 		 * @name $.jstree.defaults.search.fuzzy
 		 * @plugin search
 		 */

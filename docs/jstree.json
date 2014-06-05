@@ -555,8 +555,8 @@
 			}
 		],
 		"description": {
-			"full": "<p>a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to <code>true</code>.</p>",
-			"summary": "<p>a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to <code>true</code>.</p>",
+			"full": "<p>a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to <code>false</code>.</p>",
+			"summary": "<p>a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to <code>false</code>.</p>",
 			"body": ""
 		},
 		"isPrivate": false,
@@ -6165,8 +6165,8 @@
 			}
 		],
 		"description": {
-			"full": "<p>Indicates if the search should be fuzzy or not (should <code>chnd3</code> match <code>child node 3</code>). Default is <code>true</code>.</p>",
-			"summary": "<p>Indicates if the search should be fuzzy or not (should <code>chnd3</code> match <code>child node 3</code>). Default is <code>true</code>.</p>",
+			"full": "<p>Indicates if the search should be fuzzy or not (should <code>chnd3</code> match <code>child node 3</code>). Default is <code>false</code>.</p>",
+			"summary": "<p>Indicates if the search should be fuzzy or not (should <code>chnd3</code> match <code>child node 3</code>). Default is <code>false</code>.</p>",
 			"body": ""
 		},
 		"isPrivate": false,

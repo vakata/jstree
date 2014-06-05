@@ -400,7 +400,7 @@
 			 */
 			variant			: false,
 			/**
-			 * a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to `true`.
+			 * a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to `false`.
 			 * @name $.jstree.defaults.core.themes.responsive
 			 */
 			responsive		: false
