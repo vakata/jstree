@@ -5537,7 +5537,7 @@
 		 * @name $.jstree.defaults.search.fuzzy
 		 * @plugin search
 		 */
-		fuzzy : true,
+		fuzzy : false,
 		/**
 		 * Indicates if the search should be case sensitive. Default is `false`.
 		 * @name $.jstree.defaults.search.case_sensitive
