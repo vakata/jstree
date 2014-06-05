@@ -6236,6 +6236,20 @@
  * Enforces that no nodes with the same name can coexist as siblings.
  */
 
+	/**
+	 * stores all defaults for the unique plugin
+	 * @name $.jstree.defaults.unique
+	 * @plugin unique
+	 */
+	$.jstree.defaults.unique = {
+		/**
+		 * Indicates if the comparison should be case sensitive. Default is `false`.
+		 * @name $.jstree.defaults.unique.case_sensitive
+		 * @plugin unique
+		 */
+		case_sensitive : false
+	};
+
 	$.jstree.plugins.unique = function (options, parent) {
 		this.check = function (chk, obj, par, pos, more) {
 			if(parent.check.call(this, chk, obj, par, pos, more) === false) { return false; }
@@ -6244,10 +6258,12 @@
 			if(!par || !par.children) { return true; }
 			var n = chk === "rename_node" ? pos : obj.text,
 				c = [],
+				s = this.settings.unique.case_sensitive,
 				m = this._model.data, i, j;
 			for(i = 0, j = par.children.length; i < j; i++) {
-				c.push(m[par.children[i]].text);
+				c.push(s ? m[par.children[i]].text : m[par.children[i]].text.toLowerCase());
 			}
+			if(!s) { n = n.toLowerCase(); }
 			switch(chk) {
 				case "delete_node":
 					return true;
@@ -6292,14 +6308,14 @@
 					return parent.create_node.call(this, par, node, pos, callback, is_loaded);
 				}
 				if(!node) { node = {}; }
-				var tmp, n, dpc, i, j, m = this._model.data;
+				var tmp, n, dpc, i, j, m = this._model.data, s = this.settings.unique.case_sensitive;
 				n = tmp = this.get_string('New node');
 				dpc = [];
 				for(i = 0, j = par.children.length; i < j; i++) {
-					dpc.push(m[par.children[i]].text);
+					dpc.push(s ? m[par.children[i]].text : m[par.children[i]].text.toLowerCase());
 				}
 				i = 1;
-				while($.inArray(n, dpc) !== -1) {
+				while($.inArray(s ? n : n.toLowerCase(), dpc) !== -1) {
 					n = tmp + ' (' + (++i) + ')';
 				}
 				node.text = n;
