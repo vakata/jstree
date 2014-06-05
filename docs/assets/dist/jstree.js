@@ -5281,7 +5281,8 @@
 			scroll_l: 0,
 			scroll_t: 0,
 			scroll_e: false,
-			scroll_i: false
+			scroll_i: false,
+			is_touch: false
 		};
 		$.vakata.dnd = {
 			settings : {
@@ -5289,7 +5290,8 @@
 				scroll_proximity	: 20,
 				helper_left			: 5,
 				helper_top			: 10,
-				threshold			: 5
+				threshold			: 5,
+				threshold_touch		: 50
 			},
 			_trigger : function (event_name, e) {
 				var data = $.vakata.dnd._get();
@@ -5318,7 +5320,8 @@
 					scroll_l: 0,
 					scroll_t: 0,
 					scroll_e: false,
-					scroll_i: false
+					scroll_i: false,
+					is_touch: false
 				};
 				$(document).off("mousemove touchmove", $.vakata.dnd.drag);
 				$(document).off("mouseup touchend", $.vakata.dnd.stop);
@@ -5369,6 +5372,7 @@
 				vakata_dnd.data		= data;
 				vakata_dnd.is_down	= true;
 				vakata_dnd.element	= e.currentTarget;
+				vakata_dnd.is_touch	= e.type === "touchstart";
 				if(html !== false) {
 					vakata_dnd.helper = $("<div id='vakata-dnd'></div>").html(html).css({
 						"display"		: "block",
@@ -5393,8 +5397,8 @@
 				if(!vakata_dnd.is_down) { return; }
 				if(!vakata_dnd.is_drag) {
 					if(
-						Math.abs(e.pageX - vakata_dnd.init_x) > $.vakata.dnd.settings.threshold ||
-						Math.abs(e.pageY - vakata_dnd.init_y) > $.vakata.dnd.settings.threshold
+						Math.abs(e.pageX - vakata_dnd.init_x) > (vakata_dnd.is_touch ? $.vakata.dnd.settings.threshold_touch : $.vakata.dnd.settings.threshold) ||
+						Math.abs(e.pageY - vakata_dnd.init_y) > (vakata_dnd.is_touch ? $.vakata.dnd.settings.threshold_touch : $.vakata.dnd.settings.threshold)
 					) {
 						if(vakata_dnd.helper) {
 							vakata_dnd.helper.appendTo("body");
