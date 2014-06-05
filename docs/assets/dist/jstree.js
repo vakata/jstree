@@ -403,7 +403,7 @@
 			 * a boolean specifying if a reponsive version of the theme should kick in on smaller screens (if the theme supports it). Defaults to `true`.
 			 * @name $.jstree.defaults.core.themes.responsive
 			 */
-			responsive		: true
+			responsive		: false
 		},
 		/**
 		 * if left as `true` all parents of all selected nodes will be opened once the tree loads (so that all selected nodes are visible to the user)

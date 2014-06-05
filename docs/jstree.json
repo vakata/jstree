@@ -561,7 +561,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "responsive\t\t: true\n\t\t},"
+		"code": "responsive\t\t: false\n\t\t},"
 	},
 	{
 		"tags": [
