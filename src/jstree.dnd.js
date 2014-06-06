@@ -253,6 +253,7 @@
 		// private variable
 		var vakata_dnd = {
 			element	: false,
+			target	: false,
 			is_down	: false,
 			is_drag	: false,
 			helper	: false,
@@ -292,6 +293,7 @@
 				if(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }
 				vakata_dnd = {
 					element	: false,
+					target	: false,
 					is_down	: false,
 					is_drag	: false,
 					helper	: false,
@@ -354,6 +356,7 @@
 				vakata_dnd.data		= data;
 				vakata_dnd.is_down	= true;
 				vakata_dnd.element	= e.currentTarget;
+				vakata_dnd.target	= e.target;
 				vakata_dnd.is_touch	= e.type === "touchstart";
 				if(html !== false) {
 					vakata_dnd.helper = $("<div id='vakata-dnd'></div>").html(html).css({
@@ -468,6 +471,7 @@
 				 * @param {Object} event the event that caused this to trigger (most likely mousemove)
 				 */
 				$.vakata.dnd._trigger("move", e);
+				return false;
 			},
 			stop : function (e) {
 				if(e.type === "touchend" && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0]) {
@@ -488,7 +492,14 @@
 					 */
 					$.vakata.dnd._trigger("stop", e);
 				}
+				else {
+					if(e.type === "touchend" && e.target === vakata_dnd.target) {
+						var to = setTimeout(function () { $(e.target).click(); }, 100);
+						$(e.target).one('click', function() { if(to) { clearTimeout(to); } });
+					}
+				}
 				$.vakata.dnd._clean();
+				return false;
 			}
 		};
 	}(jQuery));

@@ -168,8 +168,8 @@
   -webkit-box-shadow: 0 0 2px #0a6aa1;
   box-shadow: 0 0 2px #0a6aa1;
 }
-.vakata-context .vakata-context-separator a,
-.vakata-context .vakata-context-separator a:hover {
+.vakata-context .vakata-context-separator > a,
+.vakata-context .vakata-context-separator > a:hover {
   background: white;
   border: 0;
   border-top: 1px solid #e2e3e3;
