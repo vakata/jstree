@@ -123,7 +123,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "plugins : {},\n\t\tpath : src && src.indexOf('/') !== -1 ? src.replace(/\\/[^\\/]+$/,'') : '',\n\t\tidregex : /[\\\\:&!^|()\\[\\]<>@*'+~#\";.,=\\- \\/$]/g\n\t};"
+		"code": "plugins : {},\n\t\tpath : src && src.indexOf('/') !== -1 ? src.replace(/\\/[^\\/]+$/,'') : '',\n\t\tidregex : /[\\\\:&!^|()\\[\\]<>@*'+~#\";.,=\\- \\/${}]/g\n\t};"
 	},
 	{
 		"tags": [
