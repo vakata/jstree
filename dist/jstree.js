@@ -6362,7 +6362,7 @@
 						this.hide_dots();
 					}, this))
 				.on("init.jstree loading.jstree ready.jstree", $.proxy(function () {
-						div.style.height = this._data.core.li_height + 'px';
+						//div.style.height = this._data.core.li_height + 'px';
 						this.get_container_ul().addClass('jstree-wholerow-ul');
 					}, this))
 				.on("deselect_all.jstree", $.proxy(function (e, data) {
