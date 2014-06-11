@@ -161,10 +161,16 @@
 @media (max-width: 768px) {
 	@base-height: 40px;
 	#jstree-dnd.jstree-dnd-responsive {
-		line-height:@base-height;
+		line-height:@base-height; font-weight:bold; font-size:1.1em; text-shadow:1px 1px white;
 		> i { background:transparent; width:@base-height; height:@base-height; }
 		> .jstree-ok { background-image:url("@{base-height}.png"); background-position:0 -(@base-height * 5); background-size:(@base-height * 3) (@base-height * 6); }
 		> .jstree-er { background-image:url("@{base-height}.png"); background-position:-(@base-height * 1) -(@base-height * 5); background-size:(@base-height * 3) (@base-height * 6); }
+	}
+	#jstree-marker.jstree-dnd-responsive {
+		border-left-width:10px;
+		border-top-width:10px;
+		border-bottom-width:10px;
+		margin-top:-10px;
 	}
 }
 .jstree-default-responsive {

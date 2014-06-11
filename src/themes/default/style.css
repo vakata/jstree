@@ -259,7 +259,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  margin: 0;
+  margin: -5px 0 0 0;
   padding: 0;
   border-right: 0;
   border-top: 5px solid transparent;
@@ -811,6 +811,9 @@
 @media (max-width: 768px) {
   #jstree-dnd.jstree-dnd-responsive {
     line-height: 40px;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-shadow: 1px 1px white;
   }
   #jstree-dnd.jstree-dnd-responsive > i {
     background: transparent;
@@ -826,6 +829,12 @@
     background-image: url("40px.png");
     background-position: -40px -200px;
     background-size: 120px 240px;
+  }
+  #jstree-marker.jstree-dnd-responsive {
+    border-left-width: 10px;
+    border-top-width: 10px;
+    border-bottom-width: 10px;
+    margin-top: -10px;
   }
 }
 @media (max-width: 768px) {

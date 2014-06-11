@@ -150,7 +150,7 @@
 								switch(v) {
 									case 'b':
 										l = off.left - 6;
-										t = off.top - 5;
+										t = off.top;
 										p = ins.get_parent(ref);
 										i = ref.parent().index();
 										break;
@@ -158,13 +158,13 @@
 										ip = ins.settings.dnd.inside_pos;
 										tm = ins.get_node(ref.parent());
 										l = off.left - 2;
-										t = off.top - 5 + h / 2 + 1;
+										t = off.top + h / 2 + 1;
 										p = tm.id;
 										i = ip === 'first' ? 0 : (ip === 'last' ? tm.children.length : Math.min(ip, tm.children.length));
 										break;
 									case 'a':
 										l = off.left - 6;
-										t = off.top - 5 + h;
+										t = off.top + h;
 										p = ins.get_parent(ref);
 										i = ref.parent().index() + 1;
 										break;
