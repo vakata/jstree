@@ -4951,8 +4951,8 @@
 				})
 				.on("click", "a", function (e) {
 					e.preventDefault();
-				})
-				.on("mouseup", "a", function (e) {
+				//})
+				//.on("mouseup", "a", function (e) {
 					if(!$(this).blur().parent().hasClass("vakata-context-disabled") && $.vakata.context._execute($(this).attr("rel")) !== false) {
 						$.vakata.context.hide();
 					}
