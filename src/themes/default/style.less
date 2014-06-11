@@ -158,6 +158,15 @@
 }
 
 // mobile theme attempt
+@media (max-width: 768px) {
+	@base-height: 40px;
+	#jstree-dnd.jstree-dnd-responsive {
+		line-height:@base-height;
+		> i { background:transparent; width:@base-height; height:@base-height; }
+		> .jstree-ok { background-image:url("@{base-height}.png"); background-position:0 -(@base-height * 5); background-size:(@base-height * 3) (@base-height * 6); }
+		> .jstree-er { background-image:url("@{base-height}.png"); background-position:-(@base-height * 1) -(@base-height * 5); background-size:(@base-height * 3) (@base-height * 6); }
+	}
+}
 .jstree-default-responsive {
 	@base-height: 40px;
 	@media (max-width: 768px) {
@@ -177,7 +186,7 @@
 
 		.jstree-ocl,
 		.jstree-themeicon,
-		.jstree-checkbox { background-size:(@base-height * 3) (@base-height * 5); }
+		.jstree-checkbox { background-size:(@base-height * 3) (@base-height * 6); }
 		.jstree-leaf > .jstree-ocl { background:transparent; }
 		.jstree-open > .jstree-ocl { background-position:0 0px !important; }
 		.jstree-closed > .jstree-ocl { background-position:0 -(@base-height * 1) !important; }
@@ -206,7 +215,7 @@
 		.jstree-icon,
 		.jstree-node > .jstree-ocl,
 		.jstree-themeicon,
-		.jstree-checkbox { background-image:url("@{base-height}.png"); background-size:(@base-height * 3) (@base-height * 5); }
+		.jstree-checkbox { background-image:url("@{base-height}.png"); background-size:(@base-height * 3) (@base-height * 6); }
 
 		.jstree-node { background-position:-(@base-height * 2) 0; background-repeat:repeat-y; }
 		.jstree-last { background:transparent; }
@@ -218,8 +227,8 @@
 		*/
 
 		.jstree-themeicon-custom { background-color:transparent; background-image:none; background-position:0 0; }
-		.jstree-file { background:url("@{base-height}.png") 0 -(@base-height * 4) no-repeat; background-size:(@base-height * 3) (@base-height * 5); }
-		.jstree-folder { background:url("@{base-height}.png") -(@base-height * 1) -(@base-height * 1) no-repeat; background-size:(@base-height * 3) (@base-height * 5); }
+		.jstree-file { background:url("@{base-height}.png") 0 -(@base-height * 4) no-repeat; background-size:(@base-height * 3) (@base-height * 6); }
+		.jstree-folder { background:url("@{base-height}.png") -(@base-height * 1) -(@base-height * 1) no-repeat; background-size:(@base-height * 3) (@base-height * 6); }
 	}
 }
 

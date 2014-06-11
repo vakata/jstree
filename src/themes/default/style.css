@@ -809,6 +809,26 @@
   background: transparent;
 }
 @media (max-width: 768px) {
+  #jstree-dnd.jstree-dnd-responsive {
+    line-height: 40px;
+  }
+  #jstree-dnd.jstree-dnd-responsive > i {
+    background: transparent;
+    width: 40px;
+    height: 40px;
+  }
+  #jstree-dnd.jstree-dnd-responsive > .jstree-ok {
+    background-image: url("40px.png");
+    background-position: 0 -200px;
+    background-size: 120px 240px;
+  }
+  #jstree-dnd.jstree-dnd-responsive > .jstree-er {
+    background-image: url("40px.png");
+    background-position: -40px -200px;
+    background-size: 120px 240px;
+  }
+}
+@media (max-width: 768px) {
   .jstree-default-responsive {
     /*
 		.jstree-open > .jstree-ocl,
@@ -852,7 +872,7 @@
   .jstree-default-responsive .jstree-ocl,
   .jstree-default-responsive .jstree-themeicon,
   .jstree-default-responsive .jstree-checkbox {
-    background-size: 120px 200px;
+    background-size: 120px 240px;
   }
   .jstree-default-responsive .jstree-leaf > .jstree-ocl {
     background: transparent;
@@ -917,7 +937,7 @@
   .jstree-default-responsive .jstree-themeicon,
   .jstree-default-responsive .jstree-checkbox {
     background-image: url("40px.png");
-    background-size: 120px 200px;
+    background-size: 120px 240px;
   }
   .jstree-default-responsive .jstree-node {
     background-position: -80px 0;
@@ -939,11 +959,11 @@
   }
   .jstree-default-responsive .jstree-file {
     background: url("40px.png") 0 -160px no-repeat;
-    background-size: 120px 200px;
+    background-size: 120px 240px;
   }
   .jstree-default-responsive .jstree-folder {
     background: url("40px.png") -40px -40px no-repeat;
-    background-size: 120px 200px;
+    background-size: 120px 240px;
   }
 }
 .jstree-default > .jstree-container-ul > .jstree-node {
