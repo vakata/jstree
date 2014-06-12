@@ -31,7 +31,15 @@
 		 * @name $.jstree.defaults.unique.case_sensitive
 		 * @plugin unique
 		 */
-		case_sensitive : false
+		case_sensitive : false,
+		/**
+		 * A callback executed in the instance's scope when a new node is created and the name is already taken, the two arguments are the conflicting name and the counter. The default will produce results like `New node (2)`.
+		 * @name $.jstree.defaults.unique.duplicate
+		 * @plugin unique
+		 */
+		duplicate : function (name, counter) {
+			return name + ' (' + counter + ')';
+		}
 	};
 
 	$.jstree.plugins.unique = function (options, parent) {
@@ -92,7 +100,7 @@
 					return parent.create_node.call(this, par, node, pos, callback, is_loaded);
 				}
 				if(!node) { node = {}; }
-				var tmp, n, dpc, i, j, m = this._model.data, s = this.settings.unique.case_sensitive;
+				var tmp, n, dpc, i, j, m = this._model.data, s = this.settings.unique.case_sensitive, cb = this.settings.unique.duplicate;
 				n = tmp = this.get_string('New node');
 				dpc = [];
 				for(i = 0, j = par.children.length; i < j; i++) {
@@ -100,7 +108,7 @@
 				}
 				i = 1;
 				while($.inArray(s ? n : n.toLowerCase(), dpc) !== -1) {
-					n = tmp + ' (' + (++i) + ')';
+					n = cb.call(this, tmp, (++i)).toString();
 				}
 				node.text = n;
 			}
