@@ -2609,12 +2609,12 @@
 		 * @param {Boolean} supress_event if set to `true` the `changed.jstree` event won't be triggered
 		 * @trigger deselect_node.jstree, changed.jstree
 		 */
-		deselect_node : function (obj, supress_event, e) {
+		deselect_node : function (obj, supress_event, prevent_close, e) {
 			var t1, t2, dom;
 			if($.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-					this.deselect_node(obj[t1], supress_event, e);
+					this.deselect_node(obj[t1], supress_event, prevent_close, e);
 				}
 				return true;
 			}
