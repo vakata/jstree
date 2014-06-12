@@ -2454,7 +2454,7 @@
 
 			if(!this.settings.core.multiple || (!e.metaKey && !e.ctrlKey && !e.shiftKey) || (e.shiftKey && (!this._data.core.last_clicked || !this.get_parent(obj) || this.get_parent(obj) !== this._data.core.last_clicked.parent ) )) {
 				if(!this.settings.core.multiple && (e.metaKey || e.ctrlKey || e.shiftKey) && this.is_selected(obj)) {
-					this.deselect_node(obj, false, false, e);
+					this.deselect_node(obj, false, e);
 				}
 				else {
 					this.deselect_all(true);
@@ -2481,7 +2481,7 @@
 							this.select_node(p[i], false, false, e);
 						}
 						else {
-							this.deselect_node(p[i], false, false, e);
+							this.deselect_node(p[i], false, e);
 						}
 					}
 				}
@@ -2490,7 +2490,7 @@
 						this.select_node(obj, false, false, e);
 					}
 					else {
-						this.deselect_node(obj, false, false, e);
+						this.deselect_node(obj, false, e);
 					}
 				}
 			}
