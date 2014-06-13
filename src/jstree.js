@@ -550,7 +550,6 @@
 						this.toggle_node(e.target);
 					}, this))
 				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
-						e.preventDefault();
 						$(e.currentTarget).focus();
 						this.activate_node(e.currentTarget, e);
 					}, this))
