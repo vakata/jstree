@@ -135,9 +135,9 @@
 				if($.isFunction(a)) {
 					return a.call(this, str, $.proxy(function (d) {
 							if(d && d.d) { d = d.d; }
-							this._load_nodes(!$.isArray(d) ? [] : d, function () {
+							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true);
-							});
+							}, true);
 						}, this));
 				}
 				else {
@@ -151,7 +151,7 @@
 						}, this))
 						.done($.proxy(function (d) {
 							if(d && d.d) { d = d.d; }
-							this._load_nodes(!$.isArray(d) ? [] : d, function () {
+							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true);
 							}, true);
 						}, this));
