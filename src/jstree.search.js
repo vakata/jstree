@@ -64,7 +64,14 @@
 		 * @name $.jstree.defaults.search.search_leaves_only
 		 * @plugin search
 		 */
-		search_leaves_only : false
+		search_leaves_only : false,
+		/**
+		 * If set to a function it wil be called in the instance's scope with two arguments - search string and node (where node will be every node in the structure, so use with caution).
+		 * If the function returns a truthy value the node will be considered a match (it might not be displayed if search_only_leaves is set to true and the node is not a leaf). Default is `false`.
+		 * @name $.jstree.defaults.search.search_callback
+		 * @plugin search
+		 */
+		search_callback : false
 	};
 
 	$.jstree.plugins.search = function (options, parent) {
@@ -165,7 +172,7 @@
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
 
 			$.each(this._model.data, function (i, v) {
-				if(v.text && f.search(v.text).isMatch && (!s.search_leaves_only || (v.state.loaded && v.children.length === 0)) ) {
+				if(v.text && ( (s.search_callback && s.search_callback.call(this, str, v)) || f.search(v.text).isMatch) && (!s.search_leaves_only || (v.state.loaded && v.children.length === 0)) ) {
 					r.push(i);
 					p = p.concat(v.parents);
 				}
