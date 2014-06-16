@@ -82,6 +82,7 @@
 								m[dpc[i]].icon = t[c].icon;
 							}
 						}
+						m['#'].type = '#';
 					}, this));
 			parent.bind.call(this);
 		};
