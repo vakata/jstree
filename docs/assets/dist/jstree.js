@@ -5684,7 +5684,7 @@
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
 
 			$.each(this._model.data, function (i, v) {
-				if(v.text && ( (s.search_callback && s.search_callback.call(this, str, v)) || f.search(v.text).isMatch) && (!s.search_leaves_only || (v.state.loaded && v.children.length === 0)) ) {
+				if(v.text && ( (s.search_callback && s.search_callback.call(this, str, v)) || (!s.search_callback && f.search(v.text).isMatch) ) && (!s.search_leaves_only || (v.state.loaded && v.children.length === 0)) ) {
 					r.push(i);
 					p = p.concat(v.parents);
 				}
