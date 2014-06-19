@@ -1,5 +1,5 @@
 /*!
- * jsTree 3.0.0
+ * jsTree {{VERSION}}
  * http://jstree.com/
  *
  * Copyright (c) 2013 Ivan Bozhanov (http://vakata.com)

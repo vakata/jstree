@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.0.0
+ * jsTree 3.0.1
  * http://jstree.com/
  *
  * Copyright (c) 2013 Ivan Bozhanov (http://vakata.com)
@@ -2951,8 +2951,8 @@
 		/**
 		 * refreshes a node in the tree (reload its children) all opened nodes inside that node are reloaded with calls to `load_node`.
 		 * @name refresh_node(obj)
-		 * @param {Boolean} skip_loading an option to skip showing the loading indicator
-		 * @trigger refresh.jstree
+		 * @param  {mixed} obj the node
+		 * @trigger refresh_node.jstree
 		 */
 		refresh_node : function (obj) {
 			obj = this.get_node(obj);
@@ -2966,7 +2966,7 @@
 				/**
 				 * triggered when a node is refreshed
 				 * @event
-				 * @name move_node.jstree
+				 * @name refresh_node.jstree
 				 * @param {Object} node - the refreshed node
 				 * @param {Array} nodes - an array of the IDs of the nodes that were reloaded
 				 */

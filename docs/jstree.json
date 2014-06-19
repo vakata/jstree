@@ -12,8 +12,8 @@
 	{
 		"tags": [],
 		"description": {
-			"full": "<p>jsTree 3.0.0<br /><a href='http://jstree.com/'>http://jstree.com/</a></p>\n\n<p>Copyright (c) 2013 Ivan Bozhanov (<a href='http://vakata.com'>http://vakata.com</a>)</p>\n\n<p>Licensed same as jquery - under the terms of the MIT License<br />  <a href='http://www.opensource.org/licenses/mit-license.php'>http://www.opensource.org/licenses/mit-license.php</a></p>",
-			"summary": "<p>jsTree 3.0.0<br /><a href='http://jstree.com/'>http://jstree.com/</a></p>",
+			"full": "<p>jsTree 3.0.1<br /><a href='http://jstree.com/'>http://jstree.com/</a></p>\n\n<p>Copyright (c) 2013 Ivan Bozhanov (<a href='http://vakata.com'>http://vakata.com</a>)</p>\n\n<p>Licensed same as jquery - under the terms of the MIT License<br />  <a href='http://www.opensource.org/licenses/mit-license.php'>http://www.opensource.org/licenses/mit-license.php</a></p>",
+			"summary": "<p>jsTree 3.0.1<br /><a href='http://jstree.com/'>http://jstree.com/</a></p>",
 			"body": "<p>Copyright (c) 2013 Ivan Bozhanov (<a href='http://vakata.com'>http://vakata.com</a>)</p>\n\n<p>Licensed same as jquery - under the terms of the MIT License<br />  <a href='http://www.opensource.org/licenses/mit-license.php'>http://www.opensource.org/licenses/mit-license.php</a></p>"
 		},
 		"ignore": true
@@ -3435,14 +3435,14 @@
 			{
 				"type": "param",
 				"types": [
-					"Boolean"
+					"mixed"
 				],
-				"name": "skip_loading",
-				"description": "an option to skip showing the loading indicator"
+				"name": "obj",
+				"description": "the node"
 			},
 			{
 				"type": "trigger",
-				"string": "refresh.jstree"
+				"string": "refresh_node.jstree"
 			}
 		],
 		"description": {
@@ -3462,7 +3462,7 @@
 			},
 			{
 				"type": "name",
-				"string": "move_node.jstree"
+				"string": "refresh_node.jstree"
 			},
 			{
 				"type": "param",
