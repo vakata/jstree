@@ -666,6 +666,9 @@
 						this[ this._data.core.themes.icons ? "show_icons" : "hide_icons" ]();
 						this[ this._data.core.themes.stripes ? "show_stripes" : "hide_stripes" ]();
 					}, this))
+				.on('blur.jstree', '.jstree-anchor', $.proxy(function (e) {
+						$(e.currentTarget).filter('.jstree-hovered').mouseleave();
+					}, this))
 				.on('focus.jstree', '.jstree-anchor', $.proxy(function (e) {
 						this.element.find('.jstree-hovered').not(e.currentTarget).mouseleave();
 						$(e.currentTarget).mouseenter();
