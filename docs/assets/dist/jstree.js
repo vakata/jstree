@@ -5642,9 +5642,10 @@
 		 * @trigger search.jstree
 		 */
 		this.search = function (str, skip_async) {
-			if(str === false || $.trim(str) === "") {
+			if(str === false || $.trim(str.toString()) === "") {
 				return this.clear_search();
 			}
+			str = str.toString();
 			var s = this.settings.search,
 				a = s.ajax ? s.ajax : false,
 				f = null,
