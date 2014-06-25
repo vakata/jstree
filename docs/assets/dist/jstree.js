@@ -986,12 +986,9 @@
 		 * @trigger load_node.jstree
 		 */
 		load_node : function (obj, callback) {
-			var t1, t2, k, l, i, j, c;
+			var k, l, i, j, c;
 			if($.isArray(obj)) {
-				obj = obj.slice();
-				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-					this.load_node(obj[t1], callback);
-				}
+				this._load_nodes(obj.slice(), callback);
 				return true;
 			}
 			obj = this.get_node(obj);
@@ -999,6 +996,7 @@
 				if(callback) { callback.call(this, obj, false); }
 				return false;
 			}
+			// if(obj.state.loading) { } // the node is already loading - just wait for it to load and invoke callback? but if called implicitly it should be loaded again?
 			if(obj.state.loaded) {
 				obj.state.loaded = false;
 				for(k = 0, l = obj.children_d.length; k < l; k++) {
@@ -3361,6 +3359,14 @@
 		 */
 		move_node : function (obj, par, pos, callback, is_loaded) {
 			var t1, t2, old_par, old_pos, new_par, old_ins, is_multi, dpc, tmp, i, j, k, l, p;
+
+			par = this.get_node(par);
+			pos = pos === undefined ? 0 : pos;
+			if(!par) { return false; }
+			if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
+				return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); });
+			}
+
 			if($.isArray(obj)) {
 				obj = obj.reverse().slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -3369,13 +3375,8 @@
 				return true;
 			}
 			obj = obj && obj.id ? obj : this.get_node(obj);
-			par = this.get_node(par);
-			pos = pos === undefined ? 0 : pos;
 
-			if(!par || !obj || obj.id === '#') { return false; }
-			if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
-				return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); });
-			}
+			if(!obj || obj.id === '#') { return false; }
 
 			old_par = (obj.parent || '#').toString();
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
@@ -3509,6 +3510,14 @@
 		 */
 		copy_node : function (obj, par, pos, callback, is_loaded) {
 			var t1, t2, dpc, tmp, i, j, node, old_par, new_par, old_ins, is_multi;
+
+			par = this.get_node(par);
+			pos = pos === undefined ? 0 : pos;
+			if(!par) { return false; }
+			if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
+				return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true); });
+			}
+
 			if($.isArray(obj)) {
 				obj = obj.reverse().slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -3517,13 +3526,7 @@
 				return true;
 			}
 			obj = obj && obj.id ? obj : this.get_node(obj);
-			par = this.get_node(par);
-			pos = pos === undefined ? 0 : pos;
-
-			if(!par || !obj || obj.id === '#') { return false; }
-			if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
-				return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true); });
-			}
+			if(!obj || obj.id === '#') { return false; }
 
 			old_par = (obj.parent || '#').toString();
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
