@@ -117,6 +117,46 @@
 	};
 })(jQuery);
 
+// auto numbering
+(function ($, undefined) {
+	"use strict";
+	var span = document.createElement('SPAN');
+	span.className = "jstree-numbering";
+
+	$.jstree.defaults.numbering = {};
+	$.jstree.plugins.numbering = function (options, parent) {
+		this.teardown = function () {
+			if(this.settings.questionmark) {
+				this.element.find(".jstree-numbering").remove();
+			}
+			parent.teardown.call(this);
+		};
+		this.get_number = function (obj) {
+			obj = this.get_node(obj);
+			var ind = $.inArray(obj.id, this.get_node(obj.parent).children) + 1;
+			return obj.parent === '#' ? ind : this.get_number(obj.parent) + '.' + ind;
+		};
+		this.redraw_node = function(obj, deep, callback) {
+			var i, j, tmp = null, elm = null, org = this.get_number(obj);
+			obj = parent.redraw_node.call(this, obj, deep, callback);
+			if(obj) {
+				for(i = 0, j = obj.childNodes.length; i < j; i++) {
+					if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {
+						tmp = obj.childNodes[i];
+						break;
+					}
+				}
+				if(tmp) {
+					elm = span.cloneNode(true);
+					elm.innerHTML = org + '. ';
+					tmp.insertBefore(elm, tmp.childNodes[tmp.childNodes.length - 1]);
+				}
+			}
+			return obj;
+		};
+	};
+})(jQuery);
+
 // selecting a node opens it
 (function ($, undefined) {
 	"use strict";
