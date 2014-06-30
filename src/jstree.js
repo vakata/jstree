@@ -127,7 +127,9 @@
 					icons : false
 				},
 				selected : [],
-				last_error : {}
+				last_error : {},
+				working : false,
+				worker_queue : []
 			}
 		};
 	};
@@ -1564,8 +1566,20 @@
 						);
 					}
 					w = new window.Worker(this._wrk);
-					w.onmessage = $.proxy(function (e) { rslt.call(this, e.data, true); }, this);
-					w.postMessage(args);
+					w.onmessage = $.proxy(function (e) {
+						rslt.call(this, e.data, true);
+						this._data.core.working = false;
+						if(this._data.core.worker_queue.length) {
+							this._append_json_data.apply(this, this._data.core.worker_queue.shift());
+						}
+					}, this);
+					if(!this._data.core.working) {
+						this._data.core.working = true;
+						w.postMessage(args);
+					}
+					else {
+						this._data.core.worker_queue.push([dom, data, cb]);
+					}
 				}
 				catch(e) {
 					rslt.call(this, func(args), false);
