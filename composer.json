@@ -22,7 +22,7 @@
 	"extra": {
 		"component": {
 			"scripts": [
-				"dist/jstree.js",
+				"dist/jstree.js"
 			],
 			"styles": [
 				"dist/themes/default/style.css"
