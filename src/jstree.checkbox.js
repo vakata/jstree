@@ -435,6 +435,28 @@
 		 * @plugin checkbox
 		 */
 		this.toggle_checkboxes = function () { if(this._data.core.themes.checkboxes) { this.hide_checkboxes(); } else { this.show_checkboxes(); } };
+		/**
+		 * checks if a node is in an undetermined state
+		 * @name is_undetermined(obj)
+		 * @param  {mixed} obj
+		 * @return {Boolean}
+		 */
+		this.is_undetermined = function (obj) {
+			obj = this.get_node(obj);
+			var s = this.settings.checkbox.cascade, i, j, d = this._data.core.selected, m = this._model.data;
+			if(!obj || obj.state.selected === true || s.indexOf('undetermined') === -1 || (s.indexOf('down') === -1 && s.indexOf('up') === -1)) {
+				return false;
+			}
+			if(!obj.state.loaded && obj.original.state.undetermined === true) {
+				return true;
+			}
+			for(i = 0, j = obj.children_d.length; i < j; i++) {
+				if($.inArray(obj.children_d[i], d) !== -1 || (!m[obj.children_d[i]].state.loaded && m[obj.children_d[i]].original.state.undetermined)) {
+					return true;
+				}
+			}
+			return false;
+		};
 	};
 
 	// include the checkbox plugin by default

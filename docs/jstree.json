@@ -347,9 +347,9 @@
 			}
 		],
 		"description": {
-			"full": "<p>configure the various strings used throughout the tree</p>\n\n<p>You can use an object where the key is the string you need to replace and the value is your replacement.<br />Another option is to specify a function which will be called with an argument of the needed string and should return the replacement.<br />If left as <code>false</code> no replacement is made.</p>\n\n<p><strong>Examples</strong></p>\n\n<pre><code>$('#tree').jstree({\n    'core' : {\n        'strings' : {\n            'Loading...' : 'Please wait ...'\n        }\n    }\n});\n</code></pre>",
+			"full": "<p>configure the various strings used throughout the tree</p>\n\n<p>You can use an object where the key is the string you need to replace and the value is your replacement.<br />Another option is to specify a function which will be called with an argument of the needed string and should return the replacement.<br />If left as <code>false</code> no replacement is made.</p>\n\n<p><strong>Examples</strong></p>\n\n<pre><code>$('#tree').jstree({\n    'core' : {\n        'strings' : {\n            'Loading ...' : 'Please wait ...'\n        }\n    }\n});\n</code></pre>",
 			"summary": "<p>configure the various strings used throughout the tree</p>",
-			"body": "<p>You can use an object where the key is the string you need to replace and the value is your replacement.<br />Another option is to specify a function which will be called with an argument of the needed string and should return the replacement.<br />If left as <code>false</code> no replacement is made.</p>\n\n<p><strong>Examples</strong></p>\n\n<pre><code>$('#tree').jstree({\n    'core' : {\n        'strings' : {\n            'Loading...' : 'Please wait ...'\n        }\n    }\n});\n</code></pre>"
+			"body": "<p>You can use an object where the key is the string you need to replace and the value is your replacement.<br />Another option is to specify a function which will be called with an argument of the needed string and should return the replacement.<br />If left as <code>false</code> no replacement is made.</p>\n\n<p><strong>Examples</strong></p>\n\n<pre><code>$('#tree').jstree({\n    'core' : {\n        'strings' : {\n            'Loading ...' : 'Please wait ...'\n        }\n    }\n});\n</code></pre>"
 		},
 		"isPrivate": false,
 		"ignore": false,
@@ -5283,12 +5283,49 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.toggle_checkboxes = function () { if(this._data.core.themes.checkboxes) { this.hide_checkboxes(); } else { this.show_checkboxes(); } };\n\t};\n\n\t// include the checkbox plugin by default\n\t// $.jstree.defaults.plugins.push(\"checkbox\");",
+		"code": "this.toggle_checkboxes = function () { if(this._data.core.themes.checkboxes) { this.hide_checkboxes(); } else { this.show_checkboxes(); } };",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
 			"name": "toggle_checkboxes",
 			"string": "this.toggle_checkboxes()"
+		}
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "is_undetermined(obj)"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "obj",
+				"description": ""
+			},
+			{
+				"type": "return",
+				"types": [
+					"Boolean"
+				],
+				"description": ""
+			}
+		],
+		"description": {
+			"full": "<p>checks if a node is in an undetermined state</p>",
+			"summary": "<p>checks if a node is in an undetermined state</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.is_undetermined = function (obj) {\n\t\t\tobj = this.get_node(obj);\n\t\t\tvar s = this.settings.checkbox.cascade, i, j, d = this._data.core.selected, m = this._model.data;\n\t\t\tif(!obj || obj.state.selected === true || s.indexOf('undetermined') === -1 || (s.indexOf('down') === -1 && s.indexOf('up') === -1)) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tif(!obj.state.loaded && obj.original.state.undetermined === true) {\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\tif($.inArray(obj.children_d[i], d) !== -1 || (!m[obj.children_d[i]].state.loaded && m[obj.children_d[i]].original.state.undetermined)) {\n\t\t\t\t\treturn true;\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn false;\n\t\t};\n\t};\n\n\t// include the checkbox plugin by default\n\t// $.jstree.defaults.plugins.push(\"checkbox\");",
+		"ctx": {
+			"type": "method",
+			"receiver": "this",
+			"name": "is_undetermined",
+			"string": "this.is_undetermined()"
 		}
 	},
 	{
