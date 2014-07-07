@@ -474,10 +474,12 @@
 .jstree-default .jstree-checkbox:hover {
   background-position: -164px -36px;
 }
-.jstree-default .jstree-clicked > .jstree-checkbox {
+.jstree-default.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox,
+.jstree-default .jstree-checked > .jstree-checkbox {
   background-position: -228px -4px;
 }
-.jstree-default .jstree-clicked > .jstree-checkbox:hover {
+.jstree-default.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox:hover,
+.jstree-default .jstree-checked > .jstree-checkbox:hover {
   background-position: -228px -36px;
 }
 .jstree-default .jstree-anchor > .jstree-undetermined {
@@ -610,10 +612,12 @@
 .jstree-default-small .jstree-checkbox:hover {
   background-position: -167px -39px;
 }
-.jstree-default-small .jstree-clicked > .jstree-checkbox {
+.jstree-default-small.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox,
+.jstree-default-small .jstree-checked > .jstree-checkbox {
   background-position: -231px -7px;
 }
-.jstree-default-small .jstree-clicked > .jstree-checkbox:hover {
+.jstree-default-small.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox:hover,
+.jstree-default-small .jstree-checked > .jstree-checkbox:hover {
   background-position: -231px -39px;
 }
 .jstree-default-small .jstree-anchor > .jstree-undetermined {
@@ -746,10 +750,12 @@
 .jstree-default-large .jstree-checkbox:hover {
   background-position: -160px -32px;
 }
-.jstree-default-large .jstree-clicked > .jstree-checkbox {
+.jstree-default-large.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox,
+.jstree-default-large .jstree-checked > .jstree-checkbox {
   background-position: -224px 0px;
 }
-.jstree-default-large .jstree-clicked > .jstree-checkbox:hover {
+.jstree-default-large.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox:hover,
+.jstree-default-large .jstree-checked > .jstree-checkbox:hover {
   background-position: -224px -32px;
 }
 .jstree-default-large .jstree-anchor > .jstree-undetermined {

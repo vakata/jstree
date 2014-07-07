@@ -5181,7 +5181,27 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "cascade\t\t\t\t: ''\n\t};\n\t$.jstree.plugins.checkbox = function (options, parent) {\n\t\tthis.bind = function () {\n\t\t\tparent.bind.call(this);\n\t\t\tthis._data.checkbox.uto = false;\n\t\t\tif(this.settings.checkbox.three_state) {\n\t\t\t\tthis.settings.checkbox.cascade = 'up+down+undetermined';\n\t\t\t}\n\t\t\tthis.element\n\t\t\t\t.on(\"init.jstree\", $.proxy(function () {\n\t\t\t\t\t\tthis._data.checkbox.visible = this.settings.checkbox.visible;\n\t\t\t\t\t\tif(!this.settings.checkbox.keep_selected_style) {\n\t\t\t\t\t\t\tthis.element.addClass('jstree-checkbox-no-clicked');\n\t\t\t\t\t\t}\n\t\t\t\t\t}, this))\n\t\t\t\t.on(\"loading.jstree\", $.proxy(function () {\n\t\t\t\t\t\tthis[ this._data.checkbox.visible ? 'show_checkboxes' : 'hide_checkboxes' ]();\n\t\t\t\t\t}, this));\n\t\t\tif(this.settings.checkbox.cascade.indexOf('undetermined') !== -1) {\n\t\t\t\tthis.element\n\t\t\t\t\t.on('changed.jstree move_node.jstree copy_node.jstree redraw.jstree open_node.jstree', $.proxy(function () {\n\t\t\t\t\t\t\t// only if undetermined is in setting\n\t\t\t\t\t\t\tif(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }\n\t\t\t\t\t\t\tthis._data.checkbox.uto = setTimeout($.proxy(this._undetermined, this), 50);\n\t\t\t\t\t\t}, this));\n\t\t\t}\n\t\t\tif(this.settings.checkbox.cascade.indexOf('up') !== -1 || this.settings.checkbox.cascade.indexOf('down') !== -1) {\n\t\t\t\tthis.element\n\t\t\t\t\t.on('model.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\tvar m = this._model.data,\n\t\t\t\t\t\t\t\tp = m[data.parent],\n\t\t\t\t\t\t\t\tdpc = data.nodes,\n\t\t\t\t\t\t\t\tchd = [],\n\t\t\t\t\t\t\t\tc, i, j, k, l, tmp, s = this.settings.checkbox.cascade;\n\n\t\t\t\t\t\t\tif(s.indexOf('down') !== -1) {\n\t\t\t\t\t\t\t\t// apply down\n\t\t\t\t\t\t\t\tif(p.state.selected) {\n\t\t\t\t\t\t\t\t\tfor(i = 0, j = dpc.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\t\tm[dpc[i]].state.selected = true;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tthis._data.core.selected = this._data.core.selected.concat(dpc);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\tfor(i = 0, j = dpc.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\t\tif(m[dpc[i]].state.selected) {\n\t\t\t\t\t\t\t\t\t\t\tfor(k = 0, l = m[dpc[i]].children_d.length; k < l; k++) {\n\t\t\t\t\t\t\t\t\t\t\t\tm[m[dpc[i]].children_d[k]].state.selected = true;\n\t\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\t\tthis._data.core.selected = this._data.core.selected.concat(m[dpc[i]].children_d);\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tif(s.indexOf('up') !== -1) {\n\t\t\t\t\t\t\t\t// apply up\n\t\t\t\t\t\t\t\tfor(i = 0, j = p.children_d.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\tif(!m[p.children_d[i]].children.length) {\n\t\t\t\t\t\t\t\t\t\tchd.push(m[p.children_d[i]].parent);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tchd = $.vakata.array_unique(chd);\n\t\t\t\t\t\t\t\tfor(k = 0, l = chd.length; k < l; k++) {\n\t\t\t\t\t\t\t\t\tp = m[chd[k]];\n\t\t\t\t\t\t\t\t\twhile(p && p.id !== '#') {\n\t\t\t\t\t\t\t\t\t\tc = 0;\n\t\t\t\t\t\t\t\t\t\tfor(i = 0, j = p.children.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\t\t\tc += m[p.children[i]].state.selected;\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\tif(c === j) {\n\t\t\t\t\t\t\t\t\t\t\tp.state.selected = true;\n\t\t\t\t\t\t\t\t\t\t\tthis._data.core.selected.push(p.id);\n\t\t\t\t\t\t\t\t\t\t\ttmp = this.get_node(p, true);\n\t\t\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').addClass('jstree-clicked');\n\t\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\tp = this.get_node(p.parent);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tthis._data.core.selected = $.vakata.array_unique(this._data.core.selected);\n\t\t\t\t\t\t}, this))\n\t\t\t\t\t.on('select_node.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\tvar obj = data.node,\n\t\t\t\t\t\t\t\tm = this._model.data,\n\t\t\t\t\t\t\t\tpar = this.get_node(obj.parent),\n\t\t\t\t\t\t\t\tdom = this.get_node(obj, true),\n\t\t\t\t\t\t\t\ti, j, c, tmp, s = this.settings.checkbox.cascade;\n\n\t\t\t\t\t\t\t// apply down\n\t\t\t\t\t\t\tif(s.indexOf('down') !== -1) {\n\t\t\t\t\t\t\t\tthis._data.core.selected = $.vakata.array_unique(this._data.core.selected.concat(obj.children_d));\n\t\t\t\t\t\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\ttmp = m[obj.children_d[i]];\n\t\t\t\t\t\t\t\t\ttmp.state.selected = true;\n\t\t\t\t\t\t\t\t\tif(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {\n\t\t\t\t\t\t\t\t\t\ttmp.original.state.undetermined = false;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t// apply up\n\t\t\t\t\t\t\tif(s.indexOf('up') !== -1) {\n\t\t\t\t\t\t\t\twhile(par && par.id !== '#') {\n\t\t\t\t\t\t\t\t\tc = 0;\n\t\t\t\t\t\t\t\t\tfor(i = 0, j = par.children.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\t\tc += m[par.children[i]].state.selected;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tif(c === j) {\n\t\t\t\t\t\t\t\t\t\tpar.state.selected = true;\n\t\t\t\t\t\t\t\t\t\tthis._data.core.selected.push(par.id);\n\t\t\t\t\t\t\t\t\t\ttmp = this.get_node(par, true);\n\t\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').addClass('jstree-clicked');\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tpar = this.get_node(par.parent);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t// apply down (process .children separately?)\n\t\t\t\t\t\t\tif(s.indexOf('down') !== -1 && dom.length) {\n\t\t\t\t\t\t\t\tdom.find('.jstree-anchor').addClass('jstree-clicked');\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}, this))\n\t\t\t\t\t.on('deselect_all.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\tvar obj = this.get_node('#'),\n\t\t\t\t\t\t\t\tm = this._model.data,\n\t\t\t\t\t\t\t\ti, j, tmp;\n\t\t\t\t\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\t\t\t\t\ttmp = m[obj.children_d[i]];\n\t\t\t\t\t\t\t\tif(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {\n\t\t\t\t\t\t\t\t\ttmp.original.state.undetermined = false;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}, this))\n\t\t\t\t\t.on('deselect_node.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\tvar obj = data.node,\n\t\t\t\t\t\t\t\tdom = this.get_node(obj, true),\n\t\t\t\t\t\t\t\ti, j, tmp, s = this.settings.checkbox.cascade;\n\t\t\t\t\t\t\tif(obj && obj.original && obj.original.state && obj.original.state.undetermined) {\n\t\t\t\t\t\t\t\tobj.original.state.undetermined = false;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t// apply down\n\t\t\t\t\t\t\tif(s.indexOf('down') !== -1) {\n\t\t\t\t\t\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\ttmp = this._model.data[obj.children_d[i]];\n\t\t\t\t\t\t\t\t\ttmp.state.selected = false;\n\t\t\t\t\t\t\t\t\tif(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {\n\t\t\t\t\t\t\t\t\t\ttmp.original.state.undetermined = false;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t// apply up\n\t\t\t\t\t\t\tif(s.indexOf('up') !== -1) {\n\t\t\t\t\t\t\t\tfor(i = 0, j = obj.parents.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\ttmp = this._model.data[obj.parents[i]];\n\t\t\t\t\t\t\t\t\ttmp.state.selected = false;\n\t\t\t\t\t\t\t\t\tif(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {\n\t\t\t\t\t\t\t\t\t\ttmp.original.state.undetermined = false;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\ttmp = this.get_node(obj.parents[i], true);\n\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').removeClass('jstree-clicked');\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\ttmp = [];\n\t\t\t\t\t\t\tfor(i = 0, j = this._data.core.selected.length; i < j; i++) {\n\t\t\t\t\t\t\t\t// apply down + apply up\n\t\t\t\t\t\t\t\tif(\n\t\t\t\t\t\t\t\t\t(s.indexOf('down') === -1 || $.inArray(this._data.core.selected[i], obj.children_d) === -1) &&\n\t\t\t\t\t\t\t\t\t(s.indexOf('up') === -1 || $.inArray(this._data.core.selected[i], obj.parents) === -1)\n\t\t\t\t\t\t\t\t) {\n\t\t\t\t\t\t\t\t\ttmp.push(this._data.core.selected[i]);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tthis._data.core.selected = $.vakata.array_unique(tmp);\n\n\t\t\t\t\t\t\t// apply down (process .children separately?)\n\t\t\t\t\t\t\tif(s.indexOf('down') !== -1 && dom.length) {\n\t\t\t\t\t\t\t\tdom.find('.jstree-anchor').removeClass('jstree-clicked');\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}, this));\n\t\t\t}\n\t\t\tif(this.settings.checkbox.cascade.indexOf('up') !== -1) {\n\t\t\t\tthis.element\n\t\t\t\t\t.on('delete_node.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\t// apply up (whole handler)\n\t\t\t\t\t\t\tvar p = this.get_node(data.parent),\n\t\t\t\t\t\t\t\tm = this._model.data,\n\t\t\t\t\t\t\t\ti, j, c, tmp;\n\t\t\t\t\t\t\twhile(p && p.id !== '#') {\n\t\t\t\t\t\t\t\tc = 0;\n\t\t\t\t\t\t\t\tfor(i = 0, j = p.children.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\tc += m[p.children[i]].state.selected;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tif(c === j) {\n\t\t\t\t\t\t\t\t\tp.state.selected = true;\n\t\t\t\t\t\t\t\t\tthis._data.core.selected.push(p.id);\n\t\t\t\t\t\t\t\t\ttmp = this.get_node(p, true);\n\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').addClass('jstree-clicked');\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tp = this.get_node(p.parent);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}, this))\n\t\t\t\t\t.on('move_node.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\t// apply up (whole handler)\n\t\t\t\t\t\t\tvar is_multi = data.is_multi,\n\t\t\t\t\t\t\t\told_par = data.old_parent,\n\t\t\t\t\t\t\t\tnew_par = this.get_node(data.parent),\n\t\t\t\t\t\t\t\tm = this._model.data,\n\t\t\t\t\t\t\t\tp, c, i, j, tmp;\n\t\t\t\t\t\t\tif(!is_multi) {\n\t\t\t\t\t\t\t\tp = this.get_node(old_par);\n\t\t\t\t\t\t\t\twhile(p && p.id !== '#') {\n\t\t\t\t\t\t\t\t\tc = 0;\n\t\t\t\t\t\t\t\t\tfor(i = 0, j = p.children.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\t\tc += m[p.children[i]].state.selected;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tif(c === j) {\n\t\t\t\t\t\t\t\t\t\tp.state.selected = true;\n\t\t\t\t\t\t\t\t\t\tthis._data.core.selected.push(p.id);\n\t\t\t\t\t\t\t\t\t\ttmp = this.get_node(p, true);\n\t\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').addClass('jstree-clicked');\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tp = this.get_node(p.parent);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tp = new_par;\n\t\t\t\t\t\t\twhile(p && p.id !== '#') {\n\t\t\t\t\t\t\t\tc = 0;\n\t\t\t\t\t\t\t\tfor(i = 0, j = p.children.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\tc += m[p.children[i]].state.selected;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tif(c === j) {\n\t\t\t\t\t\t\t\t\tif(!p.state.selected) {\n\t\t\t\t\t\t\t\t\t\tp.state.selected = true;\n\t\t\t\t\t\t\t\t\t\tthis._data.core.selected.push(p.id);\n\t\t\t\t\t\t\t\t\t\ttmp = this.get_node(p, true);\n\t\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').addClass('jstree-clicked');\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\tif(p.state.selected) {\n\t\t\t\t\t\t\t\t\t\tp.state.selected = false;\n\t\t\t\t\t\t\t\t\t\tthis._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, p.id);\n\t\t\t\t\t\t\t\t\t\ttmp = this.get_node(p, true);\n\t\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').removeClass('jstree-clicked');\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tp = this.get_node(p.parent);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}, this));\n\t\t\t}\n\t\t};"
+		"code": "cascade\t\t\t\t: '',"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "$.jstree.defaults.checkbox.tie_selection"
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>This setting controls if checkbox are bound to the general tree selection or to an internal array maintained by the checkbox plugin. Defaults to <code>true</code>, only set to <code>false</code> if you know exactly what you are doing. </p>",
+			"summary": "<p>This setting controls if checkbox are bound to the general tree selection or to an internal array maintained by the checkbox plugin. Defaults to <code>true</code>, only set to <code>false</code> if you know exactly what you are doing. </p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "tie_selection\t\t: true\n\t};\n\t$.jstree.plugins.checkbox = function (options, parent) {\n\t\tthis.bind = function () {\n\t\t\tparent.bind.call(this);\n\t\t\tthis._data.checkbox.uto = false;\n\t\t\tthis._data.checkbox.selected = [];\n\t\t\tif(this.settings.checkbox.three_state) {\n\t\t\t\tthis.settings.checkbox.cascade = 'up+down+undetermined';\n\t\t\t}\n\t\t\tthis.element\n\t\t\t\t.on(\"init.jstree\", $.proxy(function () {\n\t\t\t\t\t\tthis._data.checkbox.visible = this.settings.checkbox.visible;\n\t\t\t\t\t\tif(!this.settings.checkbox.keep_selected_style) {\n\t\t\t\t\t\t\tthis.element.addClass('jstree-checkbox-no-clicked');\n\t\t\t\t\t\t}\n\t\t\t\t\t\tif(this.settings.checkbox.tie_selection) {\n\t\t\t\t\t\t\tthis.element.addClass('jstree-checkbox-selection');\n\t\t\t\t\t\t}\n\t\t\t\t\t}, this))\n\t\t\t\t.on(\"loading.jstree\", $.proxy(function () {\n\t\t\t\t\t\tthis[ this._data.checkbox.visible ? 'show_checkboxes' : 'hide_checkboxes' ]();\n\t\t\t\t\t}, this));\n\t\t\tif(this.settings.checkbox.cascade.indexOf('undetermined') !== -1) {\n\t\t\t\tthis.element\n\t\t\t\t\t.on('changed.jstree uncheck_node.jstree check_node.jstree uncheck_all.jstree check_all.jstree move_node.jstree copy_node.jstree redraw.jstree open_node.jstree', $.proxy(function () {\n\t\t\t\t\t\t\t// only if undetermined is in setting\n\t\t\t\t\t\t\tif(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }\n\t\t\t\t\t\t\tthis._data.checkbox.uto = setTimeout($.proxy(this._undetermined, this), 50);\n\t\t\t\t\t\t}, this));\n\t\t\t}\n\t\t\tif(this.settings.checkbox.cascade.indexOf('up') !== -1 || this.settings.checkbox.cascade.indexOf('down') !== -1) {\n\t\t\t\tthis.element\n\t\t\t\t\t.on('model.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\tvar m = this._model.data,\n\t\t\t\t\t\t\t\tp = m[data.parent],\n\t\t\t\t\t\t\t\tdpc = data.nodes,\n\t\t\t\t\t\t\t\tchd = [],\n\t\t\t\t\t\t\t\tc, i, j, k, l, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection;\n\n\t\t\t\t\t\t\tif(t) {\n\t\t\t\t\t\t\t\tfor(i = 0, j = dpc.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\tm[dpc[i]].state.checked = (m[dpc[i]].original && m[dpc[i]].original.state && m[dpc[i]].original.state.checked);\n\t\t\t\t\t\t\t\t\tif(m[dpc[i]].state.checked) {\n\t\t\t\t\t\t\t\t\t\tthis._data.checkbox.selected.push(dpc[i]);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tif(s.indexOf('down') !== -1) {\n\t\t\t\t\t\t\t\t// apply down\n\t\t\t\t\t\t\t\tif(p.state[ t ? 'selected' : 'checked' ]) {\n\t\t\t\t\t\t\t\t\tfor(i = 0, j = dpc.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\t\tm[dpc[i]].state[ t ? 'selected' : 'checked' ] = true;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tthis._data[ t ? 'core' : 'checkbox' ].selected = this._data.core[ t ? 'core' : 'checkbox' ].concat(dpc);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\tfor(i = 0, j = dpc.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\t\tif(m[dpc[i]].state[ t ? 'selected' : 'checked' ]) {\n\t\t\t\t\t\t\t\t\t\t\tfor(k = 0, l = m[dpc[i]].children_d.length; k < l; k++) {\n\t\t\t\t\t\t\t\t\t\t\t\tm[m[dpc[i]].children_d[k]].state[ t ? 'selected' : 'checked' ] = true;\n\t\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\t\tthis._data[ t ? 'core' : 'checkbox' ].selected = this._data[ t ? 'core' : 'checkbox' ].selected.concat(m[dpc[i]].children_d);\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tif(s.indexOf('up') !== -1) {\n\t\t\t\t\t\t\t\t// apply up\n\t\t\t\t\t\t\t\tfor(i = 0, j = p.children_d.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\tif(!m[p.children_d[i]].children.length) {\n\t\t\t\t\t\t\t\t\t\tchd.push(m[p.children_d[i]].parent);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tchd = $.vakata.array_unique(chd);\n\t\t\t\t\t\t\t\tfor(k = 0, l = chd.length; k < l; k++) {\n\t\t\t\t\t\t\t\t\tp = m[chd[k]];\n\t\t\t\t\t\t\t\t\twhile(p && p.id !== '#') {\n\t\t\t\t\t\t\t\t\t\tc = 0;\n\t\t\t\t\t\t\t\t\t\tfor(i = 0, j = p.children.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\t\t\tc += m[p.children[i]].state[ t ? 'selected' : 'checked' ];\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\tif(c === j) {\n\t\t\t\t\t\t\t\t\t\t\tp.state[ t ? 'selected' : 'checked' ] = true;\n\t\t\t\t\t\t\t\t\t\t\tthis._data.core[ t ? 'selected' : 'checked' ].push(p.id);\n\t\t\t\t\t\t\t\t\t\t\ttmp = this.get_node(p, true);\n\t\t\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').addClass( t ? 'jstree-clicked' : 'jstree-checked');\n\t\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t\tp = this.get_node(p.parent);\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\tthis._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected);\n\t\t\t\t\t\t}, this))\n\t\t\t\t\t.on(this.settings.checkbox.tie_selection ? 'select_node.jstree' : 'check_node.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\tvar obj = data.node,\n\t\t\t\t\t\t\t\tm = this._model.data,\n\t\t\t\t\t\t\t\tpar = this.get_node(obj.parent),\n\t\t\t\t\t\t\t\tdom = this.get_node(obj, true),\n\t\t\t\t\t\t\t\ti, j, c, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection;\n\n\t\t\t\t\t\t\t// apply down\n\t\t\t\t\t\t\tif(s.indexOf('down') !== -1) {\n\t\t\t\t\t\t\t\tthis._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected.concat(obj.children_d));\n\t\t\t\t\t\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\ttmp = m[obj.children_d[i]];\n\t\t\t\t\t\t\t\t\ttmp.state[ t ? 'selected' : 'checked' ] = true;\n\t\t\t\t\t\t\t\t\tif(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {\n\t\t\t\t\t\t\t\t\t\ttmp.original.state.undetermined = false;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t// apply up\n\t\t\t\t\t\t\tif(s.indexOf('up') !== -1) {\n\t\t\t\t\t\t\t\twhile(par && par.id !== '#') {\n\t\t\t\t\t\t\t\t\tc = 0;\n\t\t\t\t\t\t\t\t\tfor(i = 0, j = par.children.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\t\tc += m[par.children[i]].state[ t ? 'selected' : 'checked' ];\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tif(c === j) {\n\t\t\t\t\t\t\t\t\t\tpar.state[ t ? 'selected' : 'checked' ] = true;\n\t\t\t\t\t\t\t\t\t\tthis._data[ t ? 'core' : 'checkbox' ].selected.push(par.id);\n\t\t\t\t\t\t\t\t\t\ttmp = this.get_node(par, true);\n\t\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tpar = this.get_node(par.parent);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t// apply down (process .children separately?)\n\t\t\t\t\t\t\tif(s.indexOf('down') !== -1 && dom.length) {\n\t\t\t\t\t\t\t\tdom.find('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}, this))\n\t\t\t\t\t.on(this.settings.checkbox.tie_selection ? 'deselect_all.jstree' : 'uncheck_all.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\tvar obj = this.get_node('#'),\n\t\t\t\t\t\t\t\tm = this._model.data,\n\t\t\t\t\t\t\t\ti, j, tmp;\n\t\t\t\t\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\t\t\t\t\ttmp = m[obj.children_d[i]];\n\t\t\t\t\t\t\t\tif(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {\n\t\t\t\t\t\t\t\t\ttmp.original.state.undetermined = false;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}, this))\n\t\t\t\t\t.on(this.settings.checkbox.tie_selection ? 'deselect_node.jstree' : 'uncheck_node.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\tvar obj = data.node,\n\t\t\t\t\t\t\t\tdom = this.get_node(obj, true),\n\t\t\t\t\t\t\t\ti, j, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection;\n\t\t\t\t\t\t\tif(obj && obj.original && obj.original.state && obj.original.state.undetermined) {\n\t\t\t\t\t\t\t\tobj.original.state.undetermined = false;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t// apply down\n\t\t\t\t\t\t\tif(s.indexOf('down') !== -1) {\n\t\t\t\t\t\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\ttmp = this._model.data[obj.children_d[i]];\n\t\t\t\t\t\t\t\t\ttmp.state[ t ? 'selected' : 'checked' ] = false;\n\t\t\t\t\t\t\t\t\tif(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {\n\t\t\t\t\t\t\t\t\t\ttmp.original.state.undetermined = false;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t\t// apply up\n\t\t\t\t\t\t\tif(s.indexOf('up') !== -1) {\n\t\t\t\t\t\t\t\tfor(i = 0, j = obj.parents.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\ttmp = this._model.data[obj.parents[i]];\n\t\t\t\t\t\t\t\t\ttmp.state[ t ? 'selected' : 'checked' ] = false;\n\t\t\t\t\t\t\t\t\tif(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {\n\t\t\t\t\t\t\t\t\t\ttmp.original.state.undetermined = false;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\ttmp = this.get_node(obj.parents[i], true);\n\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\ttmp = [];\n\t\t\t\t\t\t\tfor(i = 0, j = this._data[ t ? 'core' : 'checkbox' ].selected.length; i < j; i++) {\n\t\t\t\t\t\t\t\t// apply down + apply up\n\t\t\t\t\t\t\t\tif(\n\t\t\t\t\t\t\t\t\t(s.indexOf('down') === -1 || $.inArray(this._data[ t ? 'core' : 'checkbox' ].selected[i], obj.children_d) === -1) &&\n\t\t\t\t\t\t\t\t\t(s.indexOf('up') === -1 || $.inArray(this._data[ t ? 'core' : 'checkbox' ].selected[i], obj.parents) === -1)\n\t\t\t\t\t\t\t\t) {\n\t\t\t\t\t\t\t\t\ttmp.push(this._data[ t ? 'core' : 'checkbox' ].selected[i]);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tthis._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(tmp);\n\n\t\t\t\t\t\t\t// apply down (process .children separately?)\n\t\t\t\t\t\t\tif(s.indexOf('down') !== -1 && dom.length) {\n\t\t\t\t\t\t\t\tdom.find('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}, this));\n\t\t\t}\n\t\t\tif(this.settings.checkbox.cascade.indexOf('up') !== -1) {\n\t\t\t\tthis.element\n\t\t\t\t\t.on('delete_node.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\t// apply up (whole handler)\n\t\t\t\t\t\t\tvar p = this.get_node(data.parent),\n\t\t\t\t\t\t\t\tm = this._model.data,\n\t\t\t\t\t\t\t\ti, j, c, tmp, t = this.settings.checkbox.tie_selection;\n\t\t\t\t\t\t\twhile(p && p.id !== '#') {\n\t\t\t\t\t\t\t\tc = 0;\n\t\t\t\t\t\t\t\tfor(i = 0, j = p.children.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\tc += m[p.children[i]].state[ t ? 'selected' : 'checked' ];\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tif(c === j) {\n\t\t\t\t\t\t\t\t\tp.state[ t ? 'selected' : 'checked' ] = true;\n\t\t\t\t\t\t\t\t\tthis._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);\n\t\t\t\t\t\t\t\t\ttmp = this.get_node(p, true);\n\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tp = this.get_node(p.parent);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}, this))\n\t\t\t\t\t.on('move_node.jstree', $.proxy(function (e, data) {\n\t\t\t\t\t\t\t// apply up (whole handler)\n\t\t\t\t\t\t\tvar is_multi = data.is_multi,\n\t\t\t\t\t\t\t\told_par = data.old_parent,\n\t\t\t\t\t\t\t\tnew_par = this.get_node(data.parent),\n\t\t\t\t\t\t\t\tm = this._model.data,\n\t\t\t\t\t\t\t\tp, c, i, j, tmp, t = this.settings.checkbox.tie_selection;\n\t\t\t\t\t\t\tif(!is_multi) {\n\t\t\t\t\t\t\t\tp = this.get_node(old_par);\n\t\t\t\t\t\t\t\twhile(p && p.id !== '#') {\n\t\t\t\t\t\t\t\t\tc = 0;\n\t\t\t\t\t\t\t\t\tfor(i = 0, j = p.children.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\t\tc += m[p.children[i]].state[ t ? 'selected' : 'checked' ];\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tif(c === j) {\n\t\t\t\t\t\t\t\t\t\tp.state[ t ? 'selected' : 'checked' ] = true;\n\t\t\t\t\t\t\t\t\t\tthis._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);\n\t\t\t\t\t\t\t\t\t\ttmp = this.get_node(p, true);\n\t\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tp = this.get_node(p.parent);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\tp = new_par;\n\t\t\t\t\t\t\twhile(p && p.id !== '#') {\n\t\t\t\t\t\t\t\tc = 0;\n\t\t\t\t\t\t\t\tfor(i = 0, j = p.children.length; i < j; i++) {\n\t\t\t\t\t\t\t\t\tc += m[p.children[i]].state[ t ? 'selected' : 'checked' ];\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tif(c === j) {\n\t\t\t\t\t\t\t\t\tif(!p.state[ t ? 'selected' : 'checked' ]) {\n\t\t\t\t\t\t\t\t\t\tp.state[ t ? 'selected' : 'checked' ] = true;\n\t\t\t\t\t\t\t\t\t\tthis._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);\n\t\t\t\t\t\t\t\t\t\ttmp = this.get_node(p, true);\n\t\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\tif(p.state[ t ? 'selected' : 'checked' ]) {\n\t\t\t\t\t\t\t\t\t\tp.state[ t ? 'selected' : 'checked' ] = false;\n\t\t\t\t\t\t\t\t\t\tthis._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_remove_item(this._data[ t ? 'core' : 'checkbox' ].selected, p.id);\n\t\t\t\t\t\t\t\t\t\ttmp = this.get_node(p, true);\n\t\t\t\t\t\t\t\t\t\tif(tmp && tmp.length) {\n\t\t\t\t\t\t\t\t\t\t\ttmp.children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\telse {\n\t\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\tp = this.get_node(p.parent);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}, this));\n\t\t\t}\n\t\t};"
 	},
 	{
 		"tags": [
@@ -5205,7 +5225,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this._undetermined = function () {\n\t\t\tvar i, j, m = this._model.data, s = this._data.core.selected, p = [], t = this;\n\t\t\tfor(i = 0, j = s.length; i < j; i++) {\n\t\t\t\tif(m[s[i]] && m[s[i]].parents) {\n\t\t\t\t\tp = p.concat(m[s[i]].parents);\n\t\t\t\t}\n\t\t\t}\n\t\t\t// attempt for server side undetermined state\n\t\t\tthis.element.find('.jstree-closed').not(':has(.jstree-children)')\n\t\t\t\t.each(function () {\n\t\t\t\t\tvar tmp = t.get_node(this), tmp2;\n\t\t\t\t\tif(!tmp.state.loaded) {\n\t\t\t\t\t\tif(tmp.original && tmp.original.state && tmp.original.state.undetermined && tmp.original.state.undetermined === true) {\n\t\t\t\t\t\t\tp.push(tmp.id);\n\t\t\t\t\t\t\tp = p.concat(tmp.parents);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\telse {\n\t\t\t\t\t\tfor(i = 0, j = tmp.children_d.length; i < j; i++) {\n\t\t\t\t\t\t\ttmp2 = m[tmp.children_d[i]];\n\t\t\t\t\t\t\tif(!tmp2.state.loaded && tmp2.original && tmp2.original.state && tmp2.original.state.undetermined && tmp2.original.state.undetermined === true) {\n\t\t\t\t\t\t\t\tp.push(tmp2.id);\n\t\t\t\t\t\t\t\tp = p.concat(tmp2.parents);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\tp = $.vakata.array_unique(p);\n\t\t\tp = $.vakata.array_remove_item(p,'#');\n\n\t\t\tthis.element.find('.jstree-undetermined').removeClass('jstree-undetermined');\n\t\t\tfor(i = 0, j = p.length; i < j; i++) {\n\t\t\t\tif(!m[p[i]].state.selected) {\n\t\t\t\t\ts = this.get_node(p[i], true);\n\t\t\t\t\tif(s && s.length) {\n\t\t\t\t\t\ts.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-undetermined');\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t};\n\t\tthis.redraw_node = function(obj, deep, is_callback) {\n\t\t\tobj = parent.redraw_node.call(this, obj, deep, is_callback);\n\t\t\tif(obj) {\n\t\t\t\tvar i, j, tmp = null;\n\t\t\t\tfor(i = 0, j = obj.childNodes.length; i < j; i++) {\n\t\t\t\t\tif(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf(\"jstree-anchor\") !== -1) {\n\t\t\t\t\t\ttmp = obj.childNodes[i];\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tif(tmp) {\n\t\t\t\t\ttmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);\n\t\t\t\t}\n\t\t\t}\n\t\t\tif(!is_callback && this.settings.checkbox.cascade.indexOf('undetermined') !== -1) {\n\t\t\t\tif(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }\n\t\t\t\tthis._data.checkbox.uto = setTimeout($.proxy(this._undetermined, this), 50);\n\t\t\t}\n\t\t\treturn obj;\n\t\t};\n\t\tthis.activate_node = function (obj, e) {\n\t\t\tif(this.settings.checkbox.whole_node || $(e.target).hasClass('jstree-checkbox')) {\n\t\t\t\te.ctrlKey = true;\n\t\t\t}\n\t\t\treturn parent.activate_node.call(this, obj, e);\n\t\t};",
+		"code": "this._undetermined = function () {\n\t\t\tvar i, j, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this;\n\t\t\tfor(i = 0, j = s.length; i < j; i++) {\n\t\t\t\tif(m[s[i]] && m[s[i]].parents) {\n\t\t\t\t\tp = p.concat(m[s[i]].parents);\n\t\t\t\t}\n\t\t\t}\n\t\t\t// attempt for server side undetermined state\n\t\t\tthis.element.find('.jstree-closed').not(':has(.jstree-children)')\n\t\t\t\t.each(function () {\n\t\t\t\t\tvar tmp = tt.get_node(this), tmp2;\n\t\t\t\t\tif(!tmp.state.loaded) {\n\t\t\t\t\t\tif(tmp.original && tmp.original.state && tmp.original.state.undetermined && tmp.original.state.undetermined === true) {\n\t\t\t\t\t\t\tp.push(tmp.id);\n\t\t\t\t\t\t\tp = p.concat(tmp.parents);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\telse {\n\t\t\t\t\t\tfor(i = 0, j = tmp.children_d.length; i < j; i++) {\n\t\t\t\t\t\t\ttmp2 = m[tmp.children_d[i]];\n\t\t\t\t\t\t\tif(!tmp2.state.loaded && tmp2.original && tmp2.original.state && tmp2.original.state.undetermined && tmp2.original.state.undetermined === true) {\n\t\t\t\t\t\t\t\tp.push(tmp2.id);\n\t\t\t\t\t\t\t\tp = p.concat(tmp2.parents);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\tp = $.vakata.array_unique(p);\n\t\t\tp = $.vakata.array_remove_item(p,'#');\n\n\t\t\tthis.element.find('.jstree-undetermined').removeClass('jstree-undetermined');\n\t\t\tfor(i = 0, j = p.length; i < j; i++) {\n\t\t\t\tif(!m[p[i]].state[ t ? 'selected' : 'checked' ]) {\n\t\t\t\t\ts = this.get_node(p[i], true);\n\t\t\t\t\tif(s && s.length) {\n\t\t\t\t\t\ts.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-undetermined');\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t};\n\t\tthis.redraw_node = function(obj, deep, is_callback) {\n\t\t\tobj = parent.redraw_node.call(this, obj, deep, is_callback);\n\t\t\tif(obj) {\n\t\t\t\tvar i, j, tmp = null;\n\t\t\t\tfor(i = 0, j = obj.childNodes.length; i < j; i++) {\n\t\t\t\t\tif(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf(\"jstree-anchor\") !== -1) {\n\t\t\t\t\t\ttmp = obj.childNodes[i];\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tif(tmp) {\n\t\t\t\t\ttmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);\n\t\t\t\t}\n\t\t\t}\n\t\t\tif(!is_callback && this.settings.checkbox.cascade.indexOf('undetermined') !== -1) {\n\t\t\t\tif(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }\n\t\t\t\tthis._data.checkbox.uto = setTimeout($.proxy(this._undetermined, this), 50);\n\t\t\t}\n\t\t\treturn obj;\n\t\t};",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
@@ -5320,12 +5340,480 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "this.is_undetermined = function (obj) {\n\t\t\tobj = this.get_node(obj);\n\t\t\tvar s = this.settings.checkbox.cascade, i, j, d = this._data.core.selected, m = this._model.data;\n\t\t\tif(!obj || obj.state.selected === true || s.indexOf('undetermined') === -1 || (s.indexOf('down') === -1 && s.indexOf('up') === -1)) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tif(!obj.state.loaded && obj.original.state.undetermined === true) {\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\tif($.inArray(obj.children_d[i], d) !== -1 || (!m[obj.children_d[i]].state.loaded && m[obj.children_d[i]].original.state.undetermined)) {\n\t\t\t\t\treturn true;\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn false;\n\t\t};\n\t};\n\n\t// include the checkbox plugin by default\n\t// $.jstree.defaults.plugins.push(\"checkbox\");",
+		"code": "this.is_undetermined = function (obj) {\n\t\t\tobj = this.get_node(obj);\n\t\t\tvar s = this.settings.checkbox.cascade, i, j, t = this.settings.checkbox.tie_selection, d = this._data[ t ? 'core' : 'checkbox' ].selected, m = this._model.data;\n\t\t\tif(!obj || obj.state[ t ? 'selected' : 'checked' ] === true || s.indexOf('undetermined') === -1 || (s.indexOf('down') === -1 && s.indexOf('up') === -1)) {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tif(!obj.state.loaded && obj.original.state.undetermined === true) {\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tfor(i = 0, j = obj.children_d.length; i < j; i++) {\n\t\t\t\tif($.inArray(obj.children_d[i], d) !== -1 || (!m[obj.children_d[i]].state.loaded && m[obj.children_d[i]].original.state.undetermined)) {\n\t\t\t\t\treturn true;\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn false;\n\t\t};\n\n\t\tthis.activate_node = function (obj, e) {\n\t\t\tif(this.settings.checkbox.tie_selection && (this.settings.checkbox.whole_node || $(e.target).hasClass('jstree-checkbox'))) {\n\t\t\t\te.ctrlKey = true;\n\t\t\t}\n\t\t\tif(this.settings.checkbox.tie_selection || (!this.settings.checkbox.whole_node && !$(e.target).hasClass('jstree-checkbox'))) {\n\t\t\t\treturn parent.activate_node.call(this, obj, e);\n\t\t\t}\n\t\t\tif(this.is_checked(obj)) {\n\t\t\t\tthis.uncheck_node(obj, e);\n\t\t\t}\n\t\t\telse {\n\t\t\t\tthis.check_node(obj, e);\n\t\t\t}\n\t\t\tthis.trigger('activate_node', { 'node' : this.get_node(obj) });\n\t\t};",
 		"ctx": {
 			"type": "method",
 			"receiver": "this",
 			"name": "is_undetermined",
 			"string": "this.is_undetermined()"
+		}
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "check_node(obj)"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "obj",
+				"description": "an array can be used to check multiple nodes"
+			},
+			{
+				"type": "trigger",
+				"string": "check_node.jstree"
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>check a node (only if tie_selection in checkbox settings is false, otherwise select_node will be called internally)</p>",
+			"summary": "<p>check a node (only if tie_selection in checkbox settings is false, otherwise select_node will be called internally)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.check_node = function (obj, e) {\n\t\t\tif(this.settings.checkbox.tie_selection) { return this.select_node(obj, false, true, e); }\n\t\t\tvar dom, t1, t2, th;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.check_node(obj[t1], e);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tdom = this.get_node(obj, true);\n\t\t\tif(!obj.state.checked) {\n\t\t\t\tobj.state.checked = true;\n\t\t\t\tthis._data.checkbox.selected.push(obj.id);\n\t\t\t\tif(dom && dom.length) {\n\t\t\t\t\tdom.children('.jstree-anchor').addClass('jstree-checked');\n\t\t\t\t}",
+		"ctx": {
+			"type": "method",
+			"receiver": "this",
+			"name": "check_node",
+			"string": "this.check_node()"
+		}
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "name",
+				"string": "check_node.jstree"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "node",
+				"description": ""
+			},
+			{
+				"type": "param",
+				"types": [
+					"Array"
+				],
+				"name": "selected",
+				"description": "the current selection"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "event",
+				"description": "the event (if any) that triggered this check_node"
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>triggered when an node is checked (only if tie_selection in checkbox settings is false)</p>",
+			"summary": "<p>triggered when an node is checked (only if tie_selection in checkbox settings is false)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.trigger('check_node', { 'node' : obj, 'selected' : this._data.checkbox.selected, 'event' : e });\n\t\t\t}\n\t\t};"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "deselect_node(obj)"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "obj",
+				"description": "an array can be used to deselect multiple nodes"
+			},
+			{
+				"type": "trigger",
+				"string": "uncheck_node.jstree"
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>uncheck a node (only if tie_selection in checkbox settings is false, otherwise deselect_node will be called internally)</p>",
+			"summary": "<p>uncheck a node (only if tie_selection in checkbox settings is false, otherwise deselect_node will be called internally)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.uncheck_node = function (obj, e) {\n\t\t\tif(this.settings.checkbox.tie_selection) { return this.deselect_node(obj, false, e); }\n\t\t\tvar t1, t2, dom;\n\t\t\tif($.isArray(obj)) {\n\t\t\t\tobj = obj.slice();\n\t\t\t\tfor(t1 = 0, t2 = obj.length; t1 < t2; t1++) {\n\t\t\t\t\tthis.uncheck_node(obj[t1], e);\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t\tdom = this.get_node(obj, true);\n\t\t\tif(obj.state.checked) {\n\t\t\t\tobj.state.checked = false;\n\t\t\t\tthis._data.checkbox.selected = $.vakata.array_remove_item(this._data.checkbox.selected, obj.id);\n\t\t\t\tif(dom.length) {\n\t\t\t\t\tdom.children('.jstree-anchor').removeClass('jstree-checked');\n\t\t\t\t}",
+		"ctx": {
+			"type": "method",
+			"receiver": "this",
+			"name": "uncheck_node",
+			"string": "this.uncheck_node()"
+		}
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "name",
+				"string": "uncheck_node.jstree"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "node",
+				"description": ""
+			},
+			{
+				"type": "param",
+				"types": [
+					"Array"
+				],
+				"name": "selected",
+				"description": "the current selection"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "event",
+				"description": "the event (if any) that triggered this uncheck_node"
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>triggered when an node is unchecked (only if tie_selection in checkbox settings is false)</p>",
+			"summary": "<p>triggered when an node is unchecked (only if tie_selection in checkbox settings is false)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.trigger('uncheck_node', { 'node' : obj, 'selected' : this._data.checkbox.selected, 'event' : e });\n\t\t\t}\n\t\t};"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "check_all()"
+			},
+			{
+				"type": "trigger",
+				"string": "check_all.jstree, changed.jstree"
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>checks all nodes in the tree (only if tie_selection in checkbox settings is false, otherwise select_all will be called internally)</p>",
+			"summary": "<p>checks all nodes in the tree (only if tie_selection in checkbox settings is false, otherwise select_all will be called internally)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.check_all = function () {\n\t\t\tif(this.settings.checkbox.tie_selection) { return this.select_all(); }\n\t\t\tvar tmp = this._data.checkbox.selected.concat([]), i, j;\n\t\t\tthis._data.checkbox.selected = this._model.data['#'].children_d.concat();\n\t\t\tfor(i = 0, j = this._data.checkbox.selected.length; i < j; i++) {\n\t\t\t\tif(this._model.data[this._data.checkbox.selected[i]]) {\n\t\t\t\t\tthis._model.data[this._data.checkbox.selected[i]].state.checked = true;\n\t\t\t\t}\n\t\t\t}\n\t\t\tthis.redraw(true);",
+		"ctx": {
+			"type": "method",
+			"receiver": "this",
+			"name": "check_all",
+			"string": "this.check_all()"
+		}
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "name",
+				"string": "check_all.jstree"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Array"
+				],
+				"name": "selected",
+				"description": "the current selection"
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>triggered when all nodes are checked (only if tie_selection in checkbox settings is false)</p>",
+			"summary": "<p>triggered when all nodes are checked (only if tie_selection in checkbox settings is false)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.trigger('check_all', { 'selected' : this._data.checkbox.selected });\n\t\t};"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "uncheck_all()"
+			},
+			{
+				"type": "trigger",
+				"string": "uncheck_all.jstree"
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>uncheck all checked nodes (only if tie_selection in checkbox settings is false, otherwise deselect_all will be called internally)</p>",
+			"summary": "<p>uncheck all checked nodes (only if tie_selection in checkbox settings is false, otherwise deselect_all will be called internally)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.uncheck_all = function () {\n\t\t\tif(this.settings.checkbox.tie_selection) { return this.deselect_all(); }\n\t\t\tvar tmp = this._data.checkbox.selected.concat([]), i, j;\n\t\t\tfor(i = 0, j = this._data.checkbox.selected.length; i < j; i++) {\n\t\t\t\tif(this._model.data[this._data.checkbox.selected[i]]) {\n\t\t\t\t\tthis._model.data[this._data.checkbox.selected[i]].state.checked = false;\n\t\t\t\t}\n\t\t\t}\n\t\t\tthis._data.checkbox.selected = [];\n\t\t\tthis.element.find('.jstree-checked').removeClass('jstree-checked');",
+		"ctx": {
+			"type": "method",
+			"receiver": "this",
+			"name": "uncheck_all",
+			"string": "this.uncheck_all()"
+		}
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "name",
+				"string": "uncheck_all.jstree"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Object"
+				],
+				"name": "node",
+				"description": "the previous selection"
+			},
+			{
+				"type": "param",
+				"types": [
+					"Array"
+				],
+				"name": "selected",
+				"description": "the current selection"
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>triggered when all nodes are unchecked (only if tie_selection in checkbox settings is false)</p>",
+			"summary": "<p>triggered when all nodes are unchecked (only if tie_selection in checkbox settings is false)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.trigger('uncheck_all', { 'selected' : this._data.checkbox.selected, 'node' : tmp });\n\t\t};"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "is_checked(obj)"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "obj",
+				"description": ""
+			},
+			{
+				"type": "return",
+				"types": [
+					"Boolean"
+				],
+				"description": ""
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>checks if a node is checked (if tie_selection is on in the settings this function will return the same as is_selected)</p>",
+			"summary": "<p>checks if a node is checked (if tie_selection is on in the settings this function will return the same as is_selected)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.is_checked = function (obj) {\n\t\t\tif(this.settings.checkbox.tie_selection) { return this.is_selected(obj); }\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') { return false; }\n\t\t\treturn obj.state.checked;\n\t\t};",
+		"ctx": {
+			"type": "method",
+			"receiver": "this",
+			"name": "is_checked",
+			"string": "this.is_checked()"
+		}
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "get_checked([full])"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "full",
+				"description": "if set to `true` the returned array will consist of the full node objects, otherwise - only IDs will be returned"
+			},
+			{
+				"type": "return",
+				"types": [
+					"Array"
+				],
+				"description": ""
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>get an array of all checked nodes (if tie_selection is on in the settings this function will return the same as get_selected)</p>",
+			"summary": "<p>get an array of all checked nodes (if tie_selection is on in the settings this function will return the same as get_selected)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.get_checked = function (full) {\n\t\t\tif(this.settings.checkbox.tie_selection) { return this.get_selected(full); }\n\t\t\treturn full ? $.map(this._data.checkbox.selected, $.proxy(function (i) { return this.get_node(i); }, this)) : this._data.checkbox.selected;\n\t\t};",
+		"ctx": {
+			"type": "method",
+			"receiver": "this",
+			"name": "get_checked",
+			"string": "this.get_checked()"
+		}
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "get_top_checked([full])"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "full",
+				"description": "if set to `true` the returned array will consist of the full node objects, otherwise - only IDs will be returned"
+			},
+			{
+				"type": "return",
+				"types": [
+					"Array"
+				],
+				"description": ""
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>get an array of all top level checked nodes (ignoring children of checked nodes) (if tie_selection is on in the settings this function will return the same as get_top_selected)</p>",
+			"summary": "<p>get an array of all top level checked nodes (ignoring children of checked nodes) (if tie_selection is on in the settings this function will return the same as get_top_selected)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.get_top_checked = function (full) {\n\t\t\tif(this.settings.checkbox.tie_selection) { return this.get_top_selected(full); }\n\t\t\tvar tmp = this.get_checked(true),\n\t\t\t\tobj = {}, i, j, k, l;\n\t\t\tfor(i = 0, j = tmp.length; i < j; i++) {\n\t\t\t\tobj[tmp[i].id] = tmp[i];\n\t\t\t}\n\t\t\tfor(i = 0, j = tmp.length; i < j; i++) {\n\t\t\t\tfor(k = 0, l = tmp[i].children_d.length; k < l; k++) {\n\t\t\t\t\tif(obj[tmp[i].children_d[k]]) {\n\t\t\t\t\t\tdelete obj[tmp[i].children_d[k]];\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\ttmp = [];\n\t\t\tfor(i in obj) {\n\t\t\t\tif(obj.hasOwnProperty(i)) {\n\t\t\t\t\ttmp.push(i);\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn full ? $.map(tmp, $.proxy(function (i) { return this.get_node(i); }, this)) : tmp;\n\t\t};",
+		"ctx": {
+			"type": "method",
+			"receiver": "this",
+			"name": "get_top_checked",
+			"string": "this.get_top_checked()"
+		}
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
+				"string": "get_bottom_checked([full])"
+			},
+			{
+				"type": "param",
+				"types": [
+					"mixed"
+				],
+				"name": "full",
+				"description": "if set to `true` the returned array will consist of the full node objects, otherwise - only IDs will be returned"
+			},
+			{
+				"type": "return",
+				"types": [
+					"Array"
+				],
+				"description": ""
+			},
+			{
+				"type": "plugin",
+				"string": "checkbox"
+			}
+		],
+		"description": {
+			"full": "<p>get an array of all bottom level checked nodes (ignoring selected parents) (if tie_selection is on in the settings this function will return the same as get_bottom_selected)</p>",
+			"summary": "<p>get an array of all bottom level checked nodes (ignoring selected parents) (if tie_selection is on in the settings this function will return the same as get_bottom_selected)</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.get_bottom_checked = function (full) {\n\t\t\tif(this.settings.checkbox.tie_selection) { return this.get_bottom_selected(full); }\n\t\t\tvar tmp = this.get_checked(true),\n\t\t\t\tobj = [], i, j;\n\t\t\tfor(i = 0, j = tmp.length; i < j; i++) {\n\t\t\t\tif(!tmp[i].children.length) {\n\t\t\t\t\tobj.push(tmp[i].id);\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn full ? $.map(obj, $.proxy(function (i) { return this.get_node(i); }, this)) : obj;\n\t\t};\n\t};\n\n\t// include the checkbox plugin by default\n\t// $.jstree.defaults.plugins.push(\"checkbox\");",
+		"ctx": {
+			"type": "method",
+			"receiver": "this",
+			"name": "get_bottom_checked",
+			"string": "this.get_bottom_checked()"
 		}
 	},
 	{
