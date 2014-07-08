@@ -121,7 +121,7 @@
 									for(i = 0, j = dpc.length; i < j; i++) {
 										m[dpc[i]].state[ t ? 'selected' : 'checked' ] = true;
 									}
-									this._data[ t ? 'core' : 'checkbox' ].selected = this._data.core[ t ? 'core' : 'checkbox' ].concat(dpc);
+									this._data[ t ? 'core' : 'checkbox' ].selected = this._data[ t ? 'core' : 'checkbox' ].selected.concat(dpc);
 								}
 								else {
 									for(i = 0, j = dpc.length; i < j; i++) {
@@ -152,7 +152,7 @@
 										}
 										if(c === j) {
 											p.state[ t ? 'selected' : 'checked' ] = true;
-											this._data.core[ t ? 'selected' : 'checked' ].push(p.id);
+											this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 											tmp = this.get_node(p, true);
 											if(tmp && tmp.length) {
 												tmp.children('.jstree-anchor').addClass( t ? 'jstree-clicked' : 'jstree-checked');
