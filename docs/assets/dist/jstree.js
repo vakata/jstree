@@ -6577,7 +6577,7 @@
 				case "delete_node":
 					return true;
 				case "rename_node":
-					i = ($.inArray(n, c) === -1 || (obj.text && obj.text === n));
+					i = ($.inArray(n, c) === -1 || (obj.text && obj.text[ s ? 'toString' : 'toLowerCase']() === n));
 					if(!i) {
 						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					}
