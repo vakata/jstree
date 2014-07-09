@@ -1477,6 +1477,9 @@
 								dpc = dpc.concat(m[tmp].children_d);
 							}
 						}
+						for(i = 0, j = p.parents.length; i < j; i++) {
+							m[p.parents[i]].children_d = m[p.parents[i]].children_d.concat(dpc);
+						}
 						// ?) three_state selection - p.state.selected && t - (if three_state foreach(dat => ch) -> foreach(parents) if(parent.selected) child.selected = true;
 						rslt = {
 							'cnt' : t_cnt,
