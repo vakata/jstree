@@ -3452,7 +3452,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "refresh_node : function (obj) {\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') { return false; }\n\t\t\tvar opened = [], s = this._data.core.selected.concat([]);\n\t\t\tif(obj.state.opened === true) { opened.push(obj.id); }\n\t\t\tthis.get_node(obj, true).find('.jstree-open').each(function() { opened.push(this.id); });\n\t\t\tthis._load_nodes(opened, $.proxy(function (nodes) {\n\t\t\t\tthis.open_node(nodes, false, 0);\n\t\t\t\tthis.select_node(this._data.core.selected);"
+		"code": "refresh_node : function (obj) {\n\t\t\tobj = this.get_node(obj);\n\t\t\tif(!obj || obj.id === '#') { return false; }\n\t\t\tvar opened = [], to_load = [], s = this._data.core.selected.concat([]);\n\t\t\tto_load.push(obj.id);\n\t\t\tif(obj.state.opened === true) { opened.push(obj.id); }\n\t\t\tthis.get_node(obj, true).find('.jstree-open').each(function() { opened.push(this.id); });\n\t\t\tthis._load_nodes(to_load, $.proxy(function (nodes) {\n\t\t\t\tthis.open_node(opened, false, 0);\n\t\t\t\tthis.select_node(this._data.core.selected);"
 	},
 	{
 		"tags": [
