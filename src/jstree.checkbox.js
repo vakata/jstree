@@ -97,6 +97,21 @@
 							this._data.checkbox.uto = setTimeout($.proxy(this._undetermined, this), 50);
 						}, this));
 			}
+			if(!this.settings.checkbox.tie_selection) {
+				this.element
+					.on('model.jstree', $.proxy(function (e, data) {
+						var m = this._model.data,
+							p = m[data.parent],
+							dpc = data.nodes,
+							i, j;
+						for(i = 0, j = dpc.length; i < j; i++) {
+							m[dpc[i]].state.checked = (m[dpc[i]].original && m[dpc[i]].original.state && m[dpc[i]].original.state.checked);
+							if(m[dpc[i]].state.checked) {
+								this._data.checkbox.selected.push(dpc[i]);
+							}
+						}
+					}, this));
+			}
 			if(this.settings.checkbox.cascade.indexOf('up') !== -1 || this.settings.checkbox.cascade.indexOf('down') !== -1) {
 				this.element
 					.on('model.jstree', $.proxy(function (e, data) {
@@ -105,15 +120,6 @@
 								dpc = data.nodes,
 								chd = [],
 								c, i, j, k, l, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection;
-
-							if(t) {
-								for(i = 0, j = dpc.length; i < j; i++) {
-									m[dpc[i]].state.checked = (m[dpc[i]].original && m[dpc[i]].original.state && m[dpc[i]].original.state.checked);
-									if(m[dpc[i]].state.checked) {
-										this._data.checkbox.selected.push(dpc[i]);
-									}
-								}
-							}
 
 							if(s.indexOf('down') !== -1) {
 								// apply down
@@ -421,6 +427,7 @@
 					}
 				}
 				if(tmp) {
+					if(!this.settings.checkbox.tie_selection && this._model.data[obj.id].state.checked) { tmp.className += ' jstree-checked'; }
 					tmp.insertBefore(_i.cloneNode(false), tmp.childNodes[0]);
 				}
 			}
