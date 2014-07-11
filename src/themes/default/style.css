@@ -908,8 +908,10 @@
   .jstree-default-responsive .jstree-checkbox:hover {
     background-position: -40px -80px;
   }
-  .jstree-default-responsive .jstree-clicked > .jstree-checkbox,
-  .jstree-default-responsive .jstree-clicked > .jstree-checkbox:hover {
+  .jstree-default-responsive.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox,
+  .jstree-default-responsive.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox:hover,
+  .jstree-default-responsive .jstree-checked > .jstree-checkbox,
+  .jstree-default-responsive .jstree-checked > .jstree-checkbox:hover {
     background-position: 0 -80px;
   }
   .jstree-default-responsive .jstree-anchor > .jstree-undetermined,

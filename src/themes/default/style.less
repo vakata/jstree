@@ -202,7 +202,10 @@
 		.jstree-themeicon { background-position:-(@base-height * 1) -(@base-height * 1); }
 
 		.jstree-checkbox, .jstree-checkbox:hover { background-position:-(@base-height * 1) -(@base-height * 2); }
-		.jstree-clicked > .jstree-checkbox, .jstree-clicked > .jstree-checkbox:hover { background-position:0 -(@base-height * 2); }
+		&.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox,
+		&.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox:hover,
+		.jstree-checked > .jstree-checkbox,
+		.jstree-checked > .jstree-checkbox:hover { background-position:0 -(@base-height * 2); }
 		.jstree-anchor > .jstree-undetermined, .jstree-anchor > .jstree-undetermined:hover { background-position:0 -(@base-height * 3); }
 
 		.jstree-anchor { font-weight:bold; font-size:1.1em; text-shadow:1px 1px white; }
