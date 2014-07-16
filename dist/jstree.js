@@ -416,7 +416,12 @@
 		 * if left as `true` web workers will be used to parse incoming JSON data where possible, so that the UI will not be blocked by large requests. Workers are however about 30% slower. Defaults to `true`
 		 * @name $.jstree.defaults.core.worker
 		 */
-		worker : true
+		worker : true,
+		/**
+		 * Force node text to plain text (and escape HTML). Defaults to `false`
+		 * @name $.jstree.defaults.core.force_text
+		 */
+		force_text : false
 	};
 	$.jstree.core.prototype = {
 		/**
@@ -1648,7 +1653,7 @@
 			tmp.children("ins, i, ul").remove();
 			tmp = tmp.html();
 			tmp = $('<div />').html(tmp);
-			data.text = tmp.html();
+			data.text = this.settings.core.force_text ? tmp.text() : tmp.html();
 			tmp = d.data();
 			data.data = tmp ? $.extend(true, {}, tmp) : null;
 			data.state.opened = d.hasClass('jstree-open');
@@ -2066,9 +2071,13 @@
 					node.childNodes[1].childNodes[0].className += ' jstree-themeicon-custom';
 				}
 			}
-			//node.childNodes[1].appendChild(d.createTextNode(obj.text));
-			node.childNodes[1].innerHTML += obj.text;
-			// if(obj.data) { $.data(node, obj.data); } // always work with node's data, no need to touch jquery store
+
+			if(this.settings.core.force_text) {
+				node.childNodes[1].appendChild(d.createTextNode(obj.text));
+			}
+			else {
+				node.childNodes[1].innerHTML += obj.text;
+			}
 
 			if(deep && obj.children.length && obj.state.opened && obj.state.loaded) {
 				k = d.createElement('UL');
@@ -3048,7 +3057,7 @@
 		 * @trigger set_text.jstree
 		 */
 		set_text : function (obj, val) {
-			var t1, t2, dom, tmp;
+			var t1, t2;
 			if($.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -3059,20 +3068,17 @@
 			obj = this.get_node(obj);
 			if(!obj || obj.id === '#') { return false; }
 			obj.text = val;
-			dom = this.get_node(obj, true);
-			if(dom.length) {
-				dom = dom.children(".jstree-anchor:eq(0)");
-				tmp = dom.children("I").clone();
-				dom.html(val).prepend(tmp);
-				/**
-				 * triggered when a node text value is changed
-				 * @event
-				 * @name set_text.jstree
-				 * @param {Object} obj
-				 * @param {String} text the new value
-				 */
-				this.trigger('set_text',{ "obj" : obj, "text" : val });
+			if(this.get_node(obj, true).length) {
+				this.redraw_node(obj.id);
 			}
+			/**
+			 * triggered when a node text value is changed
+			 * @event
+			 * @name set_text.jstree
+			 * @param {Object} obj
+			 * @param {String} text the new value
+			 */
+			this.trigger('set_text',{ "obj" : obj, "text" : val });
 			return true;
 		},
 		/**
@@ -3724,13 +3730,16 @@
 		 * @param  {String} default_text the text to populate the input with (if omitted the node text value is used)
 		 */
 		edit : function (obj, default_text) {
-			obj = this._open_to(obj);
-			if(!obj || !obj.length) { return false; }
+			obj = this.get_node(obj);
+			if(!obj) { return false; }
 			if(this.settings.core.check_callback === false) {
 				this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_07', 'reason' : 'Could not edit node because of check_callback' };
 				this.settings.core.error.call(this, this._data.core.last_error);
 				return false;
 			}
+			default_text = typeof default_text === 'string' ? default_text : obj.text;
+			this.set_text(obj, "");
+			obj = this._open_to(obj);
 
 			var rtl = this._data.core.rtl,
 				w  = this.element.width(),
@@ -3742,7 +3751,7 @@
 				w1 = oi.width() * oi.length,
 				w2 = ai.width() * ai.length,
 				*/
-				t  = typeof default_text === 'string' ? default_text : this.get_text(obj),
+				t  = default_text,
 				h1 = $("<"+"div />", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo("body"),
 				h2 = $("<"+"input />", {
 						"value" : t,
@@ -3765,7 +3774,7 @@
 							s.replaceWith(a);
 							s.remove();
 							this.set_text(obj, t);
-							if(this.rename_node(obj, v) === false) {
+							if(this.rename_node(obj, $('<div></div>').text(v)[this.settings.core.force_text ? 'text' : 'html']()) === false) {
 								this.set_text(obj, t); // move this up? and fix #483
 							}
 						}, this),
@@ -3801,7 +3810,6 @@
 						letterSpacing	: a.css('letterSpacing')	|| '',
 						wordSpacing		: a.css('wordSpacing')		|| ''
 				};
-			this.set_text(obj, "");
 			s.attr('class', a.attr('class')).append(a.contents().clone()).append(h2);
 			a.replaceWith(s);
 			h1.css(fn);

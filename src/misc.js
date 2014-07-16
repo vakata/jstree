@@ -87,7 +87,7 @@
 (function ($, undefined) {
 	"use strict";
 	var img = document.createElement('IMG');
-	img.src = "http://www.dpcd.vic.gov.au/__data/assets/image/0004/30667/help.gif";
+	//img.src = "http://www.dpcd.vic.gov.au/__data/assets/image/0004/30667/help.gif";
 	img.className = "jstree-questionmark";
 
 	$.jstree.defaults.questionmark = $.noop;
