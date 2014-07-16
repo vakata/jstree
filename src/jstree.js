@@ -307,6 +307,11 @@
 		 */
 		data			: false,
 		/**
+		 * Input text is in HTML format
+		 * @name $.jstree.defaults.core.html
+		 */
+		html			: true,
+		/**
 		 * configure the various strings used throughout the tree
 		 *
 		 * You can use an object where the key is the string you need to replace and the value is your replacement.
@@ -1648,7 +1653,11 @@
 			tmp.children("ins, i, ul").remove();
 			tmp = tmp.html();
 			tmp = $('<div />').html(tmp);
-			data.text = tmp.html();
+			if(this.settings.core.html) {
+				data.text = tmp.html();
+			} else {
+				data.text = tmp.text();
+			}
 			tmp = d.data();
 			data.data = tmp ? $.extend(true, {}, tmp) : null;
 			data.state.opened = d.hasClass('jstree-open');
@@ -2067,7 +2076,11 @@
 				}
 			}
 			//node.childNodes[1].appendChild(d.createTextNode(obj.text));
-			node.childNodes[1].innerHTML += obj.text;
+			if(this.settings.core.html) {
+				node.childNodes[1].innerHTML += obj.text;
+			} else {
+				node.childNodes[1].innerHTML += $('<div></div>').text(obj.text).html();
+			}
 			// if(obj.data) { $.data(node, obj.data); } // always work with node's data, no need to touch jquery store
 
 			if(deep && obj.children.length && obj.state.opened && obj.state.loaded) {
