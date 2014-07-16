@@ -310,7 +310,7 @@
 		 * Input text is in HTML format
 		 * @name $.jstree.defaults.core.html
 		 */
-		html			: false,
+		html			: true,
 		/**
 		 * configure the various strings used throughout the tree
 		 *
@@ -1653,7 +1653,7 @@
 			tmp.children("ins, i, ul").remove();
 			tmp = tmp.html();
 			tmp = $('<div />').html(tmp);
-			if(this.settings.html) {
+			if(this.settings.core.html) {
 				data.text = tmp.html();
 			} else {
 				data.text = tmp.text();
@@ -2076,7 +2076,7 @@
 				}
 			}
 			//node.childNodes[1].appendChild(d.createTextNode(obj.text));
-			if(this.settings.html) {
+			if(this.settings.core.html) {
 				node.childNodes[1].innerHTML += obj.text;
 			} else {
 				node.childNodes[1].innerHTML += $('<div></div>').text(obj.text).html();
