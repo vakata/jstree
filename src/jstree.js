@@ -993,9 +993,12 @@
 		 * @trigger load_node.jstree
 		 */
 		load_node : function (obj, callback) {
-			var k, l, i, j, c;
+			var t1, t2, k, l, i, j, c;
 			if($.isArray(obj)) {
-				this._load_nodes(obj.slice(), callback);
+				obj = obj.slice();
+				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
+				this.load_node(obj[t1], callback);
+				}
 				return true;
 			}
 			obj = this.get_node(obj);
