@@ -1622,7 +1622,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "_load_nodes : function (nodes, callback, is_callback) {\n\t\t\tvar r = true,\n\t\t\t\tc = function () { this._load_nodes(nodes, callback, true); },\n\t\t\t\tm = this._model.data, i, j;\n\t\t\tfor(i = 0, j = nodes.length; i < j; i++) {\n\t\t\t\tif(m[nodes[i]] && (!m[nodes[i]].state.loaded || !is_callback)) {\n\t\t\t\t\tif(!this.is_loading(nodes[i])) {\n\t\t\t\t\t\tthis.load_node(nodes[i], c);\n\t\t\t\t\t}\n\t\t\t\t\tr = false;\n\t\t\t\t}\n\t\t\t}\n\t\t\tif(r) {\n\t\t\t\tif(!callback.done) {\n\t\t\t\t\tcallback.call(this, nodes);\n\t\t\t\t\tcallback.done = true;\n\t\t\t\t}\n\t\t\t}\n\t\t},"
+		"code": "_load_nodes : function (nodes, callback, is_callback) {\n\t\t\tvar r = true,\n\t\t\t\tc = function () { this._load_nodes(nodes, callback, true); },\n\t\t\t\tm = this._model.data, i, j;\n\t\t\tfor(i = 0, j = nodes.length; i < j; i++) {\n\t\t\t\tif(m[nodes[i]] && (!m[nodes[i]].state.loaded || !is_callback)) {\n\t\t\t\t\tif(!this.is_loading(nodes[i])) {\n\t\t\t\t\t\tthis.load_node(nodes[i], c);\n\t\t\t\t\t}\n\t\t\t\t\tr = false;\n\t\t\t\t}\n\t\t\t}\n\t\t\tif(r) {\n\t\t\t\tif(callback && !callback.done) {\n\t\t\t\t\tcallback.call(this, nodes);\n\t\t\t\t\tcallback.done = true;\n\t\t\t\t}\n\t\t\t}\n\t\t},"
 	},
 	{
 		"tags": [

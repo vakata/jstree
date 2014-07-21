@@ -1067,7 +1067,7 @@
 				}
 			}
 			if(r) {
-				if(!callback.done) {
+				if(callback && !callback.done) {
 					callback.call(this, nodes);
 					callback.done = true;
 				}
