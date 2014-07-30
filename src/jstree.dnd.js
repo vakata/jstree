@@ -502,7 +502,7 @@
 				return false;
 			}
 		};
-	}(jQuery));
+	}($));
 
 	// include the dnd plugin by default
 	// $.jstree.defaults.plugins.push("dnd");

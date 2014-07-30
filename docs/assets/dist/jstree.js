@@ -5813,7 +5813,7 @@
 				return false;
 			}
 		};
-	}(jQuery));
+	}($));
 
 	// include the dnd plugin by default
 	// $.jstree.defaults.plugins.push("dnd");
@@ -6168,7 +6168,7 @@
 			};
 			return txt === true ? { 'search' : search } : search(txt);
 		};
-	}(jQuery));
+	}($));
 
 	// include the search plugin by default
 	// $.jstree.defaults.plugins.push("search");
@@ -6328,7 +6328,7 @@
 			get : function (key) { return window.localStorage.getItem(key); },
 			del : function (key) { return window.localStorage.removeItem(key); }
 		};
-	}(jQuery));
+	}($));
 
 	// include the state plugin by default
 	// $.jstree.defaults.plugins.push("state");

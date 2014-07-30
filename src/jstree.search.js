@@ -363,7 +363,7 @@
 			};
 			return txt === true ? { 'search' : search } : search(txt);
 		};
-	}(jQuery));
+	}($));
 
 	// include the search plugin by default
 	// $.jstree.defaults.plugins.push("search");
