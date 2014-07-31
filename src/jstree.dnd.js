@@ -96,7 +96,7 @@
 			})
 			.bind('dnd_move.vakata', function (e, data) {
 				if(opento) { clearTimeout(opento); }
-				if(!data.data.jstree) { return; }
+				if(!data || !data.data || !data.data.jstree) { return; }
 
 				// if we are hovering the marker image do nothing (can happen on "inside" drags)
 				if(data.event.target.id && data.event.target.id === 'jstree-marker') {
@@ -211,14 +211,14 @@
 				marker.hide();
 			})
 			.bind('dnd_scroll.vakata', function (e, data) {
-				if(!data.data.jstree) { return; }
+				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide();
 				lastmv = false;
 				data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-ok').addClass('jstree-er');
 			})
 			.bind('dnd_stop.vakata', function (e, data) {
 				if(opento) { clearTimeout(opento); }
-				if(!data.data.jstree) { return; }
+				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide();
 				var i, j, nodes = [];
 				if(lastmv) {
@@ -242,7 +242,7 @@
 			})
 			.bind('keyup keydown', function (e, data) {
 				data = $.vakata.dnd._get();
-				if(data.data && data.data.jstree) {
+				if(data && data.data && data.data.jstree) {
 					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
 				}
 			});

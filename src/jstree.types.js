@@ -58,8 +58,8 @@
 			parent.init.call(this, el, options);
 			this._model.data['#'].type = '#';
 		};
-		this.refresh = function (skip_loading) {
-			parent.refresh.call(this, skip_loading);
+		this.refresh = function (skip_loading, forget_state) {
+			parent.refresh.call(this, skip_loading, forget_state);
 			this._model.data['#'].type = '#';
 		};
 		this.bind = function () {

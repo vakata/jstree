@@ -2941,7 +2941,7 @@
 		 * refreshes the tree - all nodes are reloaded with calls to `load_node`.
 		 * @name refresh()
 		 * @param {Boolean} skip_loading an option to skip showing the loading indicator
-		 * @param {Boolean} forget_state an option to forget state from before reload, state is refreshed from data
+		 * @param {Boolean} forget_state if set to `true` state will not be reapplied
 		 * @trigger refresh.jstree
 		 */
 		refresh : function (skip_loading, forget_state) {

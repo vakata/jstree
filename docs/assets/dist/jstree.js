@@ -2941,10 +2941,14 @@
 		 * refreshes the tree - all nodes are reloaded with calls to `load_node`.
 		 * @name refresh()
 		 * @param {Boolean} skip_loading an option to skip showing the loading indicator
+		 * @param {Boolean} forget_state if set to `true` state will not be reapplied
 		 * @trigger refresh.jstree
 		 */
-		refresh : function (skip_loading) {
-			this._data.core.state = this.get_state();
+		refresh : function (skip_loading, forget_state) {
+			this._data.core.state = null;
+			if(!forget_state) {
+				this._data.core.state = this.get_state();
+			}
 			this._cnt = 0;
 			this._model.data = {
 				'#' : {
@@ -5407,7 +5411,7 @@
 			})
 			.bind('dnd_move.vakata', function (e, data) {
 				if(opento) { clearTimeout(opento); }
-				if(!data.data.jstree) { return; }
+				if(!data || !data.data || !data.data.jstree) { return; }
 
 				// if we are hovering the marker image do nothing (can happen on "inside" drags)
 				if(data.event.target.id && data.event.target.id === 'jstree-marker') {
@@ -5522,14 +5526,14 @@
 				marker.hide();
 			})
 			.bind('dnd_scroll.vakata', function (e, data) {
-				if(!data.data.jstree) { return; }
+				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide();
 				lastmv = false;
 				data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-ok').addClass('jstree-er');
 			})
 			.bind('dnd_stop.vakata', function (e, data) {
 				if(opento) { clearTimeout(opento); }
-				if(!data.data.jstree) { return; }
+				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide();
 				var i, j, nodes = [];
 				if(lastmv) {
@@ -5553,7 +5557,7 @@
 			})
 			.bind('keyup keydown', function (e, data) {
 				data = $.vakata.dnd._get();
-				if(data.data && data.data.jstree) {
+				if(data && data.data && data.data.jstree) {
 					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
 				}
 			});
@@ -6377,8 +6381,8 @@
 			parent.init.call(this, el, options);
 			this._model.data['#'].type = '#';
 		};
-		this.refresh = function (skip_loading) {
-			parent.refresh.call(this, skip_loading);
+		this.refresh = function (skip_loading, forget_state) {
+			parent.refresh.call(this, skip_loading, forget_state);
 			this._model.data['#'].type = '#';
 		};
 		this.bind = function () {
