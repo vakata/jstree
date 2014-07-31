@@ -2945,10 +2945,7 @@
 		 * @trigger refresh.jstree
 		 */
 		refresh : function (skip_loading, forget_state) {
-			this._data.core.state = null;
-			if(!forget_state) {
-				this._data.core.state = this.get_state();
-			}
+			this._data.core.state = !forget_state ? this.get_state() : {};
 			this._cnt = 0;
 			this._model.data = {
 				'#' : {
