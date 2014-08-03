@@ -2941,11 +2941,12 @@
 		 * refreshes the tree - all nodes are reloaded with calls to `load_node`.
 		 * @name refresh()
 		 * @param {Boolean} skip_loading an option to skip showing the loading indicator
-		 * @param {Boolean} forget_state if set to `true` state will not be reapplied
+		 * @param {Mixed} forget_state if set to `true` state will not be reapplied, if set to a function (receiving the current state as argument) the result of that function will be used as state
 		 * @trigger refresh.jstree
 		 */
 		refresh : function (skip_loading, forget_state) {
-			this._data.core.state = !forget_state ? this.get_state() : {};
+			this._data.core.state = forget_state === true ? {} : this.get_state();
+			if(forget_state && $.isFunction(forget_state)) { this._data.core.state = forget_state.call(this, this._data.core.state); }
 			this._cnt = 0;
 			this._model.data = {
 				'#' : {

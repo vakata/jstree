@@ -3411,10 +3411,10 @@
 			{
 				"type": "param",
 				"types": [
-					"Boolean"
+					"Mixed"
 				],
 				"name": "forget_state",
-				"description": "if set to `true` state will not be reapplied"
+				"description": "if set to `true` state will not be reapplied, if set to a function (receiving the current state as argument) the result of that function will be used as state"
 			},
 			{
 				"type": "trigger",
@@ -3428,7 +3428,7 @@
 		},
 		"isPrivate": false,
 		"ignore": false,
-		"code": "refresh : function (skip_loading, forget_state) {\n\t\t\tthis._data.core.state = !forget_state ? this.get_state() : {};\n\t\t\tthis._cnt = 0;\n\t\t\tthis._model.data = {\n\t\t\t\t'#' : {\n\t\t\t\t\tid : '#',\n\t\t\t\t\tparent : null,\n\t\t\t\t\tparents : [],\n\t\t\t\t\tchildren : [],\n\t\t\t\t\tchildren_d : [],\n\t\t\t\t\tstate : { loaded : false }\n\t\t\t\t}\n\t\t\t};\n\t\t\tvar c = this.get_container_ul()[0].className;\n\t\t\tif(!skip_loading) {\n\t\t\t\tthis.element.html(\"<\"+\"ul class='\"+c+\"'><\"+\"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><\"+\"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>\" + this.get_string(\"Loading ...\") + \"</a></li></ul>\");\n\t\t\t}\n\t\t\tthis.load_node('#', function (o, s) {\n\t\t\t\tif(s) {\n\t\t\t\t\tthis.get_container_ul()[0].className = c;\n\t\t\t\t\tthis.set_state($.extend(true, {}, this._data.core.state), function () {"
+		"code": "refresh : function (skip_loading, forget_state) {\n\t\t\tthis._data.core.state = forget_state === true ? {} : this.get_state();\n\t\t\tif(forget_state && $.isFunction(forget_state)) { this._data.core.state = forget_state.call(this, this._data.core.state); }\n\t\t\tthis._cnt = 0;\n\t\t\tthis._model.data = {\n\t\t\t\t'#' : {\n\t\t\t\t\tid : '#',\n\t\t\t\t\tparent : null,\n\t\t\t\t\tparents : [],\n\t\t\t\t\tchildren : [],\n\t\t\t\t\tchildren_d : [],\n\t\t\t\t\tstate : { loaded : false }\n\t\t\t\t}\n\t\t\t};\n\t\t\tvar c = this.get_container_ul()[0].className;\n\t\t\tif(!skip_loading) {\n\t\t\t\tthis.element.html(\"<\"+\"ul class='\"+c+\"'><\"+\"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><\"+\"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>\" + this.get_string(\"Loading ...\") + \"</a></li></ul>\");\n\t\t\t}\n\t\t\tthis.load_node('#', function (o, s) {\n\t\t\t\tif(s) {\n\t\t\t\t\tthis.get_container_ul()[0].className = c;\n\t\t\t\t\tthis.set_state($.extend(true, {}, this._data.core.state), function () {"
 	},
 	{
 		"tags": [
