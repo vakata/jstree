@@ -988,7 +988,7 @@
 		 * loads a node (fetches its children using the `core.data` setting). Multiple nodes can be passed to by using an array.
 		 * @name load_node(obj [, callback])
 		 * @param  {mixed} obj
-		 * @param  {function} callback a function to be executed once loading is conplete, the function is executed in the instance's scope and receives two arguments - the node and a boolean status
+		 * @param  {function} callback a function to be executed once loading is complete, the function is executed in the instance's scope and receives two arguments - the node and a boolean status
 		 * @return {Boolean}
 		 * @trigger load_node.jstree
 		 */

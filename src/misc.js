@@ -94,6 +94,7 @@
 			$('.jstree-realcheckbox').each(function () {
 				this.checked = (!ts && this.parentNode.className.indexOf("jstree-checked") !== -1) || (ts && this.parentNode.parentNode.className.indexOf('jstree-clicked') !== -1);
 				this.indeterminate = this.parentNode.className.indexOf("jstree-undetermined") !== -1;
+				this.disabled = this.parentNode.parentNode.className.indexOf("disabled") !== -1;
 			});
 		};
 	};

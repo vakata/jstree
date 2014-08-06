@@ -1529,7 +1529,7 @@
 					"function"
 				],
 				"name": "callback",
-				"description": "a function to be executed once loading is conplete, the function is executed in the instance's scope and receives two arguments - the node and a boolean status"
+				"description": "a function to be executed once loading is complete, the function is executed in the instance's scope and receives two arguments - the node and a boolean status"
 			},
 			{
 				"type": "return",
