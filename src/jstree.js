@@ -1238,9 +1238,10 @@
 		 * @name _append_json_data(obj, data)
 		 * @param  {mixed} obj the node to append to
 		 * @param  {String} data the JSON object to parse and append
+		 * @param  {Boolean} force_processing internal param - do not set
 		 * @trigger model.jstree, changed.jstree
 		 */
-		_append_json_data : function (dom, data, cb) {
+		_append_json_data : function (dom, data, cb, force_processing) {
 			dom = this.get_node(dom);
 			dom.children = [];
 			dom.children_d = [];
@@ -1576,17 +1577,29 @@
 					w = new window.Worker(this._wrk);
 					w.onmessage = $.proxy(function (e) {
 						rslt.call(this, e.data, true);
-						this._data.core.working = false;
 						if(this._data.core.worker_queue.length) {
 							this._append_json_data.apply(this, this._data.core.worker_queue.shift());
 						}
+						else {
+							this._data.core.working = false;
+						}
 					}, this);
-					if(!this._data.core.working) {
+					if(!this._data.core.working || force_processing) {
 						this._data.core.working = true;
-						w.postMessage(args);
+						if(!args.par) {
+							if(this._data.core.worker_queue.length) {
+								this._append_json_data.apply(this, this._data.core.worker_queue.shift());
+							}
+							else {
+								this._data.core.working = false;
+							}
+						}
+						else {
+							w.postMessage(args);
+						}
 					}
 					else {
-						this._data.core.worker_queue.push([dom, data, cb]);
+						this._data.core.worker_queue.push([dom, data, cb, true]);
 					}
 				}
 				catch(e) {
