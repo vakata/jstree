@@ -4034,8 +4034,8 @@
 		if(node && node.attributes) {
 			$.each(node.attributes, function (i, v) {
 				if($.inArray(v.nodeName.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }
-				if(v.nodeValue !== null && $.trim(v.nodeValue) !== '') {
-					if(with_values) { attr[v.nodeName] = v.nodeValue; }
+				if(v.value !== null && $.trim(v.value) !== '') {
+					if(with_values) { attr[v.nodeName] = v.value; }
 					else { attr.push(v.nodeName); }
 				}
 			});
