@@ -4033,10 +4033,10 @@
 		var attr = with_values ? {} : [];
 		if(node && node.attributes) {
 			$.each(node.attributes, function (i, v) {
-				if($.inArray(v.nodeName.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }
+				if($.inArray(v.name.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }
 				if(v.value !== null && $.trim(v.value) !== '') {
-					if(with_values) { attr[v.nodeName] = v.value; }
-					else { attr.push(v.nodeName); }
+					if(with_values) { attr[v.name] = v.value; }
+					else { attr.push(v.name); }
 				}
 			});
 		}
