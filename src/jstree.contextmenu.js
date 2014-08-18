@@ -263,7 +263,7 @@
 				a = d.children(".jstree-anchor");
 			$(document).one("context_show.vakata", $.proxy(function (e, data) {
 				var cls = 'jstree-contextmenu jstree-' + this.get_theme() + '-contextmenu';
-				$(data.element).addClass(cls);
+				$(data.element).addClass(cls).css('z-index', '999');
 			}, this));
 			this._data.contextmenu.visible = true;
 			$.vakata.context.show(a, { 'x' : x, 'y' : y }, i);
