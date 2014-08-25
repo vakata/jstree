@@ -88,13 +88,15 @@
 		var lastmv = false,
 			laster = false,
 			opento = false,
-			marker = $('<div id="jstree-marker">&#160;</div>').hide().appendTo('body');
+			marker = $('<div id="jstree-marker">&#160;</div>').hide(); //.appendTo('body');
 
 		$(document)
-			.bind('dnd_start.vakata', function (e, data) {
+			.on('dnd_start.vakata.jstree', function (e, data) {
 				lastmv = false;
+				if(!data || !data.data || !data.data.jstree) { return; }
+				marker.appendTo('body'); //.show();
 			})
-			.bind('dnd_move.vakata', function (e, data) {
+			.on('dnd_move.vakata.jstree', function (e, data) {
 				if(opento) { clearTimeout(opento); }
 				if(!data || !data.data || !data.data.jstree) { return; }
 
@@ -210,16 +212,16 @@
 				data.helper.find('.jstree-icon').removeClass('jstree-ok').addClass('jstree-er');
 				marker.hide();
 			})
-			.bind('dnd_scroll.vakata', function (e, data) {
+			.on('dnd_scroll.vakata.jstree', function (e, data) {
 				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide();
 				lastmv = false;
 				data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-ok').addClass('jstree-er');
 			})
-			.bind('dnd_stop.vakata', function (e, data) {
+			.on('dnd_stop.vakata.jstree', function (e, data) {
 				if(opento) { clearTimeout(opento); }
 				if(!data || !data.data || !data.data.jstree) { return; }
-				marker.hide();
+				marker.hide().detach();
 				var i, j, nodes = [];
 				if(lastmv) {
 					for(i = 0, j = data.data.nodes.length; i < j; i++) {
@@ -240,7 +242,7 @@
 					}
 				}
 			})
-			.bind('keyup keydown', function (e, data) {
+			.on('keyup.jstree keydown.jstree', function (e, data) {
 				data = $.vakata.dnd._get();
 				if(data && data.data && data.data.jstree) {
 					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
@@ -307,8 +309,8 @@
 					scroll_i: false,
 					is_touch: false
 				};
-				$(document).off("mousemove touchmove", $.vakata.dnd.drag);
-				$(document).off("mouseup touchend", $.vakata.dnd.stop);
+				$(document).off("mousemove.vakata.jstree touchmove.vakata.jstree", $.vakata.dnd.drag);
+				$(document).off("mouseup.vakata.jstree touchend.vakata.jstree", $.vakata.dnd.stop);
 			},
 			_scroll : function (init_only) {
 				if(!vakata_dnd.scroll_e || (!vakata_dnd.scroll_l && !vakata_dnd.scroll_t)) {
@@ -369,8 +371,8 @@
 						"zIndex"		: "10000"
 					});
 				}
-				$(document).bind("mousemove touchmove", $.vakata.dnd.drag);
-				$(document).bind("mouseup touchend", $.vakata.dnd.stop);
+				$(document).on("mousemove.vakata.jstree touchmove.vakata.jstree", $.vakata.dnd.drag);
+				$(document).on("mouseup.vakata.jstree touchend.vakata.jstree", $.vakata.dnd.stop);
 				return false;
 			},
 			drag : function (e) {

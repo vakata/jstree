@@ -201,7 +201,7 @@
 					});
 			}
 			*/
-			$(document).on("context_hide.vakata", $.proxy(function () { this._data.contextmenu.visible = false; }, this));
+			$(document).on("context_hide.vakata.jstree", $.proxy(function () { this._data.contextmenu.visible = false; }, this));
 		};
 		this.teardown = function () {
 			if(this._data.contextmenu.visible) {
@@ -261,7 +261,7 @@
 		this._show_contextmenu = function (obj, x, y, i) {
 			var d = this.get_node(obj, true),
 				a = d.children(".jstree-anchor");
-			$(document).one("context_show.vakata", $.proxy(function (e, data) {
+			$(document).one("context_show.vakata.jstree", $.proxy(function (e, data) {
 				var cls = 'jstree-contextmenu jstree-' + this.get_theme() + '-contextmenu';
 				$(data.element).addClass(cls);
 			}, this));
@@ -426,6 +426,7 @@
 					vakata_context.element.html(vakata_context.html);
 				}
 				if(vakata_context.items.length) {
+					vakata_context.element.appendTo("body");
 					e = vakata_context.element;
 					x = vakata_context.position_x;
 					y = vakata_context.position_y;
@@ -465,7 +466,7 @@
 			},
 			hide : function () {
 				if(vakata_context.is_visible) {
-					vakata_context.element.hide().find("ul").hide().end().find(':focus').blur();
+					vakata_context.element.hide().find("ul").hide().end().find(':focus').blur().end().detach();
 					vakata_context.is_visible = false;
 					/**
 					 * triggered on the document when the contextmenu is hidden
@@ -581,14 +582,13 @@
 					if(a.parent().not('.vakata-context-disabled')) {
 						a.mouseup();
 					}
-				})
-				.appendTo("body");
+				});
 
 			$(document)
-				.on("mousedown", function (e) {
+				.on("mousedown.vakata.jstree", function (e) {
 					if(vakata_context.is_visible && !$.contains(vakata_context.element[0], e.target)) { $.vakata.context.hide(); }
 				})
-				.on("context_show.vakata", function (e, data) {
+				.on("context_show.vakata.jstree", function (e, data) {
 					vakata_context.element.find("li:has(ul)").children("a").addClass("vakata-context-parent");
 					if(right_to_left) {
 						vakata_context.element.addClass("vakata-context-rtl").css("direction", "rtl");

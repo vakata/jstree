@@ -110,6 +110,14 @@
 		return tmp;
 	};
 	/**
+	 * remove all traces of jstree from the DOM and destroy all instances
+	 * @name $.jstree.destroy()
+	 */
+	$.jstree.destroy = function () {
+		$('.jstree:jstree').jstree('destroy');
+		$(document).off('.jstree');
+	};
+	/**
 	 * the jstree class constructor, used only internally
 	 * @private
 	 * @name $.jstree.core(id)
