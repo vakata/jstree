@@ -7,7 +7,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     concat: {
       dist: {
-        src: ['src/<%= pkg.name %>.js', 'src/<%= pkg.name %>.*.js'],
+        src: ['src/<%= pkg.name %>.js', 'src/<%= pkg.name %>.*.js', 'src/vakata-jstree.js'],
         dest: 'dist/<%= pkg.name %>.js'
       }
     },

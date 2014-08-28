@@ -125,8 +125,10 @@ class fs
 		array_pop($new);
 		array_push($new, $name);
 		$new = implode(DIRECTORY_SEPARATOR, $new);
-		if(is_file($new) || is_dir($new)) { throw new Exception('Path already exists: ' . $new); }
-		rename($dir, $new);
+		if($dir !== $new) {
+			if(is_file($new) || is_dir($new)) { throw new Exception('Path already exists: ' . $new); }
+			rename($dir, $new);
+		}
 		return array('id' => $this->id($new));
 	}
 	public function remove($id) {
@@ -324,7 +326,7 @@ if(isset($_GET['operation'])) {
 									"action"			: function (data) {
 										var inst = $.jstree.reference(data.reference),
 											obj = inst.get_node(data.reference);
-										inst.create_node(obj, { type : "default", text : "New folder" }, "last", function (new_node) {
+										inst.create_node(obj, { type : "default" }, "last", function (new_node) {
 											setTimeout(function () { inst.edit(new_node); },0);
 										});
 									}
@@ -334,7 +336,7 @@ if(isset($_GET['operation'])) {
 									"action"			: function (data) {
 										var inst = $.jstree.reference(data.reference),
 											obj = inst.get_node(data.reference);
-										inst.create_node(obj, { type : "file", text : "New file" }, "last", function (new_node) {
+										inst.create_node(obj, { type : "file" }, "last", function (new_node) {
 											setTimeout(function () { inst.edit(new_node); },0);
 										});
 									}
@@ -349,6 +351,11 @@ if(isset($_GET['operation'])) {
 					'types' : {
 						'default' : { 'icon' : 'folder' },
 						'file' : { 'valid_children' : [], 'icon' : 'file' }
+					},
+					'unique' : {
+						'duplicate' : function (name, counter) {
+							return name + ' ' + counter;
+						}
 					},
 					'plugins' : ['state','dnd','sort','types','contextmenu','unique']
 				})
