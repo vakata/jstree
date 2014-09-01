@@ -111,7 +111,7 @@
 			get : function (key) { return window.localStorage.getItem(key); },
 			del : function (key) { return window.localStorage.removeItem(key); }
 		};
-	}(jQuery));
+	}($));
 
 	// include the state plugin by default
 	// $.jstree.defaults.plugins.push("state");

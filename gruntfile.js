@@ -7,7 +7,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     concat: {
       dist: {
-        src: ['src/<%= pkg.name %>.js', 'src/<%= pkg.name %>.*.js'],
+        src: ['src/<%= pkg.name %>.js', 'src/<%= pkg.name %>.*.js', 'src/vakata-jstree.js'],
         dest: 'dist/<%= pkg.name %>.js'
       }
     },
@@ -129,6 +129,22 @@ module.exports = function(grunt) {
           dest: 'dist/themes/default/'   // Destination path prefix
         }]
       }
+    },
+    replace: {
+      files: {
+        src: ['dist/*.js', 'bower.json', 'component.json', 'jstree.jquery.json'],
+        overwrite: true,
+        replacements: [
+          {
+            from: '{{VERSION}}',
+            to: "<%= pkg.version %>"
+          },
+          {
+            from: /"version": "[^"]+"/g,
+            to: "\"version\": \"<%= pkg.version %>\""
+          },
+        ]
+      }
     }
   });
 
@@ -140,6 +156,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
+  grunt.loadNpmTasks('grunt-text-replace');
 
   grunt.registerMultiTask('amd', 'Clean up AMD', function () {
     var s, d;
@@ -180,7 +197,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy:libs','uglify','less','imagemin','copy:docs','qunit','dox']);
+  grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy:libs','uglify','less','imagemin','replace','copy:docs','qunit','dox']);
   grunt.registerTask('js', ['concat','amd','uglify']);
   grunt.registerTask('css', ['copy','less']);
 

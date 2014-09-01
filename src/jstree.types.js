@@ -58,12 +58,11 @@
 			parent.init.call(this, el, options);
 			this._model.data['#'].type = '#';
 		};
-		this.refresh = function (skip_loading) {
-			parent.refresh.call(this, skip_loading);
+		this.refresh = function (skip_loading, forget_state) {
+			parent.refresh.call(this, skip_loading, forget_state);
 			this._model.data['#'].type = '#';
 		};
 		this.bind = function () {
-			parent.bind.call(this);
 			this.element
 				.on('model.jstree', $.proxy(function (e, data) {
 						var m = this._model.data,
@@ -83,7 +82,9 @@
 								m[dpc[i]].icon = t[c].icon;
 							}
 						}
+						m['#'].type = '#';
 					}, this));
+			parent.bind.call(this);
 		};
 		this.get_json = function (obj, options, flat) {
 			var i, j,

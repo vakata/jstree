@@ -49,7 +49,19 @@
 		 * @name $.jstree.defaults.dnd.check_while_dragging
 		 * @plugin dnd
 		 */
-		check_while_dragging : true
+		check_while_dragging : true,
+		/**
+		 * a boolean indicating if nodes from this tree should only be copied with dnd (as opposed to moved), default is `false`
+		 * @name $.jstree.defaults.dnd.always_copy
+		 * @plugin dnd
+		 */
+		always_copy : false,
+		/**
+		 * when dropping a node "inside", this setting indicates the position the node should go to - it can be an integer or a string: "first" (same as 0) or "last", default is `0`
+		 * @name $.jstree.defaults.dnd.inside_pos
+		 * @plugin dnd
+		 */
+		inside_pos : 0
 	};
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
 	// TODO: drop somewhere else - maybe demo only?
@@ -65,7 +77,7 @@
 						(this.settings.dnd.is_draggable === true || ($.isFunction(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_selected(true) : [obj]))))
 					) {
 						this.element.trigger('mousedown.jstree');
-						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_selected() : [obj.id] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + '"><i class="jstree-icon jstree-er"></i>' + (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget, true)) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
+						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_selected() : [obj.id] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + ( this.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ) + '"><i class="jstree-icon jstree-er"></i>' + (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget, true)) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
 					}
 				}, this));
 		};
@@ -76,15 +88,17 @@
 		var lastmv = false,
 			laster = false,
 			opento = false,
-			marker = $('<div id="jstree-marker">&#160;</div>').hide().appendTo('body');
+			marker = $('<div id="jstree-marker">&#160;</div>').hide(); //.appendTo('body');
 
 		$(document)
-			.bind('dnd_start.vakata', function (e, data) {
+			.on('dnd_start.vakata.jstree', function (e, data) {
 				lastmv = false;
+				if(!data || !data.data || !data.data.jstree) { return; }
+				marker.appendTo('body'); //.show();
 			})
-			.bind('dnd_move.vakata', function (e, data) {
+			.on('dnd_move.vakata.jstree', function (e, data) {
 				if(opento) { clearTimeout(opento); }
-				if(!data.data.jstree) { return; }
+				if(!data || !data.data || !data.data.jstree) { return; }
 
 				// if we are hovering the marker image do nothing (can happen on "inside" drags)
 				if(data.event.target.id && data.event.target.id === 'jstree-marker') {
@@ -95,20 +109,20 @@
 					ref = false,
 					off = false,
 					rel = false,
-					l, t, h, p, i, o, ok, t1, t2, op, ps, pr;
+					l, t, h, p, i, o, ok, t1, t2, op, ps, pr, ip, tm;
 				// if we are over an instance
 				if(ins && ins._data && ins._data.dnd) {
-					marker.attr('class', 'jstree-' + ins.get_theme());
+					marker.attr('class', 'jstree-' + ins.get_theme() + ( ins.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ));
 					data.helper
-						.children().attr('class', 'jstree-' + ins.get_theme())
-						.find('.jstree-copy:eq(0)')[ data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'show' : 'hide' ]();
+						.children().attr('class', 'jstree-' + ins.get_theme() + ( ins.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ))
+						.find('.jstree-copy:eq(0)')[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? 'show' : 'hide' ]();
 
 
 					// if are hovering the container itself add a new root node
 					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && ins.get_container_ul().children().length === 0) {
 						ok = true;
 						for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
-							ok = ok && ins.check( (data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node"), (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), '#', 'last');
+							ok = ok && ins.check( (data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey)) ) ? "copy_node" : "move_node"), (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), '#', 'last', { 'dnd' : true, 'ref' : ins.get_node('#'), 'pos' : 'i', 'is_multi' : (data.data.origin && data.data.origin !== ins), 'is_foreign' : (!data.data.origin) });
 							if(!ok) { break; }
 						}
 						if(ok) {
@@ -120,7 +134,7 @@
 					}
 					else {
 						// if we are hovering a tree node
-						ref = $(data.event.target).closest('a');
+						ref = $(data.event.target).closest('.jstree-anchor');
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
 							off = ref.offset();
 							rel = data.event.pageY - off.top;
@@ -138,19 +152,21 @@
 								switch(v) {
 									case 'b':
 										l = off.left - 6;
-										t = off.top - 5;
+										t = off.top;
 										p = ins.get_parent(ref);
 										i = ref.parent().index();
 										break;
 									case 'i':
+										ip = ins.settings.dnd.inside_pos;
+										tm = ins.get_node(ref.parent());
 										l = off.left - 2;
-										t = off.top - 5 + h / 2 + 1;
-										p = ins.get_node(ref.parent()).id;
-										i = 0;
+										t = off.top + h / 2 + 1;
+										p = tm.id;
+										i = ip === 'first' ? 0 : (ip === 'last' ? tm.children.length : Math.min(ip, tm.children.length));
 										break;
 									case 'a':
 										l = off.left - 6;
-										t = off.top - 5 + h;
+										t = off.top + h;
 										p = ins.get_parent(ref);
 										i = ref.parent().index() + 1;
 										break;
@@ -162,7 +178,7 @@
 								*/
 								ok = true;
 								for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
-									op = data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? "copy_node" : "move_node";
+									op = data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? "copy_node" : "move_node";
 									ps = i;
 									if(op === "move_node" && v === 'a' && (data.data.origin && data.data.origin === ins) && p === ins.get_parent(data.data.nodes[t1])) {
 										pr = ins.get_node(p);
@@ -170,7 +186,7 @@
 											ps -= 1;
 										}
 									}
-									ok = ok && ( (ins && ins.settings && ins.settings.dnd && ins.settings.dnd.check_while_dragging === false) || ins.check(op, (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), p, ps, { 'dnd' : true, 'ref' : ins.get_node(ref.parent()), 'pos' : v }) );
+									ok = ok && ( (ins && ins.settings && ins.settings.dnd && ins.settings.dnd.check_while_dragging === false) || ins.check(op, (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), p, ps, { 'dnd' : true, 'ref' : ins.get_node(ref.parent()), 'pos' : v, 'is_multi' : (data.data.origin && data.data.origin !== ins), 'is_foreign' : (!data.data.origin) }) );
 									if(!ok) {
 										if(ins && ins.last_error) { laster = ins.last_error(); }
 										break;
@@ -180,7 +196,7 @@
 									if(v === 'i' && ref.parent().is('.jstree-closed') && ins.settings.dnd.open_timeout) {
 										opento = setTimeout((function (x, z) { return function () { x.open_node(z); }; }(ins, ref)), ins.settings.dnd.open_timeout);
 									}
-									lastmv = { 'ins' : ins, 'par' : p, 'pos' : i };
+									lastmv = { 'ins' : ins, 'par' : p, 'pos' : v === 'i' && ip === 'last' && i === 0 && !ins.is_loaded(tm) ? 'last' : i };
 									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
 									data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');
 									laster = {};
@@ -196,22 +212,25 @@
 				data.helper.find('.jstree-icon').removeClass('jstree-ok').addClass('jstree-er');
 				marker.hide();
 			})
-			.bind('dnd_scroll.vakata', function (e, data) {
-				if(!data.data.jstree) { return; }
+			.on('dnd_scroll.vakata.jstree', function (e, data) {
+				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide();
 				lastmv = false;
 				data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-ok').addClass('jstree-er');
 			})
-			.bind('dnd_stop.vakata', function (e, data) {
+			.on('dnd_stop.vakata.jstree', function (e, data) {
 				if(opento) { clearTimeout(opento); }
-				if(!data.data.jstree) { return; }
-				marker.hide();
+				if(!data || !data.data || !data.data.jstree) { return; }
+				marker.hide().detach();
 				var i, j, nodes = [];
 				if(lastmv) {
 					for(i = 0, j = data.data.nodes.length; i < j; i++) {
 						nodes[i] = data.data.origin ? data.data.origin.get_node(data.data.nodes[i]) : data.data.nodes[i];
+						if(data.data.origin) {
+							nodes[i].instance = data.data.origin;
+						}
 					}
-					lastmv.ins[ data.data.origin && data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);
+					lastmv.ins[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);
 				}
 				else {
 					i = $(data.event.target).closest('.jstree');
@@ -223,20 +242,20 @@
 					}
 				}
 			})
-			.bind('keyup keydown', function (e, data) {
+			.on('keyup.jstree keydown.jstree', function (e, data) {
 				data = $.vakata.dnd._get();
-				if(data.data && data.data.jstree) {
-					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin && data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey) ? 'show' : 'hide' ]();
+				if(data && data.data && data.data.jstree) {
+					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
 				}
 			});
 	});
 
 	// helpers
 	(function ($) {
-		$.fn.vakata_reverse = [].reverse;
 		// private variable
 		var vakata_dnd = {
 			element	: false,
+			target	: false,
 			is_down	: false,
 			is_drag	: false,
 			helper	: false,
@@ -247,7 +266,8 @@
 			scroll_l: 0,
 			scroll_t: 0,
 			scroll_e: false,
-			scroll_i: false
+			scroll_i: false,
+			is_touch: false
 		};
 		$.vakata.dnd = {
 			settings : {
@@ -255,7 +275,8 @@
 				scroll_proximity	: 20,
 				helper_left			: 5,
 				helper_top			: 10,
-				threshold			: 5
+				threshold			: 5,
+				threshold_touch		: 50
 			},
 			_trigger : function (event_name, e) {
 				var data = $.vakata.dnd._get();
@@ -274,6 +295,7 @@
 				if(vakata_dnd.scroll_i) { clearInterval(vakata_dnd.scroll_i); vakata_dnd.scroll_i = false; }
 				vakata_dnd = {
 					element	: false,
+					target	: false,
 					is_down	: false,
 					is_drag	: false,
 					helper	: false,
@@ -284,10 +306,11 @@
 					scroll_l: 0,
 					scroll_t: 0,
 					scroll_e: false,
-					scroll_i: false
+					scroll_i: false,
+					is_touch: false
 				};
-				$(document).off("mousemove touchmove", $.vakata.dnd.drag);
-				$(document).off("mouseup touchend", $.vakata.dnd.stop);
+				$(document).off("mousemove.vakata.jstree touchmove.vakata.jstree", $.vakata.dnd.drag);
+				$(document).off("mouseup.vakata.jstree touchend.vakata.jstree", $.vakata.dnd.stop);
 			},
 			_scroll : function (init_only) {
 				if(!vakata_dnd.scroll_e || (!vakata_dnd.scroll_l && !vakata_dnd.scroll_t)) {
@@ -335,6 +358,8 @@
 				vakata_dnd.data		= data;
 				vakata_dnd.is_down	= true;
 				vakata_dnd.element	= e.currentTarget;
+				vakata_dnd.target	= e.target;
+				vakata_dnd.is_touch	= e.type === "touchstart";
 				if(html !== false) {
 					vakata_dnd.helper = $("<div id='vakata-dnd'></div>").html(html).css({
 						"display"		: "block",
@@ -346,8 +371,8 @@
 						"zIndex"		: "10000"
 					});
 				}
-				$(document).bind("mousemove touchmove", $.vakata.dnd.drag);
-				$(document).bind("mouseup touchend", $.vakata.dnd.stop);
+				$(document).on("mousemove.vakata.jstree touchmove.vakata.jstree", $.vakata.dnd.drag);
+				$(document).on("mouseup.vakata.jstree touchend.vakata.jstree", $.vakata.dnd.stop);
 				return false;
 			},
 			drag : function (e) {
@@ -359,8 +384,8 @@
 				if(!vakata_dnd.is_down) { return; }
 				if(!vakata_dnd.is_drag) {
 					if(
-						Math.abs(e.pageX - vakata_dnd.init_x) > $.vakata.dnd.settings.threshold ||
-						Math.abs(e.pageY - vakata_dnd.init_y) > $.vakata.dnd.settings.threshold
+						Math.abs(e.pageX - vakata_dnd.init_x) > (vakata_dnd.is_touch ? $.vakata.dnd.settings.threshold_touch : $.vakata.dnd.settings.threshold) ||
+						Math.abs(e.pageY - vakata_dnd.init_y) > (vakata_dnd.is_touch ? $.vakata.dnd.settings.threshold_touch : $.vakata.dnd.settings.threshold)
 					) {
 						if(vakata_dnd.helper) {
 							vakata_dnd.helper.appendTo("body");
@@ -391,8 +416,7 @@
 				vakata_dnd.scroll_t = 0;
 				vakata_dnd.scroll_l = 0;
 				vakata_dnd.scroll_e = false;
-				$(e.target)
-					.parentsUntil("body").addBack().vakata_reverse()
+				$($(e.target).parentsUntil("body").addBack().get().reverse())
 					.filter(function () {
 						return	(/^auto|scroll$/).test($(this).css("overflow")) &&
 								(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);
@@ -449,6 +473,7 @@
 				 * @param {Object} event the event that caused this to trigger (most likely mousemove)
 				 */
 				$.vakata.dnd._trigger("move", e);
+				return false;
 			},
 			stop : function (e) {
 				if(e.type === "touchend" && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0]) {
@@ -469,10 +494,17 @@
 					 */
 					$.vakata.dnd._trigger("stop", e);
 				}
+				else {
+					if(e.type === "touchend" && e.target === vakata_dnd.target) {
+						var to = setTimeout(function () { $(e.target).click(); }, 100);
+						$(e.target).one('click', function() { if(to) { clearTimeout(to); } });
+					}
+				}
 				$.vakata.dnd._clean();
+				return false;
 			}
 		};
-	}(jQuery));
+	}($));
 
 	// include the dnd plugin by default
 	// $.jstree.defaults.plugins.push("dnd");
