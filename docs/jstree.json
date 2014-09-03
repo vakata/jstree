@@ -931,7 +931,7 @@
     },
     "isPrivate": true,
     "ignore": false,
-    "code": "trigger : function (ev, data) {\n\t\t\tif(!data) {\n\t\t\t\tdata = {};\n\t\t\t}\n\t\t\tdata.instance = this;\n\t\t\tthis.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);\n\t\t},"
+    "code": "trigger : function (ev, data) {\n\t\t\tif(!data) {\n\t\t\t\tdata = {};\n\t\t\t}\n\t\t\tdata.instance = this;\n\t\t\tif (this.element) {\n\t\t\t\tthis.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);\n\t\t\t}\n\t\t},"
   },
   {
     "tags": [

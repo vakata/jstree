@@ -716,7 +716,9 @@
 				data = {};
 			}
 			data.instance = this;
-			this.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);
+			if (this.element) {
+				this.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);
+			}
 		},
 		/**
 		 * returns the jQuery extended instance container
