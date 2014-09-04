@@ -1579,7 +1579,7 @@
 					if(this._wrk === null) {
 						this._wrk = window.URL.createObjectURL(
 							new window.Blob(
-								['self.onmessage = ' + func.toString().replace(/return ([^;}]+)[\s;}]+$/, 'postMessage($1);}')],
+								['self.onmessage = ' + func.toString().replace(/return\s*([^;]+)[\s;}]+$/, 'postMessage($1);}')],
 								{type:"text/javascript"}
 							)
 						);
