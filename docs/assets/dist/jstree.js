@@ -4991,8 +4991,9 @@
 				x = o.left;
 				y = o.top + this._data.core.li_height;
 			}
-			if(this.settings.contextmenu.select_node && !this.is_selected(obj)) {
-				this.activate_node(obj, e);
+			if(this.settings.contextmenu.select_node) {
+                this.deselect_all(false);
+				this.select_node(obj, false, false, e);
 			}
 
 			i = s.items;
