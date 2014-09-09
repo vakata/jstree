@@ -1613,18 +1613,18 @@
 							)
 						);
 					}
-					w = new window.Worker(this._wrk);
-					w.onmessage = $.proxy(function (e) {
-						rslt.call(this, e.data, true);
-						if(this._data.core.worker_queue.length) {
-							this._append_json_data.apply(this, this._data.core.worker_queue.shift());
-						}
-						else {
-							this._data.core.working = false;
-						}
-					}, this);
 					if(!this._data.core.working || force_processing) {
 						this._data.core.working = true;
+						w = new window.Worker(this._wrk);
+						w.onmessage = $.proxy(function (e) {
+							rslt.call(this, e.data, true);
+							if(this._data.core.worker_queue.length) {
+								this._append_json_data.apply(this, this._data.core.worker_queue.shift());
+							}
+							else {
+								this._data.core.working = false;
+							}
+						}, this);
 						if(!args.par) {
 							if(this._data.core.worker_queue.length) {
 								this._append_json_data.apply(this, this._data.core.worker_queue.shift());
@@ -1643,6 +1643,12 @@
 				}
 				catch(e) {
 					rslt.call(this, func(args), false);
+					if(this._data.core.worker_queue.length) {
+						this._append_json_data.apply(this, this._data.core.worker_queue.shift());
+					}
+					else {
+						this._data.core.working = false;
+					}
 				}
 			}
 			else {

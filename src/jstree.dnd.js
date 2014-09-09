@@ -231,6 +231,11 @@
 						}
 					}
 					lastmv.ins[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);
+					for(i = 0, j = nodes.length; i < j; i++) {
+						if(nodes[i].instance) {
+							nodes[i].instance = null;
+						}
+					}
 				}
 				else {
 					i = $(data.event.target).closest('.jstree');

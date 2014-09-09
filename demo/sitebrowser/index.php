@@ -7,6 +7,10 @@ if(isset($_GET['operation'])) {
 	try {
 		$rslt = null;
 		switch($_GET['operation']) {
+			case 'analyze':
+				var_dump($fs->analyze(true));
+				die();
+				break;
 			case 'get_node':
 				$node = isset($_GET['id']) && $_GET['id'] !== '#' ? (int)$_GET['id'] : 0;
 				$temp = $fs->get_children($node);

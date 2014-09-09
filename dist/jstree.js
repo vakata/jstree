@@ -1613,18 +1613,18 @@
 							)
 						);
 					}
-					w = new window.Worker(this._wrk);
-					w.onmessage = $.proxy(function (e) {
-						rslt.call(this, e.data, true);
-						if(this._data.core.worker_queue.length) {
-							this._append_json_data.apply(this, this._data.core.worker_queue.shift());
-						}
-						else {
-							this._data.core.working = false;
-						}
-					}, this);
 					if(!this._data.core.working || force_processing) {
 						this._data.core.working = true;
+						w = new window.Worker(this._wrk);
+						w.onmessage = $.proxy(function (e) {
+							rslt.call(this, e.data, true);
+							if(this._data.core.worker_queue.length) {
+								this._append_json_data.apply(this, this._data.core.worker_queue.shift());
+							}
+							else {
+								this._data.core.working = false;
+							}
+						}, this);
 						if(!args.par) {
 							if(this._data.core.worker_queue.length) {
 								this._append_json_data.apply(this, this._data.core.worker_queue.shift());
@@ -1643,6 +1643,12 @@
 				}
 				catch(e) {
 					rslt.call(this, func(args), false);
+					if(this._data.core.worker_queue.length) {
+						this._append_json_data.apply(this, this._data.core.worker_queue.shift());
+					}
+					else {
+						this._data.core.working = false;
+					}
 				}
 			}
 			else {
@@ -5605,6 +5611,11 @@
 						}
 					}
 					lastmv.ins[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? 'copy_node' : 'move_node' ](nodes, lastmv.par, lastmv.pos);
+					for(i = 0, j = nodes.length; i < j; i++) {
+						if(nodes[i].instance) {
+							nodes[i].instance = null;
+						}
+					}
 				}
 				else {
 					i = $(data.event.target).closest('.jstree');
