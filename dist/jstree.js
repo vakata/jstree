@@ -137,7 +137,8 @@
 				selected : [],
 				last_error : {},
 				working : false,
-				worker_queue : []
+				worker_queue : [],
+				focused : null
 			}
 		};
 	};
@@ -566,7 +567,7 @@
 					}, this))
 				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
 						e.preventDefault();
-						$(e.currentTarget).focus();
+						if(e.currentTarget !== document.activeElement) { $(e.currentTarget).focus(); }
 						this.activate_node(e.currentTarget, e);
 					}, this))
 				.on('keydown.jstree', '.jstree-anchor', $.proxy(function (e) {
@@ -682,9 +683,14 @@
 						this[ this._data.core.themes.stripes ? "show_stripes" : "hide_stripes" ]();
 					}, this))
 				.on('blur.jstree', '.jstree-anchor', $.proxy(function (e) {
+						this._data.core.focused = null;
 						$(e.currentTarget).filter('.jstree-hovered').mouseleave();
 					}, this))
 				.on('focus.jstree', '.jstree-anchor', $.proxy(function (e) {
+						var tmp = this.get_node(e.currentTarget);
+						if(tmp && tmp.id) {
+							this._data.core.focused = tmp.id;
+						}
 						this.element.find('.jstree-hovered').not(e.currentTarget).mouseleave();
 						$(e.currentTarget).mouseenter();
 					}, this))
@@ -1937,7 +1943,7 @@
 		 */
 		_redraw : function () {
 			var nodes = this._model.force_full_redraw ? this._model.data['#'].children.concat([]) : this._model.changed.concat([]),
-				f = document.createElement('UL'), tmp, i, j;
+				f = document.createElement('UL'), tmp, i, j, fe = this._data.core.focused;
 			for(i = 0, j = nodes.length; i < j; i++) {
 				tmp = this.redraw_node(nodes[i], true, this._model.force_full_redraw);
 				if(tmp && this._model.force_full_redraw) {
@@ -1948,6 +1954,15 @@
 				f.className = this.get_container_ul()[0].className;
 				this.element.empty().append(f);
 				//this.get_container_ul()[0].appendChild(f);
+			}
+			if(fe !== null) {
+				tmp = this.get_node(fe, true);
+				if(tmp && tmp.length && tmp.children('.jstree-anchor')[0] !== document.activeElement) {
+					tmp.children('.jstree-anchor').focus();
+				}
+				else {
+					this._data.core.focused = null;
+				}
 			}
 			this._model.force_full_redraw = false;
 			this._model.changed = [];
@@ -6201,7 +6216,7 @@
 /**
  * ### Sort plugin
  *
- * Autmatically sorts all siblings in the tree according to a sorting function.
+ * Automatically sorts all siblings in the tree according to a sorting function.
  */
 
 	/**
