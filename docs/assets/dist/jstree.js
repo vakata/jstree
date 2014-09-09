@@ -861,23 +861,38 @@
 			obj = this.get_node(obj, true);
 			if(obj[0] === this.element[0]) {
 				tmp = this._firstChild(this.get_container_ul()[0]);
+				while (tmp && tmp.offsetHeight === 0) {
+					tmp = this._nextSibling(tmp);
+				}
 				return tmp ? $(tmp) : false;
 			}
 			if(!obj || !obj.length) {
 				return false;
 			}
 			if(strict) {
-				tmp = this._nextSibling(obj[0]);
+				tmp = obj[0];
+				do {
+					tmp = this._nextSibling(tmp);
+				} while (tmp && tmp.offsetHeight === 0);
 				return tmp ? $(tmp) : false;
 			}
 			if(obj.hasClass("jstree-open")) {
 				tmp = this._firstChild(obj.children('.jstree-children')[0]);
-				return tmp ? $(tmp) : false;
+				while (tmp && tmp.offsetHeight === 0) {
+					tmp = this._nextSibling(tmp);
+				}
+				if(tmp !== null) {
+					return $(tmp);
+				}
 			}
-			if((tmp = this._nextSibling(obj[0])) !== null) {
+			tmp = obj[0];
+			do {
+				tmp = this._nextSibling(tmp);
+			} while (tmp && tmp.offsetHeight === 0);
+			if(tmp !== null) {
 				return $(tmp);
 			}
-			return obj.parentsUntil(".jstree",".jstree-node").next(".jstree-node").eq(0);
+			return obj.parentsUntil(".jstree",".jstree-node").next(".jstree-node:visible").eq(0);
 		},
 		/**
 		 * get the previous visible node that is above the `obj` node. If `strict` is set to `true` only sibling nodes are returned.
@@ -891,19 +906,29 @@
 			obj = this.get_node(obj, true);
 			if(obj[0] === this.element[0]) {
 				tmp = this.get_container_ul()[0].lastChild;
+				while (tmp && tmp.offsetHeight === 0) {
+					tmp = this._previousSibling(tmp);
+				}
 				return tmp ? $(tmp) : false;
 			}
 			if(!obj || !obj.length) {
 				return false;
 			}
 			if(strict) {
-				tmp = this._previousSibling(obj[0]);
+				tmp = obj[0];
+				do {
+					tmp = this._previousSibling(tmp);
+				} while (tmp && tmp.offsetHeight === 0);
 				return tmp ? $(tmp) : false;
 			}
-			if((tmp = this._previousSibling(obj[0])) !== null) {
+			tmp = obj[0];
+			do {
+				tmp = this._previousSibling(tmp);
+			} while (tmp && tmp.offsetHeight === 0);
+			if(tmp !== null) {
 				obj = $(tmp);
 				while(obj.hasClass("jstree-open")) {
-					obj = obj.children(".jstree-children:eq(0)").children(".jstree-node:last");
+					obj = obj.children(".jstree-children:eq(0)").children(".jstree-node:visible:last");
 				}
 				return obj;
 			}
