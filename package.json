@@ -2,7 +2,7 @@
   "name": "jstree",
   "title": "jsTree",
   "description": "jQuery tree plugin",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "homepage": "http://jstree.com",
   "main": "./dist/jstree.js",
   "author": {
