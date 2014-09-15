@@ -6836,7 +6836,9 @@
 			jQuery(this).jstree(c);
 		};
 		// proto.attributeChangedCallback = function (name, previous, value) { };
-		document.registerElement("vakata-jstree", { prototype: proto });
+		try {
+			document.registerElement("vakata-jstree", { prototype: proto });
+		} catch(ignore) { }
 	}
 }(jQuery));
 }));
