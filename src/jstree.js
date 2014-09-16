@@ -1385,7 +1385,7 @@
 							}
 							m[tmp.id] = tmp;
 							for(i = 0, j = tmp.children.length; i < j; i++) {
-								c = parse_flat(m[tmp.children[i]], tmp.id, ps);
+								c = parse_flat(tmp.children[i], tmp.id, ps);
 								e = m[c];
 								tmp.children_d.push(c);
 								if(e.children_d.length) {
