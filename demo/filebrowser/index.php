@@ -216,7 +216,7 @@ if(isset($_GET['operation'])) {
 				throw new Exception('Unsupported operation: ' . $_GET['operation']);
 				break;
 		}
-		header('Content-Type: application/json; charset=utf8');
+		header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($rslt);
 	}
 	catch (Exception $e) {
