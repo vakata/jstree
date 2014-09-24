@@ -450,7 +450,7 @@
 					vakata_context.element
 						.css({ "left" : x, "top" : y })
 						.show()
-						.find('a:eq(0)').focus().parent().addClass("vakata-context-hover");
+						.find('a').first().focus().parent().addClass("vakata-context-hover");
 					vakata_context.is_visible = true;
 					/**
 					 * triggered on the document when the contextmenu is shown
@@ -537,7 +537,7 @@
 								break;
 							case 37:
 								if(vakata_context.is_visible) {
-									vakata_context.element.find(".vakata-context-hover").last().parents("li:eq(0)").find("ul").hide().find(".vakata-context-hover").removeClass("vakata-context-hover").end().end().children('a').focus();
+									vakata_context.element.find(".vakata-context-hover").last().closest("li").first().find("ul").hide().find(".vakata-context-hover").removeClass("vakata-context-hover").end().end().children('a').focus();
 									e.stopImmediatePropagation();
 									e.preventDefault();
 								}

@@ -58,17 +58,17 @@
 				.on("contextmenu.jstree", ".jstree-wholerow", $.proxy(function (e) {
 						e.preventDefault();
 						var tmp = $.Event('contextmenu', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey, pageX : e.pageX, pageY : e.pageY });
-						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor:eq(0)").trigger(tmp);
+						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor").first().trigger(tmp);
 					}, this))
 				.on("click.jstree", ".jstree-wholerow", function (e) {
 						e.stopImmediatePropagation();
 						var tmp = $.Event('click', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey });
-						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor:eq(0)").trigger(tmp).focus();
+						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor").first().trigger(tmp).focus();
 					})
 				.on("click.jstree", ".jstree-leaf > .jstree-ocl", $.proxy(function (e) {
 						e.stopImmediatePropagation();
 						var tmp = $.Event('click', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey });
-						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor:eq(0)").trigger(tmp).focus();
+						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor").first().trigger(tmp).focus();
 					}, this))
 				.on("mouseover.jstree", ".jstree-wholerow, .jstree-icon", $.proxy(function (e) {
 						e.stopImmediatePropagation();

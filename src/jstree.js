@@ -507,7 +507,7 @@
 				})
 				.remove();
 			this.element.html("<"+"ul class='jstree-container-ul jstree-children'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
-			this._data.core.li_height = this.get_container_ul().children("li:eq(0)").height() || 24;
+			this._data.core.li_height = this.get_container_ul().children("li").first().height() || 24;
 			/**
 			 * triggered after the loading text is shown and before loading starts
 			 * @event
@@ -651,7 +651,7 @@
 								 */
 								this.trigger("loaded");
 							}
-							if(!this._data.core.ready && !this.get_container_ul().find('.jstree-loading:eq(0)').length) {
+							if(!this._data.core.ready && !this.get_container_ul().find('.jstree-loading').length) {
 								this._data.core.ready = true;
 								if(this._data.core.selected.length) {
 									if(this.settings.core.expand_selected_onload) {
@@ -746,7 +746,7 @@
 		 * @return {jQuery}
 		 */
 		get_container_ul : function () {
-			return this.element.children(".jstree-children:eq(0)");
+			return this.element.children(".jstree-children").first();
 		},
 		/**
 		 * gets string replacements (localization). Used internally.
@@ -899,7 +899,7 @@
 			if(tmp !== null) {
 				return $(tmp);
 			}
-			return obj.parentsUntil(".jstree",".jstree-node").next(".jstree-node:visible").eq(0);
+			return obj.parentsUntil(".jstree",".jstree-node").next(".jstree-node:visible").first();
 		},
 		/**
 		 * get the previous visible node that is above the `obj` node. If `strict` is set to `true` only sibling nodes are returned.
@@ -935,7 +935,7 @@
 			if(tmp !== null) {
 				obj = $(tmp);
 				while(obj.hasClass("jstree-open")) {
-					obj = obj.children(".jstree-children:eq(0)").children(".jstree-node:visible:last");
+					obj = obj.children(".jstree-children").first().children(".jstree-node:visible:last");
 				}
 				return obj;
 			}
@@ -1705,7 +1705,7 @@
 					data.id = v.toString();
 				}
 			});
-			tmp = d.children('a').eq(0);
+			tmp = d.children('a').first();
 			if(tmp.length) {
 				tmp = $.vakata.attributes(tmp, true);
 				$.each(tmp, function (i, v) {
@@ -1715,7 +1715,7 @@
 					}
 				});
 			}
-			tmp = d.children("a:eq(0)").length ? d.children("a:eq(0)").clone() : d.clone();
+			tmp = d.children("a").first().length ? d.children("a").first().clone() : d.clone();
 			tmp.children("ins, i, ul").remove();
 			tmp = tmp.html();
 			tmp = $('<div />').html(tmp);

@@ -115,7 +115,7 @@
 					marker.attr('class', 'jstree-' + ins.get_theme() + ( ins.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ));
 					data.helper
 						.children().attr('class', 'jstree-' + ins.get_theme() + ' jstree-' + ins.get_theme() + '-' + ins.get_theme_variant() + ' ' + ( ins.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ))
-						.find('.jstree-copy:eq(0)')[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? 'show' : 'hide' ]();
+						.find('.jstree-copy').first()[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? 'show' : 'hide' ]();
 
 
 					// if are hovering the container itself add a new root node
@@ -128,7 +128,7 @@
 						if(ok) {
 							lastmv = { 'ins' : ins, 'par' : '#', 'pos' : 'last' };
 							marker.hide();
-							data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');
+							data.helper.find('.jstree-icon').first().removeClass('jstree-er').addClass('jstree-ok');
 							return;
 						}
 					}
@@ -198,7 +198,7 @@
 									}
 									lastmv = { 'ins' : ins, 'par' : p, 'pos' : v === 'i' && ip === 'last' && i === 0 && !ins.is_loaded(tm) ? 'last' : i };
 									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
-									data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-er').addClass('jstree-ok');
+									data.helper.find('.jstree-icon').first().removeClass('jstree-er').addClass('jstree-ok');
 									laster = {};
 									o = true;
 									return false;
@@ -216,7 +216,7 @@
 				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide();
 				lastmv = false;
-				data.helper.find('.jstree-icon:eq(0)').removeClass('jstree-ok').addClass('jstree-er');
+				data.helper.find('.jstree-icon').first().removeClass('jstree-ok').addClass('jstree-er');
 			})
 			.on('dnd_stop.vakata.jstree', function (e, data) {
 				if(opento) { clearTimeout(opento); }
@@ -250,7 +250,7 @@
 			.on('keyup.jstree keydown.jstree', function (e, data) {
 				data = $.vakata.dnd._get();
 				if(data && data.data && data.data.jstree) {
-					data.helper.find('.jstree-copy:eq(0)')[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
+					data.helper.find('.jstree-copy').first()[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
 				}
 			});
 	});
