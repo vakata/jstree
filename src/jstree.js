@@ -522,6 +522,13 @@
 		 * @param  {Boolean} keep_html if not set to `true` the container will be emptied, otherwise the current DOM elements will be kept intact
 		 */
 		destroy : function (keep_html) {
+			if(this._wrk) {
+				try {
+					window.URL.revokeObjectURL(this._wrk);
+					this._wrk = null;
+				}
+				catch (ignore) { }
+			}
 			if(!keep_html) { this.element.empty(); }
 			this.element.unbind("destroyed", this.teardown);
 			this.teardown();
@@ -1618,6 +1625,7 @@
 						w = new window.Worker(this._wrk);
 						w.onmessage = $.proxy(function (e) {
 							rslt.call(this, e.data, true);
+							try { w.terminate(); w = null; } catch(ignore) { }
 							if(this._data.core.worker_queue.length) {
 								this._append_json_data.apply(this, this._data.core.worker_queue.shift());
 							}
