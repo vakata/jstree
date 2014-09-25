@@ -166,7 +166,7 @@
 						.done($.proxy(function (d) {
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
-								this.search(str, true);
+								this.search(str, true, show_only_matches);
 							}, true);
 						}, this));
 				}
