@@ -5937,7 +5937,8 @@
 		 */
 		case_sensitive : false,
 		/**
-		 * Indicates if the tree should be filtered to show only matching nodes (keep in mind this can be a heavy on large trees in old browsers). Default is `false`.
+		 * Indicates if the tree should be filtered (by default) to show only matching nodes (keep in mind this can be a heavy on large trees in old browsers). 
+		 * This setting can be changed at runtime when calling the search method. Default is `false`.
 		 * @name $.jstree.defaults.search.show_only_matches
 		 * @plugin search
 		 */
@@ -5971,51 +5972,53 @@
 			this._data.search.dom = $();
 			this._data.search.res = [];
 			this._data.search.opn = [];
+			this._data.search.som = false;
 
-			this.element.on('before_open.jstree', $.proxy(function (e, data) {
-				var i, j, f, r = this._data.search.res, s = [], o = $();
-				if(r && r.length) {
-					this._data.search.dom = $(this.element[0].querySelectorAll('#' + $.map(r, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #')));
-					this._data.search.dom.children(".jstree-anchor").addClass('jstree-search');
-					if(this.settings.search.show_only_matches && this._data.search.res.length) {
-						for(i = 0, j = r.length; i < j; i++) {
-							s = s.concat(this.get_node(r[i]).parents);
-						}
-						s = $.vakata.array_remove_item($.vakata.array_unique(s),'#');
-						o = s.length ? $(this.element[0].querySelectorAll('#' + $.map(s, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #'))) : $();
+			this.element
+				.on('before_open.jstree', $.proxy(function (e, data) {
+						var i, j, f, r = this._data.search.res, s = [], o = $();
+						if(r && r.length) {
+							this._data.search.dom = $(this.element[0].querySelectorAll('#' + $.map(r, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #')));
+							this._data.search.dom.children(".jstree-anchor").addClass('jstree-search');
+							if(this._data.search.som && this._data.search.res.length) {
+								for(i = 0, j = r.length; i < j; i++) {
+									s = s.concat(this.get_node(r[i]).parents);
+								}
+								s = $.vakata.array_remove_item($.vakata.array_unique(s),'#');
+								o = s.length ? $(this.element[0].querySelectorAll('#' + $.map(s, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #'))) : $();
 
-						this.element.find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
-						o = o.add(this._data.search.dom);
-						o.parentsUntil(".jstree").addBack().show()
-							.filter(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
-					}
-				}
-			}, this));
-			if(this.settings.search.show_only_matches) {
-				this.element
-					.on("search.jstree", function (e, data) {
-						if(data.nodes.length) {
-							$(this).find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
-							data.nodes.parentsUntil(".jstree").addBack().show()
-								.filter(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
+								this.element.find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+								o = o.add(this._data.search.dom);
+								o.parentsUntil(".jstree").addBack().show()
+									.filter(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
+							}
 						}
-					})
-					.on("clear_search.jstree", function (e, data) {
-						if(data.nodes.length) {
-							$(this).find(".jstree-node").css("display","").filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+					}, this))
+				.on("search.jstree", $.proxy(function (e, data) {
+						if(this._data.search.som) {
+							if(data.nodes.length) {
+								this.element.find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+								data.nodes.parentsUntil(".jstree").addBack().show()
+									.filter(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
+							}
 						}
-					});
-			}
+					}, this))
+				.on("clear_search.jstree", $.proxy(function (e, data) {
+						if(this._data.search.som && data.nodes.length) {
+							this.element.find(".jstree-node").css("display","").filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+						}
+					}, this));
 		};
 		/**
 		 * used to search the tree nodes for a given string
 		 * @name search(str [, skip_async])
 		 * @param {String} str the search string
 		 * @param {Boolean} skip_async if set to true server will not be queried even if configured
+		 * @param {Boolean} show_only_matches if set to true only matching nodes will be shown (keep in mind this can be very slow on large trees or old browsers)
 		 * @plugin search
 		 * @trigger search.jstree
 		 */
-		this.search = function (str, skip_async) {
+		this.search = function (str, skip_async, show_only_matches) {
 			if(str === false || $.trim(str.toString()) === "") {
 				return this.clear_search();
 			}
@@ -6028,12 +6031,15 @@
 			if(this._data.search.res.length) {
 				this.clear_search();
 			}
+			if(show_only_matches === undefined) {
+				show_only_matches = s.show_only_matches;
+			}
 			if(!skip_async && a !== false) {
 				if($.isFunction(a)) {
 					return a.call(this, str, $.proxy(function (d) {
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
-								this.search(str, true);
+								this.search(str, true, show_only_matches);
 							}, true);
 						}, this));
 				}
@@ -6049,7 +6055,7 @@
 						.done($.proxy(function (d) {
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
-								this.search(str, true);
+								this.search(str, true, show_only_matches);
 							}, true);
 						}, this));
 				}
@@ -6058,6 +6064,7 @@
 			this._data.search.dom = $();
 			this._data.search.res = [];
 			this._data.search.opn = [];
+			this._data.search.som = show_only_matches;
 
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
 
@@ -6083,7 +6090,7 @@
 			 * @param {Array} res a collection of objects represeing the matching nodes
 			 * @plugin search
 			 */
-			this.trigger('search', { nodes : this._data.search.dom, str : str, res : this._data.search.res });
+			this.trigger('search', { nodes : this._data.search.dom, str : str, res : this._data.search.res, show_only_matches : show_only_matches });
 		};
 		/**
 		 * used to clear the last search (removes classes and shows all nodes if filtering is on)
