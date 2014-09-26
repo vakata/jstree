@@ -2035,8 +2035,9 @@
 		 * @param {mixed} node the node to redraw
 		 * @param {Boolean} deep should child nodes be redrawn too
 		 * @param {Boolean} is_callback is this a recursion call
+		 * @param {Boolean} force_render should children of closed parents be drawn anyway
 		 */
-		redraw_node : function (node, deep, is_callback) {
+		redraw_node : function (node, deep, is_callback, force_render) {
 			var obj = this.get_node(node),
 				par = false,
 				ind = false,
@@ -2154,7 +2155,7 @@
 				node.childNodes[1].innerHTML += obj.text;
 			}
 
-			if(deep && obj.children.length && obj.state.opened && obj.state.loaded) {
+			if(deep && obj.children.length && (obj.state.opened || force_render) && obj.state.loaded) {
 				k = d.createElement('UL');
 				k.setAttribute('role', 'group');
 				k.className = 'jstree-children';
@@ -2246,8 +2247,7 @@
 				t = this;
 				if(d.length) {
 					if(obj.children.length && !this._firstChild(d.children('.jstree-children')[0])) {
-						obj.state.opened = true;
-						this.redraw_node(obj, true);
+						this.redraw_node(obj, true, false, true);
 						d = this.get_node(obj, true);
 					}
 					if(!animation) {
