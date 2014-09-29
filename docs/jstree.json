@@ -4681,6 +4681,46 @@
 		"tags": [
 			{
 				"type": "name",
+				"string": "clear_buffer()"
+			},
+			{
+				"type": "trigger",
+				"string": "clear_buffer.jstree"
+			}
+		],
+		"description": {
+			"full": "<p>clear the buffer of previously copied or cut nodes</p>",
+			"summary": "<p>clear the buffer of previously copied or cut nodes</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "clear_buffer : function () {\n\t\t\tccp_node = false;\n\t\t\tccp_mode = false;\n\t\t\tccp_inst = false;"
+	},
+	{
+		"tags": [
+			{
+				"type": "event",
+				"string": ""
+			},
+			{
+				"type": "name",
+				"string": "clear_buffer.jstree"
+			}
+		],
+		"description": {
+			"full": "<p>triggered when the copy / cut buffer is cleared</p>",
+			"summary": "<p>triggered when the copy / cut buffer is cleared</p>",
+			"body": ""
+		},
+		"isPrivate": false,
+		"ignore": false,
+		"code": "this.trigger('clear_buffer');\n\t\t},"
+	},
+	{
+		"tags": [
+			{
+				"type": "name",
 				"string": "edit(obj [, default_text])"
 			},
 			{

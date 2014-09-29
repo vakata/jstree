@@ -3801,6 +3801,22 @@
 			ccp_inst = false;
 		},
 		/**
+		 * clear the buffer of previously copied or cut nodes
+		 * @name clear_buffer()
+		 * @trigger clear_buffer.jstree
+		 */
+		clear_buffer : function () {
+			ccp_node = false;
+			ccp_mode = false;
+			ccp_inst = false;
+			/**
+			 * triggered when the copy / cut buffer is cleared
+			 * @event
+			 * @name clear_buffer.jstree
+			 */
+			this.trigger('clear_buffer');
+		},
+		/**
 		 * put a node in edit mode (input field to rename the node)
 		 * @name edit(obj [, default_text])
 		 * @param  {mixed} obj
