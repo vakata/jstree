@@ -31,12 +31,11 @@
 (function ($, undefined) {
 	"use strict";
 	$.jstree.defaults.conditionalselect = function () { return true; };
-
 	$.jstree.plugins.conditionalselect = function (options, parent) {
 		// own function
-		this.select_node = function (obj, supress_event, prevent_open) {
+		this.activate_node = function (obj, e) {
 			if(this.settings.conditionalselect.call(this, this.get_node(obj))) {
-				parent.select_node.call(this, obj, supress_event, prevent_open);
+				parent.activate_node.call(this, obj, e);
 			}
 		};
 	};
@@ -63,8 +62,8 @@
 						this._data.realcheckboxes.uto = setTimeout($.proxy(this._realcheckboxes, this), 50);
 					}, this));
 		};
-		this.redraw_node = function(obj, deep, callback) {
-			obj = parent.redraw_node.call(this, obj, deep, callback);
+		this.redraw_node = function(obj, deep, callback, force_draw) {
+			obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
 			if(obj) {
 				var i, j, tmp = null, chk = inp.cloneNode(true);
 				for(i = 0, j = obj.childNodes.length; i < j; i++) {
@@ -164,8 +163,8 @@
 			}
 			parent.teardown.call(this);
 		};
-		this.redraw_node = function(obj, deep, callback) {
-			obj = parent.redraw_node.call(this, obj, deep, callback);
+		this.redraw_node = function(obj, deep, callback, force_draw) {
+			obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
 			if(obj) {
 				var tmp = img.cloneNode(true);
 				obj.insertBefore(tmp, obj.childNodes[2]);
@@ -194,9 +193,9 @@
 			var ind = $.inArray(obj.id, this.get_node(obj.parent).children) + 1;
 			return obj.parent === '#' ? ind : this.get_number(obj.parent) + '.' + ind;
 		};
-		this.redraw_node = function(obj, deep, callback) {
+		this.redraw_node = function(obj, deep, callback, force_draw) {
 			var i, j, tmp = null, elm = null, org = this.get_number(obj);
-			obj = parent.redraw_node.call(this, obj, deep, callback);
+			obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
 			if(obj) {
 				for(i = 0, j = obj.childNodes.length; i < j; i++) {
 					if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {

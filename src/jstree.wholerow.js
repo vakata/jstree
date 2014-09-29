@@ -86,7 +86,7 @@
 			parent.teardown.call(this);
 		};
 		this.redraw_node = function(obj, deep, callback, force_render) {
-			obj = parent.redraw_node.call(this, obj, deep, callback, force_render);
+			obj = parent.redraw_node.apply(this, arguments);
 			if(obj) {
 				var tmp = div.cloneNode(true);
 				//tmp.style.height = this._data.core.li_height + 'px';

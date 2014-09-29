@@ -417,7 +417,7 @@
 			}
 		};
 		this.redraw_node = function(obj, deep, is_callback, force_render) {
-			obj = parent.redraw_node.call(this, obj, deep, is_callback, force_render);
+			obj = parent.redraw_node.apply(this, arguments);
 			if(obj) {
 				var i, j, tmp = null;
 				for(i = 0, j = obj.childNodes.length; i < j; i++) {
