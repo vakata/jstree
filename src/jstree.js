@@ -1749,11 +1749,11 @@
 					c = this._parse_model_from_html($(v), data.id, ps);
 					e = this._model.data[c];
 					data.children.push(c);
+					data.children_d.push(c);
 					if(e.children_d.length) {
 						data.children_d = data.children_d.concat(e.children_d);
 					}
 				}, this));
-				data.children_d = data.children_d.concat(data.children);
 			}
 			else {
 				if(d.hasClass('jstree-closed')) {
