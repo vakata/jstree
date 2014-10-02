@@ -2542,7 +2542,7 @@
 		 * @name activate_node(obj, e)
 		 * @param {mixed} obj the node
 		 * @param {Object} e the related event
-		 * @trigger activate_node.jstree
+		 * @trigger activate_node.jstree, changed.jstree
 		 */
 		activate_node : function (obj, e) {
 			if(this.is_disabled(obj)) {
@@ -2580,12 +2580,13 @@
 							c = !c;
 						}
 						if(c || p[i] === o || p[i] === l) {
-							this.select_node(p[i], false, false, e);
+							this.select_node(p[i], true, false, e);
 						}
 						else {
-							this.deselect_node(p[i], false, e);
+							this.deselect_node(p[i], true, e);
 						}
 					}
+					this.trigger('changed', { 'action' : 'select_node', 'node' : this.get_node(obj), 'selected' : this._data.core.selected, 'event' : e });
 				}
 				else {
 					if(!this.is_selected(obj)) {
