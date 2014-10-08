@@ -633,7 +633,6 @@ namespace vakata\database
 							$ref[$i+1] =& $data[$i];
 							break;
 						case "array":
-							// TODO: work around IN statements?
 							$data[$i] = implode(',',$v);
 							$ref[0] .= 's';
 							$ref[$i+1] =& $data[$i];
@@ -932,7 +931,6 @@ namespace vakata\database
 						oci_bind_by_name($sql, 'f'.$i, $data[$i], SQLT_INT);
 						break;
 					case "array":
-						// TODO: work around IN statements?
 						$data[$i] = implode(',',$v);
 						oci_bind_by_name($sql, 'f'.$i, $data[$i]);
 						break;
@@ -952,7 +950,7 @@ namespace vakata\database
 			}
 			$this->aff = oci_num_rows($sql);
 
-			/* TODO: get iid
+			/* TO DO: get iid
 			if(!$seqname) { return $this->error('INSERT_ID not supported with no sequence.'); }
 			$stm = oci_parse($this->link, 'SELECT '.strtoupper(str_replace("'",'',$seqname)).'.CURRVAL FROM DUAL');
 			oci_execute($stm, $sql);
@@ -1049,7 +1047,6 @@ namespace vakata\database
 						$data[$i] = (int)$v;
 						break;
 					case "array":
-						// TODO: work around IN statements?
 						$data[$i] = implode(',',$v);
 						break;
 					case "object":

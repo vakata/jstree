@@ -2019,6 +2019,7 @@
 		 * @param {Boolean} full if set to `true` all nodes are redrawn.
 		 */
 		redraw : function (full) {
+			window.console.log('*');
 			if(full) {
 				this._model.force_full_redraw = true;
 			}
@@ -3457,9 +3458,10 @@
 		 * @param  {mixed} pos the position to insert at (besides integer values, "first" and "last" are supported, as well as "before" and "after"), defaults to integer `0`
 		 * @param  {function} callback a function to call once the move is completed, receives 3 arguments - the node, the new parent and the position
 		 * @param  {Boolean} internal parameter indicating if the parent node has been loaded
+		 * @param  {Boolean} internal parameter indicating if the tree should be redrawn
 		 * @trigger move_node.jstree
 		 */
-		move_node : function (obj, par, pos, callback, is_loaded) {
+		move_node : function (obj, par, pos, callback, is_loaded, skip_redraw) {
 			var t1, t2, old_par, old_pos, new_par, old_ins, is_multi, dpc, tmp, i, j, k, l, p;
 
 			par = this.get_node(par);
@@ -3470,10 +3472,14 @@
 			}
 
 			if($.isArray(obj)) {
-				obj = obj.reverse().slice();
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-					this.move_node(obj[t1], par, pos, callback, is_loaded);
+					if(this.move_node(obj[t1], par, pos, callback, is_loaded, true)) {
+						par = obj[t1];
+						pos = "after";
+					}
 				}
+				this.redraw();
 				return true;
 			}
 			obj = obj && obj.id ? obj : this.get_node(obj);
@@ -3493,7 +3499,7 @@
 				return false;
 			}
 			//var m = this._model.data;
-			if(new_par.id === '#') {
+			if(par.id === '#') {
 				if(pos === "before") { pos = "first"; }
 				if(pos === "after") { pos = "last"; }
 			}
@@ -3579,9 +3585,16 @@
 					Array.prototype.push.apply(this._model.data[obj.children_d[i]].parents, tmp);
 				}
 
-				this._node_changed(old_par);
-				this._node_changed(new_par.id);
-				this.redraw(old_par === '#' || new_par.id === '#');
+				if(old_par === '#' || new_par.id === '#') {
+					this._model.force_full_redraw = true;
+				}
+				if(!this._model.force_full_redraw) {
+					this._node_changed(old_par);
+					this._node_changed(new_par.id);
+				}
+				if(!skip_redraw) {
+					this.redraw();
+				}
 			}
 			if(callback) { callback.call(this, obj, new_par, pos); }
 			/**
@@ -3608,9 +3621,10 @@
 		 * @param  {mixed} pos the position to insert at (besides integer values, "first" and "last" are supported, as well as "before" and "after"), defaults to integer `0`
 		 * @param  {function} callback a function to call once the move is completed, receives 3 arguments - the node, the new parent and the position
 		 * @param  {Boolean} internal parameter indicating if the parent node has been loaded
+		 * @param  {Boolean} internal parameter indicating if the tree should be redrawn
 		 * @trigger model.jstree copy_node.jstree
 		 */
-		copy_node : function (obj, par, pos, callback, is_loaded) {
+		copy_node : function (obj, par, pos, callback, is_loaded, skip_redraw) {
 			var t1, t2, dpc, tmp, i, j, node, old_par, new_par, old_ins, is_multi;
 
 			par = this.get_node(par);
@@ -3621,10 +3635,15 @@
 			}
 
 			if($.isArray(obj)) {
-				obj = obj.reverse().slice();
+				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-					this.copy_node(obj[t1], par, pos, callback, is_loaded);
+					tmp = this.copy_node(obj[t1], par, pos, callback, is_loaded, true);
+					if(tmp) {
+						par = tmp;
+						pos = "after";
+					}
 				}
+				this.redraw();
 				return true;
 			}
 			obj = obj && obj.id ? obj : this.get_node(obj);
@@ -3634,7 +3653,7 @@
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
 			old_ins = obj.instance ? obj.instance : (this._model.data[obj.id] ? this : $.jstree.reference(obj.id));
 			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
-			if(new_par.id === '#') {
+			if(par.id === '#') {
 				if(pos === "before") { pos = "first"; }
 				if(pos === "after") { pos = "last"; }
 			}
@@ -3686,8 +3705,15 @@
 			new_par.children_d.push(tmp.id);
 			new_par.children_d = new_par.children_d.concat(tmp.children_d);
 
-			this._node_changed(new_par.id);
-			this.redraw(new_par.id === '#');
+			if(new_par.id === '#') {
+				this._model.force_full_redraw = true;
+			}
+			if(!this._model.force_full_redraw) {
+				this._node_changed(new_par.id);
+			}
+			if(!skip_redraw) {
+				this.redraw(new_par.id === '#');
+			}
 			if(callback) { callback.call(this, tmp, new_par, pos); }
 			/**
 			 * triggered when a node is copied
@@ -4838,7 +4864,6 @@
  *
  * Shows a context menu when a node is right-clicked.
  */
-// TODO: move logic outside of function + check multiple move
 
 	/**
 	 * stores all defaults for the contextmenu plugin
@@ -5469,7 +5494,6 @@
 		inside_pos : 0
 	};
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
-	// TODO: drop somewhere else - maybe demo only?
 	$.jstree.plugins.dnd = function (options, parent) {
 		this.bind = function () {
 			parent.bind.call(this);
@@ -5576,11 +5600,6 @@
 										i = ref.parent().index() + 1;
 										break;
 								}
-								/*!
-								// TODO: moving inside, but the node is not yet loaded?
-								// the check will work anyway, as when moving the node will be loaded first and checked again
-								if(v === 'i' && !ins.is_loaded(p)) { }
-								*/
 								ok = true;
 								for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
 									op = data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? "copy_node" : "move_node";

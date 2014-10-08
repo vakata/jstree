@@ -3,7 +3,6 @@
  *
  * Shows a context menu when a node is right-clicked.
  */
-// TODO: move logic outside of function + check multiple move
 /*globals jQuery, define, exports, require, document */
 (function (factory) {
 	"use strict";

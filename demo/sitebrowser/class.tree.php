@@ -1,5 +1,5 @@
 <?php
-// TODO: better exceptions, use params
+// TO DO: better exceptions, use params
 class tree
 {
 	protected $db = null;

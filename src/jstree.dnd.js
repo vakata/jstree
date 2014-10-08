@@ -64,7 +64,6 @@
 		inside_pos : 0
 	};
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
-	// TODO: drop somewhere else - maybe demo only?
 	$.jstree.plugins.dnd = function (options, parent) {
 		this.bind = function () {
 			parent.bind.call(this);
@@ -171,11 +170,6 @@
 										i = ref.parent().index() + 1;
 										break;
 								}
-								/*!
-								// TODO: moving inside, but the node is not yet loaded?
-								// the check will work anyway, as when moving the node will be loaded first and checked again
-								if(v === 'i' && !ins.is_loaded(p)) { }
-								*/
 								ok = true;
 								for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
 									op = data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? "copy_node" : "move_node";
