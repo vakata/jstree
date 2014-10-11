@@ -90,13 +90,16 @@ module.exports = function(grunt) {
           compress : true
         },
         files: {
-          "dist/themes/default/style.min.css" : "src/themes/default/style.less"
+          "dist/themes/default/style.min.css" : "src/themes/default/style.less",
+          "dist/themes/default-dark/style.min.css" : "src/themes/default-dark/style.less"
         }
       },
       development: {
         files: {
           "src/themes/default/style.css" : "src/themes/default/style.less",
-          "dist/themes/default/style.css" : "src/themes/default/style.less"
+          "dist/themes/default/style.css" : "src/themes/default/style.less",
+          "src/themes/default-dark/style.css" : "src/themes/default-dark/style.less",
+          "dist/themes/default-dark/style.css" : "src/themes/default-dark/style.less"
         }
       }
     },
@@ -127,6 +130,11 @@ module.exports = function(grunt) {
           cwd:  'src/themes/default/',    // Src matches are relative to this path
           src: ['**/*.{png,jpg,gif}'],   // Actual patterns to match
           dest: 'dist/themes/default/'   // Destination path prefix
+        },{
+          expand: true,                  // Enable dynamic expansion
+          cwd:  'src/themes/default-dark/',    // Src matches are relative to this path
+          src: ['**/*.{png,jpg,gif}'],   // Actual patterns to match
+          dest: 'dist/themes/default-dark/'   // Destination path prefix
         }]
       }
     },
