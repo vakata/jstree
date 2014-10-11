@@ -6,3 +6,6 @@
 /nuget
 /demo/filebrowser/data/root
 /npm.txt
+/libs
+/docs/assets/dist/libs
+/dist/libs
