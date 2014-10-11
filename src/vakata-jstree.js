@@ -1,6 +1,6 @@
 (function ($) {
 	"use strict";
-	if(document.registerElement) {
+	if(document.registerElement && Object && Object.create) {
 		var proto = Object.create(HTMLElement.prototype);
 		proto.createdCallback = function () {
 			var c = { core : {}, plugins : [] }, i;

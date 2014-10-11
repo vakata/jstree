@@ -22,7 +22,7 @@
 
 	var div = document.createElement('DIV');
 	div.setAttribute('unselectable','on');
-	div.setAttribute('aria-hidden',true);
+	div.setAttribute('role','presentation');
 	div.className = 'jstree-wholerow';
 	div.innerHTML = '&#160;';
 	$.jstree.plugins.wholerow = function (options, parent) {
