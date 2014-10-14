@@ -264,7 +264,7 @@ The initial server response is:
 
 [view result](http://jsfiddle.net/vakata/2kwkh2uL/5/)
 
-Now to focus on what is different. First off the `"data"` config option of the data object. If you check with jstree, it is supposed to be a string or an object. But jstree makes it possible to set a function.
+Now to focus on what is different. First off the `"data"` config option of the data object. If you check with jQuery, it is supposed to be a string or an object. But jstree makes it possible to set a function.
 
 Each time jstree needs to make an AJAX call this function will be called and will receive a single parameter - the node that is being loaded. The return value of this function will be used as the actual `"data"` of the AJAX call. To understand better open up the demo and see the requests go off in the console.
 
