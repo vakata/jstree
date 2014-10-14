@@ -1,4 +1,4 @@
-/*globals jQuery, define, exports, require, window, document */
+/*globals jQuery, define, exports, require, window, document, postMessage */
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {

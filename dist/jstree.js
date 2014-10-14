@@ -1,4 +1,4 @@
-/*globals jQuery, define, exports, require, window, document */
+/*globals jQuery, define, exports, require, window, document, postMessage */
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
@@ -1583,7 +1583,12 @@
 							'add' : add
 						};
 					}
-					return rslt;
+					if(typeof window === 'undefined' || typeof window.document === 'undefined') {
+						postMessage(rslt);
+					}
+					else {
+						return rslt;
+					}
 				},
 				rslt = function (rslt, worker) {
 					this._cnt = rslt.cnt;
@@ -1631,7 +1636,7 @@
 					if(this._wrk === null) {
 						this._wrk = window.URL.createObjectURL(
 							new window.Blob(
-								['self.onmessage = ' + func.toString().replace(/return ([^;}]+)[\s;}]+$/, 'postMessage($1);}')],
+								['self.onmessage = ' + func.toString()],
 								{type:"text/javascript"}
 							)
 						);
