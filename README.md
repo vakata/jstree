@@ -409,7 +409,9 @@ We already covered the config object in general (when we specified inline & AJAX
 $("#tree").jstree({ /* config object goes here */ });
 ```
 
-Each key in the config object corresponds to a plugin, and the value of that key is the configuration for that plugin. There are also two special keys `"core"` and `"plugins"` - `"core"` stores the core configuration options, and `"plugins"` is an array of plugin names (strings) you want active on the instance (and there is no need to specify `"core"`). 
+Each key in the config object corresponds to a plugin, and the value of that key is the configuration for that plugin. There are also two special keys `"core"` and `"plugins"`:
+ * `"core"` stores the core configuration options
+ * `"plugins"` is an array of plugin names (strings) you want active on the instance 
 
 When configuring you only need to set values that you want to be different from the defaults.
 
