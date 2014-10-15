@@ -280,7 +280,7 @@ if(isset($_GET['operation'])) {
 			</div>
 		</div>
 
-		<script src="./../../dist/libs/jquery.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 		<script src="./../../dist/jstree.min.js"></script>
 		<script>
 		$(function () {
