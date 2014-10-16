@@ -219,6 +219,7 @@
 		var is_method	= (typeof arg === 'string'),
 			args		= Array.prototype.slice.call(arguments, 1),
 			result		= null;
+		if(arg === true && !this.length) { return false; }
 		this.each(function () {
 			// get the instance (if there is one) and method (if it exists)
 			var instance = $.jstree.reference(this),
