@@ -655,7 +655,9 @@
 						if(data.status) {
 							if(data.node.id === '#' && !this._data.core.loaded) {
 								this._data.core.loaded = true;
-								this.element.attr('aria-activedescendant',this._firstChild(this.get_container_ul()[0]).id);
+								if(this._firstChild(this.get_container_ul()[0])) {
+									this.element.attr('aria-activedescendant',this._firstChild(this.get_container_ul()[0]).id);
+								}
 								/**
 								 * triggered after the root node is loaded for the first time
 								 * @event
@@ -3074,7 +3076,9 @@
 			this.load_node('#', function (o, s) {
 				if(s) {
 					this.get_container_ul()[0].className = c;
-					this.element.attr('aria-activedescendant',this._firstChild(this.get_container_ul()[0]).id);
+					if(this._firstChild(this.get_container_ul()[0])) {
+						this.element.attr('aria-activedescendant',this._firstChild(this.get_container_ul()[0]).id);
+					}
 					this.set_state($.extend(true, {}, this._data.core.state), function () {
 						/**
 						 * triggered when a `refresh` call completes
