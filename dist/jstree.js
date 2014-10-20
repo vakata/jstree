@@ -6587,6 +6587,9 @@
 						if(tmp[i].li_attr && tmp[i].li_attr.id) {
 							delete tmp[i].li_attr.id;
 						}
+						if(tmp[i].a_attr && tmp[i].a_attr.id) {
+							delete tmp[i].a_attr.id;
+						}
 					}
 				}
 			}
@@ -6608,6 +6611,9 @@
 			delete tmp.id;
 			if(tmp.li_attr && tmp.li_attr.id) {
 				delete tmp.li_attr.id;
+			}
+			if(tmp.a_attr && tmp.a_attr.id) {
+				delete tmp.a_attr.id;
 			}
 			if(tmp.children && $.isArray(tmp.children)) {
 				tmp.children = this._delete_ids(tmp.children);
