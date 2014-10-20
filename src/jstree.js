@@ -3241,6 +3241,9 @@
 				if(tmp.li_attr && tmp.li_attr.id) {
 					delete tmp.li_attr.id;
 				}
+				if(tmp.a_attr && tmp.a_attr.id) {
+					delete tmp.a_attr.id;
+				}
 			}
 			if(options && options.flat && obj.id !== '#') {
 				flat.push(tmp);
