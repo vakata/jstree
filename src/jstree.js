@@ -591,6 +591,10 @@
 				.on('keydown.jstree', '.jstree-anchor', $.proxy(function (e) {
 						if(e.target.tagName === "INPUT") { return true; }
 						var o = null;
+						if(this._data.core.rtl) {
+							if(e.which === 37) { e.which = 39; }
+							else if(e.which === 39) { e.which = 37; }
+						}
 						switch(e.which) {
 							case 13:
 							case 32:

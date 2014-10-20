@@ -591,6 +591,10 @@
 				.on('keydown.jstree', '.jstree-anchor', $.proxy(function (e) {
 						if(e.target.tagName === "INPUT") { return true; }
 						var o = null;
+						if(this._data.core.rtl) {
+							if(e.which === 37) { e.which = 39; }
+							else if(e.which === 39) { e.which = 37; }
+						}
 						switch(e.which) {
 							case 13:
 							case 32:
@@ -6908,6 +6912,7 @@
 				var tmp = div.cloneNode(true);
 				//tmp.style.height = this._data.core.li_height + 'px';
 				if($.inArray(obj.id, this._data.core.selected) !== -1) { tmp.className += ' jstree-wholerow-clicked'; }
+				if(this._data.core.focused && this._data.core.focused === obj.id) { tmp.className += ' jstree-wholerow-hovered'; }
 				obj.insertBefore(tmp, obj.childNodes[0]);
 			}
 			return obj;
