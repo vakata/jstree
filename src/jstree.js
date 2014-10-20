@@ -1146,6 +1146,35 @@
 			}
 		},
 		/**
+		 * loads all unloaded nodes
+		 * @name load_all()
+		 * @trigger load_all.jstree
+		 */
+		load_all : function () {
+			var to_load = [],
+				m = this._model.data;
+			for(var i in m) {
+				if(m.hasOwnProperty(i) && m[i].state && !m[i].state.loaded) {
+					if(!m[i].state.loading) {
+						to_load.push(i);
+					}
+				}
+			}
+			if(to_load.length) {
+				this._load_nodes(to_load, function () {
+					this.load_all();
+				});
+			}
+			else {
+				/**
+				 * triggered after a load_all call completes
+				 * @event
+				 * @name load_all.jstree
+				 */
+				this.trigger('load_all');
+			}
+		},
+		/**
 		 * handles the actual loading of a node. Used only internally.
 		 * @private
 		 * @name _load_node(obj [, callback])
