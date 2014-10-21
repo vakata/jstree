@@ -607,8 +607,8 @@
 									this.close_node(e.currentTarget);
 								}
 								else {
-									o = this.get_prev_dom(e.currentTarget);
-									if(o && o.length) { o.children('.jstree-anchor').focus(); }
+									o = this.get_parent(e.currentTarget);
+									if(o && o.id !== '#') { this.get_node(o, true).children('.jstree-anchor').focus(); }
 								}
 								break;
 							case 38:
@@ -621,9 +621,10 @@
 								if(this.is_closed(e.currentTarget)) {
 									this.open_node(e.currentTarget, function (o) { this.get_node(o, true).children('.jstree-anchor').focus(); });
 								}
-								else {
-									o = this.get_next_dom(e.currentTarget);
-									if(o && o.length) { o.children('.jstree-anchor').focus(); }
+								else if (this.is_open(e.currentTarget)) {
+									console.log(1);
+									o = this.get_node(e.currentTarget, true).children('.jstree-children')[0];
+									if(o) { $(this._firstChild(o)).children('.jstree-anchor').focus(); }
 								}
 								break;
 							case 40:
@@ -1147,22 +1148,30 @@
 		},
 		/**
 		 * loads all unloaded nodes
-		 * @name load_all()
+		 * @name load_all([obj, callback])
+		 * @param {mixed} obj the node to load recursively, omit to load all nodes in the tree
+		 * @param {function} callback a function to be executed once loading all the nodes is complete,
 		 * @trigger load_all.jstree
 		 */
-		load_all : function () {
+		load_all : function (obj, callback) {
+			if(!obj) { obj = '#'; }
+			obj = this.get_node(obj);
+			if(!obj) { return false; }
 			var to_load = [],
-				m = this._model.data;
-			for(var i in m) {
-				if(m.hasOwnProperty(i) && m[i].state && !m[i].state.loaded) {
-					if(!m[i].state.loading) {
-						to_load.push(i);
-					}
+				m = this._model.data,
+				c = m[obj.id].children_d,
+				i, j;
+			if(obj.state && !obj.state.loaded) {
+				to_load.push(obj.id);
+			}
+			for(i = 0, j = c.length; i < j; i++) {
+				if(m[c[i]] && m[c[i]].state && !m[c[i]].state.loaded) {
+					to_load.push(c[i]);
 				}
 			}
 			if(to_load.length) {
 				this._load_nodes(to_load, function () {
-					this.load_all();
+					this.load_all(obj, callback);
 				});
 			}
 			else {
@@ -1170,8 +1179,10 @@
 				 * triggered after a load_all call completes
 				 * @event
 				 * @name load_all.jstree
+				 * @param {Object} node the recursively loaded node
 				 */
-				this.trigger('load_all');
+				if(callback) { callback.call(this, obj); }
+				this.trigger('load_all', { "node" : obj });
 			}
 		},
 		/**
