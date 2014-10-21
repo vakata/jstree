@@ -60,6 +60,7 @@
 						}
 						if(t.indexOf(word) === 0) {
 							this.hover_node(v);
+							$(v).focus();
 							return false;
 						}
 					}, this));
