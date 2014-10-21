@@ -597,7 +597,7 @@
 						}
 						switch(e.which) {
 							case 13:
-							case 32:
+							//case 32: // aria does not define space
 								e.type = "click";
 								$(e.currentTarget).trigger(e);
 								break;
@@ -622,7 +622,6 @@
 									this.open_node(e.currentTarget, function (o) { this.get_node(o, true).children('.jstree-anchor').focus(); });
 								}
 								else if (this.is_open(e.currentTarget)) {
-									console.log(1);
 									o = this.get_node(e.currentTarget, true).children('.jstree-children')[0];
 									if(o) { $(this._firstChild(o)).children('.jstree-anchor').focus(); }
 								}

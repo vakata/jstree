@@ -597,7 +597,7 @@
 						}
 						switch(e.which) {
 							case 13:
-							case 32:
+							//case 32: // aria does not define space
 								e.type = "click";
 								$(e.currentTarget).trigger(e);
 								break;
