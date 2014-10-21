@@ -53,7 +53,6 @@
 					word = '';
 				}, this.settings.quicksearch.clear_timeout);
 				to2 = setTimeout($.proxy(function () {
-					console.log(word);
 					this.element.find('.jstree-anchor').each($.proxy(function (i, v) {
 						var t = $(v).text();
 						if(!this.settings.quicksearch.case_sensitive) {
