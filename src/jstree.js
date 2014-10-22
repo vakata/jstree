@@ -565,6 +565,8 @@
 		 * @name bind()
 		 */
 		bind : function () {
+			var word = '',
+				tout = null;
 			this.element
 				.on("dblclick.jstree", function () {
 						if(document.selection && document.selection.empty) {
@@ -596,12 +598,17 @@
 							else if(e.which === 39) { e.which = 37; }
 						}
 						switch(e.which) {
-							case 13:
-							//case 32: // aria does not define space
+							case 32: // aria defines space only with Ctrl
+								if(e.ctrlKey) {
+									e.type = "click";
+									$(e.currentTarget).trigger(e);
+								}
+								break;
+							case 13: // enter
 								e.type = "click";
 								$(e.currentTarget).trigger(e);
 								break;
-							case 37:
+							case 37: // right
 								e.preventDefault();
 								if(this.is_open(e.currentTarget)) {
 									this.close_node(e.currentTarget);
@@ -611,12 +618,12 @@
 									if(o && o.id !== '#') { this.get_node(o, true).children('.jstree-anchor').focus(); }
 								}
 								break;
-							case 38:
+							case 38: // up
 								e.preventDefault();
 								o = this.get_prev_dom(e.currentTarget);
 								if(o && o.length) { o.children('.jstree-anchor').focus(); }
 								break;
-							case 39:
+							case 39: // left
 								e.preventDefault();
 								if(this.is_closed(e.currentTarget)) {
 									this.open_node(e.currentTarget, function (o) { this.get_node(o, true).children('.jstree-anchor').focus(); });
@@ -626,33 +633,45 @@
 									if(o) { $(this._firstChild(o)).children('.jstree-anchor').focus(); }
 								}
 								break;
-							case 40:
+							case 40: // down
 								e.preventDefault();
 								o = this.get_next_dom(e.currentTarget);
 								if(o && o.length) { o.children('.jstree-anchor').focus(); }
 								break;
+							case 106: // aria defines * on numpad as open_all - not very common
+								this.open_all();
+								break;
+							case 36: // home
+								e.preventDefault();
+								o = this._firstChild(this.get_container_ul()[0]);
+								if(o) { $(o).children('.jstree-anchor').filter(':visible').focus(); }
+								break;
+							case 35: // end
+								e.preventDefault();
+								this.element.find('.jstree-anchor').filter(':visible').last().focus();
+								break;
+							/*
 							// delete
 							case 46:
 								e.preventDefault();
 								o = this.get_node(e.currentTarget);
 								if(o && o.id && o.id !== '#') {
 									o = this.is_selected(o) ? this.get_selected() : o;
-									// this.delete_node(o);
+									this.delete_node(o);
 								}
 								break;
 							// f2
 							case 113:
 								e.preventDefault();
 								o = this.get_node(e.currentTarget);
-								/*!
 								if(o && o.id && o.id !== '#') {
 									// this.edit(o);
 								}
-								*/
 								break;
 							default:
 								// console.log(e.which);
 								break;
+							*/
 						}
 					}, this))
 				.on("load_node.jstree", $.proxy(function (e, data) {
@@ -691,6 +710,63 @@
 								 */
 								setTimeout($.proxy(function () { this.trigger("ready"); }, this), 0);
 							}
+						}
+					}, this))
+				// quick searching when the tree is focused
+				.on('keypress.jstree', $.proxy(function (e) {
+						if(tout) { clearTimeout(tout); }
+						tout = setTimeout(function () {
+							word = '';
+						}, 500);
+
+						var chr = String.fromCharCode(e.which).toLowerCase(),
+							col = this.element.find('.jstree-anchor').filter(':visible'),
+							ind = col.index(document.activeElement) || 0,
+							end = false;
+						word += chr;
+
+						// match for whole word from current node down (including the current node)
+						if(word.length > 1) {
+							col.slice(ind).each($.proxy(function (i, v) {
+								if($(v).text().toLowerCase().indexOf(word) === 0) {
+									$(v).focus();
+									end = true;
+									return false;
+								}
+							}, this));
+							if(end) { return; }
+
+							// match for whole word from the beginning of the tree
+							col.slice(0, ind).each($.proxy(function (i, v) {
+								if($(v).text().toLowerCase().indexOf(word) === 0) {
+									$(v).focus();
+									end = true;
+									return false;
+								}
+							}, this));
+							if(end) { return; }
+						}
+						// list nodes that start with that letter (only if word consists of a single char)
+						if(new RegExp('^' + chr + '+$').test(word)) {
+							// search for the next node starting with that letter
+							col.slice(ind + 1).each($.proxy(function (i, v) {
+								if($(v).text().toLowerCase().charAt(0) === chr) {
+									$(v).focus();
+									end = true;
+									return false;
+								}
+							}, this));
+							if(end) { return; }
+
+							// search from the beginning
+							col.slice(0, ind + 1).each($.proxy(function (i, v) {
+								if($(v).text().toLowerCase().charAt(0) === chr) {
+									$(v).focus();
+									end = true;
+									return false;
+								}
+							}, this));
+							if(end) { return; }
 						}
 					}, this))
 				// THEME RELATED

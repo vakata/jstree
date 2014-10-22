@@ -27,49 +27,6 @@
 	};
 })(jQuery);
 
-// quick search
-(function ($, undefined) {
-	"use strict";
-	$.jstree.defaults.quicksearch = {
-		search_timeout : 200,
-		clear_timeout : 1000,
-		case_sensitive : false
-	};
-	$.jstree.plugins.quicksearch = function (options, parent) {
-		// own function
-		this.bind = function () {
-			parent.bind.call(this);
-			var word = '',
-				to1 = null,
-				to2 = null;
-			this.element.on('keypress.jstree', $.proxy(function (e) {
-				if(to1) { clearTimeout(to1); }
-				if(to2) { clearTimeout(to2); }
-				word += String.fromCharCode(e.which);
-				if(!this.settings.quicksearch.case_sensitive) {
-					word = word.toLowerCase();
-				}
-				to1 = setTimeout(function () {
-					word = '';
-				}, this.settings.quicksearch.clear_timeout);
-				to2 = setTimeout($.proxy(function () {
-					this.element.find('.jstree-anchor').each($.proxy(function (i, v) {
-						var t = $(v).text();
-						if(!this.settings.quicksearch.case_sensitive) {
-							t = t.toLowerCase();
-						}
-						if(t.indexOf(word) === 0) {
-							this.hover_node(v);
-							$(v).focus();
-							return false;
-						}
-					}, this));
-				}, this), this.settings.quicksearch.search_timeout);
-			}, this));
-		};
-	};
-})(jQuery);
-
 // conditional select
 (function ($, undefined) {
 	"use strict";
