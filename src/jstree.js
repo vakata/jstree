@@ -4224,14 +4224,17 @@
 			}
 			else if(icon === true) {
 				dom.removeClass('jstree-themeicon-custom ' + old).css("background","").removeAttr("rel");
+				if(old === false) { this.show_icon(obj); }
 			}
 			else if(icon.indexOf("/") === -1 && icon.indexOf(".") === -1) {
 				dom.removeClass(old).css("background","");
 				dom.addClass(icon + ' jstree-themeicon-custom').attr("rel",icon);
+				if(old === false) { this.show_icon(obj); }
 			}
 			else {
 				dom.removeClass(old).css("background","");
 				dom.addClass('jstree-themeicon-custom').css("background", "url('" + icon + "') center center no-repeat").attr("rel",icon);
+				if(old === false) { this.show_icon(obj); }
 			}
 			return true;
 		},
