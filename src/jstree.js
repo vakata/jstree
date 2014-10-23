@@ -714,6 +714,7 @@
 					}, this))
 				// quick searching when the tree is focused
 				.on('keypress.jstree', $.proxy(function (e) {
+						if(e.target.tagName === "INPUT") { return true; }
 						if(tout) { clearTimeout(tout); }
 						tout = setTimeout(function () {
 							word = '';
