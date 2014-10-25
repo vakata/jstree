@@ -35,7 +35,8 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-imagemin": "~0.4.0",
     "grunt-contrib-qunit": "~v0.3.0",
-    "grunt-text-replace": "~0.3.11"
+    "grunt-text-replace": "~0.3.11",
+    "grunt-phantomcss-gitdiff": "0.0.7"
   },
   "dependencies": {
     "jquery": ">=1.9.1"

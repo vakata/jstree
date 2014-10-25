@@ -45,7 +45,7 @@ module.exports = function(grunt) {
       }
     },
     qunit: {
-      files: ['test/**/*.html']
+      files: ['test/unit/**/*.html']
     },
     jshint: {
       options: {
@@ -119,6 +119,33 @@ module.exports = function(grunt) {
         }
       },
     },
+    'phantomcss-gitdiff': {
+      options: {
+        baseUrl: 'http://127.0.0.1/jstree/',
+        serverRoot: 'test/visual/',
+        gitDiff: true,
+      },
+      desktop : {
+        options: {
+          screenshots: 'test/visual/screenshots/',
+          failures: 'test/visual/failures/',
+          viewportSize : [ 1280, 800 ]
+        },
+        src: [
+          'test/visual/d.html'
+        ]
+      },
+      mobile : {
+        options: {
+          screenshots: 'test/visual/screenshots/',
+          failures: 'test/visual/failures/',
+          viewportSize : [ 360, 800 ]
+        },
+        src: [
+          'test/visual/m.html'
+        ]
+      }
+    },
     imagemin: {
       dynamic: {
         options: {                       // Target options
@@ -162,6 +189,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-qunit');
+  grunt.loadNpmTasks('grunt-phantomcss-gitdiff');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
   grunt.loadNpmTasks('grunt-text-replace');
@@ -205,7 +233,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy:libs','uglify','less','imagemin','replace','copy:docs','qunit','dox']);
+  grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy:libs','uglify','less','imagemin','replace','copy:docs','qunit','phantomcss-gitdiff','dox']);
   grunt.registerTask('js', ['concat','amd','uglify']);
   grunt.registerTask('css', ['copy','less']);
 
