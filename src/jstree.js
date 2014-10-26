@@ -2859,6 +2859,7 @@
 					 * @param {Object} event the event (if any) that triggered this changed event
 					 */
 					this.trigger('changed', { 'action' : 'select_node', 'node' : obj, 'selected' : this._data.core.selected, 'event' : e });
+					this.toggle_node(obj);
 				}
 			}
 		},
