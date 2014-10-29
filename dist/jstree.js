@@ -6585,7 +6585,7 @@
 		 * @name $.jstree.defaults.state.events
 		 * @plugin state
 		 */
-		events	: 'changed.jstree open_node.jstree close_node.jstree',
+		events	: 'changed.jstree open_node.jstree close_node.jstree check_node.jstree uncheck_node.jstree',
 		/**
 		 * Time in milliseconds after which the state will expire. Defaults to 'false' meaning - no expire.
 		 * @name $.jstree.defaults.state.ttl
