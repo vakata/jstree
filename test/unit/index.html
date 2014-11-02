@@ -6,10 +6,20 @@
   <!-- Load local QUnit. -->
   <link rel="stylesheet" href="libs/qunit.css" media="screen">
   <script src="libs/qunit.js"></script>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <script src="./../../src/jstree.js"></script>
+  <link rel="stylesheet" href="./../../src/themes/default/style.css" />
 </head>
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture">this had better work.</div>
+
+  <div id="test">
+    <ul>
+      <li>Node #1</li>
+    </ul>
+  </div>
   <!-- Load local lib and tests. -->
   <script src="test.js"></script>
 </body>
