@@ -434,7 +434,7 @@
 					dw = $(window).width() + $(window).scrollLeft();
 					dh = $(window).height() + $(window).scrollTop();
 					if(right_to_left) {
-						x -= e.outerWidth();
+						x -= (e.outerWidth() - $(reference).outerWidth());
 						if(x < $(window).scrollLeft() + 20) {
 							x = $(window).scrollLeft() + 20;
 						}
