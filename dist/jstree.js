@@ -5732,7 +5732,13 @@
 		 * @name $.jstree.defaults.dnd.inside_pos
 		 * @plugin dnd
 		 */
-		inside_pos : 0
+		inside_pos : 0,
+		/**
+		 * when starting the drag on a node that is selected this setting controls if all selected nodes are dragged or only the single node, default is `true`, which means all selected nodes are dragged when the drag is started on a selected node
+		 * @name $.jstree.defaults.dnd.inside_pos
+		 * @plugin dnd
+		 */
+		drag_selection : true
 	};
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
 	$.jstree.plugins.dnd = function (options, parent) {
@@ -5742,7 +5748,7 @@
 			this.element
 				.on('mousedown.jstree touchstart.jstree', '.jstree-anchor', $.proxy(function (e) {
 					var obj = this.get_node(e.target),
-						mlt = this.is_selected(obj) ? this.get_selected().length : 1,
+						mlt = this.is_selected(obj) && this.settings.drag_selection ? this.get_selected().length : 1,
 						txt = (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget));
 					if(this.settings.core.force_text) {
 						txt = $('<div />').text(txt).html();
