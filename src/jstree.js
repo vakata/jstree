@@ -88,7 +88,7 @@
 		 */
 		plugins : {},
 		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : '',
-		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%]/g
+		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%?`]/g
 	};
 	/**
 	 * creates a jstree instance
