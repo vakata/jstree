@@ -542,7 +542,6 @@
 			}
 			if(!keep_html) { this.element.empty(); }
 			this.element.unbind("destroyed", this.teardown);
-			this.teardown();
 		},
 		/**
 		 * part of the destroying of an instance. Used internally.
