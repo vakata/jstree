@@ -6696,6 +6696,13 @@
 					if(to) { clearTimeout(to); }
 					to = setTimeout($.proxy(function () { this.save_state(); }, this), 100);
 				}, this));
+				/**
+				 * triggered when the state plugin is finished restoring the state (and immediately after ready if there is no state to restore).
+				 * @event
+				 * @name state_ready.jstree
+				 * @plugin state
+				 */
+				this.trigger('state_ready');
 			}, this);
 			this.element
 				.on("ready.jstree", $.proxy(function (e, data) {
