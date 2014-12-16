@@ -564,7 +564,8 @@
 		 */
 		bind : function () {
 			var word = '',
-				tout = null;
+				tout = null,
+				was_click = 0;
 			this.element
 				.on("dblclick.jstree", function () {
 						if(document.selection && document.selection.empty) {
@@ -580,6 +581,12 @@
 							}
 						}
 					})
+				.on("mousedown.jstree", $.proxy(function (e) {
+						if(e.target === this.element[0]) {
+							e.preventDefault(); // prevent losing focus when clicking scroll arrows (FF, Chrome)
+							was_click = +(new Date()); // ie does not allow to prevent losing focus
+						}
+					}, this))
 				.on("mousedown.jstree", ".jstree-ocl", function (e) {
 						e.preventDefault(); // prevent any node inside from losing focus when clicking the open/close icon
 					})
@@ -800,7 +807,8 @@
 						this.element.attr('tabindex', '-1');
 					}, this))
 				.on('focus.jstree', $.proxy(function () {
-						if(!this._data.core.focused) {
+						if(+(new Date()) - was_click > 500 && !this._data.core.focused) {
+							was_click = 0;
 							this.get_node(this.element.attr('aria-activedescendant'), true).find('> .jstree-anchor').focus();
 						}
 					}, this))
