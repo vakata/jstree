@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.0.6
+ * jsTree 3.0.8
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -70,7 +70,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.0.6',
+		version : '3.0.8',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -88,7 +88,7 @@
 		 */
 		plugins : {},
 		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : '',
-		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%]/g
+		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%?`]/g
 	};
 	/**
 	 * creates a jstree instance
@@ -487,7 +487,6 @@
 
 			this.element = $(el).addClass('jstree jstree-' + this._id);
 			this.settings = options;
-			this.element.bind("destroyed", $.proxy(this.teardown, this));
 
 			this._data.core.ready = false;
 			this._data.core.loaded = false;
@@ -541,7 +540,6 @@
 				catch (ignore) { }
 			}
 			if(!keep_html) { this.element.empty(); }
-			this.element.unbind("destroyed", this.teardown);
 			this.teardown();
 		},
 		/**
@@ -565,6 +563,9 @@
 		 * @name bind()
 		 */
 		bind : function () {
+			var word = '',
+				tout = null,
+				was_click = 0;
 			this.element
 				.on("dblclick.jstree", function () {
 						if(document.selection && document.selection.empty) {
@@ -579,6 +580,15 @@
 								} catch (ignore) { }
 							}
 						}
+					})
+				.on("mousedown.jstree", $.proxy(function (e) {
+						if(e.target === this.element[0]) {
+							e.preventDefault(); // prevent losing focus when clicking scroll arrows (FF, Chrome)
+							was_click = +(new Date()); // ie does not allow to prevent losing focus
+						}
+					}, this))
+				.on("mousedown.jstree", ".jstree-ocl", function (e) {
+						e.preventDefault(); // prevent any node inside from losing focus when clicking the open/close icon
 					})
 				.on("click.jstree", ".jstree-ocl", $.proxy(function (e) {
 						this.toggle_node(e.target);
@@ -596,12 +606,17 @@
 							else if(e.which === 39) { e.which = 37; }
 						}
 						switch(e.which) {
-							case 13:
-							//case 32: // aria does not define space
+							case 32: // aria defines space only with Ctrl
+								if(e.ctrlKey) {
+									e.type = "click";
+									$(e.currentTarget).trigger(e);
+								}
+								break;
+							case 13: // enter
 								e.type = "click";
 								$(e.currentTarget).trigger(e);
 								break;
-							case 37:
+							case 37: // right
 								e.preventDefault();
 								if(this.is_open(e.currentTarget)) {
 									this.close_node(e.currentTarget);
@@ -611,12 +626,12 @@
 									if(o && o.id !== '#') { this.get_node(o, true).children('.jstree-anchor').focus(); }
 								}
 								break;
-							case 38:
+							case 38: // up
 								e.preventDefault();
 								o = this.get_prev_dom(e.currentTarget);
 								if(o && o.length) { o.children('.jstree-anchor').focus(); }
 								break;
-							case 39:
+							case 39: // left
 								e.preventDefault();
 								if(this.is_closed(e.currentTarget)) {
 									this.open_node(e.currentTarget, function (o) { this.get_node(o, true).children('.jstree-anchor').focus(); });
@@ -626,33 +641,45 @@
 									if(o) { $(this._firstChild(o)).children('.jstree-anchor').focus(); }
 								}
 								break;
-							case 40:
+							case 40: // down
 								e.preventDefault();
 								o = this.get_next_dom(e.currentTarget);
 								if(o && o.length) { o.children('.jstree-anchor').focus(); }
 								break;
+							case 106: // aria defines * on numpad as open_all - not very common
+								this.open_all();
+								break;
+							case 36: // home
+								e.preventDefault();
+								o = this._firstChild(this.get_container_ul()[0]);
+								if(o) { $(o).children('.jstree-anchor').filter(':visible').focus(); }
+								break;
+							case 35: // end
+								e.preventDefault();
+								this.element.find('.jstree-anchor').filter(':visible').last().focus();
+								break;
+							/*
 							// delete
 							case 46:
 								e.preventDefault();
 								o = this.get_node(e.currentTarget);
 								if(o && o.id && o.id !== '#') {
 									o = this.is_selected(o) ? this.get_selected() : o;
-									// this.delete_node(o);
+									this.delete_node(o);
 								}
 								break;
 							// f2
 							case 113:
 								e.preventDefault();
 								o = this.get_node(e.currentTarget);
-								/*!
 								if(o && o.id && o.id !== '#') {
 									// this.edit(o);
 								}
-								*/
 								break;
 							default:
 								// console.log(e.which);
 								break;
+							*/
 						}
 					}, this))
 				.on("load_node.jstree", $.proxy(function (e, data) {
@@ -693,6 +720,64 @@
 							}
 						}
 					}, this))
+				// quick searching when the tree is focused
+				.on('keypress.jstree', $.proxy(function (e) {
+						if(e.target.tagName === "INPUT") { return true; }
+						if(tout) { clearTimeout(tout); }
+						tout = setTimeout(function () {
+							word = '';
+						}, 500);
+
+						var chr = String.fromCharCode(e.which).toLowerCase(),
+							col = this.element.find('.jstree-anchor').filter(':visible'),
+							ind = col.index(document.activeElement) || 0,
+							end = false;
+						word += chr;
+
+						// match for whole word from current node down (including the current node)
+						if(word.length > 1) {
+							col.slice(ind).each($.proxy(function (i, v) {
+								if($(v).text().toLowerCase().indexOf(word) === 0) {
+									$(v).focus();
+									end = true;
+									return false;
+								}
+							}, this));
+							if(end) { return; }
+
+							// match for whole word from the beginning of the tree
+							col.slice(0, ind).each($.proxy(function (i, v) {
+								if($(v).text().toLowerCase().indexOf(word) === 0) {
+									$(v).focus();
+									end = true;
+									return false;
+								}
+							}, this));
+							if(end) { return; }
+						}
+						// list nodes that start with that letter (only if word consists of a single char)
+						if(new RegExp('^' + chr + '+$').test(word)) {
+							// search for the next node starting with that letter
+							col.slice(ind + 1).each($.proxy(function (i, v) {
+								if($(v).text().toLowerCase().charAt(0) === chr) {
+									$(v).focus();
+									end = true;
+									return false;
+								}
+							}, this));
+							if(end) { return; }
+
+							// search from the beginning
+							col.slice(0, ind + 1).each($.proxy(function (i, v) {
+								if($(v).text().toLowerCase().charAt(0) === chr) {
+									$(v).focus();
+									end = true;
+									return false;
+								}
+							}, this));
+							if(end) { return; }
+						}
+					}, this))
 				// THEME RELATED
 				.on("init.jstree", $.proxy(function () {
 						var s = this.settings.core.themes;
@@ -710,6 +795,7 @@
 				.on('blur.jstree', '.jstree-anchor', $.proxy(function (e) {
 						this._data.core.focused = null;
 						$(e.currentTarget).filter('.jstree-hovered').mouseleave();
+						this.element.attr('tabindex', '0');
 					}, this))
 				.on('focus.jstree', '.jstree-anchor', $.proxy(function (e) {
 						var tmp = this.get_node(e.currentTarget);
@@ -718,9 +804,11 @@
 						}
 						this.element.find('.jstree-hovered').not(e.currentTarget).mouseleave();
 						$(e.currentTarget).mouseenter();
+						this.element.attr('tabindex', '-1');
 					}, this))
 				.on('focus.jstree', $.proxy(function () {
-						if(!this._data.core.focused) {
+						if(+(new Date()) - was_click > 500 && !this._data.core.focused) {
+							was_click = 0;
 							this.get_node(this.element.attr('aria-activedescendant'), true).find('> .jstree-anchor').focus();
 						}
 					}, this))
@@ -841,6 +929,9 @@
 			try {
 				if(this._model.data[obj]) {
 					obj = this._model.data[obj];
+				}
+				else if(typeof obj === "string" && this._model.data[obj.replace(/^#/, '')]) {
+					obj = this._model.data[obj.replace(/^#/, '')];
 				}
 				else if(typeof obj === "string" && (dom = $('#' + obj.replace($.jstree.idregex,'\\$&'), this.element)).length && this._model.data[dom.closest('.jstree-node').attr('id')]) {
 					obj = this._model.data[dom.closest('.jstree-node').attr('id')];
@@ -2100,6 +2191,35 @@
 			this._redraw();
 		},
 		/**
+		 * redraws a single node's children. Used internally.
+		 * @private
+		 * @name draw_children(node)
+		 * @param {mixed} node the node whose children will be redrawn
+		 */
+		draw_children : function (node) {
+			var obj = this.get_node(node),
+				i = false,
+				j = false,
+				k = false,
+				d = document;
+			if(!obj) { return false; }
+			if(obj.id === '#') { return this.redraw(true); }
+			node = this.get_node(node, true);
+			if(!node || !node.length) { return false; } // TODO: quick toggle
+
+			node.children('.jstree-children').remove();
+			node = node[0];
+			if(obj.children.length && obj.state.loaded) {
+				k = d.createElement('UL');
+				k.setAttribute('role', 'group');
+				k.className = 'jstree-children';
+				for(i = 0, j = obj.children.length; i < j; i++) {
+					k.appendChild(this.redraw_node(obj.children[i], true, true));
+				}
+				node.appendChild(k);
+			}
+		},
+		/**
 		 * redraws a single node. Used internally.
 		 * @private
 		 * @name redraw_node(node, deep, is_callback, force_render)
@@ -2121,7 +2241,9 @@
 				m = this._model.data,
 				f = false,
 				s = false,
-				tmp = null;
+				tmp = null,
+				t = 0,
+				l = 0;
 			if(!obj) { return false; }
 			if(obj.id === '#') {  return this.redraw(true); }
 			deep = deep || obj.children.length === 0;
@@ -2232,6 +2354,7 @@
 				node.childNodes[1].innerHTML += obj.text;
 			}
 
+
 			if(deep && obj.children.length && (obj.state.opened || force_render) && obj.state.loaded) {
 				k = d.createElement('UL');
 				k.setAttribute('role', 'group');
@@ -2270,7 +2393,11 @@
 					par.appendChild(node);
 				}
 				if(f) {
+					t = this.element[0].scrollTop;
+					l = this.element[0].scrollLeft;
 					node.childNodes[1].focus();
+					this.element[0].scrollTop = t;
+					this.element[0].scrollLeft = l;
 				}
 			}
 			if(obj.state.opened && !obj.state.loaded) {
@@ -2323,9 +2450,12 @@
 				d = this.get_node(obj, true);
 				t = this;
 				if(d.length) {
+					if(animation && d.children(".jstree-children").length) {
+						d.children(".jstree-children").stop(true, true);
+					}
 					if(obj.children.length && !this._firstChild(d.children('.jstree-children')[0])) {
-						this.redraw_node(obj, true, false, true);
-						d = this.get_node(obj, true);
+						this.draw_children(obj);
+						//d = this.get_node(obj, true);
 					}
 					if(!animation) {
 						this.trigger('before_open', { "node" : obj });
@@ -3323,6 +3453,7 @@
 				return this.load_node(par, function () { this.create_node(par, node, pos, callback, true); });
 			}
 			if(!node) { node = { "text" : this.get_string('New node') }; }
+			if(typeof node === "string") { node = { "text" : node }; }
 			if(node.text === undefined) { node.text = this.get_string('New node'); }
 			var tmp, dpc, i, j;
 
@@ -4148,14 +4279,17 @@
 			}
 			else if(icon === true) {
 				dom.removeClass('jstree-themeicon-custom ' + old).css("background","").removeAttr("rel");
+				if(old === false) { this.show_icon(obj); }
 			}
 			else if(icon.indexOf("/") === -1 && icon.indexOf(".") === -1) {
 				dom.removeClass(old).css("background","");
 				dom.addClass(icon + ' jstree-themeicon-custom').attr("rel",icon);
+				if(old === false) { this.show_icon(obj); }
 			}
 			else {
 				dom.removeClass(old).css("background","");
 				dom.addClass('jstree-themeicon-custom').css("background", "url('" + icon + "') center center no-repeat").attr("rel",icon);
+				if(old === false) { this.show_icon(obj); }
 			}
 			return true;
 		},
@@ -4254,6 +4388,7 @@
 		var tmp = $.inArray(item, array);
 		return tmp !== -1 ? $.vakata.array_remove(array, tmp) : array;
 	};
+
 
 /**
  * ### Checkbox plugin
@@ -4938,6 +5073,42 @@
 			}
 			return full ? $.map(obj, $.proxy(function (i) { return this.get_node(i); }, this)) : obj;
 		};
+		this.load_node = function (obj, callback) {
+			var k, l, i, j, c, tmp;
+			if(!$.isArray(obj) && !this.settings.checkbox.tie_selection) {
+				tmp = this.get_node(obj);
+				if(tmp && tmp.state.loaded) {
+					for(k = 0, l = tmp.children_d.length; k < l; k++) {
+						if(this._model.data[tmp.children_d[k]].state.checked) {
+							c = true;
+							this._data.checkbox.selected = $.vakata.array_remove_item(this._data.checkbox.selected, tmp.children_d[k]);
+						}
+					}
+				}
+			}
+			return parent.load_node.apply(this, arguments);
+		};
+		this.get_state = function () {
+			var state = parent.get_state.apply(this, arguments);
+			if(this.settings.checkbox.tie_selection) { return state; }
+			state.checkbox = this._data.checkbox.selected.slice();
+			return state;
+		};
+		this.set_state = function (state, callback) {
+			var res = parent.set_state.apply(this, arguments);
+			if(res && state.checkbox) {
+				if(!this.settings.checkbox.tie_selection) {
+					this.uncheck_all();
+					var _this = this;
+					$.each(state.checkbox, function (i, v) {
+						_this.check_node(v);
+					});
+				}
+				delete state.checkbox;
+				return false;
+			}
+			return res;
+		};
 	};
 
 	// include the checkbox plugin by default
@@ -4948,6 +5119,8 @@
  *
  * Shows a context menu when a node is right-clicked.
  */
+
+	var cto = null, ex, ey;
 
 	/**
 	 * stores all defaults for the contextmenu plugin
@@ -5096,18 +5269,35 @@
 
 			var last_ts = 0;
 			this.element
-				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e) {
+				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e, data) {
 						e.preventDefault();
-						last_ts = e.ctrlKey ? e.timeStamp : 0;
+						last_ts = e.ctrlKey ? +new Date() : 0;
+						if(data || cto) {
+							last_ts = (+new Date()) + 10000;
+						}
+						if(cto) {
+							clearTimeout(cto);
+						}
 						if(!this.is_loading(e.currentTarget)) {
 							this.show_contextmenu(e.currentTarget, e.pageX, e.pageY, e);
 						}
 					}, this))
 				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
-						if(this._data.contextmenu.visible && (!last_ts || e.timeStamp - last_ts > 250)) { // work around safari & macOS ctrl+click
+						if(this._data.contextmenu.visible && (!last_ts || (+new Date()) - last_ts > 250)) { // work around safari & macOS ctrl+click
 							$.vakata.context.hide();
 						}
-					}, this));
+						last_ts = 0;
+					}, this))
+				.on("touchstart.jstree", ".jstree-anchor", function (e) {
+						if(!e.originalEvent || !e.originalEvent.changedTouches || !e.originalEvent.changedTouches[0]) {
+							return;
+						}
+						ex = e.pageX;
+						ey = e.pageY;
+						cto = setTimeout(function () {
+							$(e.currentTarget).trigger('contextmenu', true);
+						}, 750);
+					});
 			/*
 			if(!('oncontextmenu' in document.body) && ('ontouchstart' in document.body)) {
 				var el = null, tm = null;
@@ -5207,6 +5397,20 @@
 			this.trigger('show_contextmenu', { "node" : obj, "x" : x, "y" : y });
 		};
 	};
+
+	$(function () {
+		$(document)
+			.on('touchmove.vakata.jstree', function (e) {
+				if(cto && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0] && (Math.abs(ex - e.pageX) > 50 || Math.abs(ey - e.pageY) > 50)) {
+					clearTimeout(cto);
+				}
+			})
+			.on('touchend.vakata.jstree', function (e) {
+				if(cto) {
+					clearTimeout(cto);
+				}
+			});
+	});
 
 	// contextmenu helper
 	(function ($) {
@@ -5363,7 +5567,7 @@
 					dw = $(window).width() + $(window).scrollLeft();
 					dh = $(window).height() + $(window).scrollTop();
 					if(right_to_left) {
-						x -= e.outerWidth();
+						x -= (e.outerWidth() - $(reference).outerWidth());
 						if(x < $(window).scrollLeft() + 20) {
 							x = $(window).scrollLeft() + 20;
 						}
@@ -5514,7 +5718,9 @@
 
 			$(document)
 				.on("mousedown.vakata.jstree", function (e) {
-					if(vakata_context.is_visible && !$.contains(vakata_context.element[0], e.target)) { $.vakata.context.hide(); }
+					if(vakata_context.is_visible && !$.contains(vakata_context.element[0], e.target)) {
+						$.vakata.context.hide();
+					}
 				})
 				.on("context_show.vakata.jstree", function (e, data) {
 					vakata_context.element.find("li:has(ul)").children("a").addClass("vakata-context-parent");
@@ -5575,7 +5781,13 @@
 		 * @name $.jstree.defaults.dnd.inside_pos
 		 * @plugin dnd
 		 */
-		inside_pos : 0
+		inside_pos : 0,
+		/**
+		 * when starting the drag on a node that is selected this setting controls if all selected nodes are dragged or only the single node, default is `true`, which means all selected nodes are dragged when the drag is started on a selected node
+		 * @name $.jstree.defaults.dnd.inside_pos
+		 * @plugin dnd
+		 */
+		drag_selection : true
 	};
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
 	$.jstree.plugins.dnd = function (options, parent) {
@@ -5585,12 +5797,16 @@
 			this.element
 				.on('mousedown.jstree touchstart.jstree', '.jstree-anchor', $.proxy(function (e) {
 					var obj = this.get_node(e.target),
-						mlt = this.is_selected(obj) ? this.get_selected().length : 1;
+						mlt = this.is_selected(obj) && this.settings.drag_selection ? this.get_selected().length : 1,
+						txt = (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget));
+					if(this.settings.core.force_text) {
+						txt = $('<div />').text(txt).html();
+					}
 					if(obj && obj.id && obj.id !== "#" && (e.which === 1 || e.type === "touchstart") &&
 						(this.settings.dnd.is_draggable === true || ($.isFunction(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_selected(true) : [obj]))))
 					) {
 						this.element.trigger('mousedown.jstree');
-						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_selected() : [obj.id] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + ' jstree-' + this.get_theme() + '-' + this.get_theme_variant() + ' ' + ( this.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ) + '"><i class="jstree-icon jstree-er"></i>' + (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget, true)) + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
+						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_selected() : [obj.id] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + ' jstree-' + this.get_theme() + '-' + this.get_theme_variant() + ' ' + ( this.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ) + '"><i class="jstree-icon jstree-er"></i>' + txt + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
 					}
 				}, this));
 		};
@@ -6466,7 +6682,7 @@
 		 * @name $.jstree.defaults.state.events
 		 * @plugin state
 		 */
-		events	: 'changed.jstree open_node.jstree close_node.jstree',
+		events	: 'changed.jstree open_node.jstree close_node.jstree check_node.jstree uncheck_node.jstree',
 		/**
 		 * Time in milliseconds after which the state will expire. Defaults to 'false' meaning - no expire.
 		 * @name $.jstree.defaults.state.ttl
@@ -6488,6 +6704,13 @@
 					if(to) { clearTimeout(to); }
 					to = setTimeout($.proxy(function () { this.save_state(); }, this), 100);
 				}, this));
+				/**
+				 * triggered when the state plugin is finished restoring the state (and immediately after ready if there is no state to restore).
+				 * @event
+				 * @name state_ready.jstree
+				 * @plugin state
+				 */
+				this.trigger('state_ready');
 			}, this);
 			this.element
 				.on("ready.jstree", $.proxy(function (e, data) {

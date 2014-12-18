@@ -38,7 +38,7 @@
 		 * @name $.jstree.defaults.state.events
 		 * @plugin state
 		 */
-		events	: 'changed.jstree open_node.jstree close_node.jstree',
+		events	: 'changed.jstree open_node.jstree close_node.jstree check_node.jstree uncheck_node.jstree',
 		/**
 		 * Time in milliseconds after which the state will expire. Defaults to 'false' meaning - no expire.
 		 * @name $.jstree.defaults.state.ttl
@@ -60,6 +60,13 @@
 					if(to) { clearTimeout(to); }
 					to = setTimeout($.proxy(function () { this.save_state(); }, this), 100);
 				}, this));
+				/**
+				 * triggered when the state plugin is finished restoring the state (and immediately after ready if there is no state to restore).
+				 * @event
+				 * @name state_ready.jstree
+				 * @plugin state
+				 */
+				this.trigger('state_ready');
 			}, this);
 			this.element
 				.on("ready.jstree", $.proxy(function (e, data) {

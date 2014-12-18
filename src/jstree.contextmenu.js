@@ -20,6 +20,8 @@
 
 	if($.jstree.plugins.contextmenu) { return; }
 
+	var cto = null, ex, ey;
+
 	/**
 	 * stores all defaults for the contextmenu plugin
 	 * @name $.jstree.defaults.contextmenu
@@ -167,18 +169,35 @@
 
 			var last_ts = 0;
 			this.element
-				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e) {
+				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e, data) {
 						e.preventDefault();
-						last_ts = e.ctrlKey ? e.timeStamp : 0;
+						last_ts = e.ctrlKey ? +new Date() : 0;
+						if(data || cto) {
+							last_ts = (+new Date()) + 10000;
+						}
+						if(cto) {
+							clearTimeout(cto);
+						}
 						if(!this.is_loading(e.currentTarget)) {
 							this.show_contextmenu(e.currentTarget, e.pageX, e.pageY, e);
 						}
 					}, this))
 				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
-						if(this._data.contextmenu.visible && (!last_ts || e.timeStamp - last_ts > 250)) { // work around safari & macOS ctrl+click
+						if(this._data.contextmenu.visible && (!last_ts || (+new Date()) - last_ts > 250)) { // work around safari & macOS ctrl+click
 							$.vakata.context.hide();
 						}
-					}, this));
+						last_ts = 0;
+					}, this))
+				.on("touchstart.jstree", ".jstree-anchor", function (e) {
+						if(!e.originalEvent || !e.originalEvent.changedTouches || !e.originalEvent.changedTouches[0]) {
+							return;
+						}
+						ex = e.pageX;
+						ey = e.pageY;
+						cto = setTimeout(function () {
+							$(e.currentTarget).trigger('contextmenu', true);
+						}, 750);
+					});
 			/*
 			if(!('oncontextmenu' in document.body) && ('ontouchstart' in document.body)) {
 				var el = null, tm = null;
@@ -278,6 +297,20 @@
 			this.trigger('show_contextmenu', { "node" : obj, "x" : x, "y" : y });
 		};
 	};
+
+	$(function () {
+		$(document)
+			.on('touchmove.vakata.jstree', function (e) {
+				if(cto && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0] && (Math.abs(ex - e.pageX) > 50 || Math.abs(ey - e.pageY) > 50)) {
+					clearTimeout(cto);
+				}
+			})
+			.on('touchend.vakata.jstree', function (e) {
+				if(cto) {
+					clearTimeout(cto);
+				}
+			});
+	});
 
 	// contextmenu helper
 	(function ($) {
@@ -434,7 +467,7 @@
 					dw = $(window).width() + $(window).scrollLeft();
 					dh = $(window).height() + $(window).scrollTop();
 					if(right_to_left) {
-						x -= e.outerWidth();
+						x -= (e.outerWidth() - $(reference).outerWidth());
 						if(x < $(window).scrollLeft() + 20) {
 							x = $(window).scrollLeft() + 20;
 						}
@@ -585,7 +618,9 @@
 
 			$(document)
 				.on("mousedown.vakata.jstree", function (e) {
-					if(vakata_context.is_visible && !$.contains(vakata_context.element[0], e.target)) { $.vakata.context.hide(); }
+					if(vakata_context.is_visible && !$.contains(vakata_context.element[0], e.target)) {
+						$.vakata.context.hide();
+					}
 				})
 				.on("context_show.vakata.jstree", function (e, data) {
 					vakata_context.element.find("li:has(ul)").children("a").addClass("vakata-context-parent");

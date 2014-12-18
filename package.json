@@ -2,7 +2,7 @@
   "name": "jstree",
   "title": "jsTree",
   "description": "jQuery tree plugin",
-  "version": "3.0.6",
+  "version": "3.0.8",
   "homepage": "http://jstree.com",
   "main": "./dist/jstree.js",
   "author": {
@@ -35,7 +35,8 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-imagemin": "~0.4.0",
     "grunt-contrib-qunit": "~v0.3.0",
-    "grunt-text-replace": "~0.3.11"
+    "grunt-text-replace": "~0.3.11",
+    "grunt-phantomcss-gitdiff": "0.0.7"
   },
   "dependencies": {
     "jquery": ">=1.9.1"
