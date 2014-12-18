@@ -567,6 +567,13 @@
 				tout = null,
 				was_click = 0;
 			this.element
+                                .on("dblclick.jstree", $.proxy(function (e) {
+					    if(this.is_open(e.target)) {
+						this.close_node(e.target);
+					    } else {
+                                                this.open_node(e.target);
+                                            }	
+					}, this))
 				.on("dblclick.jstree", function () {
 						if(document.selection && document.selection.empty) {
 							document.selection.empty();
