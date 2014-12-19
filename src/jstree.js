@@ -545,7 +545,6 @@
 				catch (ignore) { }
 			}
 			if(!keep_html) { this.element.empty(); }
-
 			this.teardown();
 		},
 		/**
