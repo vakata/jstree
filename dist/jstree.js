@@ -88,7 +88,7 @@
 		 */
 		plugins : {},
 		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : '',
-		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%]/g
+		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%?`]/g
 	};
 	/**
 	 * creates a jstree instance
@@ -434,7 +434,12 @@
 		 * Force node text to plain text (and escape HTML). Defaults to `false`
 		 * @name $.jstree.defaults.core.force_text
 		 */
-		force_text : false
+		force_text : false,
+		/**
+		 * Should the node should be toggled if the text is double clicked . Defaults to `true`
+		 * @name $.jstree.defaults.core.dblclick_toggle
+		 */
+		dblclick_toggle : true
 	};
 	$.jstree.core.prototype = {
 		/**
@@ -487,7 +492,6 @@
 
 			this.element = $(el).addClass('jstree jstree-' + this._id);
 			this.settings = options;
-			this.element.bind("destroyed", $.proxy(this.teardown, this));
 
 			this._data.core.ready = false;
 			this._data.core.loaded = false;
@@ -541,7 +545,6 @@
 				catch (ignore) { }
 			}
 			if(!keep_html) { this.element.empty(); }
-			this.element.unbind("destroyed", this.teardown);
 			this.teardown();
 		},
 		/**
@@ -566,7 +569,8 @@
 		 */
 		bind : function () {
 			var word = '',
-				tout = null;
+				tout = null,
+				was_click = 0;
 			this.element
 				.on("dblclick.jstree", function () {
 						if(document.selection && document.selection.empty) {
@@ -582,8 +586,22 @@
 							}
 						}
 					})
+				.on("mousedown.jstree", $.proxy(function (e) {
+						if(e.target === this.element[0]) {
+							e.preventDefault(); // prevent losing focus when clicking scroll arrows (FF, Chrome)
+							was_click = +(new Date()); // ie does not allow to prevent losing focus
+						}
+					}, this))
+				.on("mousedown.jstree", ".jstree-ocl", function (e) {
+						e.preventDefault(); // prevent any node inside from losing focus when clicking the open/close icon
+					})
 				.on("click.jstree", ".jstree-ocl", $.proxy(function (e) {
 						this.toggle_node(e.target);
+					}, this))
+				.on("dblclick.jstree", ".jstree-anchor", $.proxy(function (e) {
+						if(this.settings.core.dblclick_toggle) {
+							this.toggle_node(e.target);
+						}
 					}, this))
 				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
 						e.preventDefault();
@@ -799,7 +817,8 @@
 						this.element.attr('tabindex', '-1');
 					}, this))
 				.on('focus.jstree', $.proxy(function () {
-						if(!this._data.core.focused) {
+						if(+(new Date()) - was_click > 500 && !this._data.core.focused) {
+							was_click = 0;
 							this.get_node(this.element.attr('aria-activedescendant'), true).find('> .jstree-anchor').focus();
 						}
 					}, this))
@@ -2182,6 +2201,35 @@
 			this._redraw();
 		},
 		/**
+		 * redraws a single node's children. Used internally.
+		 * @private
+		 * @name draw_children(node)
+		 * @param {mixed} node the node whose children will be redrawn
+		 */
+		draw_children : function (node) {
+			var obj = this.get_node(node),
+				i = false,
+				j = false,
+				k = false,
+				d = document;
+			if(!obj) { return false; }
+			if(obj.id === '#') { return this.redraw(true); }
+			node = this.get_node(node, true);
+			if(!node || !node.length) { return false; } // TODO: quick toggle
+
+			node.children('.jstree-children').remove();
+			node = node[0];
+			if(obj.children.length && obj.state.loaded) {
+				k = d.createElement('UL');
+				k.setAttribute('role', 'group');
+				k.className = 'jstree-children';
+				for(i = 0, j = obj.children.length; i < j; i++) {
+					k.appendChild(this.redraw_node(obj.children[i], true, true));
+				}
+				node.appendChild(k);
+			}
+		},
+		/**
 		 * redraws a single node. Used internally.
 		 * @private
 		 * @name redraw_node(node, deep, is_callback, force_render)
@@ -2203,7 +2251,9 @@
 				m = this._model.data,
 				f = false,
 				s = false,
-				tmp = null;
+				tmp = null,
+				t = 0,
+				l = 0;
 			if(!obj) { return false; }
 			if(obj.id === '#') {  return this.redraw(true); }
 			deep = deep || obj.children.length === 0;
@@ -2314,6 +2364,7 @@
 				node.childNodes[1].innerHTML += obj.text;
 			}
 
+
 			if(deep && obj.children.length && (obj.state.opened || force_render) && obj.state.loaded) {
 				k = d.createElement('UL');
 				k.setAttribute('role', 'group');
@@ -2352,7 +2403,11 @@
 					par.appendChild(node);
 				}
 				if(f) {
+					t = this.element[0].scrollTop;
+					l = this.element[0].scrollLeft;
 					node.childNodes[1].focus();
+					this.element[0].scrollTop = t;
+					this.element[0].scrollLeft = l;
 				}
 			}
 			if(obj.state.opened && !obj.state.loaded) {
@@ -2405,9 +2460,12 @@
 				d = this.get_node(obj, true);
 				t = this;
 				if(d.length) {
+					if(animation && d.children(".jstree-children").length) {
+						d.children(".jstree-children").stop(true, true);
+					}
 					if(obj.children.length && !this._firstChild(d.children('.jstree-children')[0])) {
-						this.redraw_node(obj, true, false, true);
-						d = this.get_node(obj, true);
+						this.draw_children(obj);
+						//d = this.get_node(obj, true);
 					}
 					if(!animation) {
 						this.trigger('before_open', { "node" : obj });
@@ -4340,6 +4398,7 @@
 		var tmp = $.inArray(item, array);
 		return tmp !== -1 ? $.vakata.array_remove(array, tmp) : array;
 	};
+
 
 /**
  * ### Checkbox plugin
@@ -6655,6 +6714,13 @@
 					if(to) { clearTimeout(to); }
 					to = setTimeout($.proxy(function () { this.save_state(); }, this), 100);
 				}, this));
+				/**
+				 * triggered when the state plugin is finished restoring the state (and immediately after ready if there is no state to restore).
+				 * @event
+				 * @name state_ready.jstree
+				 * @plugin state
+				 */
+				this.trigger('state_ready');
 			}, this);
 			this.element
 				.on("ready.jstree", $.proxy(function (e, data) {
