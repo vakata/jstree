@@ -545,6 +545,7 @@
 				catch (ignore) { }
 			}
 			if(!keep_html) { this.element.empty(); }
+
 			this.teardown();
 		},
 		/**
@@ -706,7 +707,26 @@
 								 */
 								this.trigger("loaded");
 							}
-							if(!this._data.core.ready && !this.get_container_ul().find('.jstree-loading').length) {
+							
+							var hasUnloadedChildren = function () {
+								var isLoading = function (state) {
+									return state.loading === true || state.opening === true || state.opened === true && !state.loaded;
+								};
+							
+								if (isLoading(data.node)) {
+									return true;
+								}
+							
+								for (var j = 0; j < data.node.children_d.length; j++) {
+									if (isLoading(data.instance._model.data[data.node.children_d[j]].state)) {
+										return true;
+									}
+								}
+							
+								return false;
+							};
+							
+							if(!this._data.core.ready && !this.get_container_ul().find('.jstree-loading').length && !hasUnloadedChildren()) {
 								this._data.core.ready = true;
 								if(this._data.core.selected.length) {
 									if(this.settings.core.expand_selected_onload) {
@@ -2412,6 +2432,7 @@
 			}
 			if(obj.state.opened && !obj.state.loaded) {
 				obj.state.opened = false;
+				obj.state.opening = true;
 				setTimeout($.proxy(function () {
 					this.open_node(obj.id, false, 0);
 				}, this), 0);
@@ -2485,6 +2506,7 @@
 					}
 				}
 				obj.state.opened = true;
+				obj.state.opening = false;
 				if(callback) {
 					callback.call(this, obj, true);
 				}
