@@ -3797,6 +3797,7 @@
 
 				// update object
 				obj.parent = new_par.id;
+				this._model.data[obj.id].parent = new_par.id;
 				tmp = new_par.parents.concat();
 				tmp.unshift(new_par.id);
 				p = obj.parents.length;
