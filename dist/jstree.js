@@ -4876,6 +4876,9 @@
 			if(this.settings.checkbox.tie_selection || (!this.settings.checkbox.whole_node && !$(e.target).hasClass('jstree-checkbox'))) {
 				return parent.activate_node.call(this, obj, e);
 			}
+			if(this.is_disabled(obj)) {
+				return false;
+			}
 			if(this.is_checked(obj)) {
 				this.uncheck_node(obj, e);
 			}
