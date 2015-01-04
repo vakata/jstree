@@ -64,10 +64,16 @@
 		inside_pos : 0,
 		/**
 		 * when starting the drag on a node that is selected this setting controls if all selected nodes are dragged or only the single node, default is `true`, which means all selected nodes are dragged when the drag is started on a selected node
-		 * @name $.jstree.defaults.dnd.inside_pos
+		 * @name $.jstree.defaults.dnd.drag_selection
 		 * @plugin dnd
 		 */
-		drag_selection : true
+		drag_selection : true,
+		/**
+		 * controls whether dnd works on touch devices. If left as boolean true dnd will work the same as in desktop browsers, which in some cases may impair scrolling. If set to boolean false dnd will not work on touch devices. There is a special third option - string "selected" which means only selected nodes can be dragged on touch devices.
+		 * @name $.jstree.defaults.dnd.touch
+		 * @plugin dnd
+		 */
+		touch : true
 	};
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
 	$.jstree.plugins.dnd = function (options, parent) {
@@ -76,6 +82,9 @@
 
 			this.element
 				.on('mousedown.jstree touchstart.jstree', '.jstree-anchor', $.proxy(function (e) {
+					if(e.type === "touchstart" && (!this.settings.dnd.touch || (this.settings.dnd.touch === 'selected' && !$(e.currentTarget).hasClass('jstree-clicked')))) {
+						return true;
+					}
 					var obj = this.get_node(e.target),
 						mlt = this.is_selected(obj) && this.settings.drag_selection ? this.get_selected().length : 1,
 						txt = (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget));
