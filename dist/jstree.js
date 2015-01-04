@@ -706,27 +706,31 @@
 								 */
 								this.trigger("loaded");
 							}
-							if(!this._data.core.ready && !this.get_container_ul().find('.jstree-loading').length) {
-								this._data.core.ready = true;
-								if(this._data.core.selected.length) {
-									if(this.settings.core.expand_selected_onload) {
-										var tmp = [], i, j;
-										for(i = 0, j = this._data.core.selected.length; i < j; i++) {
-											tmp = tmp.concat(this._model.data[this._data.core.selected[i]].parents);
+							if(!this._data.core.ready) {
+								setTimeout($.proxy(function() {
+									if(!this.get_container_ul().find('.jstree-loading').length) {
+										this._data.core.ready = true;
+										if(this._data.core.selected.length) {
+											if(this.settings.core.expand_selected_onload) {
+												var tmp = [], i, j;
+												for(i = 0, j = this._data.core.selected.length; i < j; i++) {
+													tmp = tmp.concat(this._model.data[this._data.core.selected[i]].parents);
+												}
+												tmp = $.vakata.array_unique(tmp);
+												for(i = 0, j = tmp.length; i < j; i++) {
+													this.open_node(tmp[i], false, 0);
+												}
+											}
+											this.trigger('changed', { 'action' : 'ready', 'selected' : this._data.core.selected });
 										}
-										tmp = $.vakata.array_unique(tmp);
-										for(i = 0, j = tmp.length; i < j; i++) {
-											this.open_node(tmp[i], false, 0);
-										}
+										/**
+										 * triggered after all nodes are finished loading
+										 * @event
+										 * @name ready.jstree
+										 */
+										this.trigger("ready");
 									}
-									this.trigger('changed', { 'action' : 'ready', 'selected' : this._data.core.selected });
-								}
-								/**
-								 * triggered after all nodes are finished loading
-								 * @event
-								 * @name ready.jstree
-								 */
-								setTimeout($.proxy(function () { this.trigger("ready"); }, this), 0);
+								}, this), 0);
 							}
 						}
 					}, this))
