@@ -4930,8 +4930,8 @@
 		};
 		/**
 		 * uncheck a node (only if tie_selection in checkbox settings is false, otherwise deselect_node will be called internally)
-		 * @name deselect_node(obj)
-		 * @param {mixed} obj an array can be used to deselect multiple nodes
+		 * @name uncheck_node(obj)
+		 * @param {mixed} obj an array can be used to uncheck multiple nodes
 		 * @trigger uncheck_node.jstree
 		 * @plugin checkbox
 		 */
