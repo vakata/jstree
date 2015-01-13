@@ -5137,8 +5137,6 @@
  * Shows a context menu when a node is right-clicked.
  */
 
-	var cto = null, ex, ey;
-
 	/**
 	 * stores all defaults for the contextmenu plugin
 	 * @name $.jstree.defaults.contextmenu
@@ -5284,7 +5282,7 @@
 		this.bind = function () {
 			parent.bind.call(this);
 
-			var last_ts = 0;
+			var last_ts = 0, cto = null, ex, ey;
 			this.element
 				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e, data) {
 						e.preventDefault();
@@ -5314,7 +5312,18 @@
 						cto = setTimeout(function () {
 							$(e.currentTarget).trigger('contextmenu', true);
 						}, 750);
+					})
+				.on('touchmove.vakata.jstree', function (e) {
+						if(cto && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0] && (Math.abs(ex - e.pageX) > 50 || Math.abs(ey - e.pageY) > 50)) {
+							clearTimeout(cto);
+						}
+					})
+				.on('touchend.vakata.jstree', function (e) {
+						if(cto) {
+							clearTimeout(cto);
+						}
 					});
+
 			/*
 			if(!('oncontextmenu' in document.body) && ('ontouchstart' in document.body)) {
 				var el = null, tm = null;
@@ -5414,20 +5423,6 @@
 			this.trigger('show_contextmenu', { "node" : obj, "x" : x, "y" : y });
 		};
 	};
-
-	$(function () {
-		$(document)
-			.on('touchmove.vakata.jstree', function (e) {
-				if(cto && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0] && (Math.abs(ex - e.pageX) > 50 || Math.abs(ey - e.pageY) > 50)) {
-					clearTimeout(cto);
-				}
-			})
-			.on('touchend.vakata.jstree', function (e) {
-				if(cto) {
-					clearTimeout(cto);
-				}
-			});
-	});
 
 	// contextmenu helper
 	(function ($) {
