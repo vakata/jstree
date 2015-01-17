@@ -17,11 +17,11 @@
 					c.core[i] = JSON.parse(this.getAttribute(i)) || this.getAttribute(i);
 				}
 			}
-			jQuery(this).jstree(c);
+			$(this).jstree(c);
 		};
 		// proto.attributeChangedCallback = function (name, previous, value) { };
 		try {
 			document.registerElement("vakata-jstree", { prototype: proto });
 		} catch(ignore) { }
 	}
-}(jQuery));
+}($));
