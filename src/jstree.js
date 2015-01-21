@@ -4085,12 +4085,9 @@
 				this.settings.core.error.call(this, this._data.core.last_error);
 				return false;
 			}
-			// IE fix for blur event
-			if(this.get_node(obj, true).find('> .jstree-anchor > .jstree-rename-input').length) {
-				return true;
-			}
 			default_text = typeof default_text === 'string' ? default_text : obj.text;
 			this.set_text(obj, "");
+			obj.text = default_text;
 			obj = this._open_to(obj);
 
 			var rtl = this._data.core.rtl,
