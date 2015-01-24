@@ -118,7 +118,7 @@
 								var inst = $.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
 								if(inst.is_selected(obj)) {
-									inst.cut(inst.get_selected());
+									inst.cut(inst.get_top_selected());
 								}
 								else {
 									inst.cut(obj);
@@ -134,7 +134,7 @@
 								var inst = $.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
 								if(inst.is_selected(obj)) {
-									inst.copy(inst.get_selected());
+									inst.copy(inst.get_top_selected());
 								}
 								else {
 									inst.copy(obj);
