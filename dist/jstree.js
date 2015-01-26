@@ -1521,6 +1521,9 @@
 							if(d && d.data && d.data.jstree && d.data.jstree.icon) {
 								tmp.icon = d.data.jstree.icon;
 							}
+							if(tmp.icon === undefined || tmp.icon === null || tmp.icon === "") {
+								tmp.icon = true;
+							}
 							if(d && d.data) {
 								tmp.data = d.data;
 								if(d.data.jstree) {
@@ -1609,6 +1612,9 @@
 							if(d && d.text) { tmp.text = d.text; }
 							if(d && d.data && d.data.jstree && d.data.jstree.icon) {
 								tmp.icon = d.data.jstree.icon;
+							}
+							if(tmp.icon === undefined || tmp.icon === null || tmp.icon === "") {
+								tmp.icon = true;
 							}
 							if(d && d.data) {
 								tmp.data = d.data;
@@ -1914,6 +1920,9 @@
 			if(data.state.icon) {
 				data.icon = data.state.icon;
 			}
+			if(data.icon === undefined || data.icon === null || data.icon === "") {
+				data.icon = true;
+			}
 			tmp = d.children("ul").children("li");
 			do {
 				tid = 'j' + this._id + '_' + (++this._cnt);
@@ -1985,6 +1994,9 @@
 			}
 			if(d && d.data && d.data.jstree && d.data.jstree.icon) {
 				tmp.icon = d.data.jstree.icon;
+			}
+			if(tmp.icon === undefined || tmp.icon === null || tmp.icon === "") {
+				tmp.icon = true;
 			}
 			if(d && d.data) {
 				tmp.data = d.data;
@@ -2083,6 +2095,9 @@
 			if(d && d.text) { tmp.text = d.text; }
 			if(d && d.data && d.data.jstree && d.data.jstree.icon) {
 				tmp.icon = d.data.jstree.icon;
+			}
+			if(tmp.icon === undefined || tmp.icon === null || tmp.icon === "") {
+				tmp.icon = true;
 			}
 			if(d && d.data) {
 				tmp.data = d.data;
@@ -4287,12 +4302,12 @@
 			obj = this.get_node(obj);
 			if(!obj || obj.id === '#') { return false; }
 			old = obj.icon;
-			obj.icon = icon;
+			obj.icon = icon === true || icon === null || icon === undefined || icon === '' ? true : icon;
 			dom = this.get_node(obj, true).children(".jstree-anchor").children(".jstree-themeicon");
 			if(icon === false) {
 				this.hide_icon(obj);
 			}
-			else if(icon === true) {
+			else if(icon === true || icon === null || icon === undefined || icon === '') {
 				dom.removeClass('jstree-themeicon-custom ' + old).css("background","").removeAttr("rel");
 				if(old === false) { this.show_icon(obj); }
 			}
