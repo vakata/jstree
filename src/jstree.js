@@ -4093,6 +4093,7 @@
 		 * @param  {String} default_text the text to populate the input with (if omitted the node text value is used)
 		 */
 		edit : function (obj, default_text) {
+			var rtl, w, a, s, t, h1, h2, fn, tmp;
 			obj = this.get_node(obj);
 			if(!obj) { return false; }
 			if(this.settings.core.check_callback === false) {
@@ -4100,24 +4101,25 @@
 				this.settings.core.error.call(this, this._data.core.last_error);
 				return false;
 			}
+			tmp = obj;
 			default_text = typeof default_text === 'string' ? default_text : obj.text;
 			this.set_text(obj, "");
-			obj.text = default_text;
 			obj = this._open_to(obj);
+			tmp.text = default_text;
 
-			var rtl = this._data.core.rtl,
-				w  = this.element.width(),
-				a  = obj.children('.jstree-anchor'),
-				s  = $('<span>'),
-				/*!
-				oi = obj.children("i:visible"),
-				ai = a.children("i:visible"),
-				w1 = oi.width() * oi.length,
-				w2 = ai.width() * ai.length,
-				*/
-				t  = default_text,
-				h1 = $("<"+"div />", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo("body"),
-				h2 = $("<"+"input />", {
+			rtl = this._data.core.rtl;
+			w  = this.element.width();
+			a  = obj.children('.jstree-anchor');
+			s  = $('<span>');
+			/*!
+			oi = obj.children("i:visible"),
+			ai = a.children("i:visible"),
+			w1 = oi.width() * oi.length,
+			w2 = ai.width() * ai.length,
+			*/
+			t  = default_text;
+			h1 = $("<"+"div />", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo("body");
+			h2 = $("<"+"input />", {
 						"value" : t,
 						"class" : "jstree-rename-input",
 						// "size" : t.length,
@@ -4163,7 +4165,7 @@
 						"keypress" : function(event) {
 							if(event.which === 13) { return false; }
 						}
-					}),
+					});
 				fn = {
 						fontFamily		: a.css('fontFamily')		|| '',
 						fontSize		: a.css('fontSize')			|| '',
