@@ -5140,6 +5140,7 @@
 					});
 				}
 				delete state.checkbox;
+				this.set_state(state, callback);
 				return false;
 			}
 			return res;
