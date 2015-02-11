@@ -225,6 +225,45 @@
 	};
 })(jQuery);
 
+// massloading
+(function ($, undefined) {
+	"use strict";
+	$.jstree.defaults.massload = function (nodes, callback) {
+		callback(false);
+	};
+	$.jstree.plugins.massload = function (options, parent) {
+		this.init = function (el, options) {
+			parent.init.call(this, el, options);
+			this._data.massload = {};
+		};
+		this._load_nodes = function (nodes, callback, is_callback) {
+			if(is_callback && !$.isEmptyObject(this._data.massload)) {
+				return parent._load_nodes.call(this, nodes, callback, is_callback);
+			}
+			this.settings.massload.call(this, nodes, $.proxy(function (data) {
+				if(data) {
+					for(var i in data) {
+						if(data.hasOwnProperty(i)) {
+							this._data.massload[i] = data[i];
+						}
+					}
+				}
+				parent._load_nodes.call(this, nodes, callback, is_callback);
+			}, this));
+		};
+		this._load_node = function (obj, callback) {
+			var d = this._data.massload[obj.id];
+			if(d) {
+				return this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $(d) : d, function (status) {
+					callback.call(this, status);
+					delete this._data.massload[obj.id];
+				});
+			}
+			return parent._load_node.call(this, obj, callback);
+		};
+	};
+})(jQuery);
+
 // paste override
 (function ($, undefined) {
 	"use strict";
