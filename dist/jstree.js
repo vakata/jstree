@@ -1199,12 +1199,14 @@
 					this.trigger('changed', { 'action' : 'load_node', 'node' : obj, 'selected' : this._data.core.selected });
 				}
 			}
+			obj.state.failed = false;
 			obj.state.loading = true;
 			this.get_node(obj, true).addClass("jstree-loading").attr('aria-busy',true);
 			this._load_node(obj, $.proxy(function (status) {
 				obj = this._model.data[obj.id];
 				obj.state.loading = false;
 				obj.state.loaded = status;
+				obj.state.failed = !obj.state.loaded;
 				var dom = this.get_node(obj, true);
 				if(obj.state.loaded && !obj.children.length && dom && dom.length && !dom.hasClass('jstree-leaf')) {
 					dom.removeClass('jstree-closed jstree-open').addClass('jstree-leaf');
@@ -1236,7 +1238,7 @@
 				c = function () { this._load_nodes(nodes, callback, true); },
 				m = this._model.data, i, j;
 			for(i = 0, j = nodes.length; i < j; i++) {
-				if(m[nodes[i]] && (!m[nodes[i]].state.loaded || !is_callback)) {
+				if(m[nodes[i]] && ( (!m[nodes[i]].state.loaded && !m[nodes[i]].state.failed) || !is_callback)) {
 					if(!this.is_loading(nodes[i])) {
 						this.load_node(nodes[i], c);
 					}
