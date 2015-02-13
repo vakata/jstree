@@ -1341,11 +1341,11 @@
 					return $.ajax(s)
 						.done($.proxy(function (d,t,x) {
 								var type = x.getResponseHeader('Content-Type');
-								if(type.indexOf('json') !== -1 || typeof d === "object") {
+								if((type && type.indexOf('json') !== -1) || typeof d === "object") {
 									return this._append_json_data(obj, d, function (status) { callback.call(this, status); });
 									//return callback.call(this, this._append_json_data(obj, d));
 								}
-								if(type.indexOf('html') !== -1 || typeof d === "string") {
+								if((type && type.indexOf('html') !== -1) || typeof d === "string") {
 									return this._append_html_data(obj, $(d), function (status) { callback.call(this, status); });
 									// return callback.call(this, this._append_html_data(obj, $(d)));
 								}
