@@ -1236,7 +1236,7 @@
 		_load_nodes : function (nodes, callback, is_callback) {
 			var r = true,
 				c = function () { this._load_nodes(nodes, callback, true); },
-				m = this._model.data, i, j;
+				m = this._model.data, i, j, tmp = [];
 			for(i = 0, j = nodes.length; i < j; i++) {
 				if(m[nodes[i]] && ( (!m[nodes[i]].state.loaded && !m[nodes[i]].state.failed) || !is_callback)) {
 					if(!this.is_loading(nodes[i])) {
@@ -1246,8 +1246,13 @@
 				}
 			}
 			if(r) {
+				for(i = 0, j = nodes.length; i < j; i++) {
+					if(m[nodes[i]] && m[nodes[i]].state.loaded) {
+						tmp.push(nodes[i]);
+					}
+				}
 				if(callback && !callback.done) {
-					callback.call(this, nodes);
+					callback.call(this, tmp);
 					callback.done = true;
 				}
 			}
@@ -3153,42 +3158,16 @@
 				if(state.core) {
 					var res, n, t, _this, i;
 					if(state.core.open) {
-						if(!$.isArray(state.core.open)) {
+						if(!$.isArray(state.core.open) || !state.core.open.length) {
 							delete state.core.open;
 							this.set_state(state, callback);
-							return false;
 						}
-						res = true;
-						n = false;
-						t = this;
-						$.each(state.core.open.concat([]), function (i, v) {
-							n = t.get_node(v);
-							if(n) {
-								if(t.is_loaded(v)) {
-									if(t.is_closed(v)) {
-										t.open_node(v, false, 0);
-									}
-									if(state && state.core && state.core.open) {
-										$.vakata.array_remove_item(state.core.open, v);
-									}
-								}
-								else {
-									if(!t.is_loading(v)) {
-										t.open_node(v, $.proxy(function (o, s) {
-											if(!s && state && state.core && state.core.open) {
-												$.vakata.array_remove_item(state.core.open, o.id);
-											}
-											this.set_state(state, callback);
-										}, t), 0);
-									}
-									// there will be some async activity - so wait for it
-									res = false;
-								}
-							}
-						});
-						if(res) {
-							delete state.core.open;
-							this.set_state(state, callback);
+						else {
+							this._load_nodes(state.core.open, function (nodes) {
+								this.open_node(nodes, false, 0);
+								delete state.core.open;
+								this.set_state(state, callback);
+							}, true);
 						}
 						return false;
 					}
@@ -3203,23 +3182,6 @@
 						this.set_state(state, callback);
 						return false;
 					}
-					/*!
-					if(state.core.themes) {
-						if(state.core.themes.name) {
-							this.set_theme(state.core.themes.name);
-						}
-						if(typeof state.core.themes.dots !== 'undefined') {
-							this[ state.core.themes.dots ? "show_dots" : "hide_dots" ]();
-						}
-						if(typeof state.core.themes.icons !== 'undefined') {
-							this[ state.core.themes.icons ? "show_icons" : "hide_icons" ]();
-						}
-						delete state.core.themes;
-						delete state.core.open;
-						this.set_state(state, callback);
-						return false;
-					}
-					*/
 					if(state.core.selected) {
 						_this = this;
 						this.deselect_all();
