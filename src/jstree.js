@@ -3684,15 +3684,20 @@
 			}
 
 			if($.isArray(obj)) {
-				obj = obj.slice();
-				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-					if(this.move_node(obj[t1], par, pos, callback, is_loaded, true)) {
-						par = obj[t1];
-						pos = "after";
-					}
+				if(obj.length === 1) {
+					obj = obj[0];
 				}
-				this.redraw();
-				return true;
+				else {
+					//obj = obj.slice();
+					for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
+						if(this.move_node(obj[t1], par, pos, callback, is_loaded, true)) {
+							par = obj[t1];
+							pos = "after";
+						}
+					}
+					this.redraw();
+					return true;
+				}
 			}
 			obj = obj && obj.id ? obj : this.get_node(obj);
 
@@ -3847,16 +3852,21 @@
 			}
 
 			if($.isArray(obj)) {
-				obj = obj.slice();
-				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-					tmp = this.copy_node(obj[t1], par, pos, callback, is_loaded, true);
-					if(tmp) {
-						par = tmp;
-						pos = "after";
-					}
+				if(obj.length === 1) {
+					obj = obj[0];
 				}
-				this.redraw();
-				return true;
+				else {
+					//obj = obj.slice();
+					for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
+						tmp = this.copy_node(obj[t1], par, pos, callback, is_loaded, true);
+						if(tmp) {
+							par = tmp;
+							pos = "after";
+						}
+					}
+					this.redraw();
+					return true;
+				}
 			}
 			obj = obj && obj.id ? obj : this.get_node(obj);
 			if(!obj || obj.id === '#') { return false; }
