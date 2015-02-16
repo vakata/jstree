@@ -1,12 +1,7 @@
 .gradient (@color1; @color2) {
 	background:@color1;
-	background: -moz-linear-gradient(top, @color1 0%, @color2 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@color1), color-stop(100%,@color2));
 	background: -webkit-linear-gradient(top, @color1 0%,@color2 100%);
-	background: -o-linear-gradient(top, @color1 0%,@color2 100%);
-	background: -ms-linear-gradient(top, @color1 0%,@color2 100%);
 	background: linear-gradient(to bottom, @color1 0%,@color2 100%);
-	/*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='@color1', endColorstr='@color2',GradientType=0 );*/
 }
 
 .jstree-theme (@base-height, @image, @image-height) {

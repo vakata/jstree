@@ -111,8 +111,6 @@
   position: absolute;
   background: #f5f5f5;
   border: 1px solid #979797;
-  -moz-box-shadow: 5px 5px 4px -4px #666666;
-  -webkit-box-shadow: 2px 2px 2px #999999;
   box-shadow: 2px 2px 2px #999999;
 }
 .vakata-context ul {
@@ -139,18 +137,12 @@
   color: black;
   white-space: nowrap;
   line-height: 2.4em;
-  -moz-text-shadow: 1px 1px 0 white;
-  -webkit-text-shadow: 1px 1px 0 white;
   text-shadow: 1px 1px 0 white;
-  -moz-border-radius: 1px;
-  -webkit-border-radius: 1px;
   border-radius: 1px;
 }
 .vakata-context li > a:hover {
   position: relative;
   background-color: #e8eff7;
-  -moz-box-shadow: 0 0 2px #0a6aa1;
-  -webkit-box-shadow: 0 0 2px #0a6aa1;
   box-shadow: 0 0 2px #0a6aa1;
 }
 .vakata-context li > a.vakata-context-parent {
@@ -164,8 +156,6 @@
 .vakata-context .vakata-context-hover > a {
   position: relative;
   background-color: #e8eff7;
-  -moz-box-shadow: 0 0 2px #0a6aa1;
-  -webkit-box-shadow: 0 0 2px #0a6aa1;
   box-shadow: 0 0 2px #0a6aa1;
 }
 .vakata-context .vakata-context-separator > a,
@@ -179,14 +169,8 @@
   padding: 0;
   margin: 0 0 0 2.4em;
   border-left: 1px solid #e0e0e0;
-  -moz-text-shadow: 0 0 0 transparent;
-  -webkit-text-shadow: 0 0 0 transparent;
   text-shadow: 0 0 0 transparent;
-  -moz-box-shadow: 0 0 0 transparent;
-  -webkit-box-shadow: 0 0 0 transparent;
   box-shadow: 0 0 0 transparent;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
   border-radius: 0;
 }
 .vakata-context .vakata-contextmenu-disabled a,
@@ -377,13 +361,8 @@
 }
 .jstree-default-dark .jstree-wholerow-clicked {
   background: #5fa2db;
-  background: -moz-linear-gradient(top, #5fa2db 0%, #5fa2db 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #5fa2db), color-stop(100%, #5fa2db));
   background: -webkit-linear-gradient(top, #5fa2db 0%, #5fa2db 100%);
-  background: -o-linear-gradient(top, #5fa2db 0%, #5fa2db 100%);
-  background: -ms-linear-gradient(top, #5fa2db 0%, #5fa2db 100%);
   background: linear-gradient(to bottom, #5fa2db 0%, #5fa2db 100%);
-  /*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='@color1', endColorstr='@color2',GradientType=0 );*/
 }
 .jstree-default-dark .jstree-node {
   min-height: 24px;
