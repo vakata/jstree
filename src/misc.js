@@ -343,7 +343,7 @@ $('#jstree').jstree({
 // paste override
 (function ($, undefined) {
 	"use strict";
-	$.jstree.plugins.nohover = function () {
+	$.jstree.plugins.pastewithpos = function () {
 		this.paste = function (obj, pos) {
 			obj = this.get_node(obj);
 			if(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }
