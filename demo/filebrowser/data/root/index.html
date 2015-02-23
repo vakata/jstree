@@ -611,8 +611,8 @@ $('#tree').jstree({
 'core' : {
   'data' : {
     'url' : function (node) {
-      return node.id === '#' ? 
-        'ajax_roots.json' : 
+      return node.id === '#' ?
+        'ajax_roots.json' :
         'ajax_children.json';
     },
     'data' : function (node) {
@@ -767,9 +767,9 @@ $.jstree.reference('#jstree')
 					</div>
 					<div class="col-md-4">
 						<div style="text-align:center; margin-bottom:1em;">
-							<button class="btn btn-info" onclick="$('#using_methods').jstree(true).select_node('mn1');">select 1</button> 
-							<button class="btn btn-info" onclick="$('#using_methods').jstree('select_node', 'mn2');">select 2</button> 
-							<button class="btn btn-info" onclick="$.jstree.reference('#using_methods').select_node('mn3');">select 3</button> 
+							<button class="btn btn-info" onclick="$('#using_methods').jstree(true).select_node('mn1');">select 1</button>
+							<button class="btn btn-info" onclick="$('#using_methods').jstree('select_node', 'mn2');">select 2</button>
+							<button class="btn btn-info" onclick="$.jstree.reference('#using_methods').select_node('mn3');">select 3</button>
 						</div>
 						<div id="using_methods" class="demo">
 							<ul>
@@ -884,8 +884,8 @@ $.jstree.reference('#jstree')
   },
   "types" : {
     "#" : {
-      "max_children" : 1, 
-      "max_depth" : 4, 
+      "max_children" : 1,
+      "max_depth" : 4,
       "valid_children" : ["root"]
     },
     "root" : {

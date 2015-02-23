@@ -1,7 +1,7 @@
 /**
  * ### Checkbox plugin
  *
- * This plugin renders checkbox icons in front of each node, making multiple selection much easier. 
+ * This plugin renders checkbox icons in front of each node, making multiple selection much easier.
  * It also supports tri-state behavior, meaning that if a node has a few of its children checked it will be rendered as undetermined, and state will be propagated up.
  */
 /*globals jQuery, define, exports, require, document */
@@ -55,15 +55,15 @@
 		 */
 		keep_selected_style	: true,
 		/**
-		 * This setting controls how cascading and undetermined nodes are applied. 
-		 * If 'up' is in the string - cascading up is enabled, if 'down' is in the string - cascading down is enabled, if 'undetermined' is in the string - undetermined nodes will be used. 
+		 * This setting controls how cascading and undetermined nodes are applied.
+		 * If 'up' is in the string - cascading up is enabled, if 'down' is in the string - cascading down is enabled, if 'undetermined' is in the string - undetermined nodes will be used.
 		 * If `three_state` is set to `true` this setting is automatically set to 'up+down+undetermined'. Defaults to ''.
 		 * @name $.jstree.defaults.checkbox.cascade
 		 * @plugin checkbox
 		 */
 		cascade				: '',
 		/**
-		 * This setting controls if checkbox are bound to the general tree selection or to an internal array maintained by the checkbox plugin. Defaults to `true`, only set to `false` if you know exactly what you are doing. 
+		 * This setting controls if checkbox are bound to the general tree selection or to an internal array maintained by the checkbox plugin. Defaults to `true`, only set to `false` if you know exactly what you are doing.
 		 * @name $.jstree.defaults.checkbox.tie_selection
 		 * @plugin checkbox
 		 */

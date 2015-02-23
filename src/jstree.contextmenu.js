@@ -40,9 +40,9 @@
 		show_at_node : true,
 		/**
 		 * an object of actions, or a function that accepts a node and a callback function and calls the callback function with an object of actions available for that node (you can also return the items too).
-		 * 
+		 *
 		 * Each action consists of a key (a unique name) and a value which is an object with the following properties (only label and action are required):
-		 * 
+		 *
 		 * * `separator_before` - a boolean indicating if there should be a separator before this item
 		 * * `separator_after` - a boolean indicating if there should be a separator after this item
 		 * * `_disabled` - a boolean indicating if this action should be disabled
@@ -51,7 +51,7 @@
 		 * * `icon` - a string, can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
 		 * * `shortcut` - keyCode which will trigger the action if the menu is open (for example `113` for rename, which equals F2)
 		 * * `shortcut_label` - shortcut label (like for example `F2` for rename)
-		 * 
+		 *
 		 * @name $.jstree.defaults.contextmenu.items
 		 * @plugin contextmenu
 		 */
