@@ -3690,8 +3690,8 @@
 				else {
 					//obj = obj.slice();
 					for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-						if(this.move_node(obj[t1], par, pos, callback, is_loaded, true)) {
-							par = obj[t1];
+						if((tmp = this.move_node(obj[t1], par, pos, callback, is_loaded, true))) {
+							par = tmp;
 							pos = "after";
 						}
 					}
@@ -3709,9 +3709,9 @@
 			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
 			old_pos = old_ins && old_ins._id && old_par && old_ins._model.data[old_par] && old_ins._model.data[old_par].children ? $.inArray(obj.id, old_ins._model.data[old_par].children) : -1;
 			if(is_multi) {
-				if(this.copy_node(obj, par, pos, callback, is_loaded)) {
+				if((tmp = this.copy_node(obj, par, pos, callback, is_loaded))) {
 					if(old_ins) { old_ins.delete_node(obj); }
-					return true;
+					return tmp;
 				}
 				return false;
 			}
@@ -3828,7 +3828,7 @@
 			 * @param {jsTree} new_instance the instance of the new parent
 			 */
 			this.trigger('move_node', { "node" : obj, "parent" : new_par.id, "position" : pos, "old_parent" : old_par, "old_position" : old_pos, 'is_multi' : (old_ins && old_ins._id && old_ins._id !== this._id), 'is_foreign' : (!old_ins || !old_ins._id), 'old_instance' : old_ins, 'new_instance' : this });
-			return true;
+			return obj.id;
 		},
 		/**
 		 * copy a node to a new parent
@@ -3858,8 +3858,7 @@
 				else {
 					//obj = obj.slice();
 					for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-						tmp = this.copy_node(obj[t1], par, pos, callback, is_loaded, true);
-						if(tmp) {
+						if((tmp = this.copy_node(obj[t1], par, pos, callback, is_loaded, true))) {
 							par = tmp;
 							pos = "after";
 						}
