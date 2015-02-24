@@ -66,12 +66,12 @@
 	$('#frmt').jstree({
 		'core' : {
 			'data' : [
-				{ 
-					"text" : "Root node", 
-					"state" : { "opened" : true }, 
+				{
+					"text" : "Root node",
+					"state" : { "opened" : true },
 					"children" : [
-						{ 
-							"text" : "Child node 1", 
+						{
+							"text" : "Child node 1",
 							"state" : { "selected" : true },
 							"icon" : "jstree-file"
 						},
@@ -120,7 +120,7 @@
 
 	// interaction and events
 	$('#evts_button').on("click", function () {
-		var instance = $('#evts').jstree(true); 
+		var instance = $('#evts').jstree(true);
 		instance.deselect_all();
 		instance.select_node('1');
 	});

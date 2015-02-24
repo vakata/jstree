@@ -26,14 +26,14 @@ class tree
 
 	public function get_node($id, $options = array()) {
 		$node = $this->db->one("
-			SELECT 
-				s.".implode(", s.", $this->options['structure']).", 
-				d.".implode(", d.", $this->options['data'])." 
-			FROM 
-				".$this->options['structure_table']." s, 
-				".$this->options['data_table']." d 
-			WHERE 
-				s.".$this->options['structure']['id']." = d.".$this->options['data2structure']." AND 
+			SELECT
+				s.".implode(", s.", $this->options['structure']).",
+				d.".implode(", d.", $this->options['data'])."
+			FROM
+				".$this->options['structure_table']." s,
+				".$this->options['data_table']." d
+			WHERE
+				s.".$this->options['structure']['id']." = d.".$this->options['data2structure']." AND
 				s.".$this->options['structure']['id']." = ".(int)$id
 		);
 		if(!$node) {
@@ -53,32 +53,32 @@ class tree
 		if($recursive) {
 			$node = $this->get_node($id);
 			$sql = "
-				SELECT 
-					s.".implode(", s.", $this->options['structure']).", 
-					d.".implode(", d.", $this->options['data'])." 
-				FROM 
-					".$this->options['structure_table']." s, 
-					".$this->options['data_table']." d 
-				WHERE 
-					s.".$this->options['structure']['id']." = d.".$this->options['data2structure']." AND 
-					s.".$this->options['structure']['left']." > ".(int)$node[$this->options['structure']['left']]." AND 
-					s.".$this->options['structure']['right']." < ".(int)$node[$this->options['structure']['right']]." 
-				ORDER BY 
+				SELECT
+					s.".implode(", s.", $this->options['structure']).",
+					d.".implode(", d.", $this->options['data'])."
+				FROM
+					".$this->options['structure_table']." s,
+					".$this->options['data_table']." d
+				WHERE
+					s.".$this->options['structure']['id']." = d.".$this->options['data2structure']." AND
+					s.".$this->options['structure']['left']." > ".(int)$node[$this->options['structure']['left']]." AND
+					s.".$this->options['structure']['right']." < ".(int)$node[$this->options['structure']['right']]."
+				ORDER BY
 					s.".$this->options['structure']['left']."
 			";
 		}
 		else {
 			$sql = "
-				SELECT 
-					s.".implode(", s.", $this->options['structure']).", 
-					d.".implode(", d.", $this->options['data'])." 
-				FROM 
-					".$this->options['structure_table']." s, 
-					".$this->options['data_table']." d 
-				WHERE 
-					s.".$this->options['structure']['id']." = d.".$this->options['data2structure']." AND 
-					s.".$this->options['structure']['parent_id']." = ".(int)$id." 
-				ORDER BY 
+				SELECT
+					s.".implode(", s.", $this->options['structure']).",
+					d.".implode(", d.", $this->options['data'])."
+				FROM
+					".$this->options['structure_table']." s,
+					".$this->options['data_table']." d
+				WHERE
+					s.".$this->options['structure']['id']." = d.".$this->options['data2structure']." AND
+					s.".$this->options['structure']['parent_id']." = ".(int)$id."
+				ORDER BY
 					s.".$this->options['structure']['position']."
 			";
 		}
@@ -90,17 +90,17 @@ class tree
 		$sql = false;
 		if($node) {
 			$sql = "
-				SELECT 
-					s.".implode(", s.", $this->options['structure']).", 
-					d.".implode(", d.", $this->options['data'])." 
-				FROM 
-					".$this->options['structure_table']." s, 
-					".$this->options['data_table']." d 
-				WHERE 
-					s.".$this->options['structure']['id']." = d.".$this->options['data2structure']." AND 
-					s.".$this->options['structure']['left']." < ".(int)$node[$this->options['structure']['left']]." AND 
-					s.".$this->options['structure']['right']." > ".(int)$node[$this->options['structure']['right']]." 
-				ORDER BY 
+				SELECT
+					s.".implode(", s.", $this->options['structure']).",
+					d.".implode(", d.", $this->options['data'])."
+				FROM
+					".$this->options['structure_table']." s,
+					".$this->options['data_table']." d
+				WHERE
+					s.".$this->options['structure']['id']." = d.".$this->options['data2structure']." AND
+					s.".$this->options['structure']['left']." < ".(int)$node[$this->options['structure']['left']]." AND
+					s.".$this->options['structure']['right']." > ".(int)$node[$this->options['structure']['right']]."
+				ORDER BY
 					s.".$this->options['structure']['left']."
 			";
 		}
@@ -117,13 +117,13 @@ class tree
 		$sql = array();
 		$par = array();
 
-		// PREPARE NEW PARENT 
+		// PREPARE NEW PARENT
 		// update positions of all next elements
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["position"]." = ".$this->options['structure']["position"]." + 1 
-			WHERE 
-				".$this->options['structure']["parent_id"]." = ".(int)$parent[$this->options['structure']['id']]." AND 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["position"]." = ".$this->options['structure']["position"]." + 1
+			WHERE
+				".$this->options['structure']["parent_id"]." = ".(int)$parent[$this->options['structure']['id']]." AND
 				".$this->options['structure']["position"]." >= ".$position."
 			";
 		$par[] = false;
@@ -140,10 +140,10 @@ class tree
 			$ref_lft = $parent['children'][(int)$position][$this->options['structure']["left"]];
 		}
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." + 2 
-			WHERE 
-				".$this->options['structure']["left"]." >= ".(int)$ref_lft." 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." + 2
+			WHERE
+				".$this->options['structure']["left"]." >= ".(int)$ref_lft."
 			";
 		$par[] = false;
 
@@ -159,10 +159,10 @@ class tree
 			$ref_rgt = $parent['children'][(int)$position][$this->options['structure']["left"]] + 1;
 		}
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." + 2 
-			WHERE 
-				".$this->options['structure']["right"]." >= ".(int)$ref_rgt." 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." + 2
+			WHERE
+				".$this->options['structure']["right"]." >= ".(int)$ref_rgt."
 			";
 		$par[] = false;
 
@@ -171,22 +171,22 @@ class tree
 		$tmp = array();
 		foreach($this->options['structure'] as $k => $v) {
 			switch($k) {
-				case 'id': 
+				case 'id':
 					$tmp[] = null;
 					break;
-				case 'left': 
+				case 'left':
 					$tmp[] = (int)$ref_lft;
 					break;
-				case 'right': 
+				case 'right':
 					$tmp[] = (int)$ref_lft + 1;
 					break;
-				case 'level': 
+				case 'level':
 					$tmp[] = (int)$parent[$v] + 1;
 					break;
-				case 'parent_id': 
+				case 'parent_id':
 					$tmp[] = $parent[$this->options['structure']['id']];
 					break;
-				case 'position': 
+				case 'position':
 					$tmp[] = $position;
 					break;
 				default:
@@ -216,20 +216,20 @@ class tree
 	public function mv($id, $parent, $position = 0) {
 		$id			= (int)$id;
 		$parent		= (int)$parent;
-		if($parent == 0 || $id == 0 || $id == 1) { 
+		if($parent == 0 || $id == 0 || $id == 1) {
 			throw new Exception('Cannot move inside 0, or move root node');
 		}
 
 		$parent		= $this->get_node($parent, array('with_children'=> true, 'with_path' => true));
 		$id			= $this->get_node($id, array('with_children'=> true, 'deep_children' => true, 'with_path' => true));
-		if(!$parent['children']) { 
-			$position = 0; 
+		if(!$parent['children']) {
+			$position = 0;
 		}
 		if($id[$this->options['structure']['parent_id']] == $parent[$this->options['structure']['id']] && $position > $id[$this->options['structure']['position']]) {
 			$position ++;
 		}
-		if($parent['children'] && $position >= count($parent['children'])) { 
-			$position = count($parent['children']); 
+		if($parent['children'] && $position >= count($parent['children'])) {
+			$position = count($parent['children']);
 		}
 		if($id[$this->options['structure']['left']] < $parent[$this->options['structure']['left']] && $id[$this->options['structure']['right']] > $parent[$this->options['structure']['right']]) {
 			throw new Exception('Could not move parent inside child');
@@ -238,7 +238,7 @@ class tree
 		$tmp = array();
 		$tmp[] = (int)$id[$this->options['structure']["id"]];
 		if($id['children'] && is_array($id['children'])) {
-			foreach($id['children'] as $c) { 
+			foreach($id['children'] as $c) {
 				$tmp[] = (int)$c[$this->options['structure']["id"]];
 			}
 		}
@@ -249,11 +249,11 @@ class tree
 		// PREPARE NEW PARENT
 		// update positions of all next elements
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["position"]." = ".$this->options['structure']["position"]." + 1 
-			WHERE 
-				".$this->options['structure']["id"]." != ".(int)$id[$this->options['structure']['id']]." AND 
-				".$this->options['structure']["parent_id"]." = ".(int)$parent[$this->options['structure']['id']]." AND 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["position"]." = ".$this->options['structure']["position"]." + 1
+			WHERE
+				".$this->options['structure']["id"]." != ".(int)$id[$this->options['structure']['id']]." AND
+				".$this->options['structure']["parent_id"]." = ".(int)$parent[$this->options['structure']['id']]." AND
 				".$this->options['structure']["position"]." >= ".$position."
 			";
 
@@ -269,11 +269,11 @@ class tree
 			$ref_lft = $parent['children'][(int)$position][$this->options['structure']["left"]];
 		}
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." + ".$width." 
-			WHERE 
-				".$this->options['structure']["left"]." >= ".(int)$ref_lft." AND 
-				".$this->options['structure']["id"]." NOT IN(".implode(',',$tmp).") 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." + ".$width."
+			WHERE
+				".$this->options['structure']["left"]." >= ".(int)$ref_lft." AND
+				".$this->options['structure']["id"]." NOT IN(".implode(',',$tmp).")
 			";
 		// update right indexes
 		$ref_rgt = false;
@@ -287,11 +287,11 @@ class tree
 			$ref_rgt = $parent['children'][(int)$position][$this->options['structure']["left"]] + 1;
 		}
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." + ".$width." 
-			WHERE 
-				".$this->options['structure']["right"]." >= ".(int)$ref_rgt." AND 
-				".$this->options['structure']["id"]." NOT IN(".implode(',',$tmp).") 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." + ".$width."
+			WHERE
+				".$this->options['structure']["right"]." >= ".(int)$ref_rgt." AND
+				".$this->options['structure']["id"]." NOT IN(".implode(',',$tmp).")
 			";
 
 		// MOVE THE ELEMENT AND CHILDREN
@@ -301,43 +301,43 @@ class tree
 		if($diff > 0) { $diff = $diff - $width; }
 		$ldiff = ((int)$parent[$this->options['structure']['level']] + 1) - (int)$id[$this->options['structure']['level']];
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." + ".$diff.", 
-					".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." + ".$diff.", 
-					".$this->options['structure']["level"]." = ".$this->options['structure']["level"]." + ".$ldiff." 
-				WHERE ".$this->options['structure']["id"]." IN(".implode(',',$tmp).") 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." + ".$diff.",
+					".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." + ".$diff.",
+					".$this->options['structure']["level"]." = ".$this->options['structure']["level"]." + ".$ldiff."
+				WHERE ".$this->options['structure']["id"]." IN(".implode(',',$tmp).")
 		";
 		// position and parent_id
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
+			UPDATE ".$this->options['structure_table']."
 				SET ".$this->options['structure']["position"]." = ".$position.",
-					".$this->options['structure']["parent_id"]." = ".(int)$parent[$this->options['structure']["id"]]." 
-				WHERE ".$this->options['structure']["id"]."  = ".(int)$id[$this->options['structure']['id']]." 
+					".$this->options['structure']["parent_id"]." = ".(int)$parent[$this->options['structure']["id"]]."
+				WHERE ".$this->options['structure']["id"]."  = ".(int)$id[$this->options['structure']['id']]."
 		";
 
 		// CLEAN OLD PARENT
 		// position of all next elements
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["position"]." = ".$this->options['structure']["position"]." - 1 
-			WHERE 
-				".$this->options['structure']["parent_id"]." = ".(int)$id[$this->options['structure']["parent_id"]]." AND 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["position"]." = ".$this->options['structure']["position"]." - 1
+			WHERE
+				".$this->options['structure']["parent_id"]." = ".(int)$id[$this->options['structure']["parent_id"]]." AND
 				".$this->options['structure']["position"]." > ".(int)$id[$this->options['structure']["position"]];
 		// left indexes
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." - ".$width." 
-			WHERE 
-				".$this->options['structure']["left"]." > ".(int)$id[$this->options['structure']["right"]]." AND 
-				".$this->options['structure']["id"]." NOT IN(".implode(',',$tmp).") 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." - ".$width."
+			WHERE
+				".$this->options['structure']["left"]." > ".(int)$id[$this->options['structure']["right"]]." AND
+				".$this->options['structure']["id"]." NOT IN(".implode(',',$tmp).")
 		";
 		// right indexes
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." - ".$width." 
-			WHERE 
-				".$this->options['structure']["right"]." > ".(int)$id[$this->options['structure']["right"]]." AND 
-				".$this->options['structure']["id"]." NOT IN(".implode(',',$tmp).") 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." - ".$width."
+			WHERE
+				".$this->options['structure']["right"]." > ".(int)$id[$this->options['structure']["right"]]." AND
+				".$this->options['structure']["id"]." NOT IN(".implode(',',$tmp).")
 		";
 
 		foreach($sql as $k => $v) {
@@ -362,24 +362,24 @@ class tree
 		$parent		= $this->get_node($parent, array('with_children'=> true, 'with_path' => true));
 		$id			= $this->get_node($id, array('with_children'=> true, 'deep_children' => true, 'with_path' => true));
 		$old_nodes	= $this->db->get("
-			SELECT * FROM ".$this->options['structure_table']." 
-			WHERE ".$this->options['structure']["left"]." > ".$id[$this->options['structure']["left"]]." AND ".$this->options['structure']["right"]." < ".$id[$this->options['structure']["right"]]." 
+			SELECT * FROM ".$this->options['structure_table']."
+			WHERE ".$this->options['structure']["left"]." > ".$id[$this->options['structure']["left"]]." AND ".$this->options['structure']["right"]." < ".$id[$this->options['structure']["right"]]."
 			ORDER BY ".$this->options['structure']["left"]."
 		");
-		if(!$parent['children']) { 
-			$position = 0; 
+		if(!$parent['children']) {
+			$position = 0;
 		}
 		if($id[$this->options['structure']['parent_id']] == $parent[$this->options['structure']['id']] && $position > $id[$this->options['structure']['position']]) {
 			//$position ++;
 		}
-		if($parent['children'] && $position >= count($parent['children'])) { 
-			$position = count($parent['children']); 
+		if($parent['children'] && $position >= count($parent['children'])) {
+			$position = count($parent['children']);
 		}
 
 		$tmp = array();
 		$tmp[] = (int)$id[$this->options['structure']["id"]];
 		if($id['children'] && is_array($id['children'])) {
-			foreach($id['children'] as $c) { 
+			foreach($id['children'] as $c) {
 				$tmp[] = (int)$c[$this->options['structure']["id"]];
 			}
 		}
@@ -390,10 +390,10 @@ class tree
 		// PREPARE NEW PARENT
 		// update positions of all next elements
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["position"]." = ".$this->options['structure']["position"]." + 1 
-			WHERE 
-				".$this->options['structure']["parent_id"]." = ".(int)$parent[$this->options['structure']['id']]." AND 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["position"]." = ".$this->options['structure']["position"]." + 1
+			WHERE
+				".$this->options['structure']["parent_id"]." = ".(int)$parent[$this->options['structure']['id']]." AND
 				".$this->options['structure']["position"]." >= ".$position."
 			";
 
@@ -409,10 +409,10 @@ class tree
 			$ref_lft = $parent['children'][(int)$position][$this->options['structure']["left"]];
 		}
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." + ".$width." 
-			WHERE 
-				".$this->options['structure']["left"]." >= ".(int)$ref_lft." 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." + ".$width."
+			WHERE
+				".$this->options['structure']["left"]." >= ".(int)$ref_lft."
 			";
 		// update right indexes
 		$ref_rgt = false;
@@ -426,10 +426,10 @@ class tree
 			$ref_rgt = $parent['children'][(int)$position][$this->options['structure']["left"]] + 1;
 		}
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." + ".$width." 
-			WHERE 
-				".$this->options['structure']["right"]." >= ".(int)$ref_rgt." 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." + ".$width."
+			WHERE
+				".$this->options['structure']["right"]." >= ".(int)$ref_rgt."
 			";
 
 		// MOVE THE ELEMENT AND CHILDREN
@@ -447,7 +447,7 @@ class tree
 		$fields[$this->options['structure']["level"]] = $this->options['structure']["level"]." + ".$ldiff;
 		$sql[] = "
 			INSERT INTO ".$this->options['structure_table']." ( ".implode(',',array_keys($fields))." )
-			SELECT ".implode(',',array_values($fields))." FROM ".$this->options['structure_table']." WHERE ".$this->options['structure']["id"]." IN (".implode(",", $tmp).") 
+			SELECT ".implode(',',array_values($fields))." FROM ".$this->options['structure_table']." WHERE ".$this->options['structure']["id"]." IN (".implode(",", $tmp).")
 			ORDER BY ".$this->options['structure']["level"]." ASC";
 
 		foreach($sql as $k => $v) {
@@ -462,10 +462,10 @@ class tree
 
 		try {
 			$this->db->query("
-				UPDATE ".$this->options['structure_table']." 
+				UPDATE ".$this->options['structure_table']."
 					SET ".$this->options['structure']["position"]." = ".$position.",
-						".$this->options['structure']["parent_id"]." = ".(int)$parent[$this->options['structure']["id"]]." 
-					WHERE ".$this->options['structure']["id"]."  = ".$iid." 
+						".$this->options['structure']["parent_id"]." = ".(int)$parent[$this->options['structure']["id"]]."
+					WHERE ".$this->options['structure']["id"]."  = ".$iid."
 			");
 		} catch(Exception $e) {
 			$this->rm($iid);
@@ -482,9 +482,9 @@ class tree
 		if(count($fields)) {
 			try {
 				$this->db->query("
-						INSERT INTO ".$this->options['data_table']." (".$this->options['data2structure'].",".implode(",",$fields).") 
-						SELECT ".$iid.",".implode(",",$fields)." FROM ".$this->options['data_table']." WHERE ".$this->options['data2structure']." = ".$id[$this->options['data2structure']]." 
-						ON DUPLICATE KEY UPDATE ".$update_fields." 
+						INSERT INTO ".$this->options['data_table']." (".$this->options['data2structure'].",".implode(",",$fields).")
+						SELECT ".$iid.",".implode(",",$fields)." FROM ".$this->options['data_table']." WHERE ".$this->options['data2structure']." = ".$id[$this->options['data2structure']]."
+						ON DUPLICATE KEY UPDATE ".$update_fields."
 				");
 			}
 			catch(Exception $e) {
@@ -496,7 +496,7 @@ class tree
 
 		// manually fix all parent_ids and copy all data
 		$new_nodes = $this->db->get("
-			SELECT * FROM ".$this->options['structure_table']." 
+			SELECT * FROM ".$this->options['structure_table']."
 			WHERE ".$this->options['structure']["left"]." > ".$ref_lft." AND ".$this->options['structure']["right"]." < ".($ref_lft + $width - 1)." AND ".$this->options['structure']["id"]." != ".$iid."
 			ORDER BY ".$this->options['structure']["left"]."
 		");
@@ -510,18 +510,18 @@ class tree
 		$sql = array();
 		foreach($new_nodes as $k => $node) {
 			$sql[] = "
-				UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["parent_id"]." = ".$parents[$node[$this->options['structure']["left"]]]." 
+				UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["parent_id"]." = ".$parents[$node[$this->options['structure']["left"]]]."
 				WHERE ".$this->options['structure']["id"]." = ".(int)$node[$this->options['structure']["id"]]."
 			";
 			if(count($fields)) {
 				$up = "";
 				foreach($fields as $f)
 				$sql[] = "
-					INSERT INTO ".$this->options['data_table']." (".$this->options['data2structure'].",".implode(",",$fields).") 
-					SELECT ".(int)$node[$this->options['structure']["id"]].",".implode(",",$fields)." FROM ".$this->options['data_table']." 
-						WHERE ".$this->options['data2structure']." = ".$old_nodes[$k][$this->options['structure']['id']]." 
-					ON DUPLICATE KEY UPDATE ".$update_fields." 
+					INSERT INTO ".$this->options['data_table']." (".$this->options['data2structure'].",".implode(",",$fields).")
+					SELECT ".(int)$node[$this->options['structure']["id"]].",".implode(",",$fields)." FROM ".$this->options['data_table']."
+						WHERE ".$this->options['data2structure']." = ".$old_nodes[$k][$this->options['structure']['id']]."
+					ON DUPLICATE KEY UPDATE ".$update_fields."
 				";
 			}
 		}
@@ -551,26 +551,26 @@ class tree
 		$sql = array();
 		// deleting node and its children from structure
 		$sql[] = "
-			DELETE FROM ".$this->options['structure_table']." 
+			DELETE FROM ".$this->options['structure_table']."
 			WHERE ".$this->options['structure']["left"]." >= ".(int)$lft." AND ".$this->options['structure']["right"]." <= ".(int)$rgt."
 		";
 		// shift left indexes of nodes right of the node
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." - ".(int)$dif." 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["left"]." = ".$this->options['structure']["left"]." - ".(int)$dif."
 			WHERE ".$this->options['structure']["left"]." > ".(int)$rgt."
 		";
 		// shift right indexes of nodes right of the node and the node's parents
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." - ".(int)$dif." 
-			WHERE ".$this->options['structure']["right"]." > ".(int)$lft." 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["right"]." = ".$this->options['structure']["right"]." - ".(int)$dif."
+			WHERE ".$this->options['structure']["right"]." > ".(int)$lft."
 		";
 		// Update position of siblings below the deleted node
 		$sql[] = "
-			UPDATE ".$this->options['structure_table']." 
-				SET ".$this->options['structure']["position"]." = ".$this->options['structure']["position"]." - 1 
-			WHERE ".$this->options['structure']["parent_id"]." = ".$pid." AND ".$this->options['structure']["position"]." > ".(int)$pos." 
+			UPDATE ".$this->options['structure_table']."
+				SET ".$this->options['structure']["position"]." = ".$this->options['structure']["position"]." - 1
+			WHERE ".$this->options['structure']["parent_id"]." = ".$pid." AND ".$this->options['structure']["position"]." > ".(int)$pos."
 		";
 		// delete from data table
 		if($this->options['data_table']) {
@@ -608,10 +608,10 @@ class tree
 		if(count($tmp)) {
 			$tmp[$this->options['data2structure']] = $id;
 			$sql = "
-				INSERT INTO 
-					".$this->options['data_table']." (".implode(',', array_keys($tmp)).") 
-					VALUES(?".str_repeat(',?', count($tmp) - 1).") 
-				ON DUPLICATE KEY UPDATE 
+				INSERT INTO
+					".$this->options['data_table']." (".implode(',', array_keys($tmp)).")
+					VALUES(?".str_repeat(',?', count($tmp) - 1).")
+				ON DUPLICATE KEY UPDATE
 					".implode(' = ?, ', array_keys($tmp))." = ?";
 			$par = array_merge(array_values($tmp), array_values($tmp));
 			try {
@@ -633,118 +633,118 @@ class tree
 			$report[] = "Root node's left index is not 1.";
 		}
 		if((int)$this->db->one("
-			SELECT 
-				COUNT(".$this->options['structure']['id'].") AS res 
-			FROM ".$this->options['structure_table']." s 
-			WHERE 
-				".$this->options['structure']["parent_id"]." != 0 AND 
+			SELECT
+				COUNT(".$this->options['structure']['id'].") AS res
+			FROM ".$this->options['structure_table']." s
+			WHERE
+				".$this->options['structure']["parent_id"]." != 0 AND
 				(SELECT COUNT(".$this->options['structure']['id'].") FROM ".$this->options['structure_table']." WHERE ".$this->options['structure']["id"]." = s.".$this->options['structure']["parent_id"].") = 0") > 0
 		) {
 			$report[] = "Missing parents.";
 		}
 		if(
-			(int)$this->db->one("SELECT MAX(".$this->options['structure']["right"].") AS res FROM ".$this->options['structure_table']) / 2 != 
+			(int)$this->db->one("SELECT MAX(".$this->options['structure']["right"].") AS res FROM ".$this->options['structure_table']) / 2 !=
 			(int)$this->db->one("SELECT COUNT(".$this->options['structure']["id"].") AS res FROM ".$this->options['structure_table'])
 		) {
 			$report[] = "Right index does not match node count.";
 		}
 		if(
-			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["right"].") AS res FROM ".$this->options['structure_table']) != 
-			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["left"].") AS res FROM ".$this->options['structure_table']) 
+			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["right"].") AS res FROM ".$this->options['structure_table']) !=
+			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["left"].") AS res FROM ".$this->options['structure_table'])
 		) {
 			$report[] = "Duplicates in nested set.";
 		}
 		if(
-			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["id"].") AS res FROM ".$this->options['structure_table']) != 
-			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["left"].") AS res FROM ".$this->options['structure_table']) 
+			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["id"].") AS res FROM ".$this->options['structure_table']) !=
+			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["left"].") AS res FROM ".$this->options['structure_table'])
 		) {
 			$report[] = "Left indexes not unique.";
 		}
 		if(
-			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["id"].") AS res FROM ".$this->options['structure_table']) != 
-			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["right"].") AS res FROM ".$this->options['structure_table']) 
+			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["id"].") AS res FROM ".$this->options['structure_table']) !=
+			(int)$this->db->one("SELECT COUNT(DISTINCT ".$this->options['structure']["right"].") AS res FROM ".$this->options['structure_table'])
 		) {
 			$report[] = "Right indexes not unique.";
 		}
 		if(
 			(int)$this->db->one("
-				SELECT 
-					s1.".$this->options['structure']["id"]." AS res 
-				FROM ".$this->options['structure_table']." s1, ".$this->options['structure_table']." s2 
-				WHERE 
-					s1.".$this->options['structure']['id']." != s2.".$this->options['structure']['id']." AND 
-					s1.".$this->options['structure']['left']." = s2.".$this->options['structure']['right']." 
+				SELECT
+					s1.".$this->options['structure']["id"]." AS res
+				FROM ".$this->options['structure_table']." s1, ".$this->options['structure_table']." s2
+				WHERE
+					s1.".$this->options['structure']['id']." != s2.".$this->options['structure']['id']." AND
+					s1.".$this->options['structure']['left']." = s2.".$this->options['structure']['right']."
 				LIMIT 1")
 		) {
 			$report[] = "Nested set - matching left and right indexes.";
 		}
 		if(
 			(int)$this->db->one("
-				SELECT 
-					".$this->options['structure']["id"]." AS res 
-				FROM ".$this->options['structure_table']." s 
-				WHERE 
+				SELECT
+					".$this->options['structure']["id"]." AS res
+				FROM ".$this->options['structure_table']." s
+				WHERE
 					".$this->options['structure']['position']." >= (
-						SELECT 
-							COUNT(".$this->options['structure']["id"].") 
-						FROM ".$this->options['structure_table']." 
+						SELECT
+							COUNT(".$this->options['structure']["id"].")
+						FROM ".$this->options['structure_table']."
 						WHERE ".$this->options['structure']['parent_id']." = s.".$this->options['structure']['parent_id']."
 					)
-				LIMIT 1") || 
+				LIMIT 1") ||
 			(int)$this->db->one("
-				SELECT 
-					s1.".$this->options['structure']["id"]." AS res 
-				FROM ".$this->options['structure_table']." s1, ".$this->options['structure_table']." s2 
-				WHERE 
-					s1.".$this->options['structure']['id']." != s2.".$this->options['structure']['id']." AND 
-					s1.".$this->options['structure']['parent_id']." = s2.".$this->options['structure']['parent_id']." AND 
-					s1.".$this->options['structure']['position']." = s2.".$this->options['structure']['position']." 
+				SELECT
+					s1.".$this->options['structure']["id"]." AS res
+				FROM ".$this->options['structure_table']." s1, ".$this->options['structure_table']." s2
+				WHERE
+					s1.".$this->options['structure']['id']." != s2.".$this->options['structure']['id']." AND
+					s1.".$this->options['structure']['parent_id']." = s2.".$this->options['structure']['parent_id']." AND
+					s1.".$this->options['structure']['position']." = s2.".$this->options['structure']['position']."
 				LIMIT 1")
 		) {
 			$report[] = "Positions not correct.";
 		}
 		if((int)$this->db->one("
-			SELECT 
-				COUNT(".$this->options['structure']["id"].") FROM ".$this->options['structure_table']." s 
-			WHERE 
+			SELECT
+				COUNT(".$this->options['structure']["id"].") FROM ".$this->options['structure_table']." s
+			WHERE
 				(
-					SELECT 
-						COUNT(".$this->options['structure']["id"].") 
-					FROM ".$this->options['structure_table']." 
-					WHERE 
-						".$this->options['structure']["right"]." < s.".$this->options['structure']["right"]." AND 
-						".$this->options['structure']["left"]." > s.".$this->options['structure']["left"]." AND 
+					SELECT
+						COUNT(".$this->options['structure']["id"].")
+					FROM ".$this->options['structure_table']."
+					WHERE
+						".$this->options['structure']["right"]." < s.".$this->options['structure']["right"]." AND
+						".$this->options['structure']["left"]." > s.".$this->options['structure']["left"]." AND
 						".$this->options['structure']["level"]." = s.".$this->options['structure']["level"]." + 1
-				) != 
+				) !=
 				(
-					SELECT 
-						COUNT(*) 
-					FROM ".$this->options['structure_table']." 
-					WHERE 
+					SELECT
+						COUNT(*)
+					FROM ".$this->options['structure_table']."
+					WHERE
 						".$this->options['structure']["parent_id"]." = s.".$this->options['structure']["id"]."
 				)")
 		) {
 			$report[] = "Adjacency and nested set do not match.";
 		}
 		if(
-			$this->options['data_table'] && 
+			$this->options['data_table'] &&
 			(int)$this->db->one("
-				SELECT 
-					COUNT(".$this->options['structure']["id"].") AS res 
-				FROM ".$this->options['structure_table']." s 
-				WHERE 
+				SELECT
+					COUNT(".$this->options['structure']["id"].") AS res
+				FROM ".$this->options['structure_table']." s
+				WHERE
 					(SELECT COUNT(".$this->options['data2structure'].") FROM ".$this->options['data_table']." WHERE ".$this->options['data2structure']." = s.".$this->options['structure']["id"].") = 0
 			")
 		) {
 			$report[] = "Missing records in data table.";
 		}
 		if(
-			$this->options['data_table'] && 
+			$this->options['data_table'] &&
 			(int)$this->db->one("
-				SELECT 
-					COUNT(".$this->options['data2structure'].") AS res 
-				FROM ".$this->options['data_table']." s 
-				WHERE 
+				SELECT
+					COUNT(".$this->options['data2structure'].") AS res
+				FROM ".$this->options['data_table']." s
+				WHERE
 					(SELECT COUNT(".$this->options['structure']["id"].") FROM ".$this->options['structure_table']." WHERE ".$this->options['structure']["id"]." = s.".$this->options['data2structure'].") = 0
 			")
 		) {
@@ -756,52 +756,52 @@ class tree
 	public function reconstruct($analyze = true) {
 		if($analyze && $this->analyze()) { return true; }
 
-		if(!$this->db->query("" . 
-			"CREATE TEMPORARY TABLE temp_tree (" . 
-				"".$this->options['structure']["id"]." INTEGER NOT NULL, " . 
-				"".$this->options['structure']["parent_id"]." INTEGER NOT NULL, " . 
-				"". $this->options['structure']["position"]." INTEGER NOT NULL" . 
+		if(!$this->db->query("" .
+			"CREATE TEMPORARY TABLE temp_tree (" .
+				"".$this->options['structure']["id"]." INTEGER NOT NULL, " .
+				"".$this->options['structure']["parent_id"]." INTEGER NOT NULL, " .
+				"". $this->options['structure']["position"]." INTEGER NOT NULL" .
 			") "
 		)) { return false; }
-		if(!$this->db->query("" . 
-			"INSERT INTO temp_tree " . 
-				"SELECT " . 
-					"".$this->options['structure']["id"].", " . 
-					"".$this->options['structure']["parent_id"].", " . 
-					"".$this->options['structure']["position"]." " . 
+		if(!$this->db->query("" .
+			"INSERT INTO temp_tree " .
+				"SELECT " .
+					"".$this->options['structure']["id"].", " .
+					"".$this->options['structure']["parent_id"].", " .
+					"".$this->options['structure']["position"]." " .
 				"FROM ".$this->options['structure_table'].""
 		)) { return false; }
 
-		if(!$this->db->query("" . 
-			"CREATE TEMPORARY TABLE temp_stack (" . 
-				"".$this->options['structure']["id"]." INTEGER NOT NULL, " . 
-				"".$this->options['structure']["left"]." INTEGER, " . 
-				"".$this->options['structure']["right"]." INTEGER, " . 
-				"".$this->options['structure']["level"]." INTEGER, " . 
-				"stack_top INTEGER NOT NULL, " . 
-				"".$this->options['structure']["parent_id"]." INTEGER, " . 
-				"".$this->options['structure']["position"]." INTEGER " . 
+		if(!$this->db->query("" .
+			"CREATE TEMPORARY TABLE temp_stack (" .
+				"".$this->options['structure']["id"]." INTEGER NOT NULL, " .
+				"".$this->options['structure']["left"]." INTEGER, " .
+				"".$this->options['structure']["right"]." INTEGER, " .
+				"".$this->options['structure']["level"]." INTEGER, " .
+				"stack_top INTEGER NOT NULL, " .
+				"".$this->options['structure']["parent_id"]." INTEGER, " .
+				"".$this->options['structure']["position"]." INTEGER " .
 			") "
 		)) { return false; }
 
 		$counter = 2;
-		if(!$this->db->query("SELECT COUNT(*) FROM temp_tree")) { 
-			return false; 
+		if(!$this->db->query("SELECT COUNT(*) FROM temp_tree")) {
+			return false;
 		}
 		$this->db->nextr();
 		$maxcounter = (int) $this->db->f(0) * 2;
 		$currenttop = 1;
-		if(!$this->db->query("" . 
-			"INSERT INTO temp_stack " . 
-				"SELECT " . 
-					"".$this->options['structure']["id"].", " . 
-					"1, " . 
-					"NULL, " . 
-					"0, " . 
-					"1, " . 
-					"".$this->options['structure']["parent_id"].", " . 
-					"".$this->options['structure']["position"]." " . 
-				"FROM temp_tree " . 
+		if(!$this->db->query("" .
+			"INSERT INTO temp_stack " .
+				"SELECT " .
+					"".$this->options['structure']["id"].", " .
+					"1, " .
+					"NULL, " .
+					"0, " .
+					"1, " .
+					"".$this->options['structure']["parent_id"].", " .
+					"".$this->options['structure']["position"]." " .
+				"FROM temp_tree " .
 				"WHERE ".$this->options['structure']["parent_id"]." = 0"
 		)) { return false; }
 		if(!$this->db->query("DELETE FROM temp_tree WHERE ".$this->options['structure']["parent_id"]." = 0")) {
@@ -809,15 +809,15 @@ class tree
 		}
 
 		while ($counter <= $maxcounter) {
-			if(!$this->db->query("" . 
-				"SELECT " . 
-					"temp_tree.".$this->options['structure']["id"]." AS tempmin, " . 
-					"temp_tree.".$this->options['structure']["parent_id"]." AS pid, " . 
-					"temp_tree.".$this->options['structure']["position"]." AS lid " . 
-				"FROM temp_stack, temp_tree " . 
-				"WHERE " . 
-					"temp_stack.".$this->options['structure']["id"]." = temp_tree.".$this->options['structure']["parent_id"]." AND " . 
-					"temp_stack.stack_top = ".$currenttop." " . 
+			if(!$this->db->query("" .
+				"SELECT " .
+					"temp_tree.".$this->options['structure']["id"]." AS tempmin, " .
+					"temp_tree.".$this->options['structure']["parent_id"]." AS pid, " .
+					"temp_tree.".$this->options['structure']["position"]." AS lid " .
+				"FROM temp_stack, temp_tree " .
+				"WHERE " .
+					"temp_stack.".$this->options['structure']["id"]." = temp_tree.".$this->options['structure']["parent_id"]." AND " .
+					"temp_stack.stack_top = ".$currenttop." " .
 				"ORDER BY temp_tree.".$this->options['structure']["position"]." ASC LIMIT 1"
 			)) { return false; }
 
@@ -835,10 +835,10 @@ class tree
 				$currenttop++;
 			}
 			else {
-				if(!$this->db->query("" . 
-					"UPDATE temp_stack SET " . 
-						"".$this->options['structure']["right"]." = ".$counter.", " . 
-						"stack_top = -stack_top " . 
+				if(!$this->db->query("" .
+					"UPDATE temp_stack SET " .
+						"".$this->options['structure']["right"]." = ".$counter.", " .
+						"stack_top = -stack_top " .
 					"WHERE stack_top = ".$currenttop
 				)) { return false; }
 				$counter++;
@@ -853,37 +853,37 @@ class tree
 		unset($temp_fields["right"]);
 		unset($temp_fields["level"]);
 		if(count($temp_fields) > 1) {
-			if(!$this->db->query("" . 
-				"CREATE TEMPORARY TABLE temp_tree2 " . 
+			if(!$this->db->query("" .
+				"CREATE TEMPORARY TABLE temp_tree2 " .
 					"SELECT ".implode(", ", $temp_fields)." FROM ".$this->options['structure_table']." "
 			)) { return false; }
 		}
-		if(!$this->db->query("TRUNCATE TABLE ".$this->options['structure_table']."")) { 
-			return false; 
+		if(!$this->db->query("TRUNCATE TABLE ".$this->options['structure_table']."")) {
+			return false;
 		}
-		if(!$this->db->query("" . 
-			"INSERT INTO ".$this->options['structure_table']." (" . 
-					"".$this->options['structure']["id"].", " . 
-					"".$this->options['structure']["parent_id"].", " . 
-					"".$this->options['structure']["position"].", " . 
-					"".$this->options['structure']["left"].", " . 
-					"".$this->options['structure']["right"].", " . 
-					"".$this->options['structure']["level"]." " . 
-				") " . 
-				"SELECT " . 
-					"".$this->options['structure']["id"].", " . 
-					"".$this->options['structure']["parent_id"].", " . 
-					"".$this->options['structure']["position"].", " . 
-					"".$this->options['structure']["left"].", " . 
-					"".$this->options['structure']["right"].", " . 
-					"".$this->options['structure']["level"]." " . 
-				"FROM temp_stack " . 
+		if(!$this->db->query("" .
+			"INSERT INTO ".$this->options['structure_table']." (" .
+					"".$this->options['structure']["id"].", " .
+					"".$this->options['structure']["parent_id"].", " .
+					"".$this->options['structure']["position"].", " .
+					"".$this->options['structure']["left"].", " .
+					"".$this->options['structure']["right"].", " .
+					"".$this->options['structure']["level"]." " .
+				") " .
+				"SELECT " .
+					"".$this->options['structure']["id"].", " .
+					"".$this->options['structure']["parent_id"].", " .
+					"".$this->options['structure']["position"].", " .
+					"".$this->options['structure']["left"].", " .
+					"".$this->options['structure']["right"].", " .
+					"".$this->options['structure']["level"]." " .
+				"FROM temp_stack " .
 				"ORDER BY ".$this->options['structure']["id"].""
-		)) { 
-			return false; 
+		)) {
+			return false;
 		}
 		if(count($temp_fields) > 1) {
-			$sql = "" . 
+			$sql = "" .
 				"UPDATE ".$this->options['structure_table']." v, temp_tree2 SET v.".$this->options['structure']["id"]." = v.".$this->options['structure']["id"]." ";
 			foreach($temp_fields as $k => $v) {
 				if($k == "id") continue;
@@ -909,18 +909,18 @@ class tree
 		if($this->options['data_table'] != $this->options['structure_table']) {
 			// fix missing data records
 			$this->db->query("
-				INSERT INTO 
-					".$this->options['data_table']." (".implode(',',$this->options['data']).") 
-				SELECT ".$this->options['structure']['id']." ".str_repeat(", ".$this->options['structure']['id'], count($this->options['data']) - 1)." 
-				FROM ".$this->options['structure_table']." s 
+				INSERT INTO
+					".$this->options['data_table']." (".implode(',',$this->options['data']).")
+				SELECT ".$this->options['structure']['id']." ".str_repeat(", ".$this->options['structure']['id'], count($this->options['data']) - 1)."
+				FROM ".$this->options['structure_table']." s
 				WHERE (SELECT COUNT(".$this->options['data2structure'].") FROM ".$this->options['data_table']." WHERE ".$this->options['data2structure']." = s.".$this->options['structure']['id'].") = 0 "
 			);
 			// remove dangling data records
 			$this->db->query("
-				DELETE FROM 
-					".$this->options['data_table']." 
+				DELETE FROM
+					".$this->options['data_table']."
 				WHERE
-					(SELECT COUNT(".$this->options['structure']['id'].") FROM ".$this->options['structure_table']." WHERE ".$this->options['structure']['id']." = ".$this->options['data_table'].".".$this->options['data2structure'].") = 0 
+					(SELECT COUNT(".$this->options['structure']['id'].") FROM ".$this->options['structure_table']." WHERE ".$this->options['structure']['id']." = ".$this->options['data_table'].".".$this->options['data2structure'].") = 0
 			");
 		}
 		return true;
@@ -933,22 +933,22 @@ class tree
 		$par = array();
 		foreach($this->options['structure'] as $k => $v) {
 			switch($k) {
-				case 'id': 
+				case 'id':
 					$par[] = null;
 					break;
-				case 'left': 
+				case 'left':
 					$par[] = 1;
 					break;
-				case 'right': 
+				case 'right':
 					$par[] = 2;
 					break;
-				case 'level': 
+				case 'level':
 					$par[] = 0;
 					break;
-				case 'parent_id': 
+				case 'parent_id':
 					$par[] = 0;
 					break;
-				case 'position': 
+				case 'position':
 					$par[] = 0;
 					break;
 				default:
@@ -965,14 +965,14 @@ class tree
 
 	public function dump() {
 		$nodes = $this->db->get("
-			SELECT 
-				s.".implode(", s.", $this->options['structure']).", 
-				d.".implode(", d.", $this->options['data'])." 
-			FROM 
-				".$this->options['structure_table']." s, 
-				".$this->options['data_table']." d 
-			WHERE 
-				s.".$this->options['structure']['id']." = d.".$this->options['data2structure']." 
+			SELECT
+				s.".implode(", s.", $this->options['structure']).",
+				d.".implode(", d.", $this->options['data'])."
+			FROM
+				".$this->options['structure_table']." s,
+				".$this->options['data_table']." d
+			WHERE
+				s.".$this->options['structure']['id']." = d.".$this->options['data2structure']."
 			ORDER BY ".$this->options['structure']["left"]
 		);
 		echo "\n\n";

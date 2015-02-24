@@ -22,7 +22,7 @@
  *   http://www.opensource.org/licenses/mit-license.php
  */
 /*!
- * if using jslint please allow for the jQuery global and use following options: 
+ * if using jslint please allow for the jQuery global and use following options:
  * jslint: browser: true, ass: true, bitwise: true, continue: true, nomen: true, plusplus: true, regexp: true, unparam: true, todo: true, white: true
  */
 
@@ -66,7 +66,7 @@
 	 * @name $.jstree
 	 */
 	$.jstree = {
-		/** 
+		/**
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
@@ -191,14 +191,14 @@
 		return tmp;
 	};
 	/**
-	 * Create an instance, get an instance or invoke a command on a instance. 
-	 * 
+	 * Create an instance, get an instance or invoke a command on a instance.
+	 *
 	 * If there is no instance associated with the current node a new one is created and `arg` is used to extend `$.jstree.defaults` for this new instance. There would be no return value (chaining is not broken).
-	 * 
+	 *
 	 * If there is an existing instance and `arg` is a string the command specified by `arg` is executed on the instance, with any additional arguments passed to the function. If the function returns a value it will be returned (chaining could break depending on function).
-	 * 
+	 *
 	 * If there is an existing instance and `arg` is not a string the instance itself is returned (similar to `$.jstree.reference`).
-	 * 
+	 *
 	 * In any other case - nothing is returned and chaining is not broken.
 	 *
 	 * __Examples__
@@ -271,14 +271,14 @@
 	$.jstree.defaults.core = {
 		/**
 		 * data configuration
-		 * 
+		 *
 		 * If left as `false` the HTML inside the jstree container element is used to populate the tree (that should be an unordered list with list items).
 		 *
 		 * You can also pass in a HTML string or a JSON array here.
-		 * 
-		 * It is possible to pass in a standard jQuery-like AJAX config and jstree will automatically determine if the response is JSON or HTML and use that to populate the tree. 
+		 *
+		 * It is possible to pass in a standard jQuery-like AJAX config and jstree will automatically determine if the response is JSON or HTML and use that to populate the tree.
 		 * In addition to the standard jQuery ajax options here you can suppy functions for `data` and `url`, the functions will be run in the current instance's scope and a param will be passed indicating which node is being loaded, the return value of those functions will be used.
-		 * 
+		 *
 		 * The last option is to specify a function, that function will receive the node being loaded as argument and a second param which is a function which should be called with the result.
 		 *
 		 * __Examples__
@@ -315,7 +315,7 @@
 		 *				callback.call(this, ['Root 1', 'Root 2']);
 		 *			}
 		 *		});
-		 * 
+		 *
 		 * @name $.jstree.defaults.core.data
 		 */
 		data			: false,
@@ -355,7 +355,7 @@
 		 *			}
 		 *		}
 		 *	});
-		 * 
+		 *
 		 * @name $.jstree.defaults.core.check_callback
 		 */
 		check_callback	: false,
@@ -4403,7 +4403,7 @@
 /**
  * ### Checkbox plugin
  *
- * This plugin renders checkbox icons in front of each node, making multiple selection much easier. 
+ * This plugin renders checkbox icons in front of each node, making multiple selection much easier.
  * It also supports tri-state behavior, meaning that if a node has a few of its children checked it will be rendered as undetermined, and state will be propagated up.
  */
 
@@ -4441,15 +4441,15 @@
 		 */
 		keep_selected_style	: true,
 		/**
-		 * This setting controls how cascading and undetermined nodes are applied. 
-		 * If 'up' is in the string - cascading up is enabled, if 'down' is in the string - cascading down is enabled, if 'undetermined' is in the string - undetermined nodes will be used. 
+		 * This setting controls how cascading and undetermined nodes are applied.
+		 * If 'up' is in the string - cascading up is enabled, if 'down' is in the string - cascading down is enabled, if 'undetermined' is in the string - undetermined nodes will be used.
 		 * If `three_state` is set to `true` this setting is automatically set to 'up+down+undetermined'. Defaults to ''.
 		 * @name $.jstree.defaults.checkbox.cascade
 		 * @plugin checkbox
 		 */
 		cascade				: '',
 		/**
-		 * This setting controls if checkbox are bound to the general tree selection or to an internal array maintained by the checkbox plugin. Defaults to `true`, only set to `false` if you know exactly what you are doing. 
+		 * This setting controls if checkbox are bound to the general tree selection or to an internal array maintained by the checkbox plugin. Defaults to `true`, only set to `false` if you know exactly what you are doing.
 		 * @name $.jstree.defaults.checkbox.tie_selection
 		 * @plugin checkbox
 		 */
@@ -5154,9 +5154,9 @@
 		show_at_node : true,
 		/**
 		 * an object of actions, or a function that accepts a node and a callback function and calls the callback function with an object of actions available for that node (you can also return the items too).
-		 * 
+		 *
 		 * Each action consists of a key (a unique name) and a value which is an object with the following properties (only label and action are required):
-		 * 
+		 *
 		 * * `separator_before` - a boolean indicating if there should be a separator before this item
 		 * * `separator_after` - a boolean indicating if there should be a separator after this item
 		 * * `_disabled` - a boolean indicating if this action should be disabled
@@ -5165,7 +5165,7 @@
 		 * * `icon` - a string, can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
 		 * * `shortcut` - keyCode which will trigger the action if the menu is open (for example `113` for rename, which equals F2)
 		 * * `shortcut_label` - shortcut label (like for example `F2` for rename)
-		 * 
+		 *
 		 * @name $.jstree.defaults.contextmenu.items
 		 * @plugin contextmenu
 		 */
@@ -6285,8 +6285,8 @@
 	 */
 	$.jstree.defaults.search = {
 		/**
-		 * a jQuery-like AJAX config, which jstree uses if a server should be queried for results. 
-		 * 
+		 * a jQuery-like AJAX config, which jstree uses if a server should be queried for results.
+		 *
 		 * A `str` (which is the search string) parameter will be added with the request. The expected result is a JSON array with nodes that need to be opened so that matching nodes will be revealed.
 		 * Leave this setting as `false` to not query the server. You can also set this to a function, which will be invoked in the instance's scope and receive 2 parameters - the search string and the callback to call with the array of nodes to load.
 		 * @name $.jstree.defaults.search.ajax
@@ -6306,7 +6306,7 @@
 		 */
 		case_sensitive : false,
 		/**
-		 * Indicates if the tree should be filtered (by default) to show only matching nodes (keep in mind this can be a heavy on large trees in old browsers). 
+		 * Indicates if the tree should be filtered (by default) to show only matching nodes (keep in mind this can be a heavy on large trees in old browsers).
 		 * This setting can be changed at runtime when calling the search method. Default is `false`.
 		 * @name $.jstree.defaults.search.show_only_matches
 		 * @plugin search
@@ -6808,17 +6808,17 @@
 
 	/**
 	 * An object storing all types as key value pairs, where the key is the type name and the value is an object that could contain following keys (all optional).
-	 * 
+	 *
 	 * * `max_children` the maximum number of immediate children this node type can have. Do not specify or set to `-1` for unlimited.
 	 * * `max_depth` the maximum number of nesting this node type can have. A value of `1` would mean that the node can have children, but no grandchildren. Do not specify or set to `-1` for unlimited.
 	 * * `valid_children` an array of node type strings, that nodes of this type can have as children. Do not specify or set to `-1` for no limits.
 	 * * `icon` a string - can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class. Omit to use the default icon from your theme.
 	 *
 	 * There are two predefined types:
-	 * 
+	 *
 	 * * `#` represents the root of the tree, for example `max_children` would control the maximum number of root nodes.
 	 * * `default` represents the default node - any settings here will be applied to all nodes that do not have a type specified.
-	 * 
+	 *
 	 * @name $.jstree.defaults.types
 	 * @plugin types
 	 */

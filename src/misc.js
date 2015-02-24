@@ -302,7 +302,7 @@
 		};
 	};
 })(jQuery);
-/* demo of the above 
+/* demo of the above
 function treeNode(val) {
 	var id = ++treeNode.counter;
 	this.getID = function () {

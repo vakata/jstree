@@ -1,6 +1,6 @@
 # jstree
 
-[jsTree](http://www.jstree.com/) is jquery plugin, that provides interactive trees. It is absolutely free, [open source](https://github.com/vakata/jstree) and distributed under the MIT license. 
+[jsTree](http://www.jstree.com/) is jquery plugin, that provides interactive trees. It is absolutely free, [open source](https://github.com/vakata/jstree) and distributed under the MIT license.
 
 jsTree is easily extendable, themable and configurable, it supports HTML & JSON data sources, AJAX & async callback loading.
 
@@ -54,8 +54,8 @@ _Aside from this readme you can find a lot more info on [jstree.com](http://www.
 ### Include all neccessary files
 To get started you need 3 things in your page:
  1. jQuery (anything above 1.9.1 will work)
- 2. A jstree theme (there is only one theme supplied by default) 
- 3. The jstree source file 
+ 2. A jstree theme (there is only one theme supplied by default)
+ 3. The jstree source file
 
 ```html
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -130,7 +130,7 @@ For now it is important to note that jstree will try to parse any data you speci
 
 #### The required JSON format
 
-The data you use must be in a specific format, each branch of the tree is represented by an object, which must at least have a `text` key. The `children` key can be used to add children to the branch, it should be an array of objects. 
+The data you use must be in a specific format, each branch of the tree is represented by an object, which must at least have a `text` key. The `children` key can be used to add children to the branch, it should be an array of objects.
 
 _Keep in mind, you can use a simple string instead of an object if all you need is node with the given text, the above data can be written as:_
 
@@ -162,12 +162,12 @@ $(function() {
   $('#container').jstree({
     'core' : {
       'data' : [
-          { 
-              "text" : "Root node", 
-              "state" : {"opened" : true }, 
+          {
+              "text" : "Root node",
+              "state" : {"opened" : true },
               "children" : [
-                  { 
-                    "text" : "Child node 1", 
+                  {
+                    "text" : "Child node 1",
                     "state" : { "selected" : true },
                     "icon" : "glyphicon glyphicon-flash"
                   },
@@ -218,11 +218,11 @@ The server response is:
 [view result](http://jsfiddle.net/vakata/2kwkh2uL/4/)
 
 Instead of a JS array, you can set `core.data` to a [jQuery AJAX config](http://api.jquery.com/jQuery.ajax/)
-jsTree will hit that URL, and provided you return properly formatted JSON it will be displayed. 
+jsTree will hit that URL, and provided you return properly formatted JSON it will be displayed.
 
 _If you cannot provide proper JSON headers, set `core.data.dataType` to `"json"`._
 
-The ids in the server response make it possible to identify nodes later (which we will see in the next few demos), but they are not required. 
+The ids in the server response make it possible to identify nodes later (which we will see in the next few demos), but they are not required.
 
 __WHEN USING IDS MAKE SURE THEY ARE UNIQUE INSIDE A PARTICULAR TREE__
 
@@ -272,7 +272,7 @@ You will notice that the first request goes off to:
 `http://www.jstree.com/fiddle?lazy&id=#`
 `#` is the special ID that the function receives when jstree needs to load the root nodes.
 
-Now go ahead and open the root node - two children will be shown, but no request will be made - that is because we loaded those children along with the first request. 
+Now go ahead and open the root node - two children will be shown, but no request will be made - that is because we loaded those children along with the first request.
 
 Onto the next difference - "Child node 1" appears closed - that is because in the data we supplied `true` as the `"children"` property of this node (you can see it in the server response). This special value indicated to jstree, that it has to lazy load the "Child node 1" node.
 
@@ -319,7 +319,7 @@ As you can see your function will receive two arguments - the node whose childre
 
 ## Working with events
 
-jstree provides a lot of events to let you know something happened with the tree. The events are the same regardless of how you populate the tree. 
+jstree provides a lot of events to let you know something happened with the tree. The events are the same regardless of how you populate the tree.
 Let's use the most basic event `changed` - it fires when selection on the tree changes:
 
 ```html
@@ -381,7 +381,7 @@ $(function() {
     }
   });
   $('button').on("click", function () {
-    var instance = $('#container').jstree(true); 
+    var instance = $('#container').jstree(true);
     instance.deselect_all();
     instance.select_node('1');
   });
@@ -411,7 +411,7 @@ $("#tree").jstree({ /* config object goes here */ });
 
 Each key in the config object corresponds to a plugin, and the value of that key is the configuration for that plugin. There are also two special keys `"core"` and `"plugins"`:
  * `"core"` stores the core configuration options
- * `"plugins"` is an array of plugin names (strings) you want active on the instance 
+ * `"plugins"` is an array of plugin names (strings) you want active on the instance
 
 When configuring you only need to set values that you want to be different from the defaults.
 
@@ -466,10 +466,10 @@ $("#tree").jstree({
 
 [view result](http://jsfiddle.net/vakata/2kwkh2uL/10/)
 
-The `more` parameter you receive contains other information related to the check being performed. 
+The `more` parameter you receive contains other information related to the check being performed.
 
-__For example__: `move_node` & `copy_node` checks will fire repeatedly while the user drags a node, if the check was triggered by the `dnd` plugin `more` will contain a `dnd` key, which will be set to `true`. 
-You can check for `more.dnd` and only perform a certain action if `dnd` triggered the check. 
+__For example__: `move_node` & `copy_node` checks will fire repeatedly while the user drags a node, if the check was triggered by the `dnd` plugin `more` will contain a `dnd` key, which will be set to `true`.
+You can check for `more.dnd` and only perform a certain action if `dnd` triggered the check.
 If you only want to perform an operation when a node is really about to be dropped check for `more.core`.
 
 ## Plugins
@@ -632,6 +632,6 @@ _Please do NOT edit files in the "dist" subdirectory as they are generated via g
 If you want to you can always [donate a small amount][paypal] to help the development of jstree.
 [paypal]: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=paypal@vakata.com&currency_code=USD&amount=&return=http://jstree.com/donation&item_name=Buy+me+a+coffee+for+jsTree
 
-Copyright (c) 2014 Ivan Bozhanov (http://vakata.com) 
+Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
 
 Licensed under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
