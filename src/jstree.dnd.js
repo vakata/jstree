@@ -104,7 +104,7 @@
 						mlt = this.is_selected(obj) && this.settings.dnd.drag_selection ? this.get_top_selected().length : 1,
 						txt = (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget));
 					if(this.settings.core.force_text) {
-						txt = $('<div />').text(txt).html();
+						txt = $.vakata.esc_html(txt);
 					}
 					if(obj && obj.id && obj.id !== "#" && (e.which === 1 || e.type === "touchstart") &&
 						(this.settings.dnd.is_draggable === true || ($.isFunction(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_top_selected(true) : [obj]))))
@@ -286,6 +286,25 @@
 	// helpers
 	(function ($) {
 		// private variable
+	        var _div;
+	        // Escape HTML: '<a>' -> '&lt;a&gt;'
+	        $.vakata.esc_html = function (txt) {
+	            if ( !_div ) {
+	                _div = $('<div />');
+	                $.vakata._div = _div; // Reuse same DIV elsewhere
+	            }
+	            return _div.text(txt).html();
+	        };
+	
+	          // Strip HTML tags: '<i>Text</i>' -> 'Text'
+	        $.vakata.html_strip = function (html) {
+	            if ( !_div ) {
+	                _div = $('<div />');
+	                $.vakata._div = _div; // Reuse same DIV elsewhere
+	            }
+	            return _div.html(html).text();
+	        };
+		
 		var vakata_dnd = {
 			element	: false,
 			target	: false,
