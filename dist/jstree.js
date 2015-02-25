@@ -5833,7 +5833,7 @@
 						mlt = this.is_selected(obj) && this.settings.dnd.drag_selection ? this.get_top_selected().length : 1,
 						txt = (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget));
 					if(this.settings.core.force_text) {
-						txt = $('<div />').text(txt).html();
+						txt = $.vakata.html.escape(txt);
 					}
 					if(obj && obj.id && obj.id !== "#" && (e.which === 1 || e.type === "touchstart") &&
 						(this.settings.dnd.is_draggable === true || ($.isFunction(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_top_selected(true) : [obj]))))
@@ -6014,7 +6014,15 @@
 
 	// helpers
 	(function ($) {
-		// private variable
+		$.vakata.html = {
+			div : $('<div />'),
+			escape : function (str) {
+				return $.vakata.html.div.empty().text(str).html();
+			},
+			strip : function (str) {
+				return $.vakata.html.div.empty().append($($.parseHTML(str))).text();
+			}
+		};
 		var vakata_dnd = {
 			element	: false,
 			target	: false,
