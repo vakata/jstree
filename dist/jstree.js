@@ -3186,7 +3186,7 @@
 						_this = this;
 						this.deselect_all();
 						$.each(state.core.selected, function (i, v) {
-							_this.select_node(v);
+							_this.select_node(v, false, true);
 						});
 						delete state.core.selected;
 						this.set_state(state, callback);
