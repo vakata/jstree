@@ -168,7 +168,7 @@
 	$.jstree.reference = function (needle) {
 		var tmp = null,
 			obj = null;
-		if(needle && needle.id) { needle = needle.id; }
+		if(needle && needle.id && (!needle.tagName || !needle.nodeType)) { needle = needle.id; }
 
 		if(!obj || !obj.length) {
 			try { obj = $(needle); } catch (ignore) { }
