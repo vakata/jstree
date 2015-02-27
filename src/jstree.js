@@ -3669,18 +3669,19 @@
 		 * @param  {mixed} par the new parent
 		 * @param  {mixed} pos the position to insert at (besides integer values, "first" and "last" are supported, as well as "before" and "after"), defaults to integer `0`
 		 * @param  {function} callback a function to call once the move is completed, receives 3 arguments - the node, the new parent and the position
-		 * @param  {Boolean} internal parameter indicating if the parent node has been loaded
-		 * @param  {Boolean} internal parameter indicating if the tree should be redrawn
+		 * @param  {Boolean} is_loaded internal parameter indicating if the parent node has been loaded
+		 * @param  {Boolean} skip_redraw internal parameter indicating if the tree should be redrawn
+		 * @param  {Boolean} instance internal parameter indicating if the node comes from another instance
 		 * @trigger move_node.jstree
 		 */
-		move_node : function (obj, par, pos, callback, is_loaded, skip_redraw) {
+		move_node : function (obj, par, pos, callback, is_loaded, skip_redraw, origin) {
 			var t1, t2, old_par, old_pos, new_par, old_ins, is_multi, dpc, tmp, i, j, k, l, p;
 
 			par = this.get_node(par);
 			pos = pos === undefined ? 0 : pos;
 			if(!par) { return false; }
 			if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
-				return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true); });
+				return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true, false, origin); });
 			}
 
 			if($.isArray(obj)) {
@@ -3690,7 +3691,7 @@
 				else {
 					//obj = obj.slice();
 					for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-						if((tmp = this.move_node(obj[t1], par, pos, callback, is_loaded, true))) {
+						if((tmp = this.move_node(obj[t1], par, pos, callback, is_loaded, false, origin))) {
 							par = tmp;
 							pos = "after";
 						}
@@ -3705,11 +3706,11 @@
 
 			old_par = (obj.parent || '#').toString();
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
-			old_ins = obj.instance ? obj.instance : (this._model.data[obj.id] ? this : $.jstree.reference(obj.id));
+			old_ins = origin ? origin : (this._model.data[obj.id] ? this : $.jstree.reference(obj.id));
 			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
 			old_pos = old_ins && old_ins._id && old_par && old_ins._model.data[old_par] && old_ins._model.data[old_par].children ? $.inArray(obj.id, old_ins._model.data[old_par].children) : -1;
 			if(is_multi) {
-				if((tmp = this.copy_node(obj, par, pos, callback, is_loaded))) {
+				if((tmp = this.copy_node(obj, par, pos, callback, is_loaded, false, origin))) {
 					if(old_ins) { old_ins.delete_node(obj); }
 					return tmp;
 				}
@@ -3837,18 +3838,19 @@
 		 * @param  {mixed} par the new parent
 		 * @param  {mixed} pos the position to insert at (besides integer values, "first" and "last" are supported, as well as "before" and "after"), defaults to integer `0`
 		 * @param  {function} callback a function to call once the move is completed, receives 3 arguments - the node, the new parent and the position
-		 * @param  {Boolean} internal parameter indicating if the parent node has been loaded
-		 * @param  {Boolean} internal parameter indicating if the tree should be redrawn
+		 * @param  {Boolean} is_loaded internal parameter indicating if the parent node has been loaded
+		 * @param  {Boolean} skip_redraw internal parameter indicating if the tree should be redrawn
+		 * @param  {Boolean} instance internal parameter indicating if the node comes from another instance
 		 * @trigger model.jstree copy_node.jstree
 		 */
-		copy_node : function (obj, par, pos, callback, is_loaded, skip_redraw) {
+		copy_node : function (obj, par, pos, callback, is_loaded, skip_redraw, origin) {
 			var t1, t2, dpc, tmp, i, j, node, old_par, new_par, old_ins, is_multi;
 
 			par = this.get_node(par);
 			pos = pos === undefined ? 0 : pos;
 			if(!par) { return false; }
 			if(!pos.toString().match(/^(before|after)$/) && !is_loaded && !this.is_loaded(par)) {
-				return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true); });
+				return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true, false, origin); });
 			}
 
 			if($.isArray(obj)) {
@@ -3858,7 +3860,7 @@
 				else {
 					//obj = obj.slice();
 					for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
-						if((tmp = this.copy_node(obj[t1], par, pos, callback, is_loaded, true))) {
+						if((tmp = this.copy_node(obj[t1], par, pos, callback, is_loaded, true, origin))) {
 							par = tmp;
 							pos = "after";
 						}
@@ -3872,7 +3874,7 @@
 
 			old_par = (obj.parent || '#').toString();
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
-			old_ins = obj.instance ? obj.instance : (this._model.data[obj.id] ? this : $.jstree.reference(obj.id));
+			old_ins = origin ? origin : (this._model.data[obj.id] ? this : $.jstree.reference(obj.id));
 			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
 			if(par.id === '#') {
 				if(pos === "before") { pos = "first"; }
