@@ -35,6 +35,7 @@ _Aside from this readme you can find a lot more info on [jstree.com](http://www.
   - [checkbox](#checkbox)
   - [contextmenu](#contextmenu)
   - [dnd](#dnd)
+  - [massload](#massload)
   - [search](#search)
   - [sort](#sort)
   - [state](#state)
@@ -510,6 +511,24 @@ $("#tree").jstree({
 ```
 
 [view result](http://jsfiddle.net/vakata/2kwkh2uL/17/)
+
+### massload
+Makes it possible to load multiple nodes in a single go (for a lazy loaded tree).
+
+```js
+$("#tree").jstree({
+  "core" : {
+    "data" : { .. AJAX config .. }
+  },
+  "massload" : {
+    "url" : "/some/path",
+    "data" : function (nodes) {
+      return { "ids" : nodes.join(",") };
+    }
+  }
+  "plugins" : [ "massload", "state" ]
+});
+```
 
 ### search
 Adds the possibility to search for items in the tree and show only matching nodes. It also has AJAX / callback hooks, so that search will work on lazy loaded trees too.
