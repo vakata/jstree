@@ -610,6 +610,7 @@
 					}, this))
 				.on('keydown.jstree', '.jstree-anchor', $.proxy(function (e) {
 						if(e.target.tagName === "INPUT") { return true; }
+						if(e.which !== 32 && e.which !== 13 && (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey)) { return true; }
 						var o = null;
 						if(this._data.core.rtl) {
 							if(e.which === 37) { e.which = 39; }
