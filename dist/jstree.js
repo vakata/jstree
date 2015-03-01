@@ -2916,6 +2916,9 @@
 				return false;
 			}
 			dom = this.get_node(obj, true);
+			if (!dom.state.disabled){
+				return false;
+			}
 			if(!obj.state.selected) {
 				obj.state.selected = true;
 				this._data.core.selected.push(obj.id);
@@ -2969,6 +2972,9 @@
 				return false;
 			}
 			dom = this.get_node(obj, true);
+			if (!dom.state.disabled){
+				return false;
+			}
 			if(obj.state.selected) {
 				obj.state.selected = false;
 				this._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, obj.id);
