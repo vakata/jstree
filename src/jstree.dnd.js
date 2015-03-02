@@ -280,12 +280,13 @@
 		$.vakata.html = {
 			div : $('<div />'),
 			escape : function (str) {
-				return $.vakata.html.div.empty().text(str).html();
+				return $.vakata.html.div.text(str).html();
 			},
 			strip : function (str) {
-				return $.vakata.html.div.empty().append($($.parseHTML(str))).text();
+				return $.vakata.html.div.empty().append($.parseHTML(str)).text();
 			}
 		};
+		// private variable
 		var vakata_dnd = {
 			element	: false,
 			target	: false,
