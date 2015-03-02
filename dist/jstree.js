@@ -42,18 +42,19 @@
 		ccp_inst = false,
 		themes_loaded = [],
 		src = $('script:last').attr('src'),
-		_d = document, _node = _d.createElement('LI'), _temp1, _temp2;
+		document = window.document, // local variable is always faster to access then a global
+		_node = document.createElement('LI'), _temp1, _temp2;
 
 	_node.setAttribute('role', 'treeitem');
-	_temp1 = _d.createElement('I');
+	_temp1 = document.createElement('I');
 	_temp1.className = 'jstree-icon jstree-ocl';
 	_temp1.setAttribute('role', 'presentation');
 	_node.appendChild(_temp1);
-	_temp1 = _d.createElement('A');
+	_temp1 = document.createElement('A');
 	_temp1.className = 'jstree-anchor';
 	_temp1.setAttribute('href','#');
 	_temp1.setAttribute('tabindex','-1');
-	_temp2 = _d.createElement('I');
+	_temp2 = document.createElement('I');
 	_temp2.className = 'jstree-icon jstree-themeicon';
 	_temp2.setAttribute('role', 'presentation');
 	_temp1.appendChild(_temp2);
@@ -3987,7 +3988,7 @@
 		 * copy a node (a later call to `paste(obj)` would copy the node)
 		 * @name copy(obj)
 		 * @param  {mixed} obj multiple objects can be passed using an array
-		 * @trigger copy.jstre
+		 * @trigger copy.jstree
 		 */
 		copy : function (obj) {
 			if(!obj) { obj = this._data.core.selected.concat(); }
@@ -6012,12 +6013,13 @@
 		$.vakata.html = {
 			div : $('<div />'),
 			escape : function (str) {
-				return $.vakata.html.div.empty().text(str).html();
+				return $.vakata.html.div.text(str).html();
 			},
 			strip : function (str) {
 				return $.vakata.html.div.empty().append($($.parseHTML(str))).text();
 			}
 		};
+		// private variable
 		var vakata_dnd = {
 			element	: false,
 			target	: false,
