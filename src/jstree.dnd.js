@@ -283,7 +283,7 @@
 				return $.vakata.html.div.text(str).html();
 			},
 			strip : function (str) {
-				return $.vakata.html.div.empty().append($.parseHTML(str)).text();
+				return $.vakata.html.div.empty().append($($.parseHTML(str))).text();
 			}
 		};
 		// private variable
