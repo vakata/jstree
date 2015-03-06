@@ -110,6 +110,8 @@
 				tmp = tmp.plugin(k, options[k]);
 			}
 		});
+
+		$(el).data('jstree', tmp);
 		tmp.init(el, options);
 		return tmp;
 	};
@@ -231,7 +233,7 @@
 				null;
 			// if there is no instance and no method is being called - create one
 			if(!instance && !is_method && (arg === undefined || $.isPlainObject(arg))) {
-				$(this).data('jstree', new $.jstree.create(this, arg));
+				$.jstree.create(this, arg);
 			}
 			// if there is an instance and no method is called - return the instance
 			if( (instance && !is_method) || arg === true ) {
@@ -308,7 +310,7 @@
 		 *				}
 		 *			]
 		 *		});
-		 *	
+		 *
 		 *	// function
 		 *	$('#tree').jstree({
 		 *		'core' : {
