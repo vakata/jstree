@@ -111,8 +111,9 @@
 			}
 		});
 
-		$(el).data('jstree', tmp);
 		tmp.init(el, options);
+		$(el).data('jstree', tmp);
+
 		return tmp;
 	};
 	/**
