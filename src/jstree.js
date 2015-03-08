@@ -110,10 +110,8 @@
 				tmp = tmp.plugin(k, options[k]);
 			}
 		});
-
-		tmp.init(el, options);
 		$(el).data('jstree', tmp);
-
+		tmp.init(el, options);
 		return tmp;
 	};
 	/**
