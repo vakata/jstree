@@ -71,7 +71,7 @@ _If you decide to host jstree yourself - the files are located in the `dist` fol
 
 ### Populating a tree using HTML
 
-Now we are all set to create a tree, inline HTML is the easiest option (suitable for menus). All you need to do is select a node (using a jQuery selector) and invoke the `.jstree()` function to let jstree know you want to render a tree inside the selected node.
+Now we are all set to create a tree, inline HTML is the easiest option (suitable for menus). All you need to do is select a node (using a jQuery selector) and invoke the `.jstree()` function to let jstree know you want to render a tree inside the selected node. `$.jstree.create(element)` can be used too.
 
 ```html
 <div id="container">
