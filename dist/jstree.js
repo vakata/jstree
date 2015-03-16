@@ -2596,11 +2596,10 @@
 				}
 				else {
 					d
-						.children(".jstree-children").attr("style","display:none !important").end()
+						.children(".jstree-children").attr("style","display:block !important").end()
 						.removeClass("jstree-open").addClass("jstree-closed").attr("aria-expanded", false)
 						.children(".jstree-children").stop(true, true).slideUp(animation, function () {
-							this.style.display = "";
-							//d.children('.jstree-children').remove();
+							d.children(".jstree-children").attr("style","display:none !important");
 							t.trigger("after_close", { "node" : obj });
 						});
 				}
