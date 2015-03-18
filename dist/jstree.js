@@ -3716,6 +3716,10 @@
 			old_ins = origin ? origin : (this._model.data[obj.id] ? this : $.jstree.reference(obj.id));
 			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
 			old_pos = old_ins && old_ins._id && old_par && old_ins._model.data[old_par] && old_ins._model.data[old_par].children ? $.inArray(obj.id, old_ins._model.data[old_par].children) : -1;
+			if(old_ins || old_ins._id) {
+				obj = old_ins._model.data[obj.id];
+			}
+
 			if(is_multi) {
 				if((tmp = this.copy_node(obj, par, pos, callback, is_loaded, false, origin))) {
 					if(old_ins) { old_ins.delete_node(obj); }
@@ -3883,6 +3887,11 @@
 			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
 			old_ins = origin ? origin : (this._model.data[obj.id] ? this : $.jstree.reference(obj.id));
 			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
+
+			if(old_ins || old_ins._id) {
+				obj = old_ins._model.data[obj.id];
+			}
+
 			if(par.id === '#') {
 				if(pos === "before") { pos = "first"; }
 				if(pos === "after") { pos = "last"; }
