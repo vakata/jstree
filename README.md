@@ -71,7 +71,7 @@ _If you decide to host jstree yourself - the files are located in the `dist` fol
 
 ### Populating a tree using HTML
 
-Now we are all set to create a tree, inline HTML is the easiest option (suitable for menus). All you need to do is select a node (using a jQuery selector) and invoke the `.jstree()` function to let jstree know you want to render a tree inside the selected node.
+Now we are all set to create a tree, inline HTML is the easiest option (suitable for menus). All you need to do is select a node (using a jQuery selector) and invoke the `.jstree()` function to let jstree know you want to render a tree inside the selected node. `$.jstree.create(element)` can be used too.
 
 ```html
 <div id="container">
@@ -479,6 +479,8 @@ jsTree comes with a few plugin bundled, but they will only modify your tree if y
 
 ### checkbox
 Renders a checkbox icon in front of each node, making multiselection easy. It also has a "tri-state" option, meaning a node with some of its children checked will get a "square" icon.
+
+_Keep in mind that if any sort of cascade is enabled, disabled nodes may be checked too (not by themselves, but for example when a parent of a disabled node is checked and selection is configured to cascade down)._
 
 ```js
 $("#tree").jstree({

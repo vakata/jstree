@@ -47,7 +47,7 @@
 
 	var inp = document.createElement("INPUT");
 	inp.type = "checkbox";
-	inp.className = "jstree-realcheckbox";
+	inp.className = "jstree-checkbox jstree-realcheckbox";
 
 	$.jstree.defaults.realcheckboxes = {};
 
@@ -90,8 +90,9 @@
 		};
 		this._realcheckboxes = function () {
 			var ts = this.settings.checkbox.tie_selection;
+			console.log(ts);
 			$('.jstree-realcheckbox').each(function () {
-				this.checked = (!ts && this.parentNode.className.indexOf("jstree-checked") !== -1) || (ts && this.parentNode.parentNode.className.indexOf('jstree-clicked') !== -1);
+				this.checked = (!ts && this.parentNode.parentNode.className.indexOf("jstree-checked") !== -1) || (ts && this.parentNode.parentNode.className.indexOf('jstree-clicked') !== -1);
 				this.indeterminate = this.parentNode.className.indexOf("jstree-undetermined") !== -1;
 				this.disabled = this.parentNode.parentNode.className.indexOf("disabled") !== -1;
 			});

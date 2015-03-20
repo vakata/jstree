@@ -272,13 +272,14 @@
 		// from http://kiro.me/projects/fuse.html
 		$.vakata.search = function(pattern, txt, options) {
 			options = options || {};
+			options = $.extend({}, $.vakata.search.defaults, options);
 			if(options.fuzzy !== false) {
 				options.fuzzy = true;
 			}
 			pattern = options.caseSensitive ? pattern : pattern.toLowerCase();
-			var MATCH_LOCATION	= options.location || 0,
-				MATCH_DISTANCE	= options.distance || 100,
-				MATCH_THRESHOLD	= options.threshold || 0.6,
+			var MATCH_LOCATION	= options.location,
+				MATCH_DISTANCE	= options.distance,
+				MATCH_THRESHOLD	= options.threshold,
 				patternLen = pattern.length,
 				matchmask, pattern_alphabet, match_bitapScore, search;
 			if(patternLen > 32) {
@@ -385,6 +386,13 @@
 				};
 			};
 			return txt === true ? { 'search' : search } : search(txt);
+		};
+		$.vakata.search.defaults = {
+			location : 0,
+			distance : 100,
+			threshold : 0.6,
+			fuzzy : false,
+			caseSensitive : false
 		};
 	}($));
 
