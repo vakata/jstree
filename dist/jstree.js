@@ -4393,14 +4393,12 @@
 		return attr;
 	};
 	$.vakata.array_unique = function(array) {
-		var a = [], i, j, l;
+		var a = [], i, j, l, o = {};
 		for(i = 0, l = array.length; i < l; i++) {
-			for(j = 0; j <= i; j++) {
-				if(array[i] === array[j]) {
-					break;
-				}
+			if(o[array[i]] === undefined) {
+				a.push(array[i]);
+				o[array[i]] = true;
 			}
-			if(j === i) { a.push(array[i]); }
 		}
 		return a;
 	};
@@ -4782,10 +4780,15 @@
 		 * @plugin checkbox
 		 */
 		this._undetermined = function () {
-			var i, j, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this;
+			var i, j, k, l, o = {}, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this;
 			for(i = 0, j = s.length; i < j; i++) {
 				if(m[s[i]] && m[s[i]].parents) {
-					p = p.concat(m[s[i]].parents);
+					for(k = 0, l = m[s[i]].parents.length; k < l; k++) {
+						if(o[m[s[i]].parents[k]] === undefined && m[s[i]].parents[k] !== '#') {
+							o[m[s[i]].parents[k]] = true;
+							p.push(m[s[i]].parents[k]);
+						}
+					}
 				}
 			}
 			// attempt for server side undetermined state
@@ -4794,22 +4797,36 @@
 					var tmp = tt.get_node(this), tmp2;
 					if(!tmp.state.loaded) {
 						if(tmp.original && tmp.original.state && tmp.original.state.undetermined && tmp.original.state.undetermined === true) {
-							p.push(tmp.id);
-							p = p.concat(tmp.parents);
+							if(o[tmp.id] === undefined && tmp.id !== '#') {
+								o[tmp.id] = true;
+								p.push(tmp.id);
+							}
+							for(k = 0, l = tmp.parents.length; k < l; k++) {
+								if(o[tmp.parents[k]] === undefined && tmp.parents[k] !== '#') {
+									o[tmp.parents[k]] = true;
+									p.push(tmp.parents[k]);
+								}
+							}
 						}
 					}
 					else {
 						for(i = 0, j = tmp.children_d.length; i < j; i++) {
 							tmp2 = m[tmp.children_d[i]];
 							if(!tmp2.state.loaded && tmp2.original && tmp2.original.state && tmp2.original.state.undetermined && tmp2.original.state.undetermined === true) {
-								p.push(tmp2.id);
-								p = p.concat(tmp2.parents);
+								if(o[tmp2.id] === undefined && tmp2.id !== '#') {
+									o[tmp2.id] = true;
+									p.push(tmp2.id);
+								}
+								for(k = 0, l = tmp2.parents.length; k < l; k++) {
+									if(o[tmp2.parents[k]] === undefined && tmp2.parents[k] !== '#') {
+										o[tmp2.parents[k]] = true;
+										p.push(tmp2.parents[k]);
+									}
+								}
 							}
 						}
 					}
 				});
-			p = $.vakata.array_unique(p);
-			p = $.vakata.array_remove_item(p,'#');
 
 			this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
 			for(i = 0, j = p.length; i < j; i++) {
