@@ -441,7 +441,24 @@
 		 * Should the node should be toggled if the text is double clicked . Defaults to `true`
 		 * @name $.jstree.defaults.core.dblclick_toggle
 		 */
-		dblclick_toggle : true
+		dblclick_toggle : true,
+		/**
+		 *  when you drag node to new node point,this attr will check the target node's children nodes number before dropping,
+		 *  setting the max children nodes number for each node point,
+		 *  notice: the children nodes means all the nodes under this node,which includes children nodes and children nodes' children nodes
+		 *  default value is -1, which means no max limited for each node,
+		 *  @name $.jstree.defaulws.core.max_children_node_num
+		 *  example:
+		 *      unlimited (default value)
+		 *          "core": {... , "max_children_node_num": -1}
+		 *      each node can't drop the 6th childnode
+		 *          "core": {... , "max_children_node_num": 5}
+		 *      the node which named "head node" can't drop the 6th children node
+		 *      the node which named "last node" can't drop the 3rd children node
+		 *      the other nodes have no limitation
+		 *          "core": {... , "max_children_node_num": { "head node": 5, "last node": 2 }
+         */
+		max_children_node_num: -1
 	};
 	$.jstree.core.prototype = {
 		/**
@@ -3642,6 +3659,11 @@
 			par = par && par.id ? par : this.get_node(par);
 			var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj,
 				chc = this.settings.core.check_callback;
+			var max_children_node_num_data = this.settings.core.max_children_node_num;
+			max_children_node_num_data = typeof max_children_node_num_data === "object" ? max_children_node_num_data[par.text]:max_children_node_num_data;
+			if(typeof max_children_node_num_data === "number" && max_children_node_num_data!==-1 && tmp.children_d.length >= max_children_node_num_data){
+				return false
+			}
 			if(chk === "move_node" || chk === "copy_node") {
 				if((!more || !more.is_multi) && (obj.id === par.id || $.inArray(obj.id, par.children) === pos || $.inArray(par.id, obj.children_d) !== -1)) {
 					this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_01', 'reason' : 'Moving parent inside child', 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
