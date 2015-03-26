@@ -546,7 +546,7 @@ $("#container").jstree({
 });
 $("#s").submit(function(e) {
   e.preventDefault();
-  $("container").jstree(true).search($("#q").val());
+  $("#container").jstree(true).search($("#q").val());
 });
 </script>
 ```

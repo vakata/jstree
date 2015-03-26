@@ -4393,14 +4393,12 @@
 		return attr;
 	};
 	$.vakata.array_unique = function(array) {
-		var a = [], i, j, l;
+		var a = [], i, j, l, o = {};
 		for(i = 0, l = array.length; i < l; i++) {
-			for(j = 0; j <= i; j++) {
-				if(array[i] === array[j]) {
-					break;
-				}
+			if(o[array[i]] === undefined) {
+				a.push(array[i]);
+				o[array[i]] = true;
 			}
-			if(j === i) { a.push(array[i]); }
 		}
 		return a;
 	};
