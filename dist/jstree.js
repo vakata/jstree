@@ -6566,7 +6566,14 @@
 			}
 
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
-			$.each(m[inside ? inside : '#'].children_d, function (ii, i) {
+      var allChildren;
+      if (s.depthFirst) {
+        allChildren = $.vakata.getChildrenDepthFirst(m, m[inside ? inside : '#']);
+      }
+      else {
+        allChildren = m[inside ? inside : '#'].children_d;
+      }
+      $.each(allChildren, function (ii, i) {
 				var v = m[i];
 				if(v.text && ( (s.search_callback && s.search_callback.call(this, str, v)) || (!s.search_callback && f.search(v.text).isMatch) ) && (!s.search_leaves_only || (v.state.loaded && v.children.length === 0)) ) {
 					r.push(i);
@@ -6647,6 +6654,19 @@
 
 	// helpers
 	(function ($) {
+    $.vakata.getChildrenDepthFirst = function(all, parent) {
+      var children = [];
+      var _getChildrenDepthFirst = function(_parent) {
+        children.push(_parent.id);
+        if (_parent.children) {
+          $.each(_parent.children, function(i,child) {
+            _getChildrenDepthFirst(all[child]);
+          });
+        }
+      };
+      _getChildrenDepthFirst(parent);
+      return children;
+    };
 		// from http://kiro.me/projects/fuse.html
 		$.vakata.search = function(pattern, txt, options) {
 			options = options || {};
