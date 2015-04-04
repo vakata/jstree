@@ -606,7 +606,12 @@
 						}
 					}, this))
 				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
-						e.preventDefault();
+						var a = e.currentTarget;
+                        var dontPreventDefault;
+                        if ( a && $.nodeName(a, 'A') && a.protocol !== 'javascript:' && $(a).attr('href') !== '#' ) {
+                            dontPreventDefault = true;
+                        }
+                        dontPreventDefault || e.preventDefault();
 						if(e.currentTarget !== document.activeElement) { $(e.currentTarget).focus(); }
 						this.activate_node(e.currentTarget, e);
 					}, this))
