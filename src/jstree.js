@@ -4130,13 +4130,16 @@
 						},
 						"blur" : $.proxy(function () {
 							var i = s.children(".jstree-rename-input"),
-								v = i.val();
+								v = i.val(),
+								f = this.settings.core.force_text,
+								nv;
 							if(v === "") { v = t; }
 							h1.remove();
 							s.replaceWith(a);
 							s.remove();
+							t = f ? t : $('<div></div>').append($.parseHTML(t)).html();
 							this.set_text(obj, t);
-							if(this.rename_node(obj, $('<div></div>').text(v)[this.settings.core.force_text ? 'text' : 'html']()) === false) {
+							if(this.rename_node(obj, f ? $('<div></div>').text(v).text() : $('<div></div>').append($.parseHTML(v)).html()) === false) {
 								this.set_text(obj, t); // move this up? and fix #483
 							}
 						}, this),
