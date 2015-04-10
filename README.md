@@ -447,7 +447,7 @@ $("#tree").jstree({
 
 [view result](http://jsfiddle.net/vakata/2kwkh2uL/9/)
 
-`"core.check_callback"` can also be set to a function, that will be invoked every time a modification is about to happen (or when jstree needs to check if a modification is possible). If you return `true` the operation will be allowed, a value of `false` means it will not be allowed.
+`"core.check_callback"` can also be set to a function, that will be invoked every time a modification is about to happen (or when jstree needs to check if a modification is possible). If you return `true` the operation will be allowed, a value of `false` means it will not be allowed. The possible operation you can expect are `create_node`, `rename_node`, `delete_node`, `move_node` and `copy_node`. The `more` parameter will contain various information provided by the plugin that is invoking the check. For example the DND plugin will provide an object containing information about the move ot copy operation that is being checked - is it a multi tree operation, which node is currently hovered, where the insert arrow is pointing - before, after or inside, etc.
 
 ```js
 $("#tree").jstree({
