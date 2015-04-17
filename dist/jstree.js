@@ -6436,6 +6436,13 @@
 		 */
 		show_only_matches : false,
 		/**
+		 * Indicates if the children of matched element are shown (when show_only_matches is true)
+		 * This setting can be changed at runtime when calling the search method. Default is `false`.
+		 * @name $.jstree.defaults.search.show_children_for_matches
+		 * @plugin search
+		 */
+		show_children_for_matches : false,
+		/**
 		 * Indicates if all nodes opened to reveal the search result, should be closed when the search is cleared or a new search is performed. Default is `true`.
 		 * @name $.jstree.defaults.search.close_opened_onclear
 		 * @plugin search
@@ -6465,6 +6472,7 @@
 			this._data.search.res = [];
 			this._data.search.opn = [];
 			this._data.search.som = false;
+			this._data.search.scfm = false;
 
 			this.element
 				.on('before_open.jstree', $.proxy(function (e, data) {
@@ -6481,6 +6489,9 @@
 
 								this.element.find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
 								o = o.add(this._data.search.dom);
+								if(this._data.search.scfm) {
+									this._data.search.dom.children(".jstree-children").find(".jstree-node").show();
+								}
 								o.parentsUntil(".jstree").addBack().show()
 									.filter(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
 							}
@@ -6490,6 +6501,9 @@
 						if(this._data.search.som) {
 							if(data.nodes.length) {
 								this.element.find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
+								if(this._data.search.scfm) {
+									data.nodes.children(".jstree-children").find(".jstree-node").show();
+								}
 								data.nodes.parentsUntil(".jstree").addBack().show()
 									.filter(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
 							}
@@ -6512,7 +6526,7 @@
 		 * @plugin search
 		 * @trigger search.jstree
 		 */
-		this.search = function (str, skip_async, show_only_matches, inside, append) {
+		this.search = function (str, skip_async, show_only_matches, inside, append, show_children_for_matches) {
 			if(str === false || $.trim(str.toString()) === "") {
 				return this.clear_search();
 			}
@@ -6530,6 +6544,9 @@
 			}
 			if(show_only_matches === undefined) {
 				show_only_matches = s.show_only_matches;
+			}
+			if(show_children_for_matches === undefined) {
+				show_children_for_matches = s.show_children_for_matches;
 			}
 			if(!skip_async && a !== false) {
 				if($.isFunction(a)) {
@@ -6566,6 +6583,7 @@
 				this._data.search.res = [];
 				this._data.search.opn = [];
 				this._data.search.som = show_only_matches;
+				this._data.search.scfm = show_children_for_matches;
 			}
 
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
