@@ -1815,6 +1815,9 @@
 						this._data.core.working = true;
 						w = new window.Worker(this._wrk);
 						w.onmessage = $.proxy(function (e) {
+							if (this._wrk === null) { 
+								return; 
+							}
 							rslt.call(this, e.data, true);
 							try { w.terminate(); w = null; } catch(ignore) { }
 							if(this._data.core.worker_queue.length) {
