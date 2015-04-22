@@ -378,7 +378,7 @@
 		 * @plugin checkbox
 		 */
 		this._undetermined = function () {
-            if(null === this._wrk) { return; }
+			if(null === this._wrk) { return; }
 			var i, j, k, l, o = {}, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this;
 			for(i = 0, j = s.length; i < j; i++) {
 				if(m[s[i]] && m[s[i]].parents) {
