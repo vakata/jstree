@@ -711,7 +711,7 @@
 							}
 							if(!this._data.core.ready) {
 								setTimeout($.proxy(function() {
-									if(!this.get_container_ul().find('.jstree-loading').length) {
+									if(this.element && !this.get_container_ul().find('.jstree-loading').length) {
 										this._data.core.ready = true;
 										if(this._data.core.selected.length) {
 											if(this.settings.core.expand_selected_onload) {
@@ -1761,6 +1761,7 @@
 					}
 				},
 				rslt = function (rslt, worker) {
+					if(this.element === null) { return; }
 					this._cnt = rslt.cnt;
 					this._model.data = rslt.mod; // breaks the reference in load_node - careful
 
