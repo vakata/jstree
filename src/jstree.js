@@ -711,6 +711,7 @@
 							}
 							if(!this._data.core.ready) {
 								setTimeout($.proxy(function() {
+									if(null === this._wrk) { return; }
 									if(!this.get_container_ul().find('.jstree-loading').length) {
 										this._data.core.ready = true;
 										if(this._data.core.selected.length) {
@@ -1815,6 +1816,7 @@
 						this._data.core.working = true;
 						w = new window.Worker(this._wrk);
 						w.onmessage = $.proxy(function (e) {
+							if(null === this._wrk) { return; }
 							rslt.call(this, e.data, true);
 							try { w.terminate(); w = null; } catch(ignore) { }
 							if(this._data.core.worker_queue.length) {
