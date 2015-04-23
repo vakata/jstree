@@ -4086,11 +4086,12 @@
 		},
 		/**
 		 * put a node in edit mode (input field to rename the node)
-		 * @name edit(obj [, default_text])
+		 * @name edit(obj [, default_text, callback])
 		 * @param  {mixed} obj
-		 * @param  {String} default_text the text to populate the input with (if omitted the node text value is used)
+		 * @param  {String} default_text the text to populate the input with (if omitted or set to a non-string value the node's text value is used)
+		 * @param  {Function} callback a function to be called once the text box is blurred, it is called in the instance's scope and receives the node and a status parameter - true if the rename is successful, false otherwise. You can access the node's title using .text
 		 */
-		edit : function (obj, default_text) {
+		edit : function (obj, default_text, callback) {
 			var rtl, w, a, s, t, h1, h2, fn, tmp;
 			obj = this.get_node(obj);
 			if(!obj) { return false; }
@@ -4141,8 +4142,12 @@
 							s.remove();
 							t = f ? t : $('<div></div>').append($.parseHTML(t)).html();
 							this.set_text(obj, t);
-							if(this.rename_node(obj, f ? $('<div></div>').text(v).text() : $('<div></div>').append($.parseHTML(v)).html()) === false) {
+							nv = !!this.rename_node(obj, f ? $('<div></div>').text(v).text() : $('<div></div>').append($.parseHTML(v)).html());
+							if(!nv) {
 								this.set_text(obj, t); // move this up? and fix #483
+							}
+							if(callback) {
+								callback.call(this, tmp, nv);
 							}
 						}, this),
 						"keydown" : function (event) {
