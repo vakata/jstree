@@ -2830,7 +2830,7 @@
 						if(p[i] === l) {
 							c = !c;
 						}
-						if(c || p[i] === o || p[i] === l) {
+						if(!this.is_disabled(p[i]) && (c || p[i] === o || p[i] === l)) {
 							this.select_node(p[i], true, false, e);
 						}
 						else {
