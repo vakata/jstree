@@ -19,6 +19,41 @@
 	};
 })(jQuery);
 
+// more detailed changed event
+(function ($, undefined) {
+	"use strict";
+	$.jstree.plugins.changed = function (options, parent) {
+		var last = [], i, j;
+		this.trigger = function (ev, data) {
+			if(!data) {
+				data = {};
+			}
+			if(ev.replace('.jstree','') === 'changed') {
+				data.changed = { selected : [], deselected : [] };
+				var tmp = {};
+				for(i = 0, j = last.length; i < j; i++) {
+					tmp[last[i]] = 1;
+				}
+				for(i = 0, j = data.selected.length; i < j; i++) {
+					if(!tmp[data.selected[i]]) {
+						data.changed.selected.push(data.selected[i]);
+					}
+					else {
+						tmp[data.selected[i]] = 2;
+					}
+				}
+				for(i = 0, j = last.length; i < j; i++) {
+					if(tmp[last[i]] === 1) {
+						data.changed.deselected.push(last[i]);
+					}
+				}
+				last = data.selected.slice();
+			}
+			parent.trigger.call(this, ev, data);
+		};
+	};
+})(jQuery);
+
 // no hover
 (function ($, undefined) {
 	"use strict";
