@@ -14,13 +14,13 @@
 		"dist/jstree.min.js"
 	],
 	"images": [
-		"dist/themes/default/32px.png",
-		"dist/themes/default/40px.png",
-		"dist/themes/default/throbber.gif"
+		"dist/themes/default/images/32px.png",
+		"dist/themes/default/images/40px.png",
+		"dist/themes/default/images/throbber.gif"
 	],
 	"styles": [
-		"dist/themes/default/style.css",
-		"dist/themes/default/style.min.css"
+		"dist/themes/default/styles/style.css",
+		"dist/themes/default/styles/style.min.css"
 	],
 	"dependencies": {
 		"components/jquery": ">=1.9.1"

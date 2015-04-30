@@ -4204,7 +4204,7 @@
 			if(theme_url === true) {
 				var dir = this.settings.core.themes.dir;
 				if(!dir) { dir = $.jstree.path + '/themes'; }
-				theme_url = dir + '/' + theme_name + '/style.css';
+				theme_url = dir + '/' + theme_name + '/styles/style.css';
 			}
 			if(theme_url && $.inArray(theme_url, themes_loaded) === -1) {
 				$('head').append('<'+'link rel="stylesheet" href="' + theme_url + '" type="text/css" />');
