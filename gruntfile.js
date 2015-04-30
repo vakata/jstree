@@ -90,16 +90,16 @@ module.exports = function(grunt) {
           compress : true
         },
         files: {
-          "dist/themes/default/style.min.css" : "src/themes/default/style.less",
-          "dist/themes/default-dark/style.min.css" : "src/themes/default-dark/style.less"
+          "dist/themes/default/styles/style.min.css" : "src/themes/default/styles/style.less",
+          "dist/themes/default-dark/styles/style.min.css" : "src/themes/default-dark/styles/style.less"
         }
       },
       development: {
         files: {
-          "src/themes/default/style.css" : "src/themes/default/style.less",
-          "dist/themes/default/style.css" : "src/themes/default/style.less",
-          "src/themes/default-dark/style.css" : "src/themes/default-dark/style.less",
-          "dist/themes/default-dark/style.css" : "src/themes/default-dark/style.less"
+          "src/themes/default/styles/style.css" : "src/themes/default/styles/style.less",
+          "dist/themes/default/styles/style.css" : "src/themes/default/styles/style.less",
+          "src/themes/default-dark/styles/style.css" : "src/themes/default-dark/styles/style.less",
+          "dist/themes/default-dark/styles/style.css" : "src/themes/default-dark/styles/style.less"
         }
       }
     },
@@ -154,14 +154,14 @@ module.exports = function(grunt) {
         },
         files: [{
           expand: true,                  // Enable dynamic expansion
-          cwd:  'src/themes/default/',    // Src matches are relative to this path
+          cwd:  'src/themes/default/images/',    // Src matches are relative to this path
           src: ['**/*.{png,jpg,gif}'],   // Actual patterns to match
-          dest: 'dist/themes/default/'   // Destination path prefix
+          dest: 'dist/themes/default/images/'   // Destination path prefix
         },{
           expand: true,                  // Enable dynamic expansion
-          cwd:  'src/themes/default-dark/',    // Src matches are relative to this path
+          cwd:  'src/themes/default-dark/images/',    // Src matches are relative to this path
           src: ['**/*.{png,jpg,gif}'],   // Actual patterns to match
-          dest: 'dist/themes/default-dark/'   // Destination path prefix
+          dest: 'dist/themes/default-dark/images/'   // Destination path prefix
         }]
       }
     },
