@@ -1,6 +1,7 @@
 /debug
 /jstree.sublime-project
 /jstree.sublime-workspace
+/bower_components
 /node_modules
 /site
 /nuget
