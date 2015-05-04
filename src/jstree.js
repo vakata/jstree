@@ -1932,7 +1932,7 @@
 			if(tmp.length) {
 				data.icon = tmp.hasClass('jstree-themeicon-hidden') ? false : tmp.attr('rel');
 			}
-			if(data.state.icon) {
+			if(data.state.icon !== undefined) {
 				data.icon = data.state.icon;
 			}
 			if(data.icon === undefined || data.icon === null || data.icon === "") {
