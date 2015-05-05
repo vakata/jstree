@@ -425,7 +425,6 @@
 							vakata_dnd.helper.appendTo("body");
 							vakata_dnd.helper_w = vakata_dnd.helper.outerWidth();
 						}
-						vakata_dnd.is_drag = true;
 						/**
 						 * triggered on the document when a drag starts
 						 * @event
@@ -437,9 +436,11 @@
 						 * @param {Object} event the event that caused the start (probably mousemove)
 						 */
 						$.vakata.dnd._trigger("start", e);
+						vakata_dnd.is_drag = !e.originalEvent.defaultPrevented;
 					}
 					else { return; }
 				}
+				if(!vakata_dnd.is_drag) { return; }
 
 				var d  = false, w  = false,
 					dh = false, wh = false,
