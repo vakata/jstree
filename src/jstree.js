@@ -3157,7 +3157,7 @@
 		 * sets the state of the tree. Used internally.
 		 * @name set_state(state [, callback])
 		 * @private
-		 * @param {Object} state the state to restore
+		 * @param {Object} state the state to restore. Keep in mind this object is passed by reference and jstree will modify it.
 		 * @param {Function} callback an optional function to execute once the state is restored.
 		 * @trigger set_state.jstree
 		 */
