@@ -62,6 +62,18 @@
 	};
 })(jQuery);
 
+// force multiple select
+(function ($, undefined) {
+	"use strict";
+	$.jstree.defaults.multiselect = {};
+	$.jstree.plugins.multiselect = function (options, parent) {
+		this.activate_node = function (obj, e) {
+			e.ctrlKey = true;
+			parent.activate_node.call(this, obj, e);
+		};
+	};
+})(jQuery);
+
 // conditional select
 (function ($, undefined) {
 	"use strict";
