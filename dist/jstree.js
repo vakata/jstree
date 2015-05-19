@@ -4525,7 +4525,7 @@
 							dpc = data.nodes,
 							i, j;
 						for(i = 0, j = dpc.length; i < j; i++) {
-							m[dpc[i]].state.checked = (m[dpc[i]].original && m[dpc[i]].original.state && m[dpc[i]].original.state.checked);
+							m[dpc[i]].state.checked = m[dpc[i]].state.checked || (m[dpc[i]].original && m[dpc[i]].original.state && m[dpc[i]].original.state.checked);
 							if(m[dpc[i]].state.checked) {
 								this._data.checkbox.selected.push(dpc[i]);
 							}
