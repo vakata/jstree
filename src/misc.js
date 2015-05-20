@@ -51,6 +51,10 @@
 			}
 			parent.trigger.call(this, ev, data);
 		};
+		this.refresh = function (skip_loading, forget_state) {
+			last = [];
+			parent.trigger.apply(this, arguments);
+		};
 	};
 })(jQuery);
 
