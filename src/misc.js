@@ -53,7 +53,7 @@
 		};
 		this.refresh = function (skip_loading, forget_state) {
 			last = [];
-			parent.trigger.apply(this, arguments);
+			return parent.refresh.apply(this, arguments);
 		};
 	};
 })(jQuery);
