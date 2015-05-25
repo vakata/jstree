@@ -5908,12 +5908,14 @@
 		// bind only once for all instances
 		var lastmv = false,
 			laster = false,
+			lastev = false,
 			opento = false,
 			marker = $('<div id="jstree-marker">&#160;</div>').hide(); //.appendTo('body');
 
 		$(document)
 			.on('dnd_start.vakata.jstree', function (e, data) {
 				lastmv = false;
+				lastev = false;
 				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.appendTo('body'); //.show();
 			})
@@ -5925,6 +5927,7 @@
 				if(data.event.target.id && data.event.target.id === 'jstree-marker') {
 					return;
 				}
+				lastev = data.event;
 
 				var ins = $.jstree.reference(data.event.target),
 					ref = false,
@@ -6032,6 +6035,7 @@
 				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide();
 				lastmv = false;
+				lastev = false;
 				data.helper.find('.jstree-icon').first().removeClass('jstree-ok').addClass('jstree-er');
 			})
 			.on('dnd_stop.vakata.jstree', function (e, data) {
@@ -6054,11 +6058,18 @@
 						}
 					}
 				}
+				lastev = false;
+				lastmv = false;
 			})
 			.on('keyup.jstree keydown.jstree', function (e, data) {
 				data = $.vakata.dnd._get();
 				if(data && data.data && data.data.jstree) {
 					data.helper.find('.jstree-copy').first()[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
+					if(lastev) {
+						lastev.metaKey = e.metaKey;
+						lastev.ctrlKey = e.ctrlKey;
+						$.vakata.dnd._trigger('move', lastev);
+					}
 				}
 			});
 	});
