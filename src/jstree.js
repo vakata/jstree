@@ -574,7 +574,8 @@
 				tout = null,
 				was_click = 0;
 			this.element
-				.on("dblclick.jstree", function () {
+				.on("dblclick.jstree", function (e) {
+						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
 						if(document.selection && document.selection.empty) {
 							document.selection.empty();
 						}
@@ -601,6 +602,7 @@
 						this.toggle_node(e.target);
 					}, this))
 				.on("dblclick.jstree", ".jstree-anchor", $.proxy(function (e) {
+						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
 						if(this.settings.core.dblclick_toggle) {
 							this.toggle_node(e.target);
 						}
