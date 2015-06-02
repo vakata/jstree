@@ -58,6 +58,29 @@
 	};
 })(jQuery);
 
+// mapping
+(function ($, undefined) {
+	"use strict";
+	// use this if you need any options
+	$.jstree.defaults.mapper = {
+		option_key : "option_value"
+	};
+	$.jstree.plugins.mapper = function () {
+		this._parse_model_from_json = function (d, p, ps) {
+			// d is the node from the server, it will be called recursively for children,
+			// so you do not need to process at once
+			/* // for example
+			for(var i in d) {
+				if(d.hasOwnProperty(i)) {
+					d[i.toLowerCase()] = d[i];
+				}
+			}
+			*/
+			return parent.activate_node.call(this, d, p, ps);
+		};
+	};
+})(jQuery);
+
 // no hover
 (function ($, undefined) {
 	"use strict";

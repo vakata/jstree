@@ -775,7 +775,7 @@
 							if(end) { return; }
 						}
 						// list nodes that start with that letter (only if word consists of a single char)
-						if(new RegExp('^' + chr + '+$').test(word)) {
+						if(new RegExp('^' + chr.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '+$').test(word)) {
 							// search for the next node starting with that letter
 							col.slice(ind + 1).each($.proxy(function (i, v) {
 								if($(v).text().toLowerCase().charAt(0) === chr) {
