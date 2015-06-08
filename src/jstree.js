@@ -2705,14 +2705,13 @@
 			if(!obj) { return false; }
 			var dom = obj.id === '#' ? this.get_container_ul() : this.get_node(obj, true),
 				_this = this, i, j;
-			if(!dom.length) {
-				for(i = 0, j = obj.children_d.length; i < j; i++) {
-					this._model.data[obj.children_d[i]].state.opened = false;
-				}
-				return this.trigger('close_all', { "node" : obj });
+			if(dom.length) {
+				dom = this.is_open(obj) ? dom.find('.jstree-open').addBack() : dom.find('.jstree-open');
+				$(dom.get().reverse()).each(function () { _this.close_node(this, animation || 0); });
 			}
-			dom = this.is_open(obj) ? dom.find('.jstree-open').addBack() : dom.find('.jstree-open');
-			$(dom.get().reverse()).each(function () { _this.close_node(this, animation || 0); });
+			for(i = 0, j = obj.children_d.length; i < j; i++) {
+				this._model.data[obj.children_d[i]].state.opened = false;
+			}
 			/**
 			 * triggered when an `close_all` call completes
 			 * @event
