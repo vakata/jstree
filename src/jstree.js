@@ -4432,4 +4432,5 @@
 		var tmp = $.inArray(item, array);
 		return tmp !== -1 ? $.vakata.array_remove(array, tmp) : array;
 	};
+	return $.fn.jstree;
 }));
