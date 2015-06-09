@@ -11,14 +11,14 @@
  * if using jslint please allow for the jQuery global and use following options:
  * jslint: browser: true, ass: true, bitwise: true, continue: true, nomen: true, plusplus: true, regexp: true, unparam: true, todo: true, white: true
  */
-/*globals jQuery, define, exports, require, window, document, postMessage */
+/*globals jQuery, define, module, exports, require, window, document, postMessage */
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
 		define(['jquery'], factory);
 	}
-	else if(typeof exports === 'object') {
-		factory(require('jquery'));
+	else if(typeof module !== 'undefined' && module.exports) {
+		module.exports = factory(require('jquery'));
 	}
 	else {
 		factory(jQuery);
@@ -28,7 +28,7 @@
 
 	// prevent another load? maybe there is a better way?
 	if($.jstree) {
-		return;
+		return $.fn.jstree;
 	}
 
 	/**
@@ -4432,5 +4432,6 @@
 		var tmp = $.inArray(item, array);
 		return tmp !== -1 ? $.vakata.array_remove(array, tmp) : array;
 	};
+
 	return $.fn.jstree;
 }));
