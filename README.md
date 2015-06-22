@@ -527,7 +527,7 @@ $("#tree").jstree({
     "data" : function (nodes) {
       return { "ids" : nodes.join(",") };
     }
-  }
+  },
   "plugins" : [ "massload", "state" ]
 });
 ```
