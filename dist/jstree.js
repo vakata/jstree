@@ -4096,10 +4096,10 @@
 		 * @name edit(obj [, default_text, callback])
 		 * @param  {mixed} obj
 		 * @param  {String} default_text the text to populate the input with (if omitted or set to a non-string value the node's text value is used)
-		 * @param  {Function} callback a function to be called once the text box is blurred, it is called in the instance's scope and receives the node and a status parameter - true if the rename is successful, false otherwise. You can access the node's title using .text
+		 * @param  {Function} callback a function to be called once the text box is blurred, it is called in the instance's scope and receives the node, a status parameter (true if the rename is successful, false otherwise) and a boolean indicating if the user cancelled the edit. You can access the node's title using .text
 		 */
 		edit : function (obj, default_text, callback) {
-			var rtl, w, a, s, t, h1, h2, fn, tmp;
+			var rtl, w, a, s, t, h1, h2, fn, tmp, cancel = false;
 			obj = this.get_node(obj);
 			if(!obj) { return false; }
 			if(this.settings.core.check_callback === false) {
@@ -4154,12 +4154,13 @@
 								this.set_text(obj, t); // move this up? and fix #483
 							}
 							if(callback) {
-								callback.call(this, tmp, nv);
+								callback.call(this, tmp, nv, cancel);
 							}
 						}, this),
 						"keydown" : function (event) {
 							var key = event.which;
 							if(key === 27) {
+								cancel = true;
 								this.value = t;
 							}
 							if(key === 27 || key === 13 || key === 37 || key === 38 || key === 39 || key === 40 || key === 32) {
