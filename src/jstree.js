@@ -2800,6 +2800,9 @@
 			if(this.is_disabled(obj)) {
 				return false;
 			}
+			if(!e || typeof e !== 'object') {
+				e = {};
+			}
 
 			// ensure last_clicked is still in the DOM, make it fresh (maybe it was moved?) and make sure it is still selected, if not - make last_clicked the last selected node
 			this._data.core.last_clicked = this._data.core.last_clicked && this._data.core.last_clicked.id !== undefined ? this.get_node(this._data.core.last_clicked.id) : null;
