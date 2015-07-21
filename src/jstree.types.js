@@ -37,16 +37,16 @@
 	 * @plugin types
 	 */
 	$.jstree.defaults.types = {
-		'#' : {},
 		'default' : {}
 	};
+	$.jstree.defaults.types[$.jstree.root] = {};
 
 	$.jstree.plugins.types = function (options, parent) {
 		this.init = function (el, options) {
 			var i, j;
 			if(options && options.types && options.types['default']) {
 				for(i in options.types) {
-					if(i !== "default" && i !== "#" && options.types.hasOwnProperty(i)) {
+					if(i !== "default" && i !== $.jstree.root && options.types.hasOwnProperty(i)) {
 						for(j in options.types['default']) {
 							if(options.types['default'].hasOwnProperty(j) && options.types[i][j] === undefined) {
 								options.types[i][j] = options.types['default'][j];
@@ -56,11 +56,11 @@
 				}
 			}
 			parent.init.call(this, el, options);
-			this._model.data['#'].type = '#';
+			this._model.data[$.jstree.root].type = $.jstree.root;
 		};
 		this.refresh = function (skip_loading, forget_state) {
 			parent.refresh.call(this, skip_loading, forget_state);
-			this._model.data['#'].type = '#';
+			this._model.data[$.jstree.root].type = $.jstree.root;
 		};
 		this.bind = function () {
 			this.element
@@ -82,7 +82,7 @@
 								m[dpc[i]].icon = t[c].icon;
 							}
 						}
-						m['#'].type = '#';
+						m[$.jstree.root].type = $.jstree.root;
 					}, this));
 			parent.bind.call(this);
 		};

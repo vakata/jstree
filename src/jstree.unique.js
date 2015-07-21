@@ -89,7 +89,7 @@
 		this.create_node = function (par, node, pos, callback, is_loaded) {
 			if(!node || node.text === undefined) {
 				if(par === null) {
-					par = "#";
+					par = $.jstree.root;
 				}
 				par = this.get_node(par);
 				if(!par) {

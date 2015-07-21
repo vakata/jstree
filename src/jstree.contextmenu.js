@@ -249,7 +249,7 @@
 		 */
 		this.show_contextmenu = function (obj, x, y, e) {
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 			var s = this.settings.contextmenu,
 				d = this.get_node(obj, true),
 				a = d.children(".jstree-anchor"),

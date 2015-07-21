@@ -103,7 +103,7 @@
 								for(i = 0, j = r.length; i < j; i++) {
 									s = s.concat(this.get_node(r[i]).parents);
 								}
-								s = $.vakata.array_remove_item($.vakata.array_unique(s),'#');
+								s = $.vakata.array_remove_item($.vakata.array_unique(s),$.jstree.root);
 								o = s.length ? $(this.element[0].querySelectorAll('#' + $.map(s, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #'))) : $();
 
 								this.element.find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
@@ -206,7 +206,7 @@
 			}
 
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
-			$.each(m[inside ? inside : '#'].children_d, function (ii, i) {
+			$.each(m[inside ? inside : $.jstree.root].children_d, function (ii, i) {
 				var v = m[i];
 				if(v.text && ( (s.search_callback && s.search_callback.call(this, str, v)) || (!s.search_callback && f.search(v.text).isMatch) ) && (!s.search_leaves_only || (v.state.loaded && v.children.length === 0)) ) {
 					r.push(i);
@@ -273,7 +273,7 @@
 		this._search_open = function (d) {
 			var t = this;
 			$.each(d.concat([]), function (i, v) {
-				if(v === "#") { return true; }
+				if(v === $.jstree.root) { return true; }
 				try { v = $('#' + v.replace($.jstree.idregex,'\\$&'), t.element); } catch(ignore) { }
 				if(v && v.length) {
 					if(t.is_closed(v)) {

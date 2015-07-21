@@ -88,7 +88,8 @@
 		 */
 		plugins : {},
 		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : '',
-		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%?`]/g
+		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%?`]/g,
+		root : '#'
 	};
 	/**
 	 * creates a jstree instance
@@ -470,16 +471,7 @@
 		 */
 		init : function (el, options) {
 			this._model = {
-				data : {
-					'#' : {
-						id : '#',
-						parent : null,
-						parents : [],
-						children : [],
-						children_d : [],
-						state : { loaded : false }
-					}
-				},
+				data : {},
 				changed : [],
 				force_full_redraw : false,
 				redraw_timeout : false,
@@ -489,6 +481,14 @@
 					selected : false,
 					disabled : false
 				}
+			};
+			this._model.data[$.jstree.root] = {
+				id : $.jstree.root,
+				parent : null,
+				parents : [],
+				children : [],
+				children_d : [],
+				state : { loaded : false }
 			};
 
 			this.element = $(el).addClass('jstree jstree-' + this._id);
@@ -530,7 +530,7 @@
 			 * @name loading.jstree
 			 */
 			this.trigger("loading");
-			this.load_node('#');
+			this.load_node($.jstree.root);
 		},
 		/**
 		 * destroy an instance
@@ -637,7 +637,7 @@
 								}
 								else {
 									o = this.get_parent(e.currentTarget);
-									if(o && o.id !== '#') { this.get_node(o, true).children('.jstree-anchor').focus(); }
+									if(o && o.id !== $.jstree.root) { this.get_node(o, true).children('.jstree-anchor').focus(); }
 								}
 								break;
 							case 38: // up
@@ -677,7 +677,7 @@
 							case 46:
 								e.preventDefault();
 								o = this.get_node(e.currentTarget);
-								if(o && o.id && o.id !== '#') {
+								if(o && o.id && o.id !== $.jstree.root) {
 									o = this.is_selected(o) ? this.get_selected() : o;
 									this.delete_node(o);
 								}
@@ -686,7 +686,7 @@
 							case 113:
 								e.preventDefault();
 								o = this.get_node(e.currentTarget);
-								if(o && o.id && o.id !== '#') {
+								if(o && o.id && o.id !== $.jstree.root) {
 									// this.edit(o);
 								}
 								break;
@@ -698,7 +698,7 @@
 					}, this))
 				.on("load_node.jstree", $.proxy(function (e, data) {
 						if(data.status) {
-							if(data.node.id === '#' && !this._data.core.loaded) {
+							if(data.node.id === $.jstree.root && !this._data.core.loaded) {
 								this._data.core.loaded = true;
 								if(this._firstChild(this.get_container_ul()[0])) {
 									this.element.attr('aria-activedescendant',this._firstChild(this.get_container_ul()[0]).id);
@@ -961,14 +961,14 @@
 					obj = this._model.data[dom.closest('.jstree-node').attr('id')];
 				}
 				else if((dom = $(obj, this.element)).length && dom.hasClass('jstree')) {
-					obj = this._model.data['#'];
+					obj = this._model.data[$.jstree.root];
 				}
 				else {
 					return false;
 				}
 
 				if(as_dom) {
-					obj = obj.id === '#' ? this.element : $('#' + obj.id.replace($.jstree.idregex,'\\$&'), this.element);
+					obj = obj.id === $.jstree.root ? this.element : $('#' + obj.id.replace($.jstree.idregex,'\\$&'), this.element);
 				}
 				return obj;
 			} catch (ex) { return false; }
@@ -983,7 +983,7 @@
 		 */
 		get_path : function (obj, glue, ids) {
 			obj = obj.parents ? obj : this.get_node(obj);
-			if(!obj || obj.id === '#' || !obj.parents) {
+			if(!obj || obj.id === $.jstree.root || !obj.parents) {
 				return false;
 			}
 			var i, j, p = [];
@@ -1088,7 +1088,7 @@
 		 */
 		get_parent : function (obj) {
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			return obj.parent;
@@ -1272,7 +1272,7 @@
 		 * @trigger load_all.jstree
 		 */
 		load_all : function (obj, callback) {
-			if(!obj) { obj = '#'; }
+			if(!obj) { obj = $.jstree.root; }
 			obj = this.get_node(obj);
 			if(!obj) { return false; }
 			var to_load = [],
@@ -1315,7 +1315,7 @@
 			var s = this.settings.core.data, t;
 			// use original HTML
 			if(!s) {
-				if(obj.id === '#') {
+				if(obj.id === $.jstree.root) {
 					return this._append_html_data(obj, this._data.core.original_container_html.clone(true), function (status) {
 						callback.call(this, status);
 					});
@@ -1323,7 +1323,7 @@
 				else {
 					return callback.call(this, false);
 				}
-				// return callback.call(this, obj.id === '#' ? this._append_html_data(obj, this._data.core.original_container_html.clone(true)) : false);
+				// return callback.call(this, obj.id === $.jstree.root ? this._append_html_data(obj, this._data.core.original_container_html.clone(true)) : false);
 			}
 			if($.isFunction(s)) {
 				return s.call(this, obj, $.proxy(function (d) {
@@ -1367,7 +1367,7 @@
 							}, this));
 				}
 				t = ($.isArray(s) || $.isPlainObject(s)) ? JSON.parse(JSON.stringify(s)) : s;
-				if(obj.id === '#') {
+				if(obj.id === $.jstree.root) {
 					return this._append_json_data(obj, t, function (status) {
 						callback.call(this, status);
 					});
@@ -1377,10 +1377,10 @@
 					this.settings.core.error.call(this, this._data.core.last_error);
 					return callback.call(this, false);
 				}
-				//return callback.call(this, (obj.id === "#" ? this._append_json_data(obj, t) : false) );
+				//return callback.call(this, (obj.id === $.jstree.root ? this._append_json_data(obj, t) : false) );
 			}
 			if(typeof s === 'string') {
-				if(obj.id === '#') {
+				if(obj.id === $.jstree.root) {
 					return this._append_html_data(obj, $($.parseHTML(s)).filter(function () { return this.nodeType !== 3; }), function (status) {
 						callback.call(this, status);
 					});
@@ -1390,7 +1390,7 @@
 					this.settings.core.error.call(this, this._data.core.last_error);
 					return callback.call(this, false);
 				}
-				//return callback.call(this, (obj.id === "#" ? this._append_html_data(obj, $(s)) : false) );
+				//return callback.call(this, (obj.id === $.jstree.root ? this._append_html_data(obj, $(s)) : false) );
 			}
 			return callback.call(this, false);
 		},
@@ -1449,7 +1449,7 @@
 			 * @param {String} parent the parent ID of the nodes
 			 */
 			this.trigger('model', { "nodes" : dpc, 'parent' : par });
-			if(par !== '#') {
+			if(par !== $.jstree.root) {
 				this._node_changed(par);
 				this.redraw();
 			}
@@ -1794,7 +1794,7 @@
 
 					this.trigger('model', { "nodes" : rslt.dpc, 'parent' : rslt.par });
 
-					if(rslt.par !== '#') {
+					if(rslt.par !== $.jstree.root) {
 						this._node_changed(rslt.par);
 						this.redraw();
 					}
@@ -2187,7 +2187,7 @@
 		 * @trigger redraw.jstree
 		 */
 		_redraw : function () {
-			var nodes = this._model.force_full_redraw ? this._model.data['#'].children.concat([]) : this._model.changed.concat([]),
+			var nodes = this._model.force_full_redraw ? this._model.data[$.jstree.root].children.concat([]) : this._model.changed.concat([]),
 				f = document.createElement('UL'), tmp, i, j, fe = this._data.core.focused;
 			for(i = 0, j = nodes.length; i < j; i++) {
 				tmp = this.redraw_node(nodes[i], true, this._model.force_full_redraw);
@@ -2248,7 +2248,7 @@
 				k = false,
 				d = document;
 			if(!obj) { return false; }
-			if(obj.id === '#') { return this.redraw(true); }
+			if(obj.id === $.jstree.root) { return this.redraw(true); }
 			node = this.get_node(node, true);
 			if(!node || !node.length) { return false; } // TODO: quick toggle
 
@@ -2290,18 +2290,18 @@
 				t = 0,
 				l = 0;
 			if(!obj) { return false; }
-			if(obj.id === '#') {  return this.redraw(true); }
+			if(obj.id === $.jstree.root) {  return this.redraw(true); }
 			deep = deep || obj.children.length === 0;
 			node = !document.querySelector ? document.getElementById(obj.id) : this.element[0].querySelector('#' + ("0123456789".indexOf(obj.id[0]) !== -1 ? '\\3' + obj.id[0] + ' ' + obj.id.substr(1).replace($.jstree.idregex,'\\$&') : obj.id.replace($.jstree.idregex,'\\$&')) ); //, this.element);
 			if(!node) {
 				deep = true;
 				//node = d.createElement('LI');
 				if(!is_callback) {
-					par = obj.parent !== '#' ? $('#' + obj.parent.replace($.jstree.idregex,'\\$&'), this.element)[0] : null;
+					par = obj.parent !== $.jstree.root ? $('#' + obj.parent.replace($.jstree.idregex,'\\$&'), this.element)[0] : null;
 					if(par !== null && (!par || !m[obj.parent].state.opened)) {
 						return false;
 					}
-					ind = $.inArray(obj.id, par === null ? m['#'].children : m[obj.parent].children);
+					ind = $.inArray(obj.id, par === null ? m[$.jstree.root].children : m[obj.parent].children);
 				}
 			}
 			else {
@@ -2471,7 +2471,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			animation = animation === undefined ? this.settings.core.animation : animation;
@@ -2558,12 +2558,12 @@
 		 */
 		_open_to : function (obj) {
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			var i, j, p = obj.parents;
 			for(i = 0, j = p.length; i < j; i+=1) {
-				if(i !== '#') {
+				if(i !== $.jstree.root) {
 					this.open_node(p[i], false, 0);
 				}
 			}
@@ -2586,7 +2586,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			if(this.is_closed(obj)) {
@@ -2659,10 +2659,10 @@
 		 * @trigger open_all.jstree
 		 */
 		open_all : function (obj, animation, original_obj) {
-			if(!obj) { obj = '#'; }
+			if(!obj) { obj = $.jstree.root; }
 			obj = this.get_node(obj);
 			if(!obj) { return false; }
-			var dom = obj.id === '#' ? this.get_container_ul() : this.get_node(obj, true), i, j, _this;
+			var dom = obj.id === $.jstree.root ? this.get_container_ul() : this.get_node(obj, true), i, j, _this;
 			if(!dom.length) {
 				for(i = 0, j = obj.children_d.length; i < j; i++) {
 					if(this.is_closed(this._model.data[obj.children_d[i]])) {
@@ -2699,10 +2699,10 @@
 		 * @trigger close_all.jstree
 		 */
 		close_all : function (obj, animation) {
-			if(!obj) { obj = '#'; }
+			if(!obj) { obj = $.jstree.root; }
 			obj = this.get_node(obj);
 			if(!obj) { return false; }
-			var dom = obj.id === '#' ? this.get_container_ul() : this.get_node(obj, true),
+			var dom = obj.id === $.jstree.root ? this.get_container_ul() : this.get_node(obj, true),
 				_this = this, i, j;
 			if(dom.length) {
 				dom = this.is_open(obj) ? dom.find('.jstree-open').addBack() : dom.find('.jstree-open');
@@ -2745,7 +2745,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			obj.state.disabled = false;
@@ -2774,7 +2774,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			obj.state.disabled = true;
@@ -2920,7 +2920,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			dom = this.get_node(obj, true);
@@ -2973,7 +2973,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			dom = this.get_node(obj, true);
@@ -3005,7 +3005,7 @@
 		 */
 		select_all : function (supress_event) {
 			var tmp = this._data.core.selected.concat([]), i, j;
-			this._data.core.selected = this._model.data['#'].children_d.concat();
+			this._data.core.selected = this._model.data[$.jstree.root].children_d.concat();
 			for(i = 0, j = this._data.core.selected.length; i < j; i++) {
 				if(this._model.data[this._data.core.selected[i]]) {
 					this._model.data[this._data.core.selected[i]].state.selected = true;
@@ -3058,7 +3058,7 @@
 		 */
 		is_selected : function (obj) {
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			return obj.state.selected;
@@ -3141,7 +3141,7 @@
 			}, i;
 			for(i in this._model.data) {
 				if(this._model.data.hasOwnProperty(i)) {
-					if(i !== '#') {
+					if(i !== $.jstree.root) {
 						if(this._model.data[i].state.opened) {
 							state.core.open.push(i);
 						}
@@ -3237,15 +3237,14 @@
 			this._data.core.state = forget_state === true ? {} : this.get_state();
 			if(forget_state && $.isFunction(forget_state)) { this._data.core.state = forget_state.call(this, this._data.core.state); }
 			this._cnt = 0;
-			this._model.data = {
-				'#' : {
-					id : '#',
-					parent : null,
-					parents : [],
-					children : [],
-					children_d : [],
-					state : { loaded : false }
-				}
+			this._model.data = {};
+			this._model.data[$.jstree.root] = {
+				id : $.jstree.root,
+				parent : null,
+				parents : [],
+				children : [],
+				children_d : [],
+				state : { loaded : false }
 			};
 			this._data.core.selected = [];
 			this._data.core.last_clicked = null;
@@ -3256,7 +3255,7 @@
 				this.element.html("<"+"ul class='"+c+"' role='group'><"+"li class='jstree-initial-node jstree-loading jstree-leaf jstree-last' role='treeitem' id='j"+this._id+"_loading'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
 				this.element.attr('aria-activedescendant','j'+this._id+'_loading');
 			}
-			this.load_node('#', function (o, s) {
+			this.load_node($.jstree.root, function (o, s) {
 				if(s) {
 					this.get_container_ul()[0].className = c;
 					if(this._firstChild(this.get_container_ul()[0])) {
@@ -3282,7 +3281,7 @@
 		 */
 		refresh_node : function (obj) {
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 			var opened = [], to_load = [], s = this._data.core.selected.concat([]);
 			to_load.push(obj.id);
 			if(obj.state.opened === true) { opened.push(obj.id); }
@@ -3309,7 +3308,7 @@
 		 */
 		set_id : function (obj, id) {
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 			var i, j, m = this._model.data;
 			id = id.toString();
 			// update parents (replace current ID with new one in children and children_d)
@@ -3348,7 +3347,7 @@
 		 */
 		get_text : function (obj) {
 			obj = this.get_node(obj);
-			return (!obj || obj.id === '#') ? false : obj.text;
+			return (!obj || obj.id === $.jstree.root) ? false : obj.text;
 		},
 		/**
 		 * set the text value of a node. Used internally, please use `rename_node(obj, val)`.
@@ -3369,7 +3368,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 			obj.text = val;
 			if(this.get_node(obj, true).length) {
 				this.redraw_node(obj.id);
@@ -3397,7 +3396,7 @@
 		 * @return {Object}
 		 */
 		get_json : function (obj, options, flat) {
-			obj = this.get_node(obj || '#');
+			obj = this.get_node(obj || $.jstree.root);
 			if(!obj) { return false; }
 			if(options && options.flat && !flat) { flat = []; }
 			var tmp = {
@@ -3432,7 +3431,7 @@
 					delete tmp.a_attr.id;
 				}
 			}
-			if(options && options.flat && obj.id !== '#') {
+			if(options && options.flat && obj.id !== $.jstree.root) {
 				flat.push(tmp);
 			}
 			if(!options || !options.no_children) {
@@ -3445,7 +3444,7 @@
 					}
 				}
 			}
-			return options && options.flat ? flat : (obj.id === '#' ? tmp.children : tmp);
+			return options && options.flat ? flat : (obj.id === $.jstree.root ? tmp.children : tmp);
 		},
 		/**
 		 * create a new node (do not confuse with load_node)
@@ -3459,7 +3458,7 @@
 		 * @trigger model.jstree, create_node.jstree
 		 */
 		create_node : function (par, node, pos, callback, is_loaded) {
-			if(par === null) { par = "#"; }
+			if(par === null) { par = $.jstree.root; }
 			par = this.get_node(par);
 			if(!par) { return false; }
 			pos = pos === undefined ? "last" : pos;
@@ -3471,7 +3470,7 @@
 			if(node.text === undefined) { node.text = this.get_string('New node'); }
 			var tmp, dpc, i, j;
 
-			if(par.id === '#') {
+			if(par.id === $.jstree.root) {
 				if(pos === "before") { pos = "first"; }
 				if(pos === "after") { pos = "last"; }
 			}
@@ -3555,7 +3554,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 			old = obj.text;
 			if(!this.check("rename_node", obj, this.get_parent(obj), val)) {
 				this.settings.core.error.call(this, this._data.core.last_error);
@@ -3590,7 +3589,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 			par = this.get_node(obj.parent);
 			pos = $.inArray(obj.id, par.children);
 			c = false;
@@ -3718,10 +3717,10 @@
 			}
 			obj = obj && obj.id ? obj : this.get_node(obj);
 
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 
-			old_par = (obj.parent || '#').toString();
-			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
+			old_par = (obj.parent || $.jstree.root).toString();
+			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === $.jstree.root) ? par : this.get_node(par.parent);
 			old_ins = origin ? origin : (this._model.data[obj.id] ? this : $.jstree.reference(obj.id));
 			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
 			old_pos = old_ins && old_ins._id && old_par && old_ins._model.data[old_par] && old_ins._model.data[old_par].children ? $.inArray(obj.id, old_ins._model.data[old_par].children) : -1;
@@ -3737,7 +3736,7 @@
 				return false;
 			}
 			//var m = this._model.data;
-			if(par.id === '#') {
+			if(par.id === $.jstree.root) {
 				if(pos === "before") { pos = "first"; }
 				if(pos === "after") { pos = "last"; }
 			}
@@ -3778,7 +3777,7 @@
 				tmp[pos] = obj.id;
 				new_par.children = tmp;
 				this._node_changed(new_par.id);
-				this.redraw(new_par.id === '#');
+				this.redraw(new_par.id === $.jstree.root);
 			}
 			else {
 				// clean old parent and up
@@ -3823,7 +3822,7 @@
 					Array.prototype.push.apply(this._model.data[obj.children_d[i]].parents, tmp);
 				}
 
-				if(old_par === '#' || new_par.id === '#') {
+				if(old_par === $.jstree.root || new_par.id === $.jstree.root) {
 					this._model.force_full_redraw = true;
 				}
 				if(!this._model.force_full_redraw) {
@@ -3890,10 +3889,10 @@
 				}
 			}
 			obj = obj && obj.id ? obj : this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 
-			old_par = (obj.parent || '#').toString();
-			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === '#') ? par : this.get_node(par.parent);
+			old_par = (obj.parent || $.jstree.root).toString();
+			new_par = (!pos.toString().match(/^(before|after)$/) || par.id === $.jstree.root) ? par : this.get_node(par.parent);
 			old_ins = origin ? origin : (this._model.data[obj.id] ? this : $.jstree.reference(obj.id));
 			is_multi = !old_ins || !old_ins._id || (this._id !== old_ins._id);
 
@@ -3901,7 +3900,7 @@
 				obj = old_ins._model.data[obj.id];
 			}
 
-			if(par.id === '#') {
+			if(par.id === $.jstree.root) {
 				if(pos === "before") { pos = "first"; }
 				if(pos === "after") { pos = "last"; }
 			}
@@ -3953,14 +3952,14 @@
 			new_par.children_d.push(tmp.id);
 			new_par.children_d = new_par.children_d.concat(tmp.children_d);
 
-			if(new_par.id === '#') {
+			if(new_par.id === $.jstree.root) {
 				this._model.force_full_redraw = true;
 			}
 			if(!this._model.force_full_redraw) {
 				this._node_changed(new_par.id);
 			}
 			if(!skip_redraw) {
-				this.redraw(new_par.id === '#');
+				this.redraw(new_par.id === $.jstree.root);
 			}
 			if(callback) { callback.call(this, tmp, new_par, pos); }
 			/**
@@ -3993,7 +3992,7 @@
 			var tmp = [], o, t1, t2;
 			for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 				o = this.get_node(obj[t1]);
-				if(o && o.id && o.id !== '#') { tmp.push(o); }
+				if(o && o.id && o.id !== $.jstree.root) { tmp.push(o); }
 			}
 			if(!tmp.length) { return false; }
 			ccp_node = tmp;
@@ -4020,7 +4019,7 @@
 			var tmp = [], o, t1, t2;
 			for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 				o = this.get_node(obj[t1]);
-				if(o && o.id && o.id !== '#') { tmp.push(o); }
+				if(o && o.id && o.id !== $.jstree.root) { tmp.push(o); }
 			}
 			if(!tmp.length) { return false; }
 			ccp_node = tmp;
@@ -4316,7 +4315,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 			old = obj.icon;
 			obj.icon = icon === true || icon === null || icon === undefined || icon === '' ? true : icon;
 			dom = this.get_node(obj, true).children(".jstree-anchor").children(".jstree-themeicon");
@@ -4347,7 +4346,7 @@
 		 */
 		get_icon : function (obj) {
 			obj = this.get_node(obj);
-			return (!obj || obj.id === '#') ? false : obj.icon;
+			return (!obj || obj.id === $.jstree.root) ? false : obj.icon;
 		},
 		/**
 		 * hide the icon on an individual node
@@ -4364,7 +4363,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj === '#') { return false; }
+			if(!obj || obj === $.jstree.root) { return false; }
 			obj.icon = false;
 			this.get_node(obj, true).children(".jstree-anchor").children(".jstree-themeicon").addClass('jstree-themeicon-hidden');
 			return true;
@@ -4384,7 +4383,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj === '#') { return false; }
+			if(!obj || obj === $.jstree.root) { return false; }
 			dom = this.get_node(obj, true);
 			obj.icon = dom.length ? dom.children(".jstree-anchor").children(".jstree-themeicon").attr('rel') : true;
 			if(!obj.icon) { obj.icon = true; }
@@ -4572,7 +4571,7 @@
 								chd = $.vakata.array_unique(chd);
 								for(k = 0, l = chd.length; k < l; k++) {
 									p = m[chd[k]];
-									while(p && p.id !== '#') {
+									while(p && p.id !== $.jstree.root) {
 										c = 0;
 										for(i = 0, j = p.children.length; i < j; i++) {
 											c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
@@ -4616,7 +4615,7 @@
 
 							// apply up
 							if(s.indexOf('up') !== -1) {
-								while(par && par.id !== '#') {
+								while(par && par.id !== $.jstree.root) {
 									c = 0;
 									for(i = 0, j = par.children.length; i < j; i++) {
 										c += m[par.children[i]].state[ t ? 'selected' : 'checked' ];
@@ -4642,7 +4641,7 @@
 							}
 						}, this))
 					.on(this.settings.checkbox.tie_selection ? 'deselect_all.jstree' : 'uncheck_all.jstree', $.proxy(function (e, data) {
-							var obj = this.get_node('#'),
+							var obj = this.get_node($.jstree.root),
 								m = this._model.data,
 								i, j, tmp;
 							for(i = 0, j = obj.children_d.length; i < j; i++) {
@@ -4710,7 +4709,7 @@
 							var p = this.get_node(data.parent),
 								m = this._model.data,
 								i, j, c, tmp, t = this.settings.checkbox.tie_selection;
-							while(p && p.id !== '#') {
+							while(p && p.id !== $.jstree.root) {
 								c = 0;
 								for(i = 0, j = p.children.length; i < j; i++) {
 									c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
@@ -4738,7 +4737,7 @@
 								p, c, i, j, tmp, t = this.settings.checkbox.tie_selection;
 							if(!is_multi) {
 								p = this.get_node(old_par);
-								while(p && p.id !== '#') {
+								while(p && p.id !== $.jstree.root) {
 									c = 0;
 									for(i = 0, j = p.children.length; i < j; i++) {
 										c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
@@ -4758,7 +4757,7 @@
 								}
 							}
 							p = new_par;
-							while(p && p.id !== '#') {
+							while(p && p.id !== $.jstree.root) {
 								c = 0;
 								for(i = 0, j = p.children.length; i < j; i++) {
 									c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
@@ -4803,7 +4802,7 @@
 			for(i = 0, j = s.length; i < j; i++) {
 				if(m[s[i]] && m[s[i]].parents) {
 					for(k = 0, l = m[s[i]].parents.length; k < l; k++) {
-						if(o[m[s[i]].parents[k]] === undefined && m[s[i]].parents[k] !== '#') {
+						if(o[m[s[i]].parents[k]] === undefined && m[s[i]].parents[k] !== $.jstree.root) {
 							o[m[s[i]].parents[k]] = true;
 							p.push(m[s[i]].parents[k]);
 						}
@@ -4816,12 +4815,12 @@
 					var tmp = tt.get_node(this), tmp2;
 					if(!tmp.state.loaded) {
 						if(tmp.original && tmp.original.state && tmp.original.state.undetermined && tmp.original.state.undetermined === true) {
-							if(o[tmp.id] === undefined && tmp.id !== '#') {
+							if(o[tmp.id] === undefined && tmp.id !== $.jstree.root) {
 								o[tmp.id] = true;
 								p.push(tmp.id);
 							}
 							for(k = 0, l = tmp.parents.length; k < l; k++) {
-								if(o[tmp.parents[k]] === undefined && tmp.parents[k] !== '#') {
+								if(o[tmp.parents[k]] === undefined && tmp.parents[k] !== $.jstree.root) {
 									o[tmp.parents[k]] = true;
 									p.push(tmp.parents[k]);
 								}
@@ -4832,12 +4831,12 @@
 						for(i = 0, j = tmp.children_d.length; i < j; i++) {
 							tmp2 = m[tmp.children_d[i]];
 							if(!tmp2.state.loaded && tmp2.original && tmp2.original.state && tmp2.original.state.undetermined && tmp2.original.state.undetermined === true) {
-								if(o[tmp2.id] === undefined && tmp2.id !== '#') {
+								if(o[tmp2.id] === undefined && tmp2.id !== $.jstree.root) {
 									o[tmp2.id] = true;
 									p.push(tmp2.id);
 								}
 								for(k = 0, l = tmp2.parents.length; k < l; k++) {
-									if(o[tmp2.parents[k]] === undefined && tmp2.parents[k] !== '#') {
+									if(o[tmp2.parents[k]] === undefined && tmp2.parents[k] !== $.jstree.root) {
 										o[tmp2.parents[k]] = true;
 										p.push(tmp2.parents[k]);
 									}
@@ -4937,7 +4936,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			dom = this.get_node(obj, true);
@@ -4973,7 +4972,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			dom = this.get_node(obj, true);
@@ -5033,7 +5032,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			dom = this.get_node(obj, true);
@@ -5073,7 +5072,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			dom = this.get_node(obj, true);
@@ -5104,7 +5103,7 @@
 		this.check_all = function () {
 			if(this.settings.checkbox.tie_selection) { return this.select_all(); }
 			var tmp = this._data.checkbox.selected.concat([]), i, j;
-			this._data.checkbox.selected = this._model.data['#'].children_d.concat();
+			this._data.checkbox.selected = this._model.data[$.jstree.root].children_d.concat();
 			for(i = 0, j = this._data.checkbox.selected.length; i < j; i++) {
 				if(this._model.data[this._data.checkbox.selected[i]]) {
 					this._model.data[this._data.checkbox.selected[i]].state.checked = true;
@@ -5156,7 +5155,7 @@
 		this.is_checked = function (obj) {
 			if(this.settings.checkbox.tie_selection) { return this.is_selected(obj); }
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 			return obj.state.checked;
 		};
 		/**
@@ -5500,7 +5499,7 @@
 		 */
 		this.show_contextmenu = function (obj, x, y, e) {
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 			var s = this.settings.contextmenu,
 				d = this.get_node(obj, true),
 				a = d.children(".jstree-anchor"),
@@ -5972,7 +5971,7 @@
 					if(this.settings.core.force_text) {
 						txt = $.vakata.html.escape(txt);
 					}
-					if(obj && obj.id && obj.id !== "#" && (e.which === 1 || e.type === "touchstart") &&
+					if(obj && obj.id && obj.id !== $.jstree.root && (e.which === 1 || e.type === "touchstart") &&
 						(this.settings.dnd.is_draggable === true || ($.isFunction(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_top_selected(true) : [obj]), e)))
 					) {
 						this.element.trigger('mousedown.jstree');
@@ -6024,11 +6023,11 @@
 					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && ins.get_container_ul().children().length === 0) {
 						ok = true;
 						for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
-							ok = ok && ins.check( (data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey)) ) ? "copy_node" : "move_node"), (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), '#', 'last', { 'dnd' : true, 'ref' : ins.get_node('#'), 'pos' : 'i', 'origin' : data.data.origin, 'is_multi' : (data.data.origin && data.data.origin !== ins), 'is_foreign' : (!data.data.origin) });
+							ok = ok && ins.check( (data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey)) ) ? "copy_node" : "move_node"), (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), $.jstree.root, 'last', { 'dnd' : true, 'ref' : ins.get_node($.jstree.root), 'pos' : 'i', 'origin' : data.data.origin, 'is_multi' : (data.data.origin && data.data.origin !== ins), 'is_foreign' : (!data.data.origin) });
 							if(!ok) { break; }
 						}
 						if(ok) {
-							lastmv = { 'ins' : ins, 'par' : '#', 'pos' : 'last' };
+							lastmv = { 'ins' : ins, 'par' : $.jstree.root, 'pos' : 'last' };
 							marker.hide();
 							data.helper.find('.jstree-icon').first().removeClass('jstree-er').addClass('jstree-ok');
 							return;
@@ -6594,7 +6593,7 @@
 								for(i = 0, j = r.length; i < j; i++) {
 									s = s.concat(this.get_node(r[i]).parents);
 								}
-								s = $.vakata.array_remove_item($.vakata.array_unique(s),'#');
+								s = $.vakata.array_remove_item($.vakata.array_unique(s),$.jstree.root);
 								o = s.length ? $(this.element[0].querySelectorAll('#' + $.map(s, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #'))) : $();
 
 								this.element.find(".jstree-node").hide().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last');
@@ -6697,7 +6696,7 @@
 			}
 
 			f = new $.vakata.search(str, true, { caseSensitive : s.case_sensitive, fuzzy : s.fuzzy });
-			$.each(m[inside ? inside : '#'].children_d, function (ii, i) {
+			$.each(m[inside ? inside : $.jstree.root].children_d, function (ii, i) {
 				var v = m[i];
 				if(v.text && ( (s.search_callback && s.search_callback.call(this, str, v)) || (!s.search_callback && f.search(v.text).isMatch) ) && (!s.search_leaves_only || (v.state.loaded && v.children.length === 0)) ) {
 					r.push(i);
@@ -6764,7 +6763,7 @@
 		this._search_open = function (d) {
 			var t = this;
 			$.each(d.concat([]), function (i, v) {
-				if(v === "#") { return true; }
+				if(v === $.jstree.root) { return true; }
 				try { v = $('#' + v.replace($.jstree.idregex,'\\$&'), t.element); } catch(ignore) { }
 				if(v && v.length) {
 					if(t.is_closed(v)) {
@@ -7098,16 +7097,16 @@
 	 * @plugin types
 	 */
 	$.jstree.defaults.types = {
-		'#' : {},
 		'default' : {}
 	};
+	$.jstree.defaults.types[$.jstree.root] = {};
 
 	$.jstree.plugins.types = function (options, parent) {
 		this.init = function (el, options) {
 			var i, j;
 			if(options && options.types && options.types['default']) {
 				for(i in options.types) {
-					if(i !== "default" && i !== "#" && options.types.hasOwnProperty(i)) {
+					if(i !== "default" && i !== $.jstree.root && options.types.hasOwnProperty(i)) {
 						for(j in options.types['default']) {
 							if(options.types['default'].hasOwnProperty(j) && options.types[i][j] === undefined) {
 								options.types[i][j] = options.types['default'][j];
@@ -7117,11 +7116,11 @@
 				}
 			}
 			parent.init.call(this, el, options);
-			this._model.data['#'].type = '#';
+			this._model.data[$.jstree.root].type = $.jstree.root;
 		};
 		this.refresh = function (skip_loading, forget_state) {
 			parent.refresh.call(this, skip_loading, forget_state);
-			this._model.data['#'].type = '#';
+			this._model.data[$.jstree.root].type = $.jstree.root;
 		};
 		this.bind = function () {
 			this.element
@@ -7143,7 +7142,7 @@
 								m[dpc[i]].icon = t[c].icon;
 							}
 						}
-						m['#'].type = '#';
+						m[$.jstree.root].type = $.jstree.root;
 					}, this));
 			parent.bind.call(this);
 		};
@@ -7370,7 +7369,7 @@
 		this.create_node = function (par, node, pos, callback, is_loaded) {
 			if(!node || node.text === undefined) {
 				if(par === null) {
-					par = "#";
+					par = $.jstree.root;
 				}
 				par = this.get_node(par);
 				if(!par) {

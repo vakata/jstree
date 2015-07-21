@@ -152,7 +152,7 @@
 								chd = $.vakata.array_unique(chd);
 								for(k = 0, l = chd.length; k < l; k++) {
 									p = m[chd[k]];
-									while(p && p.id !== '#') {
+									while(p && p.id !== $.jstree.root) {
 										c = 0;
 										for(i = 0, j = p.children.length; i < j; i++) {
 											c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
@@ -196,7 +196,7 @@
 
 							// apply up
 							if(s.indexOf('up') !== -1) {
-								while(par && par.id !== '#') {
+								while(par && par.id !== $.jstree.root) {
 									c = 0;
 									for(i = 0, j = par.children.length; i < j; i++) {
 										c += m[par.children[i]].state[ t ? 'selected' : 'checked' ];
@@ -222,7 +222,7 @@
 							}
 						}, this))
 					.on(this.settings.checkbox.tie_selection ? 'deselect_all.jstree' : 'uncheck_all.jstree', $.proxy(function (e, data) {
-							var obj = this.get_node('#'),
+							var obj = this.get_node($.jstree.root),
 								m = this._model.data,
 								i, j, tmp;
 							for(i = 0, j = obj.children_d.length; i < j; i++) {
@@ -290,7 +290,7 @@
 							var p = this.get_node(data.parent),
 								m = this._model.data,
 								i, j, c, tmp, t = this.settings.checkbox.tie_selection;
-							while(p && p.id !== '#') {
+							while(p && p.id !== $.jstree.root) {
 								c = 0;
 								for(i = 0, j = p.children.length; i < j; i++) {
 									c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
@@ -318,7 +318,7 @@
 								p, c, i, j, tmp, t = this.settings.checkbox.tie_selection;
 							if(!is_multi) {
 								p = this.get_node(old_par);
-								while(p && p.id !== '#') {
+								while(p && p.id !== $.jstree.root) {
 									c = 0;
 									for(i = 0, j = p.children.length; i < j; i++) {
 										c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
@@ -338,7 +338,7 @@
 								}
 							}
 							p = new_par;
-							while(p && p.id !== '#') {
+							while(p && p.id !== $.jstree.root) {
 								c = 0;
 								for(i = 0, j = p.children.length; i < j; i++) {
 									c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
@@ -383,7 +383,7 @@
 			for(i = 0, j = s.length; i < j; i++) {
 				if(m[s[i]] && m[s[i]].parents) {
 					for(k = 0, l = m[s[i]].parents.length; k < l; k++) {
-						if(o[m[s[i]].parents[k]] === undefined && m[s[i]].parents[k] !== '#') {
+						if(o[m[s[i]].parents[k]] === undefined && m[s[i]].parents[k] !== $.jstree.root) {
 							o[m[s[i]].parents[k]] = true;
 							p.push(m[s[i]].parents[k]);
 						}
@@ -396,12 +396,12 @@
 					var tmp = tt.get_node(this), tmp2;
 					if(!tmp.state.loaded) {
 						if(tmp.original && tmp.original.state && tmp.original.state.undetermined && tmp.original.state.undetermined === true) {
-							if(o[tmp.id] === undefined && tmp.id !== '#') {
+							if(o[tmp.id] === undefined && tmp.id !== $.jstree.root) {
 								o[tmp.id] = true;
 								p.push(tmp.id);
 							}
 							for(k = 0, l = tmp.parents.length; k < l; k++) {
-								if(o[tmp.parents[k]] === undefined && tmp.parents[k] !== '#') {
+								if(o[tmp.parents[k]] === undefined && tmp.parents[k] !== $.jstree.root) {
 									o[tmp.parents[k]] = true;
 									p.push(tmp.parents[k]);
 								}
@@ -412,12 +412,12 @@
 						for(i = 0, j = tmp.children_d.length; i < j; i++) {
 							tmp2 = m[tmp.children_d[i]];
 							if(!tmp2.state.loaded && tmp2.original && tmp2.original.state && tmp2.original.state.undetermined && tmp2.original.state.undetermined === true) {
-								if(o[tmp2.id] === undefined && tmp2.id !== '#') {
+								if(o[tmp2.id] === undefined && tmp2.id !== $.jstree.root) {
 									o[tmp2.id] = true;
 									p.push(tmp2.id);
 								}
 								for(k = 0, l = tmp2.parents.length; k < l; k++) {
-									if(o[tmp2.parents[k]] === undefined && tmp2.parents[k] !== '#') {
+									if(o[tmp2.parents[k]] === undefined && tmp2.parents[k] !== $.jstree.root) {
 										o[tmp2.parents[k]] = true;
 										p.push(tmp2.parents[k]);
 									}
@@ -517,7 +517,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			dom = this.get_node(obj, true);
@@ -553,7 +553,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			dom = this.get_node(obj, true);
@@ -613,7 +613,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			dom = this.get_node(obj, true);
@@ -653,7 +653,7 @@
 				return true;
 			}
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') {
+			if(!obj || obj.id === $.jstree.root) {
 				return false;
 			}
 			dom = this.get_node(obj, true);
@@ -684,7 +684,7 @@
 		this.check_all = function () {
 			if(this.settings.checkbox.tie_selection) { return this.select_all(); }
 			var tmp = this._data.checkbox.selected.concat([]), i, j;
-			this._data.checkbox.selected = this._model.data['#'].children_d.concat();
+			this._data.checkbox.selected = this._model.data[$.jstree.root].children_d.concat();
 			for(i = 0, j = this._data.checkbox.selected.length; i < j; i++) {
 				if(this._model.data[this._data.checkbox.selected[i]]) {
 					this._model.data[this._data.checkbox.selected[i]].state.checked = true;
@@ -736,7 +736,7 @@
 		this.is_checked = function (obj) {
 			if(this.settings.checkbox.tie_selection) { return this.is_selected(obj); }
 			obj = this.get_node(obj);
-			if(!obj || obj.id === '#') { return false; }
+			if(!obj || obj.id === $.jstree.root) { return false; }
 			return obj.state.checked;
 		};
 		/**
