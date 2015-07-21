@@ -126,7 +126,7 @@ module.exports = function(grunt) {
       options: {
         screenshotRoot: 'test/visual/screenshots/',
         url: 'http://127.0.0.1/jstree/test/visual/',
-        gm: true
+        gm: false
       },
       desktop: {
         options: {

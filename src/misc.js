@@ -19,45 +19,6 @@
 	};
 })(jQuery);
 
-// more detailed changed event
-(function ($, undefined) {
-	"use strict";
-	$.jstree.plugins.changed = function (options, parent) {
-		var last = [], i, j;
-		this.trigger = function (ev, data) {
-			if(!data) {
-				data = {};
-			}
-			if(ev.replace('.jstree','') === 'changed') {
-				data.changed = { selected : [], deselected : [] };
-				var tmp = {};
-				for(i = 0, j = last.length; i < j; i++) {
-					tmp[last[i]] = 1;
-				}
-				for(i = 0, j = data.selected.length; i < j; i++) {
-					if(!tmp[data.selected[i]]) {
-						data.changed.selected.push(data.selected[i]);
-					}
-					else {
-						tmp[data.selected[i]] = 2;
-					}
-				}
-				for(i = 0, j = last.length; i < j; i++) {
-					if(tmp[last[i]] === 1) {
-						data.changed.deselected.push(last[i]);
-					}
-				}
-				last = data.selected.slice();
-			}
-			parent.trigger.call(this, ev, data);
-		};
-		this.refresh = function (skip_loading, forget_state) {
-			last = [];
-			return parent.refresh.apply(this, arguments);
-		};
-	};
-})(jQuery);
-
 // mapping
 (function ($, undefined) {
 	"use strict";
@@ -76,7 +37,7 @@
 				}
 			}
 			*/
-			return parent.activate_node.call(this, d, p, ps);
+			return parent._parse_model_from_json.call(this, d, p, ps);
 		};
 	};
 })(jQuery);
@@ -197,24 +158,6 @@
 	};
 })(jQuery);
 
-// allow search results expanding
-(function ($, undefined) {
-	"use strict";
-	$.jstree.plugins.show_matches_children = function (options, parent) {
-		this.bind = function () {
-			parent.bind.call(this);
-			this.element
-				.on('search.jstree before_open.jstree', function (e, data) {
-					if(data.instance.settings.search && data.instance.settings.search.show_only_matches) {
-						data.instance._data.search.dom.find('.jstree-node')
-							.show().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last')
-							.end().end().end().find(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
-					}
-				});
-		};
-	};
-})(jQuery);
-
 // additional icon on node (outside of anchor)
 (function ($, undefined) {
 	"use strict";
@@ -300,45 +243,6 @@
 	};
 })(jQuery);
 
-// massloading
-(function ($, undefined) {
-	"use strict";
-	$.jstree.defaults.massload = function (nodes, callback) {
-		callback(false);
-	};
-	$.jstree.plugins.massload = function (options, parent) {
-		this.init = function (el, options) {
-			parent.init.call(this, el, options);
-			this._data.massload = {};
-		};
-		this._load_nodes = function (nodes, callback, is_callback) {
-			if(is_callback && !$.isEmptyObject(this._data.massload)) {
-				return parent._load_nodes.call(this, nodes, callback, is_callback);
-			}
-			this.settings.massload.call(this, nodes, $.proxy(function (data) {
-				if(data) {
-					for(var i in data) {
-						if(data.hasOwnProperty(i)) {
-							this._data.massload[i] = data[i];
-						}
-					}
-				}
-				parent._load_nodes.call(this, nodes, callback, is_callback);
-			}, this));
-		};
-		this._load_node = function (obj, callback) {
-			var d = this._data.massload[obj.id];
-			if(d) {
-				return this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $($.parseHTML(d)).filter(function () { return this.nodeType !== 3; }) : d, function (status) {
-					callback.call(this, status);
-					delete this._data.massload[obj.id];
-				});
-			}
-			return parent._load_node.call(this, obj, callback);
-		};
-	};
-})(jQuery);
-
 // object as data
 (function ($, undefined) {
 	"use strict";
@@ -377,57 +281,41 @@
 		};
 	};
 })(jQuery);
-/* demo of the above
-function treeNode(val) {
-	var id = ++treeNode.counter;
-	this.getID = function () {
-		return id;
-	};
-	this.getText = function () {
-		return val.toString();
-	};
-	this.getExtra = function (obj) {
-		obj.icon = false;
-		return obj;
-	};
-	this.hasChildren = function () {
-		return true;
-	};
-	this.getChildren = function () {
-		return [
-			new treeNode(Math.pow(val, 2)),
-			new treeNode(Math.sqrt(val)),
-		];
-	};
-}
-treeNode.counter = 0;
-			
-$('#jstree').jstree({
-	'core': {
-		'data': [
-					new treeNode(2),
-					new treeNode(3),
-					new treeNode(4),
-					new treeNode(5)
-				]
-	},
-	plugins : ['datamodel']
-});
-*/
-
-// paste override
-(function ($, undefined) {
-	"use strict";
-	$.jstree.plugins.pastewithpos = function () {
-		this.paste = function (obj, pos) {
-			obj = this.get_node(obj);
-			if(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }
-			if(this[ccp_mode](ccp_node, obj, pos)) {
-				this.trigger('paste', { "parent" : obj.id, "node" : ccp_node, "mode" : ccp_mode });
-			}
-			ccp_node = false;
-			ccp_mode = false;
-			ccp_inst = false;
+/*
+	demo of the above
+	function treeNode(val) {
+		var id = ++treeNode.counter;
+		this.getID = function () {
+			return id;
 		};
-	};
-})(jQuery);
+		this.getText = function () {
+			return val.toString();
+		};
+		this.getExtra = function (obj) {
+			obj.icon = false;
+			return obj;
+		};
+		this.hasChildren = function () {
+			return true;
+		};
+		this.getChildren = function () {
+			return [
+				new treeNode(Math.pow(val, 2)),
+				new treeNode(Math.sqrt(val)),
+			];
+		};
+	}
+	treeNode.counter = 0;
+				
+	$('#jstree').jstree({
+		'core': {
+			'data': [
+						new treeNode(2),
+						new treeNode(3),
+						new treeNode(4),
+						new treeNode(5)
+					]
+		},
+		plugins : ['datamodel']
+	});
+*/
