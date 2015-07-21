@@ -2856,8 +2856,9 @@
 			 * @event
 			 * @name activate_node.jstree
 			 * @param {Object} node
+			 * @param {Object} event the ooriginal event (if any) which triggered the call (may be an empty object)
 			 */
-			this.trigger('activate_node', { 'node' : this.get_node(obj) });
+			this.trigger('activate_node', { 'node' : this.get_node(obj), 'event' : e });
 		},
 		/**
 		 * applies the hover state on a node, called when a node is hovered by the user. Used internally.
