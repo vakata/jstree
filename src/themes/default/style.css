@@ -66,6 +66,9 @@
 .jstree-anchor > .jstree-themeicon-hidden {
   display: none;
 }
+.jstree-hidden {
+  display: none;
+}
 .jstree-rtl .jstree-anchor {
   padding: 0 1px 0 4px;
 }
