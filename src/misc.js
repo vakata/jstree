@@ -232,6 +232,47 @@
 	};
 })(jQuery);
 
+// additional icon on node (inside anchor)
+(function ($, undefined) {
+	"use strict";
+	var _s = document.createElement('SPAN');
+	_s.className = 'fa-stack jstree-stackedicon';
+	var _i = document.createElement('I');
+	_i.className = 'jstree-icon';
+	_i.setAttribute('role', 'presentation');
+
+	$.jstree.plugins.stackedicon = function (options, parent) {
+		this.teardown = function () {
+			this.element.find(".jstree-stackedicon").remove();
+			parent.teardown.call(this);
+		};
+		this.redraw_node = function(obj, deep, is_callback, force_render) {
+			obj = parent.redraw_node.apply(this, arguments);
+			if(obj) {
+				var i, j, tmp = null, icon = null, temp = null;
+				for(i = 0, j = obj.childNodes.length; i < j; i++) {
+					if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {
+						tmp = obj.childNodes[i];
+						break;
+					}
+				}
+				if(tmp) {
+					if(this._model.data[obj.id].state.icons && this._model.data[obj.id].state.icons.length) {
+						icon = _s.cloneNode(false);
+						for(i = 0, j = this._model.data[obj.id].state.icons.length; i < j; i++) {
+							temp = _i.cloneNode(false);
+							temp.className += ' ' + this._model.data[obj.id].state.icons[i];
+							icon.appendChild(temp);
+						}
+						tmp.insertBefore(icon, tmp.childNodes[0]);
+					}
+				}
+			}
+			return obj;
+		};
+	};
+})(jQuery);
+
 // selecting a node opens it
 (function ($, undefined) {
 	"use strict";
