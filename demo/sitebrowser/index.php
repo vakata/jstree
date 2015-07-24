@@ -119,6 +119,7 @@ if(isset($_GET['operation'])) {
 							'responsive' : false
 						}
 					},
+					'force_text' : true,
 					'plugins' : ['state','dnd','contextmenu','wholerow']
 				})
 				.on('delete_node.jstree', function (e, data) {

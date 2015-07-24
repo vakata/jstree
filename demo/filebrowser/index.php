@@ -305,6 +305,7 @@ if(isset($_GET['operation'])) {
 							}
 							return true;
 						},
+						'force_text' : true,
 						'themes' : {
 							'responsive' : false,
 							'variant' : 'small',
