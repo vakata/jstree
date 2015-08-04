@@ -3738,7 +3738,7 @@
 		 * @trigger delete_node.jstree, changed.jstree
 		 */
 		delete_node : function (obj) {
-			var t1, t2, par, pos, tmp, i, j, k, l, c;
+			var t1, t2, par, pos, tmp, i, j, k, l, c, top, lft;
 			if($.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -3788,6 +3788,19 @@
 			}
 			for(k = 0, l = tmp.length; k < l; k++) {
 				delete this._model.data[tmp[k]];
+			}
+			if($.inArray(this._data.core.focused, tmp) !== -1) {
+				this._data.core.focused = null;
+				top = this.element[0].scrollTop;
+				lft = this.element[0].scrollLeft;
+				if(par.id === $.jstree.root) {
+					this.element.focus();
+				}
+				else {
+					this.get_node(par, true).children('.jstree-anchor').focus();
+				}
+				this.element[0].scrollTop  = top;
+				this.element[0].scrollLeft = lft;
 			}
 			this.redraw_node(par, true);
 			return true;
@@ -4272,7 +4285,8 @@
 
 			rtl = this._data.core.rtl;
 			w  = this.element.width();
-			a  = obj.children('.jstree-anchor');
+			this._data.core.focused = tmp.id;
+			a  = obj.children('.jstree-anchor').focus();
 			s  = $('<span>');
 			/*!
 			oi = obj.children("i:visible"),
@@ -4295,7 +4309,9 @@
 							"lineHeight" : (this._data.core.li_height) + "px",
 							"width" : "150px" // will be set a bit further down
 						},
-						"blur" : $.proxy(function () {
+						"blur" : $.proxy(function (e) {
+							e.stopImmediatePropagation();
+							e.preventDefault();
 							var i = s.children(".jstree-rename-input"),
 								v = i.val(),
 								f = this.settings.core.force_text,
@@ -4310,31 +4326,39 @@
 							if(!nv) {
 								this.set_text(obj, t); // move this up? and fix #483
 							}
+							this._data.core.focused = tmp.id;
+							setTimeout($.proxy(function () {
+								var node = this.get_node(tmp.id, true);
+								if(node.length) {
+									this._data.core.focused = tmp.id;
+									node.children('.jstree-anchor').focus();
+								}
+							}, this), 0);
 							if(callback) {
 								callback.call(this, tmp, nv, cancel);
 							}
 						}, this),
-						"keydown" : function (event) {
-							var key = event.which;
+						"keydown" : function (e) {
+							var key = e.which;
 							if(key === 27) {
 								cancel = true;
 								this.value = t;
 							}
 							if(key === 27 || key === 13 || key === 37 || key === 38 || key === 39 || key === 40 || key === 32) {
-								event.stopImmediatePropagation();
+								e.stopImmediatePropagation();
 							}
 							if(key === 27 || key === 13) {
-								event.preventDefault();
+								e.preventDefault();
 								this.blur();
 							}
 						},
 						"click" : function (e) { e.stopImmediatePropagation(); },
 						"mousedown" : function (e) { e.stopImmediatePropagation(); },
-						"keyup" : function (event) {
+						"keyup" : function (e) {
 							h2.width(Math.min(h1.text("pW" + this.value).width(),w));
 						},
-						"keypress" : function(event) {
-							if(event.which === 13) { return false; }
+						"keypress" : function(e) {
+							if(e.which === 13) { return false; }
 						}
 					});
 				fn = {
