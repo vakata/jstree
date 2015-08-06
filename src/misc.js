@@ -62,20 +62,6 @@
 	};
 })(jQuery);
 
-// conditional select
-(function ($, undefined) {
-	"use strict";
-	$.jstree.defaults.conditionalselect = function () { return true; };
-	$.jstree.plugins.conditionalselect = function (options, parent) {
-		// own function
-		this.activate_node = function (obj, e) {
-			if(this.settings.conditionalselect.call(this, this.get_node(obj), e)) {
-				parent.activate_node.call(this, obj, e);
-			}
-		};
-	};
-})(jQuery);
-
 // real checkboxes
 (function ($, undefined) {
 	"use strict";

@@ -5499,6 +5499,28 @@
 	// $.jstree.defaults.plugins.push("checkbox");
 
 /**
+ * ### Conditionalselect plugin
+ *
+ * This plugin allows defining a callback to allow or deny node selection by user input (activate node method).
+ */
+
+	/**
+	 * a callback (function) which is invoked in the instance's scope and receives two arguments - the node and the event that triggered the `activate_node` call. Returning false prevents working with the node, returning true allows invoking activate_node. Defaults to returning `true`.
+	 * @name $.jstree.defaults.checkbox.visible
+	 * @plugin checkbox
+	 */
+	$.jstree.defaults.conditionalselect = function () { return true; };
+	$.jstree.plugins.conditionalselect = function (options, parent) {
+		// own function
+		this.activate_node = function (obj, e) {
+			if(this.settings.conditionalselect.call(this, this.get_node(obj), e)) {
+				parent.activate_node.call(this, obj, e);
+			}
+		};
+	};
+
+
+/**
  * ### Contextmenu plugin
  *
  * Shows a context menu when a node is right-clicked.
