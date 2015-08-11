@@ -108,7 +108,7 @@
 								}
 							}
 							p = $.vakata.array_remove_item($.vakata.array_unique(p), $.jstree.root);
-							this._data.search.hdn = this.hide_all();
+							this._data.search.hdn = this.hide_all(true);
 							this.show_node(p);
 						}
 					}, this))

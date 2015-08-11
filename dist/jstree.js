@@ -672,7 +672,7 @@
 								e.preventDefault();
 								this.element.find('.jstree-anchor').filter(':visible').last().focus();
 								break;
-							/*
+							/*!
 							// delete
 							case 46:
 								e.preventDefault();
@@ -2897,7 +2897,7 @@
 		 * @name hide_all()
 		 * @trigger hide_all.jstree
 		 */
-		hide_all : function (obj) {
+		hide_all : function (skip_redraw) {
 			var i, m = this._model.data, ids = [];
 			for(i in m) {
 				if(m.hasOwnProperty(i) && i !== $.jstree.root && !m[i].state.hidden) {
@@ -2906,7 +2906,9 @@
 				}
 			}
 			this._model.force_full_redraw = true;
-			this.redraw();
+			if(!skip_redraw) {
+				this.redraw();
+			}
 			/**
 			 * triggered when all nodes are hidden
 			 * @event
@@ -2921,7 +2923,7 @@
 		 * @name show_all()
 		 * @trigger show_all.jstree
 		 */
-		show_all : function (obj) {
+		show_all : function (skip_redraw) {
 			var i, m = this._model.data, ids = [];
 			for(i in m) {
 				if(m.hasOwnProperty(i) && i !== $.jstree.root && m[i].state.hidden) {
@@ -2930,7 +2932,9 @@
 				}
 			}
 			this._model.force_full_redraw = true;
-			this.redraw();
+			if(!skip_redraw) {
+				this.redraw();
+			}
 			/**
 			 * triggered when all nodes are shown
 			 * @event
@@ -5581,7 +5585,7 @@
 					"separator_after"	: false,
 					"_disabled"			: false, //(this.check("rename_node", data.reference, this.get_parent(data.reference), "")),
 					"label"				: "Rename",
-					/*
+					/*!
 					"shortcut"			: 113,
 					"shortcut_label"	: 'F2',
 					"icon"				: "glyphicon glyphicon-leaf",
@@ -5713,7 +5717,7 @@
 						}
 					});
 
-			/*
+			/*!
 			if(!('oncontextmenu' in document.body) && ('ontouchstart' in document.body)) {
 				var el = null, tm = null;
 				this.element
@@ -6854,7 +6858,7 @@
 								}
 							}
 							p = $.vakata.array_remove_item($.vakata.array_unique(p), $.jstree.root);
-							this._data.search.hdn = this.hide_all();
+							this._data.search.hdn = this.hide_all(true);
 							this.show_node(p);
 						}
 					}, this))

@@ -673,7 +673,7 @@
 								e.preventDefault();
 								this.element.find('.jstree-anchor').filter(':visible').last().focus();
 								break;
-							/*
+							/*!
 							// delete
 							case 46:
 								e.preventDefault();
@@ -2898,7 +2898,7 @@
 		 * @name hide_all()
 		 * @trigger hide_all.jstree
 		 */
-		hide_all : function (obj) {
+		hide_all : function (skip_redraw) {
 			var i, m = this._model.data, ids = [];
 			for(i in m) {
 				if(m.hasOwnProperty(i) && i !== $.jstree.root && !m[i].state.hidden) {
@@ -2907,7 +2907,9 @@
 				}
 			}
 			this._model.force_full_redraw = true;
-			this.redraw();
+			if(!skip_redraw) {
+				this.redraw();
+			}
 			/**
 			 * triggered when all nodes are hidden
 			 * @event
@@ -2922,7 +2924,7 @@
 		 * @name show_all()
 		 * @trigger show_all.jstree
 		 */
-		show_all : function (obj) {
+		show_all : function (skip_redraw) {
 			var i, m = this._model.data, ids = [];
 			for(i in m) {
 				if(m.hasOwnProperty(i) && i !== $.jstree.root && m[i].state.hidden) {
@@ -2931,7 +2933,9 @@
 				}
 			}
 			this._model.force_full_redraw = true;
-			this.redraw();
+			if(!skip_redraw) {
+				this.redraw();
+			}
 			/**
 			 * triggered when all nodes are shown
 			 * @event
