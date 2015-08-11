@@ -28,7 +28,7 @@
 
 	// prevent another load? maybe there is a better way?
 	if($.jstree) {
-		return $.fn.jstree;
+		return;
 	}
 
 	/**
@@ -4617,6 +4617,4 @@
 		var tmp = $.inArray(item, array);
 		return tmp !== -1 ? $.vakata.array_remove(array, tmp) : array;
 	};
-
-	return $.fn.jstree;
 }));

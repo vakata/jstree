@@ -28,6 +28,7 @@
 
 	// prevent another load? maybe there is a better way?
 	if($.jstree) {
+		return;
 	}
 
 	/**
@@ -7792,5 +7793,4 @@
 		} catch(ignore) { }
 	}
 
-	return $.fn.jstree;
 }));

@@ -1,2 +1,1 @@
-	return $.fn.jstree;
 }));
