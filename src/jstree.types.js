@@ -81,6 +81,29 @@
 							if(m[dpc[i]].icon === true && t[c].icon !== undefined) {
 								m[dpc[i]].icon = t[c].icon;
 							}
+							
+							if(t[c].template !== undefined) {
+								m[dpc[i]].text = t[c].template;
+
+								if(m[dpc[i]].original.template_data) {
+									var workingText = m[dpc[i]].text;
+									$.each(m[dpc[i]].original.template_data, function(key, value) {
+										var regExp = new RegExp("\{\{"+key+"}}", "g");
+										workingText = workingText.replace(regExp, value);
+									});
+									m[dpc[i]].text = workingText;
+								}
+							}
+
+							if(t[c].a_attr !== undefined) {
+								if(m[dpc[i]].a_attr) {
+									$.each(t[c].a_attr, function(key, value) {
+										m[dpc[i]].a_attr[key] = value;
+									});
+								} else {
+									m[dpc[i]].a_attr = t[c].a_attr;
+								}
+							}
 						}
 						m[$.jstree.root].type = $.jstree.root;
 					}, this));
