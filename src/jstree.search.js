@@ -260,17 +260,30 @@
 		 * @plugin search
 		 */
 		this._search_open = function (d) {
-			var t = this;
-			$.each(d.concat([]), function (i, v) {
-				if(v === $.jstree.root) { return true; }
-				try { v = $('#' + v.replace($.jstree.idregex,'\\$&'), t.element); } catch(ignore) { }
-				if(v && v.length) {
-					if(t.is_closed(v)) {
-						t._data.search.opn.push(v[0].id);
-						t.open_node(v, function () { t._search_open(d); }, 0);
-					}
-				}
-			});
+		    var t = this;
+
+		    var potentialNewWork;
+		    do {
+		        potentialNewWork = false;
+		        for (var i = 0; i < d.length;) {
+		            var v = d[i];
+		            if (v !== $.jstree.root) {
+		                try { v = $('#' + v.replace($.jstree.idregex, '\\$&'), t.element); } catch (ignore) { }
+
+		                if (v && v.length) {
+		                    if (t.is_closed(v)) {
+		                        t._data.search.opn.push(v[0].id);
+		                        t.open_node(v, null, 0);
+		                        potentialNewWork = true;
+
+		                        d.splice(i, 1);
+		                        continue;
+		                    }
+		                }
+		            }
+		            i++;
+		        }
+		    } while (potentialNewWork);
 		};
 
 		this.redraw_node = function(obj, deep, callback, force_render) {
