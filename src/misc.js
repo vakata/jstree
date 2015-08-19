@@ -346,3 +346,53 @@
 		plugins : ['datamodel']
 	});
 */
+
+// untested sample plugin to keep all nodes in the DOM
+(function ($, undefined) {
+	"use strict";
+	$.jstree.plugins.dom = function (options, parent) {
+		this.redraw_node = function (node, deep, is_callback, force_render) {
+			return parent.redraw_node.call(this, node, deep, is_callback, true);
+		};
+		this.close_node = function (obj, animation) {
+			var t1, t2, t, d;
+			if($.isArray(obj)) {
+				obj = obj.slice();
+				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
+					this.close_node(obj[t1], animation);
+				}
+				return true;
+			}
+			obj = this.get_node(obj);
+			if(!obj || obj.id === $.jstree.root) {
+				return false;
+			}
+			if(this.is_closed(obj)) {
+				return false;
+			}
+			animation = animation === undefined ? this.settings.core.animation : animation;
+			t = this;
+			d = this.get_node(obj, true);
+			if(d.length) {
+				if(!animation) {
+					d[0].className = d[0].className.replace('jstree-open', 'jstree-closed');
+					d.attr("aria-expanded", false);
+				}
+				else {
+					d
+						.children(".jstree-children").attr("style","display:block !important").end()
+						.removeClass("jstree-open").addClass("jstree-closed").attr("aria-expanded", false)
+						.children(".jstree-children").stop(true, true).slideUp(animation, function () {
+							this.style.display = "";
+							t.trigger("after_close", { "node" : obj });
+						});
+				}
+			}
+			obj.state.opened = false;
+			this.trigger('close_node',{ "node" : obj });
+			if(!animation || !d.length) {
+				this.trigger("after_close", { "node" : obj });
+			}
+		};
+	};
+})(jQuery);
