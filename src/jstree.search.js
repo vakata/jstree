@@ -199,7 +199,11 @@
 			});
 			if(r.length) {
 				p = $.vakata.array_unique(p);
-				this._search_open(p);
+				for(i = 0, j = p.length; i < j; i++) {
+					if(p[i] !== $.jstree.root && m[p[i]] && this.open_node(p[i], null, 0) === true) {
+						this._data.search.opn.push(p[i]);
+					}
+				}
 				if(!append) {
 					this._data.search.dom = $(this.element[0].querySelectorAll('#' + $.map(r, function (v) { return "0123456789".indexOf(v[0]) !== -1 ? '\\3' + v[0] + ' ' + v.substr(1).replace($.jstree.idregex,'\\$&') : v.replace($.jstree.idregex,'\\$&'); }).join(', #')));
 					this._data.search.res = r;
@@ -251,26 +255,6 @@
 			this._data.search.res = [];
 			this._data.search.opn = [];
 			this._data.search.dom = $();
-		};
-		/**
-		 * opens nodes that need to be opened to reveal the search results. Used only internally.
-		 * @private
-		 * @name _search_open(d)
-		 * @param {Array} d an array of node IDs
-		 * @plugin search
-		 */
-		this._search_open = function (d) {
-			var t = this;
-			$.each(d.concat([]), function (i, v) {
-				if(v === $.jstree.root) { return true; }
-				try { v = $('#' + v.replace($.jstree.idregex,'\\$&'), t.element); } catch(ignore) { }
-				if(v && v.length) {
-					if(t.is_closed(v)) {
-						t._data.search.opn.push(v[0].id);
-						t.open_node(v, function () { t._search_open(d); }, 0);
-					}
-				}
-			});
 		};
 
 		this.redraw_node = function(obj, deep, callback, force_render) {
