@@ -290,12 +290,12 @@
 							var p = this.get_node(data.parent),
 								m = this._model.data,
 								i, j, c, tmp, t = this.settings.checkbox.tie_selection;
-							while(p && p.id !== $.jstree.root) {
+							while(p && p.id !== $.jstree.root && !p.state[ t ? 'selected' : 'checked' ]) {
 								c = 0;
 								for(i = 0, j = p.children.length; i < j; i++) {
 									c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
 								}
-								if(c === j) {
+								if(j > 0 && c === j) {
 									p.state[ t ? 'selected' : 'checked' ] = true;
 									this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 									tmp = this.get_node(p, true);
@@ -318,12 +318,12 @@
 								p, c, i, j, tmp, t = this.settings.checkbox.tie_selection;
 							if(!is_multi) {
 								p = this.get_node(old_par);
-								while(p && p.id !== $.jstree.root) {
+								while(p && p.id !== $.jstree.root && !p.state[ t ? 'selected' : 'checked' ]) {
 									c = 0;
 									for(i = 0, j = p.children.length; i < j; i++) {
 										c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
 									}
-									if(c === j) {
+									if(j > 0 && c === j) {
 										p.state[ t ? 'selected' : 'checked' ] = true;
 										this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 										tmp = this.get_node(p, true);
