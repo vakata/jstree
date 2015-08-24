@@ -2,7 +2,7 @@
 	"name": "jstree",
 	"repo": "vakata/jstree",
 	"description": "jsTree is jquery plugin, that provides interactive trees.",
-	"version": "3.2.0",
+	"version": "3.2.1",
 	"license": "MIT",
 	"keywords": [
 		"ui",
