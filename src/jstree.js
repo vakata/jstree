@@ -2630,22 +2630,7 @@
 			animation = animation === undefined ? this.settings.core.animation : animation;
 			t = this;
 			d = this.get_node(obj, true);
-			if(d.length) {
-				if(!animation) {
-					d[0].className = d[0].className.replace('jstree-open', 'jstree-closed');
-					d.attr("aria-expanded", false).children('.jstree-children').remove();
-				}
-				else {
-					d
-						.children(".jstree-children").attr("style","display:block !important").end()
-						.removeClass("jstree-open").addClass("jstree-closed").attr("aria-expanded", false)
-						.children(".jstree-children").stop(true, true).slideUp(animation, function () {
-							this.style.display = "";
-							d.children('.jstree-children').remove();
-							t.trigger("after_close", { "node" : obj });
-						});
-				}
-			}
+
 			obj.state.opened = false;
 			/**
 			 * triggered when a node is closed (if there is an animation it will not be complete yet)
@@ -2662,6 +2647,22 @@
 				 * @param {Object} node the closed node
 				 */
 				this.trigger("after_close", { "node" : obj });
+			}
+			else if(d.length) {
+				if(!animation) {
+					d[0].className = d[0].className.replace('jstree-open', 'jstree-closed');
+					d.attr("aria-expanded", false).children('.jstree-children').remove();
+				}
+				else {
+					d
+						.children(".jstree-children").attr("style","display:block !important").end()
+						.removeClass("jstree-open").addClass("jstree-closed").attr("aria-expanded", false)
+						.children(".jstree-children").stop(true, true).slideUp(animation, function () {
+							this.style.display = "";
+							d.children('.jstree-children').remove();
+							t.trigger("after_close", { "node" : obj });
+						});
+				}
 			}
 		},
 		/**
