@@ -5741,7 +5741,10 @@
 					});
 			}
 			*/
-			$(document).on("context_hide.vakata.jstree", $.proxy(function () { this._data.contextmenu.visible = false; }, this));
+			$(document).on("context_hide.vakata.jstree", $.proxy(function (e, data) {
+				this._data.contextmenu.visible = false;
+				data.reference.removeClass('jstree-context');
+			}, this));
 		};
 		this.teardown = function () {
 			if(this._data.contextmenu.visible) {
@@ -5773,6 +5776,7 @@
 				x = o.left;
 				y = o.top + this._data.core.li_height;
 			}
+			a.addClass('jstree-context');
 			if(this.settings.contextmenu.select_node && !this.is_selected(obj)) {
 				this.activate_node(obj, e);
 			}
@@ -6141,6 +6145,7 @@
 		});
 	}($));
 	// $.jstree.defaults.plugins.push("contextmenu");
+
 
 /**
  * ### Drag'n'drop plugin
