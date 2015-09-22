@@ -4343,6 +4343,7 @@
 							if(callback) {
 								callback.call(this, tmp, nv, cancel);
 							}
+							h2 = null;
 						}, this),
 						"keydown" : function (e) {
 							var key = e.which;
@@ -4381,6 +4382,11 @@
 			a.replaceWith(s);
 			h1.css(fn);
 			h2.css(fn).width(Math.min(h1.text("pW" + h2[0].value).width(),w))[0].select();
+			$(document).one('mousedown.jstree touchstart.jstree dnd_start.vakata', function (e) {
+				if (h2 && e.target !== h2) {
+					$(h2).blur();
+				}
+			});
 		},
 
 
