@@ -263,7 +263,6 @@
 				x = o.left;
 				y = o.top + this._data.core.li_height;
 			}
-			a.addClass('jstree-context');
 			if(this.settings.contextmenu.select_node && !this.is_selected(obj)) {
 				this.activate_node(obj, e);
 			}
@@ -295,6 +294,7 @@
 			$(document).one("context_show.vakata.jstree", $.proxy(function (e, data) {
 				var cls = 'jstree-contextmenu jstree-' + this.get_theme() + '-contextmenu';
 				$(data.element).addClass(cls);
+				a.addClass('jstree-context');
 			}, this));
 			this._data.contextmenu.visible = true;
 			$.vakata.context.show(a, { 'x' : x, 'y' : y }, i);
