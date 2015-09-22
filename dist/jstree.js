@@ -673,6 +673,12 @@
 								e.preventDefault();
 								this.element.find('.jstree-anchor').filter(':visible').last().focus();
 								break;
+							case 113: // f2 - safe to include - if check_callback is false it will fail
+								e.preventDefault();
+								this.edit(e.currentTarget);
+								break;
+							default:
+								break;
 							/*!
 							// delete
 							case 46:
@@ -683,17 +689,7 @@
 									this.delete_node(o);
 								}
 								break;
-							// f2
-							case 113:
-								e.preventDefault();
-								o = this.get_node(e.currentTarget);
-								if(o && o.id && o.id !== $.jstree.root) {
-									// this.edit(o);
-								}
-								break;
-							default:
-								// console.log(e.which);
-								break;
+
 							*/
 						}
 					}, this))
