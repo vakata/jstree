@@ -2837,7 +2837,9 @@
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.hide_node(obj[t1], true);
 				}
-				this.redraw();
+				if (!skip_redraw) {
+					this.redraw();
+				}
 				return true;
 			}
 			obj = this.get_node(obj);
@@ -2873,7 +2875,9 @@
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.show_node(obj[t1], true);
 				}
-				this.redraw();
+				if (!skip_redraw) {
+					this.redraw();
+				}
 				return true;
 			}
 			obj = this.get_node(obj);
