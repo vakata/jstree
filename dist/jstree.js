@@ -673,6 +673,12 @@
 								e.preventDefault();
 								this.element.find('.jstree-anchor').filter(':visible').last().focus();
 								break;
+							case 113: // f2 - safe to include - if check_callback is false it will fail
+								e.preventDefault();
+								this.edit(e.currentTarget);
+								break;
+							default:
+								break;
 							/*!
 							// delete
 							case 46:
@@ -683,17 +689,7 @@
 									this.delete_node(o);
 								}
 								break;
-							// f2
-							case 113:
-								e.preventDefault();
-								o = this.get_node(e.currentTarget);
-								if(o && o.id && o.id !== $.jstree.root) {
-									// this.edit(o);
-								}
-								break;
-							default:
-								// console.log(e.which);
-								break;
+
 							*/
 						}
 					}, this))
@@ -2837,7 +2833,9 @@
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.hide_node(obj[t1], true);
 				}
-				this.redraw();
+				if (!skip_redraw) {
+					this.redraw();
+				}
 				return true;
 			}
 			obj = this.get_node(obj);
@@ -2873,7 +2871,9 @@
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.show_node(obj[t1], true);
 				}
-				this.redraw();
+				if (!skip_redraw) {
+					this.redraw();
+				}
 				return true;
 			}
 			obj = this.get_node(obj);
@@ -3449,7 +3449,7 @@
 			var opened = [], to_load = [], s = this._data.core.selected.concat([]);
 			to_load.push(obj.id);
 			if(obj.state.opened === true) { opened.push(obj.id); }
-			this.get_node(obj, true).find('.jstree-open').each(function() { opened.push(this.id); });
+			this.get_node(obj, true).find('.jstree-open').each(function() { to_load.push(this.id); opened.push(this.id); });
 			this._load_nodes(to_load, $.proxy(function (nodes) {
 				this.open_node(opened, false, 0);
 				this.select_node(this._data.core.selected);
@@ -4343,6 +4343,7 @@
 							if(callback) {
 								callback.call(this, tmp, nv, cancel);
 							}
+							h2 = null;
 						}, this),
 						"keydown" : function (e) {
 							var key = e.which;
@@ -4381,6 +4382,11 @@
 			a.replaceWith(s);
 			h1.css(fn);
 			h2.css(fn).width(Math.min(h1.text("pW" + h2[0].value).width(),w))[0].select();
+			$(document).one('mousedown.jstree touchstart.jstree dnd_start.vakata', function (e) {
+				if (h2 && e.target !== h2) {
+					$(h2).blur();
+				}
+			});
 		},
 
 
@@ -5564,6 +5570,7 @@
 		 * * `icon` - a string, can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
 		 * * `shortcut` - keyCode which will trigger the action if the menu is open (for example `113` for rename, which equals F2)
 		 * * `shortcut_label` - shortcut label (like for example `F2` for rename)
+		 * * `submenu` - an object with the same structure as $.jstree.defaults.contextmenu.items which can be used to create a submenu - each key will be rendered as a separate option in a submenu that will appear once the current item is hovered
 		 *
 		 * @name $.jstree.defaults.contextmenu.items
 		 * @plugin contextmenu
@@ -5741,7 +5748,10 @@
 					});
 			}
 			*/
-			$(document).on("context_hide.vakata.jstree", $.proxy(function () { this._data.contextmenu.visible = false; }, this));
+			$(document).on("context_hide.vakata.jstree", $.proxy(function (e, data) {
+				this._data.contextmenu.visible = false;
+				data.reference.removeClass('jstree-context');
+			}, this));
 		};
 		this.teardown = function () {
 			if(this._data.contextmenu.visible) {
@@ -5804,6 +5814,7 @@
 			$(document).one("context_show.vakata.jstree", $.proxy(function (e, data) {
 				var cls = 'jstree-contextmenu jstree-' + this.get_theme() + '-contextmenu';
 				$(data.element).addClass(cls);
+				a.addClass('jstree-context');
 			}, this));
 			this._data.contextmenu.visible = true;
 			$.vakata.context.show(a, { 'x' : x, 'y' : y }, i);
@@ -6141,6 +6152,7 @@
 		});
 	}($));
 	// $.jstree.defaults.plugins.push("contextmenu");
+
 
 /**
  * ### Drag'n'drop plugin
@@ -6780,10 +6792,10 @@
 	 */
 	$.jstree.defaults.search = {
 		/**
-		 * a jQuery-like AJAX config, which jstree uses if a server should be queried for results. 
-		 * 
+		 * a jQuery-like AJAX config, which jstree uses if a server should be queried for results.
+		 *
 		 * A `str` (which is the search string) parameter will be added with the request, an optional `inside` parameter will be added if the search is limited to a node id. The expected result is a JSON array with nodes that need to be opened so that matching nodes will be revealed.
-		 * Leave this setting as `false` to not query the server. You can also set this to a function, which will be invoked in the instance's scope and receive 3 parameters - the search string, the callback to call with the array of nodes to load, and the optional node ID to limit the search to 
+		 * Leave this setting as `false` to not query the server. You can also set this to a function, which will be invoked in the instance's scope and receive 3 parameters - the search string, the callback to call with the array of nodes to load, and the optional node ID to limit the search to
 		 * @name $.jstree.defaults.search.ajax
 		 * @plugin search
 		 */
@@ -6801,7 +6813,7 @@
 		 */
 		case_sensitive : false,
 		/**
-		 * Indicates if the tree should be filtered (by default) to show only matching nodes (keep in mind this can be a heavy on large trees in old browsers). 
+		 * Indicates if the tree should be filtered (by default) to show only matching nodes (keep in mind this can be a heavy on large trees in old browsers).
 		 * This setting can be changed at runtime when calling the search method. Default is `false`.
 		 * @name $.jstree.defaults.search.show_only_matches
 		 * @plugin search
@@ -6862,12 +6874,14 @@
 							}
 							p = $.vakata.array_remove_item($.vakata.array_unique(p), $.jstree.root);
 							this._data.search.hdn = this.hide_all(true);
-							this.show_node(p);
+							this.show_node(p, true);
+							this.redraw(true);
 						}
 					}, this))
 				.on("clear_search.jstree", $.proxy(function (e, data) {
 						if(this._data.search.som && data.res.length) {
-							this.show_node(this._data.search.hdn);
+							this.show_node(this._data.search.hdn, true);
+							this.redraw(true);
 						}
 					}, this));
 		};
@@ -7343,6 +7357,8 @@
 	 * * `max_depth` the maximum number of nesting this node type can have. A value of `1` would mean that the node can have children, but no grandchildren. Do not specify or set to `-1` for unlimited.
 	 * * `valid_children` an array of node type strings, that nodes of this type can have as children. Do not specify or set to `-1` for no limits.
 	 * * `icon` a string - can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class. Omit to use the default icon from your theme.
+	 * * `li_attr` an object of values which will be used to add HTML attributes on the resulting LI DOM node (merged with the node's own data)
+	 * * `a_attr` an object of values which will be used to add HTML attributes on the resulting A DOM node (merged with the node's own data)
 	 *
 	 * There are two predefined types:
 	 *
@@ -7384,7 +7400,7 @@
 						var m = this._model.data,
 							dpc = data.nodes,
 							t = this.settings.types,
-							i, j, c = 'default';
+							i, j, c = 'default', k;
 						for(i = 0, j = dpc.length; i < j; i++) {
 							c = 'default';
 							if(m[dpc[i]].original && m[dpc[i]].original.type && t[m[dpc[i]].original.type]) {
@@ -7396,6 +7412,39 @@
 							m[dpc[i]].type = c;
 							if(m[dpc[i]].icon === true && t[c].icon !== undefined) {
 								m[dpc[i]].icon = t[c].icon;
+							}
+							if(t[c].li_attr !== undefined && typeof t[c].li_attr === 'object') {
+								for (k in t[c].li_attr) {
+									if (t[c].li_attr.hasOwnProperty(k)) {
+										if (k === 'id') {
+											continue;
+										}
+										else if (m[dpc[i]].li_attr[k] === undefined) {
+											m[dpc[i]].li_attr[k] = t[c].li_attr[k];
+										}
+										else if (k === 'class') {
+											m[dpc[i]].li_attr['class'] = t[c].li_attr['class'] + ' ' + m[dpc[i]].li_attr['class'];
+										}
+									}
+								}
+							}
+							if(t[c].a_attr !== undefined && typeof t[c].a_attr === 'object') {
+								for (k in t[c].a_attr) {
+									if (t[c].a_attr.hasOwnProperty(k)) {
+										if (k === 'id') {
+											continue;
+										}
+										else if (m[dpc[i]].a_attr[k] === undefined) {
+											m[dpc[i]].a_attr[k] = t[c].a_attr[k];
+										}
+										else if (k === 'href' && m[dpc[i]].a_attr[k] === '#') {
+											m[dpc[i]].a_attr['href'] = t[c].a_attr['href'];
+										}
+										else if (k === 'class') {
+											m[dpc[i]].a_attr['class'] = t[c].a_attr['class'] + ' ' + m[dpc[i]].a_attr['class'];
+										}
+									}
+								}
 							}
 						}
 						m[$.jstree.root].type = $.jstree.root;
@@ -7527,7 +7576,7 @@
 		 * @plugin types
 		 */
 		this.set_type = function (obj, type) {
-			var t, t1, t2, old_type, old_icon;
+			var m = this._model.data, t, t1, t2, old_type, old_icon, k, d, a;
 			if($.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -7538,17 +7587,119 @@
 			t = this.settings.types;
 			obj = this.get_node(obj);
 			if(!t[type] || !obj) { return false; }
+			d = this.get_node(obj, true);
+			if (d && d.length) {
+				a = d.children('.jstree-anchor');
+			}
 			old_type = obj.type;
 			old_icon = this.get_icon(obj);
 			obj.type = type;
 			if(old_icon === true || (t[old_type] && t[old_type].icon !== undefined && old_icon === t[old_type].icon)) {
 				this.set_icon(obj, t[type].icon !== undefined ? t[type].icon : true);
 			}
+
+			// remove old type props
+			if(t[old_type].li_attr !== undefined && typeof t[old_type].li_attr === 'object') {
+				for (k in t[old_type].li_attr) {
+					if (t[old_type].li_attr.hasOwnProperty(k)) {
+						if (k === 'id') {
+							continue;
+						}
+						else if (k === 'class') {
+							m[obj.id].li_attr['class'] = (m[obj.id].li_attr['class'] || '').replace(t[old_type].li_attr[k], '');
+							if (d) { d.removeClass(t[old_type].li_attr[k]); }
+						}
+						else if (m[obj.id].li_attr[k] === t[old_type].li_attr[k]) {
+							m[obj.id].li_attr[k] = null;
+							if (d) { d.removeAttr(k); }
+						}
+					}
+				}
+			}
+			if(t[old_type].a_attr !== undefined && typeof t[old_type].a_attr === 'object') {
+				for (k in t[old_type].a_attr) {
+					if (t[old_type].a_attr.hasOwnProperty(k)) {
+						if (k === 'id') {
+							continue;
+						}
+						else if (k === 'class') {
+							m[obj.id].a_attr['class'] = (m[obj.id].a_attr['class'] || '').replace(t[old_type].a_attr[k], '');
+							if (a) { a.removeClass(t[old_type].a_attr[k]); }
+						}
+						else if (m[obj.id].a_attr[k] === t[old_type].a_attr[k]) {
+							if (k === 'href') {
+								m[obj.id].a_attr[k] = '#';
+								if (a) { a.attr('href', '#'); }
+							}
+							else {
+								delete m[obj.id].a_attr[k];
+								if (a) { a.removeAttr(k); }
+							}
+						}
+					}
+				}
+			}
+
+			// add new props
+			if(t[type].li_attr !== undefined && typeof t[type].li_attr === 'object') {
+				for (k in t[type].li_attr) {
+					if (t[type].li_attr.hasOwnProperty(k)) {
+						if (k === 'id') {
+							continue;
+						}
+						else if (m[obj.id].li_attr[k] === undefined) {
+							m[obj.id].li_attr[k] = t[type].li_attr[k];
+							if (d) {
+								if (k === 'class') {
+									d.addClass(t[type].li_attr[k]);
+								}
+								else {
+									d.attr(k, t[type].li_attr[k]);
+								}
+							}
+						}
+						else if (k === 'class') {
+							m[obj.id].li_attr['class'] = t[type].li_attr[k] + ' ' + m[obj.id].li_attr['class'];
+							if (d) { d.addClass(t[type].li_attr[k]); }
+						}
+					}
+				}
+			}
+			if(t[type].a_attr !== undefined && typeof t[type].a_attr === 'object') {
+				for (k in t[type].a_attr) {
+					if (t[type].a_attr.hasOwnProperty(k)) {
+						if (k === 'id') {
+							continue;
+						}
+						else if (m[obj.id].a_attr[k] === undefined) {
+							m[obj.id].a_attr[k] = t[type].a_attr[k];
+							if (a) {
+								if (k === 'class') {
+									a.addClass(t[type].a_attr[k]);
+								}
+								else {
+									a.attr(k, t[type].a_attr[k]);
+								}
+							}
+						}
+						else if (k === 'href' && m[obj.id].a_attr[k] === '#') {
+							m[obj.id].a_attr['href'] = t[type].a_attr['href'];
+							if (a) { a.attr('href', t[type].a_attr['href']); }
+						}
+						else if (k === 'class') {
+							m[obj.id].a_attr['class'] = t[type].a_attr['class'] + ' ' + m[obj.id].a_attr['class'];
+							if (a) { a.addClass(t[type].a_attr[k]); }
+						}
+					}
+				}
+			}
+
 			return true;
 		};
 	};
 	// include the types plugin by default
 	// $.jstree.defaults.plugins.push("types");
+
 
 /**
  * ### Unique plugin

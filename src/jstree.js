@@ -673,6 +673,12 @@
 								e.preventDefault();
 								this.element.find('.jstree-anchor').filter(':visible').last().focus();
 								break;
+							case 113: // f2 - safe to include - if check_callback is false it will fail
+								e.preventDefault();
+								this.edit(e.currentTarget);
+								break;
+							default:
+								break;
 							/*!
 							// delete
 							case 46:
@@ -683,17 +689,7 @@
 									this.delete_node(o);
 								}
 								break;
-							// f2
-							case 113:
-								e.preventDefault();
-								o = this.get_node(e.currentTarget);
-								if(o && o.id && o.id !== $.jstree.root) {
-									// this.edit(o);
-								}
-								break;
-							default:
-								// console.log(e.which);
-								break;
+
 							*/
 						}
 					}, this))
@@ -2837,7 +2833,9 @@
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.hide_node(obj[t1], true);
 				}
-				this.redraw();
+				if (!skip_redraw) {
+					this.redraw();
+				}
 				return true;
 			}
 			obj = this.get_node(obj);
@@ -2873,7 +2871,9 @@
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.show_node(obj[t1], true);
 				}
-				this.redraw();
+				if (!skip_redraw) {
+					this.redraw();
+				}
 				return true;
 			}
 			obj = this.get_node(obj);
@@ -3449,7 +3449,7 @@
 			var opened = [], to_load = [], s = this._data.core.selected.concat([]);
 			to_load.push(obj.id);
 			if(obj.state.opened === true) { opened.push(obj.id); }
-			this.get_node(obj, true).find('.jstree-open').each(function() { opened.push(this.id); });
+			this.get_node(obj, true).find('.jstree-open').each(function() { to_load.push(this.id); opened.push(this.id); });
 			this._load_nodes(to_load, $.proxy(function (nodes) {
 				this.open_node(opened, false, 0);
 				this.select_node(this._data.core.selected);
@@ -4343,6 +4343,7 @@
 							if(callback) {
 								callback.call(this, tmp, nv, cancel);
 							}
+							h2 = null;
 						}, this),
 						"keydown" : function (e) {
 							var key = e.which;
@@ -4381,6 +4382,11 @@
 			a.replaceWith(s);
 			h1.css(fn);
 			h2.css(fn).width(Math.min(h1.text("pW" + h2[0].value).width(),w))[0].select();
+			$(document).one('mousedown.jstree touchstart.jstree dnd_start.vakata', function (e) {
+				if (h2 && e.target !== h2) {
+					$(h2).blur();
+				}
+			});
 		},
 
 
