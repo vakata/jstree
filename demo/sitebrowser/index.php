@@ -158,12 +158,12 @@ if(isset($_GET['operation'])) {
 				.on('changed.jstree', function (e, data) {
 					if(data && data.selected && data.selected.length) {
 						$.get('?operation=get_content&id=' + data.selected.join(':'), function (d) {
-							$('#data .default').text(d.content).show();
+							$('#data .default').html(d.content).show();
 						});
 					}
 					else {
 						$('#data .content').hide();
-						$('#data .default').text('Select a file from the tree.').show();
+						$('#data .default').html('Select a file from the tree.').show();
 					}
 				});
 		});
