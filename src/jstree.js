@@ -2635,7 +2635,7 @@
 			 * @param {Object} node the closed node
 			 */
 			this.trigger('close_node',{ "node" : obj });
-			if(!animation || !d.length) {
+			if(!d.length) {
 				/**
 				 * triggered when a node is closed and the animation is complete
 				 * @event
@@ -2644,10 +2644,11 @@
 				 */
 				this.trigger("after_close", { "node" : obj });
 			}
-			else if(d.length) {
+			else {
 				if(!animation) {
 					d[0].className = d[0].className.replace('jstree-open', 'jstree-closed');
 					d.attr("aria-expanded", false).children('.jstree-children').remove();
+					this.trigger("after_close", { "node" : obj });
 				}
 				else {
 					d
