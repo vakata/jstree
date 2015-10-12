@@ -6228,7 +6228,14 @@
 		 * @name $.jstree.defaults.dnd.large_drag_target
 		 * @plugin dnd
 		 */
-		large_drag_target : false
+		large_drag_target : false,
+		/**
+		 * controls whether use HTML5 dnd api instead of classical. That allow better integration of  dnd events with other HTML5 controls.
+		 * @reference http://caniuse.com/#feat=dragndrop
+		 * @name $.jstree.defaults.dnd.use_html5_dnd
+		 * @plugin dnd
+		 */
+		use_html5_dnd: false
 	};
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
 	$.jstree.plugins.dnd = function (options, parent) {
@@ -6236,7 +6243,7 @@
 			parent.bind.call(this);
 
 			this.element
-				.on('mousedown.jstree touchstart.jstree', this.settings.dnd.large_drag_target ? '.jstree-node' : '.jstree-anchor', $.proxy(function (e) {
+				.on(options.use_html5_dnd ? '' : 'mousedown.jstree ' + 'touchstart.jstree', this.settings.dnd.large_drag_target ? '.jstree-node' : '.jstree-anchor', $.proxy(function (e) {
 					if(this.settings.dnd.large_drag_target && $(e.target).closest('.jstree-node')[0] !== e.currentTarget) {
 						return true;
 					}
@@ -6257,6 +6264,43 @@
 					}
 				}, this));
 		};
+		if(options.use_html5_dnd) {
+			var cancel = function (event) {
+				if (event.preventDefault) {
+					event.preventDefault();
+				}
+				return false;
+			}, drag_target, drag_data;
+			this.redraw_node = function(obj, deep, callback, force_render) {
+				obj = parent.redraw_node.apply(this, arguments);
+				if(obj) {
+					var $obj = $(obj);
+					/**
+					 * declare node as dropable
+					 */
+					$obj.on('dragover', cancel).on('dragenter', $.proxy(function(e){
+						var dropEffect = this.settings.dnd.always_copy || (this.settings.dnd.copy && (e.metaKey || e.ctrlKey)) ? 'copy' : 'move';
+						e.originalEvent.dataTransfer.dropEffect = dropEffect;
+						$.vakata.dnd._trigger('move', e, {event: e, helper: $(), element: drag_target, data: drag_data});
+						return cancel(e);
+					}, this)).on('drop', $.proxy(function(e){
+						$.vakata.dnd._trigger('stop', e, {event: e, helper: $(), element: drag_target, data: drag_data});
+						return cancel(e);
+					}, this));
+					/**
+					 * declare node as draggable
+					 */
+					$obj.attr('draggable', true).on('dragstart', $.proxy(function (e) {
+						var obj = this.get_node(e.target),
+								mlt = this.is_selected(obj) && this.settings.dnd.drag_selection ? this.get_top_selected().length : 1;
+						drag_data = { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_top_selected() : [obj.id] };
+						drag_target = e.currentTarget;
+						$.vakata.dnd._trigger('start', e, {event: e, helper: $(), element: drag_target, data: drag_data});
+					}, this));
+				}
+				return obj;
+			};
+		}
 	};
 
 	$(function() {
@@ -6466,9 +6510,11 @@
 				threshold			: 5,
 				threshold_touch		: 50
 			},
-			_trigger : function (event_name, e) {
-				var data = $.vakata.dnd._get();
-				data.event = e;
+			_trigger : function (event_name, e, data) {
+				if(data === undefined) {
+					data = $.vakata.dnd._get();
+					data.event = e;
+				}
 				$(document).triggerHandler("dnd_" + event_name + ".vakata", data);
 			},
 			_get : function () {
