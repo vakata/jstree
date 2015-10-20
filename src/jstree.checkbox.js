@@ -181,10 +181,25 @@
 								par = this.get_node(obj.parent),
 								dom = this.get_node(obj, true),
 								i, j, c, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection;
+								var selectedHash= new Object();
+								selectedHash[obj.id]=obj.id;
+								var sel=this._data[ t ? 'core' : 'checkbox' ].selected;
+							
+								for(var i=0; i < sel.length; i++){
+									selectedHash[sel[i]]=sel[i];
+								}
 
 							// apply down
 							if(s.indexOf('down') !== -1) {
-								this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected.concat(obj.children_d));
+								for(var i=0; i < obj.children_d.length; i++){
+									selectedHash[obj.children_d[i]]=obj.children_d[i];
+								}
+								var selectedArr=[];
+								for(i in selectedHash){
+									selectedArr.push(selectedHash[i]);
+								}
+
+								this._data[ t ? 'core' : 'checkbox' ].selected=selectedArr;
 								for(i = 0, j = obj.children_d.length; i < j; i++) {
 									tmp = m[obj.children_d[i]];
 									tmp.state[ t ? 'selected' : 'checked' ] = true;
@@ -236,6 +251,10 @@
 							var obj = data.node,
 								dom = this.get_node(obj, true),
 								i, j, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection;
+							var unselected = new Object();	
+							unselected[obj.id]=true;
+
+							//if the selection itself was in undetermined state, turn this off	
 							if(obj && obj.original && obj.original.state && obj.original.state.undetermined) {
 								obj.original.state.undetermined = false;
 							}
@@ -244,6 +263,7 @@
 							if(s.indexOf('down') !== -1) {
 								for(i = 0, j = obj.children_d.length; i < j; i++) {
 									tmp = this._model.data[obj.children_d[i]];
+									unselected[tmp.id]=true;
 									tmp.state[ t ? 'selected' : 'checked' ] = false;
 									if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
 										tmp.original.state.undetermined = false;
@@ -255,6 +275,7 @@
 							if(s.indexOf('up') !== -1) {
 								for(i = 0, j = obj.parents.length; i < j; i++) {
 									tmp = this._model.data[obj.parents[i]];
+									unselected[tmp.id]=true;
 									tmp.state[ t ? 'selected' : 'checked' ] = false;
 									if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
 										tmp.original.state.undetermined = false;
@@ -266,20 +287,32 @@
 								}
 							}
 							tmp = [];
-							for(i = 0, j = this._data[ t ? 'core' : 'checkbox' ].selected.length; i < j; i++) {
-								// apply down + apply up
-								if(
-									(s.indexOf('down') === -1 || $.inArray(this._data[ t ? 'core' : 'checkbox' ].selected[i], obj.children_d) === -1) &&
-									(s.indexOf('up') === -1 || $.inArray(this._data[ t ? 'core' : 'checkbox' ].selected[i], obj.parents) === -1)
-								) {
-									tmp.push(this._data[ t ? 'core' : 'checkbox' ].selected[i]);
+							//This if/else is new, for reworked deferred unselect ui changes. Improves performance of the else
+							//block from O(n^2) computation to O(n).
+							if(data.deferCheckboxSelect)
+							{
+								if(typeof this.longtermUnselected != 'undefined'){
+									for (var attrname in unselected) { 
+										this.longtermUnselected[attrname] = unselected[attrname]; 
+									}
 								}
 							}
-							this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(tmp);
+							else{
+								for(i = 0, j = this._data[ t ? 'core' : 'checkbox' ].selected.length; i < j; i++) {
+									// apply down + apply up
+									if(
+										(s.indexOf('down') === -1 || !unselected[this._data[ t ? 'core' : 'checkbox' ].selected[i]]) &&
+										(s.indexOf('up') === -1 || !unselected[this._data[ t ? 'core' : 'checkbox' ].selected[i]])
+									) {
+										tmp.push(this._data[ t ? 'core' : 'checkbox' ].selected[i]);
+									}
+								}
+								this._data[ t ? 'core' : 'checkbox' ].selected = tmp;
 
-							// apply down (process .children separately?)
-							if(s.indexOf('down') !== -1 && dom.length) {
-								dom.find('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked').parent().attr('aria-selected', false);
+								// apply down (process .children separately?)
+								if(s.indexOf('down') !== -1 && dom.length) {
+									dom.find('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked').parent().attr('aria-selected', false);
+								}
 							}
 						}, this));
 			}
@@ -378,16 +411,15 @@
 		 * @plugin checkbox
 		 */
 		this._undetermined = function () {
-			if(this.element === null) { return; }
-			var i, j, k, l, o = {}, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this;
-			for(i = 0, j = s.length; i < j; i++) {
-				if(m[s[i]] && m[s[i]].parents) {
-					for(k = 0, l = m[s[i]].parents.length; k < l; k++) {
-						if(o[m[s[i]].parents[k]] === undefined && m[s[i]].parents[k] !== $.jstree.root) {
-							o[m[s[i]].parents[k]] = true;
-							p.push(m[s[i]].parents[k]);
-						}
-					}
+			var i, j, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this;
+			var visited = new Object();
+			for(i=0; i<s.length; i++){
+				//create unique array of all parents to selected sites
+				for(j=0;j<m[s[i]].parents.length; j++){
+					if(visited[m[s[i]].parents[j]])
+						break; //if parent is visited, all parents farther up tree have also been visited
+					p.push(m[s[i]].parents[j]);
+					visited[m[s[i]].parents[j]]=true;
 				}
 			}
 			// attempt for server side undetermined state
@@ -427,6 +459,9 @@
 					}
 				});
 
+
+			//remove the root
+			p = $.vakata.array_remove_item(p,'#');
 			this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
 			for(i = 0, j = p.length; i < j; i++) {
 				if(!m[p[i]].state[ t ? 'selected' : 'checked' ]) {
