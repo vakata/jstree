@@ -858,7 +858,9 @@
 				data = {};
 			}
 			data.instance = this;
-			this.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);
+			if (this.element) {
+				this.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);
+			}
 		},
 		/**
 		 * returns the jQuery extended instance container
@@ -3831,7 +3833,7 @@
 			var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj,
 				chc = this.settings.core.check_callback;
 			if(chk === "move_node" || chk === "copy_node") {
-				if((!more || !more.is_multi) && (obj.id === par.id || $.inArray(obj.id, par.children) === pos || $.inArray(par.id, obj.children_d) !== -1)) {
+				if((!more || !more.is_multi) && ($.inArray(obj.id, par.children) === pos || $.inArray(par.id, obj.children_d) !== -1)) {
 					this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_01', 'reason' : 'Moving parent inside child', 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					return false;
 				}
@@ -3963,17 +3965,25 @@
 				// clean old parent and up
 				tmp = obj.children_d.concat();
 				tmp.push(obj.id);
+
+                var map = {};
+                for (i = 0, j = tmp.length; i < j; i++) {
+                    map[tmp[i]] = 1;
+                }
+
 				for(i = 0, j = obj.parents.length; i < j; i++) {
 					dpc = [];
 					p = old_ins._model.data[obj.parents[i]].children_d;
 					for(k = 0, l = p.length; k < l; k++) {
-						if($.inArray(p[k], tmp) === -1) {
+						if(map[tmp[p[k]]] === 1) {
 							dpc.push(p[k]);
 						}
 					}
 					old_ins._model.data[obj.parents[i]].children_d = dpc;
 				}
 				old_ins._model.data[old_par].children = $.vakata.array_remove_item(old_ins._model.data[old_par].children, obj.id);
+
+                map = undefined;
 
 				// insert into new parent and up
 				for(i = 0, j = new_par.parents.length; i < j; i++) {

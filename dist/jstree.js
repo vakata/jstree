@@ -858,7 +858,9 @@
 				data = {};
 			}
 			data.instance = this;
-			this.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);
+			if (this.element) {
+				this.element.triggerHandler(ev.replace('.jstree','') + '.jstree', data);
+			}
 		},
 		/**
 		 * returns the jQuery extended instance container
@@ -3831,7 +3833,7 @@
 			var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj,
 				chc = this.settings.core.check_callback;
 			if(chk === "move_node" || chk === "copy_node") {
-				if((!more || !more.is_multi) && (obj.id === par.id || $.inArray(obj.id, par.children) === pos || $.inArray(par.id, obj.children_d) !== -1)) {
+				if((!more || !more.is_multi) && ($.inArray(obj.id, par.children) === pos || $.inArray(par.id, obj.children_d) !== -1)) {
 					this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_01', 'reason' : 'Moving parent inside child', 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					return false;
 				}
@@ -3963,17 +3965,25 @@
 				// clean old parent and up
 				tmp = obj.children_d.concat();
 				tmp.push(obj.id);
+
+                var map = {};
+                for (i = 0, j = tmp.length; i < j; i++) {
+                    map[tmp[i]] = 1;
+                }
+
 				for(i = 0, j = obj.parents.length; i < j; i++) {
 					dpc = [];
 					p = old_ins._model.data[obj.parents[i]].children_d;
 					for(k = 0, l = p.length; k < l; k++) {
-						if($.inArray(p[k], tmp) === -1) {
+						if(map[tmp[p[k]]] === 1) {
 							dpc.push(p[k]);
 						}
 					}
 					old_ins._model.data[obj.parents[i]].children_d = dpc;
 				}
 				old_ins._model.data[old_par].children = $.vakata.array_remove_item(old_ins._model.data[old_par].children, obj.id);
+
+                map = undefined;
 
 				// insert into new parent and up
 				for(i = 0, j = new_par.parents.length; i < j; i++) {
@@ -5786,8 +5796,9 @@
 				x = o.left;
 				y = o.top + this._data.core.li_height;
 			}
-			if(this.settings.contextmenu.select_node && !this.is_selected(obj)) {
-				this.activate_node(obj, e);
+			if(this.settings.contextmenu.select_node) {
+                this.deselect_all(false);
+				this.select_node(obj, false, false, e);
 			}
 
 			i = s.items;
@@ -6697,6 +6708,66 @@
 	// include the dnd plugin by default
 	// $.jstree.defaults.plugins.push("dnd");
 
+
+// gutter icons plugin for jstree
+// for codio
+
+    var gutter = document.createElement('I');
+    gutter.setAttribute('unselectable', 'on');
+    gutter.className = 'jstree-guttericon';
+    gutter.innerHTML = '';
+    $.jstree.plugins.guttericons = function (options, parent) {
+        this.gutters = {};
+        this.bind = function () {
+            parent.bind.call(this);
+            this.element
+                .on('click.jstree', '.jstree-guttericon', $.proxy(function (e) {
+                    var id = $(e.currentTarget).closest('.jstree-node').attr('id');
+                    var node = this.get_node(id);
+                    if (this.gutters[node.id]) {
+                        this.gutters[node.id].action();
+                    }
+                }, this) );
+        };
+        this.set_node_gutter = function (nodeId, gutterClass, action) {
+            var node = this.get_node(nodeId);
+            if (this.gutters[node.id] === undefined) {
+                this.gutters[node.id] = {};
+            }
+            this.gutters[node.id].class = gutterClass;
+            this.gutters[node.id].action = action;
+            this.redraw_node(node);
+        };
+        this.teardown = function () {
+            this.gutters = undefined;
+            if (this.settings.guttericons) {
+                this.element.find('.jstree-guttericon').remove();
+            }
+            parent.teardown.call(this);
+        };
+        this.redraw_node = function(obj, deep, callback) {
+            obj = parent.redraw_node.call(this, obj, deep, callback);
+            if (obj) {
+                var tmp = gutter.cloneNode(true);
+                var id = $(obj).closest('.jstree-node').attr('id');
+                var node = this.get_node(id);
+                if (this.gutters[node.id]) {
+                    tmp.className += ' icon ' + this.gutters[node.id].class;
+                }
+
+                obj.appendChild(tmp);
+                var pos = obj.childNodes.length - 1;
+                if (pos > 2) {
+                    pos = 2;
+                }
+                obj.insertBefore(tmp, obj.childNodes[pos]);
+            }
+            return obj;
+        };
+    };
+
+    // include the guttericons plugin by default
+    // $.jstree.defaults.plugins.push("guttericons");
 
 /**
  * ### Massload plugin
@@ -7739,36 +7810,36 @@
 			par = par && par.id ? par : this.get_node(par);
 			if(!par || !par.children) { return true; }
 			var n = chk === "rename_node" ? pos : obj.text,
-				c = [],
+				map = {},
 				s = this.settings.unique.case_sensitive,
 				m = this._model.data, i, j;
 			for(i = 0, j = par.children.length; i < j; i++) {
-				c.push(s ? m[par.children[i]].text : m[par.children[i]].text.toLowerCase());
+                map[s ? m[par.children[i]].text : m[par.children[i]].text.toLowerCase()] = 1;
 			}
 			if(!s) { n = n.toLowerCase(); }
 			switch(chk) {
 				case "delete_node":
 					return true;
 				case "rename_node":
-					i = ($.inArray(n, c) === -1 || (obj.text && obj.text[ s ? 'toString' : 'toLowerCase']() === n));
+					i = (map[n] === undefined || (obj.text && obj.text[ s ? 'toString' : 'toLowerCase']() === n));
 					if(!i) {
 						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					}
 					return i;
 				case "create_node":
-					i = ($.inArray(n, c) === -1);
+					i = (map[n] === undefined);
 					if(!i) {
 						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_04', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					}
 					return i;
 				case "copy_node":
-					i = ($.inArray(n, c) === -1);
+					i = (map[n] === undefined);
 					if(!i) {
 						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_02', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					}
 					return i;
 				case "move_node":
-					i = ( (obj.parent === par.id && (!more || !more.is_multi)) || $.inArray(n, c) === -1);
+					i = (obj.parent === par.id  && (!more || !more.is_multi) || map[n] === undefined);
 					if(!i) {
 						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_03', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					}
