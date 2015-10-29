@@ -7,6 +7,10 @@ if(isset($_GET['operation'])) {
 	try {
 		$rslt = null;
 		switch($_GET['operation']) {
+			case 'analyze':
+				var_dump($fs->analyze(true));
+				die();
+				break;
 			case 'get_node':
 				$node = isset($_GET['id']) && $_GET['id'] !== '#' ? (int)$_GET['id'] : 0;
 				$temp = $fs->get_children($node);
@@ -53,7 +57,7 @@ if(isset($_GET['operation'])) {
 				throw new Exception('Unsupported operation: ' . $_GET['operation']);
 				break;
 		}
-		header('Content-Type: application/json; charset=utf8');
+		header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($rslt);
 	}
 	catch (Exception $e) {
@@ -92,7 +96,7 @@ if(isset($_GET['operation'])) {
 			</div>
 		</div>
 
-		<script src="./../../dist/libs/jquery.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 		<script src="./../../dist/jstree.min.js"></script>
 		<script>
 		$(function () {
@@ -115,6 +119,7 @@ if(isset($_GET['operation'])) {
 							'responsive' : false
 						}
 					},
+					'force_text' : true,
 					'plugins' : ['state','dnd','contextmenu','wholerow']
 				})
 				.on('delete_node.jstree', function (e, data) {
@@ -153,12 +158,12 @@ if(isset($_GET['operation'])) {
 				.on('changed.jstree', function (e, data) {
 					if(data && data.selected && data.selected.length) {
 						$.get('?operation=get_content&id=' + data.selected.join(':'), function (d) {
-							$('#data .default').html(d.content).show();
+							$('#data .default').text(d.content).show();
 						});
 					}
 					else {
 						$('#data .content').hide();
-						$('#data .default').html('Select a file from the tree.').show();
+						$('#data .default').text('Select a file from the tree.').show();
 					}
 				});
 		});

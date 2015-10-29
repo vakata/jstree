@@ -78,7 +78,7 @@
 					}
 					return i;
 				case "move_node":
-					i = (obj.parent === par.id || map[n] === undefined);
+					i = (obj.parent === par.id  && (!more || !more.is_multi) || map[n] === undefined);
 					if(!i) {
 						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_03', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					}
@@ -89,7 +89,7 @@
 		this.create_node = function (par, node, pos, callback, is_loaded) {
 			if(!node || node.text === undefined) {
 				if(par === null) {
-					par = "#";
+					par = $.jstree.root;
 				}
 				par = this.get_node(par);
 				if(!par) {

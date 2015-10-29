@@ -216,7 +216,7 @@ if(isset($_GET['operation'])) {
 				throw new Exception('Unsupported operation: ' . $_GET['operation']);
 				break;
 		}
-		header('Content-Type: application/json; charset=utf8');
+		header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($rslt);
 	}
 	catch (Exception $e) {
@@ -280,7 +280,7 @@ if(isset($_GET['operation'])) {
 			</div>
 		</div>
 
-		<script src="./../../dist/libs/jquery.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 		<script src="./../../dist/jstree.min.js"></script>
 		<script>
 		$(function () {
@@ -305,6 +305,7 @@ if(isset($_GET['operation'])) {
 							}
 							return true;
 						},
+						'force_text' : true,
 						'themes' : {
 							'responsive' : false,
 							'variant' : 'small',

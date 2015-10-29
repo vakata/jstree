@@ -479,8 +479,8 @@ namespace vakata\database
 		protected final function error($error = '') {
 			$dirnm = defined('LOGROOT') ? LOGROOT : realpath(dirname(__FILE__));
 			@file_put_contents(
-				$dirnm . DIRECTORY_SEPARATOR . '_errors_sql.log', 
-				'[' . date('d-M-Y H:i:s') . '] ' . $this->settings->type . ' > ' . preg_replace("@[\s\r\n\t]+@", ' ', $error) . "\n", 
+				$dirnm . DIRECTORY_SEPARATOR . '_errors_sql.log',
+				'[' . date('d-M-Y H:i:s') . '] ' . $this->settings->type . ' > ' . preg_replace("@[\s\r\n\t]+@", ' ', $error) . "\n",
 				FILE_APPEND
 			);
 			throw new Exception($error);
@@ -633,7 +633,6 @@ namespace vakata\database
 							$ref[$i+1] =& $data[$i];
 							break;
 						case "array":
-							// TODO: work around IN statements?
 							$data[$i] = implode(',',$v);
 							$ref[0] .= 's';
 							$ref[$i+1] =& $data[$i];
@@ -699,15 +698,15 @@ namespace vakata\database
 			if(!$this->settings->serverport) { $this->settings->serverport = 3306; }
 		}
 		public function connect() {
-			$this->lnk = ($this->settings->persist) ? 
+			$this->lnk = ($this->settings->persist) ?
 					@mysql_pconnect(
-						$this->settings->servername.':'.$this->settings->serverport, 
-						$this->settings->username, 
+						$this->settings->servername.':'.$this->settings->serverport,
+						$this->settings->username,
 						$this->settings->password
-					) : 
+					) :
 					@mysql_connect(
-						$this->settings->servername.':'.$this->settings->serverport, 
-						$this->settings->username, 
+						$this->settings->servername.':'.$this->settings->serverport,
+						$this->settings->username,
 						$this->settings->password
 					);
 
@@ -785,21 +784,21 @@ namespace vakata\database
 			if(!$this->settings->serverport) { $this->settings->serverport = 5432; }
 		}
 		public function connect() {
-			$this->lnk = ($this->settings->persist) ? 
+			$this->lnk = ($this->settings->persist) ?
 					@pg_pconnect(
-						"host=" . $this->settings->servername . " " . 
-						"port=" . $this->settings->serverport . " " . 
-						"user=" . $this->settings->username . " " . 
-						"password=" . $this->settings->password . " " . 
-						"dbname=" . $this->settings->database . " " . 
+						"host=" . $this->settings->servername . " " .
+						"port=" . $this->settings->serverport . " " .
+						"user=" . $this->settings->username . " " .
+						"password=" . $this->settings->password . " " .
+						"dbname=" . $this->settings->database . " " .
 						"options='--client_encoding=".strtoupper($this->settings->charset)."' "
-					) : 
+					) :
 					@pg_connect(
-						"host=" . $this->settings->servername . " " . 
-						"port=" . $this->settings->serverport . " " . 
-						"user=" . $this->settings->username . " " . 
-						"password=" . $this->settings->password . " " . 
-						"dbname=" . $this->settings->database . " " . 
+						"host=" . $this->settings->servername . " " .
+						"port=" . $this->settings->serverport . " " .
+						"user=" . $this->settings->username . " " .
+						"password=" . $this->settings->password . " " .
+						"dbname=" . $this->settings->database . " " .
 						"options='--client_encoding=".strtoupper($this->settings->charset)."' "
 					);
 			if($this->lnk === false) {
@@ -879,7 +878,7 @@ namespace vakata\database
 		protected $aff = 0;
 
 		public function connect() {
-			$this->lnk = ($this->settings->persist) ? 
+			$this->lnk = ($this->settings->persist) ?
 					@oci_pconnect($this->settings->username, $this->settings->password, $this->settings->servername, $this->settings->charset) :
 					@oci_connect ($this->settings->username, $this->settings->password, $this->settings->servername, $this->settings->charset);
 			if($this->lnk === false) {
@@ -932,7 +931,6 @@ namespace vakata\database
 						oci_bind_by_name($sql, 'f'.$i, $data[$i], SQLT_INT);
 						break;
 					case "array":
-						// TODO: work around IN statements?
 						$data[$i] = implode(',',$v);
 						oci_bind_by_name($sql, 'f'.$i, $data[$i]);
 						break;
@@ -952,7 +950,7 @@ namespace vakata\database
 			}
 			$this->aff = oci_num_rows($sql);
 
-			/* TODO: get iid
+			/* TO DO: get iid
 			if(!$seqname) { return $this->error('INSERT_ID not supported with no sequence.'); }
 			$stm = oci_parse($this->link, 'SELECT '.strtoupper(str_replace("'",'',$seqname)).'.CURRVAL FROM DUAL');
 			oci_execute($stm, $sql);
@@ -995,21 +993,21 @@ namespace vakata\database
 			if(!is_file($this->settings->database) && is_file('/'.$this->settings->database)) {
 				$this->settings->database = '/'.$this->settings->database;
 			}
-			$this->settings->servername = ($this->settings->servername === 'localhost' || $this->settings->servername === '127.0.0.1' || $this->settings->servername === '') ? 
+			$this->settings->servername = ($this->settings->servername === 'localhost' || $this->settings->servername === '127.0.0.1' || $this->settings->servername === '') ?
 				'' :
 				$this->settings->servername . ':';
 		}
 		public function connect() {
-			$this->lnk = ($this->settings->persist) ? 
+			$this->lnk = ($this->settings->persist) ?
 					@ibase_pconnect(
-						$this->settings->servername . $this->settings->database, 
-						$this->settings->username, 
+						$this->settings->servername . $this->settings->database,
+						$this->settings->username,
 						$this->settings->password,
 						strtoupper($this->settings->charset)
-					) : 
+					) :
 					@ibase_connect(
-						$this->settings->servername . $this->settings->database, 
-						$this->settings->username, 
+						$this->settings->servername . $this->settings->database,
+						$this->settings->username,
 						$this->settings->password,
 						strtoupper($this->settings->charset)
 					);
@@ -1049,7 +1047,6 @@ namespace vakata\database
 						$data[$i] = (int)$v;
 						break;
 					case "array":
-						// TODO: work around IN statements?
 						$data[$i] = implode(',',$v);
 						break;
 					case "object":

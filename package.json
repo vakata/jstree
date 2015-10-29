@@ -2,7 +2,7 @@
   "name": "jstree",
   "title": "jsTree",
   "description": "jQuery tree plugin",
-  "version": "3.0.3",
+  "version": "3.2.1",
   "homepage": "http://jstree.com",
   "main": "./dist/jstree.js",
   "author": {
@@ -17,6 +17,7 @@
   "bugs": {
     "url": "https://github.com/vakata/jstree/issues"
   },
+  "license": "MIT",
   "licenses": [
     {
       "type": "MIT",
@@ -25,16 +26,18 @@
   ],
   "keywords": [],
   "devDependencies": {
+    "dox": "~0.4.4",
     "grunt": "~0.4.0",
-    "grunt-contrib-uglify": "*",
-    "grunt-contrib-jshint": "*",
     "grunt-contrib-concat": "*",
     "grunt-contrib-copy": "*",
-    "dox": "~0.4.4",
-    "grunt-contrib-less": "~0.8.2",
-    "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-imagemin": "~0.4.0",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-less": "~0.8.2",
     "grunt-contrib-qunit": "~v0.3.0",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-phantomcss-gitdiff": "0.0.7",
+    "grunt-resemble-cli": "0.0.8",
     "grunt-text-replace": "~0.3.11"
   },
   "dependencies": {

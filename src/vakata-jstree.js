@@ -1,6 +1,17 @@
-(function ($) {
+(function (factory) {
 	"use strict";
-	if(document.registerElement) {
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.checkbox', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery);
+	}
+}(function ($, undefined) {
+	"use strict";
+	if(document.registerElement && Object && Object.create) {
 		var proto = Object.create(HTMLElement.prototype);
 		proto.createdCallback = function () {
 			var c = { core : {}, plugins : [] }, i;
@@ -17,9 +28,11 @@
 					c.core[i] = JSON.parse(this.getAttribute(i)) || this.getAttribute(i);
 				}
 			}
-			jQuery(this).jstree(c);
+			$(this).jstree(c);
 		};
 		// proto.attributeChangedCallback = function (name, previous, value) { };
-		document.registerElement("vakata-jstree", { prototype: proto });
+		try {
+			document.registerElement("vakata-jstree", { prototype: proto });
+		} catch(ignore) { }
 	}
-}(jQuery));
+}));

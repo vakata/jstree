@@ -19,6 +19,29 @@
 	};
 })(jQuery);
 
+// mapping
+(function ($, undefined) {
+	"use strict";
+	// use this if you need any options
+	$.jstree.defaults.mapper = {
+		option_key : "option_value"
+	};
+	$.jstree.plugins.mapper = function () {
+		this._parse_model_from_json = function (d, p, ps) {
+			// d is the node from the server, it will be called recursively for children,
+			// so you do not need to process at once
+			/* // for example
+			for(var i in d) {
+				if(d.hasOwnProperty(i)) {
+					d[i.toLowerCase()] = d[i];
+				}
+			}
+			*/
+			return parent._parse_model_from_json.call(this, d, p, ps);
+		};
+	};
+})(jQuery);
+
 // no hover
 (function ($, undefined) {
 	"use strict";
@@ -27,17 +50,14 @@
 	};
 })(jQuery);
 
-// conditional select
+// force multiple select
 (function ($, undefined) {
 	"use strict";
-	$.jstree.defaults.conditionalselect = function () { return true; };
-
-	$.jstree.plugins.conditionalselect = function (options, parent) {
-		// own function
-		this.select_node = function (obj, supress_event, prevent_open) {
-			if(this.settings.conditionalselect.call(this, this.get_node(obj))) {
-				parent.select_node.call(this, obj, supress_event, prevent_open);
-			}
+	$.jstree.defaults.multiselect = {};
+	$.jstree.plugins.multiselect = function (options, parent) {
+		this.activate_node = function (obj, e) {
+			e.ctrlKey = true;
+			parent.activate_node.call(this, obj, e);
 		};
 	};
 })(jQuery);
@@ -48,7 +68,7 @@
 
 	var inp = document.createElement("INPUT");
 	inp.type = "checkbox";
-	inp.className = "jstree-realcheckbox";
+	inp.className = "jstree-checkbox jstree-realcheckbox";
 
 	$.jstree.defaults.realcheckboxes = {};
 
@@ -63,8 +83,8 @@
 						this._data.realcheckboxes.uto = setTimeout($.proxy(this._realcheckboxes, this), 50);
 					}, this));
 		};
-		this.redraw_node = function(obj, deep, callback) {
-			obj = parent.redraw_node.call(this, obj, deep, callback);
+		this.redraw_node = function(obj, deep, callback, force_draw) {
+			obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
 			if(obj) {
 				var i, j, tmp = null, chk = inp.cloneNode(true);
 				for(i = 0, j = obj.childNodes.length; i < j; i++) {
@@ -91,8 +111,9 @@
 		};
 		this._realcheckboxes = function () {
 			var ts = this.settings.checkbox.tie_selection;
+			console.log(ts);
 			$('.jstree-realcheckbox').each(function () {
-				this.checked = (!ts && this.parentNode.className.indexOf("jstree-checked") !== -1) || (ts && this.parentNode.parentNode.className.indexOf('jstree-clicked') !== -1);
+				this.checked = (!ts && this.parentNode.parentNode.className.indexOf("jstree-checked") !== -1) || (ts && this.parentNode.parentNode.className.indexOf('jstree-clicked') !== -1);
 				this.indeterminate = this.parentNode.className.indexOf("jstree-undetermined") !== -1;
 				this.disabled = this.parentNode.parentNode.className.indexOf("disabled") !== -1;
 			});
@@ -123,24 +144,6 @@
 	};
 })(jQuery);
 
-// allow search results expanding
-(function ($, undefined) {
-	"use strict";
-	$.jstree.plugins.show_matches_children = function (options, parent) {
-		this.bind = function () {
-			parent.bind.call(this);
-			this.element
-				.on('search.jstree before_open.jstree', function (e, data) {
-					if(data.instance.settings.search && data.instance.settings.search.show_only_matches) {
-						data.instance._data.search.dom.find('.jstree-node')
-							.show().filter('.jstree-last').filter(function() { return this.nextSibling; }).removeClass('jstree-last')
-							.end().end().end().find(".jstree-children").each(function () { $(this).children(".jstree-node:visible").eq(-1).addClass("jstree-last"); });
-					}
-				});
-		};
-	};
-})(jQuery);
-
 // additional icon on node (outside of anchor)
 (function ($, undefined) {
 	"use strict";
@@ -164,8 +167,8 @@
 			}
 			parent.teardown.call(this);
 		};
-		this.redraw_node = function(obj, deep, callback) {
-			obj = parent.redraw_node.call(this, obj, deep, callback);
+		this.redraw_node = function(obj, deep, callback, force_draw) {
+			obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
 			if(obj) {
 				var tmp = img.cloneNode(true);
 				obj.insertBefore(tmp, obj.childNodes[2]);
@@ -194,9 +197,9 @@
 			var ind = $.inArray(obj.id, this.get_node(obj.parent).children) + 1;
 			return obj.parent === '#' ? ind : this.get_number(obj.parent) + '.' + ind;
 		};
-		this.redraw_node = function(obj, deep, callback) {
+		this.redraw_node = function(obj, deep, callback, force_draw) {
 			var i, j, tmp = null, elm = null, org = this.get_number(obj);
-			obj = parent.redraw_node.call(this, obj, deep, callback);
+			obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
 			if(obj) {
 				for(i = 0, j = obj.childNodes.length; i < j; i++) {
 					if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {
@@ -215,6 +218,47 @@
 	};
 })(jQuery);
 
+// additional icon on node (inside anchor)
+(function ($, undefined) {
+	"use strict";
+	var _s = document.createElement('SPAN');
+	_s.className = 'fa-stack jstree-stackedicon';
+	var _i = document.createElement('I');
+	_i.className = 'jstree-icon';
+	_i.setAttribute('role', 'presentation');
+
+	$.jstree.plugins.stackedicon = function (options, parent) {
+		this.teardown = function () {
+			this.element.find(".jstree-stackedicon").remove();
+			parent.teardown.call(this);
+		};
+		this.redraw_node = function(obj, deep, is_callback, force_render) {
+			obj = parent.redraw_node.apply(this, arguments);
+			if(obj) {
+				var i, j, tmp = null, icon = null, temp = null;
+				for(i = 0, j = obj.childNodes.length; i < j; i++) {
+					if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {
+						tmp = obj.childNodes[i];
+						break;
+					}
+				}
+				if(tmp) {
+					if(this._model.data[obj.id].state.icons && this._model.data[obj.id].state.icons.length) {
+						icon = _s.cloneNode(false);
+						for(i = 0, j = this._model.data[obj.id].state.icons.length; i < j; i++) {
+							temp = _i.cloneNode(false);
+							temp.className += ' ' + this._model.data[obj.id].state.icons[i];
+							icon.appendChild(temp);
+						}
+						tmp.insertBefore(icon, tmp.childNodes[0]);
+					}
+				}
+			}
+			return obj;
+		};
+	};
+})(jQuery);
+
 // selecting a node opens it
 (function ($, undefined) {
 	"use strict";
@@ -226,19 +270,129 @@
 	};
 })(jQuery);
 
-// paste override
+// object as data
 (function ($, undefined) {
 	"use strict";
-	$.jstree.plugins.nohover = function () {
-		this.paste = function (obj, pos) {
-			obj = this.get_node(obj);
-			if(!obj || !ccp_mode || !ccp_mode.match(/^(copy_node|move_node)$/) || !ccp_node) { return false; }
-			if(this[ccp_mode](ccp_node, obj, pos)) {
-				this.trigger('paste', { "parent" : obj.id, "node" : ccp_node, "mode" : ccp_mode });
+	$.jstree.defaults.datamodel = {};
+	$.jstree.plugins.datamodel = function (options, parent) {
+		this.init = function (el, options) {
+			this._data.datamodel = {};
+			parent.init.call(this, el, options);
+		};
+		this._datamodel = function (id, nodes, callback) {
+			var i = 0, j = nodes.length, tmp = [], obj = null;
+			for(; i < j; i++) {
+				this._data.datamodel[nodes[i].getID()] = nodes[i];
+				obj = {
+					id : nodes[i].getID(),
+					text : nodes[i].getText(),
+					children : nodes[i].hasChildren()
+				};
+				if(nodes[i].getExtra) {
+					obj = nodes[i].getExtra(obj); // icon, type
+				}
+				tmp.push(obj);
 			}
-			ccp_node = false;
-			ccp_mode = false;
-			ccp_inst = false;
+			return this._append_json_data(id, tmp, $.proxy(function (status) {
+				callback.call(this, status);
+			}, this));
+		};
+		this._load_node = function (obj, callback) {
+			var id = obj.id;
+			var nd = obj.id === "#" ? this.settings.core.data : this._data.datamodel[obj.id].getChildren($.proxy(function (nodes) {
+				this._datamodel(id, nodes, callback);
+			}, this));
+			if($.isArray(nd)) {
+				this._datamodel(id, nd, callback);
+			}
+		};
+	};
+})(jQuery);
+/*
+	demo of the above
+	function treeNode(val) {
+		var id = ++treeNode.counter;
+		this.getID = function () {
+			return id;
+		};
+		this.getText = function () {
+			return val.toString();
+		};
+		this.getExtra = function (obj) {
+			obj.icon = false;
+			return obj;
+		};
+		this.hasChildren = function () {
+			return true;
+		};
+		this.getChildren = function () {
+			return [
+				new treeNode(Math.pow(val, 2)),
+				new treeNode(Math.sqrt(val)),
+			];
+		};
+	}
+	treeNode.counter = 0;
+				
+	$('#jstree').jstree({
+		'core': {
+			'data': [
+						new treeNode(2),
+						new treeNode(3),
+						new treeNode(4),
+						new treeNode(5)
+					]
+		},
+		plugins : ['datamodel']
+	});
+*/
+
+// untested sample plugin to keep all nodes in the DOM
+(function ($, undefined) {
+	"use strict";
+	$.jstree.plugins.dom = function (options, parent) {
+		this.redraw_node = function (node, deep, is_callback, force_render) {
+			return parent.redraw_node.call(this, node, deep, is_callback, true);
+		};
+		this.close_node = function (obj, animation) {
+			var t1, t2, t, d;
+			if($.isArray(obj)) {
+				obj = obj.slice();
+				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
+					this.close_node(obj[t1], animation);
+				}
+				return true;
+			}
+			obj = this.get_node(obj);
+			if(!obj || obj.id === $.jstree.root) {
+				return false;
+			}
+			if(this.is_closed(obj)) {
+				return false;
+			}
+			animation = animation === undefined ? this.settings.core.animation : animation;
+			t = this;
+			d = this.get_node(obj, true);
+			if(d.length) {
+				if(!animation) {
+					d[0].className = d[0].className.replace('jstree-open', 'jstree-closed');
+					d.attr("aria-expanded", false);
+				}
+				else {
+					d
+						.children(".jstree-children").attr("style","display:block !important").end()
+						.removeClass("jstree-open").addClass("jstree-closed").attr("aria-expanded", false)
+						.children(".jstree-children").stop(true, true).slideUp(animation, function () {
+							this.style.display = "";
+							t.trigger("after_close", { "node" : obj });
+						});
+				}
+			}
+			obj.state.opened = false;
+			this.trigger('close_node',{ "node" : obj });
+			if(!animation || !d.length) {
+				this.trigger("after_close", { "node" : obj });
+			}
 		};
 	};
 })(jQuery);

@@ -1,7 +1,7 @@
 /**
  * ### Sort plugin
  *
- * Autmatically sorts all siblings in the tree according to a sorting function.
+ * Automatically sorts all siblings in the tree according to a sorting function.
  */
 /*globals jQuery, define, exports, require */
 (function (factory) {
