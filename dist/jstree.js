@@ -3803,7 +3803,9 @@
 				top = this.element[0].scrollTop;
 				lft = this.element[0].scrollLeft;
 				if(par.id === $.jstree.root) {
-					this.get_node(this._model.data[$.jstree.root].children[0], true).children('.jstree-anchor').focus();
+					if (this._model.data[$.jstree.root].children[0]) {
+						this.get_node(this._model.data[$.jstree.root].children[0], true).children('.jstree-anchor').focus();
+					}
 				}
 				else {
 					this.get_node(par, true).children('.jstree-anchor').focus();
