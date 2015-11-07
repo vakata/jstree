@@ -3455,7 +3455,7 @@
 			this.get_node(obj, true).find('.jstree-open').each(function() { to_load.push(this.id); opened.push(this.id); });
 			this._load_nodes(to_load, $.proxy(function (nodes) {
 				this.open_node(opened, false, 0);
-				this.select_node(this._data.core.selected);
+				this.select_node(s);
 				/**
 				 * triggered when a node is refreshed
 				 * @event
