@@ -148,7 +148,7 @@ There are other available options for each node, only set them if you need them 
    - `selected` - if the node should be initially selected
    - `opened` - if the node should be initially opened
    - `disabled` - if the node should be disabled
-   - `checked` - __checkbox plugin specific__ - if the node should be checked (only used when `tie_to_selection` is `false`, which you should only do if you really know what you are doing)
+   - `checked` - __checkbox plugin specific__ - if the node should be checked (only used when `tie_selection` is `false`, which you should only do if you really know what you are doing)
    - `undetermined` - __checkbox plugin specific__ - if the node should be rendered in undetermined state (only used with lazy loading and when the node is not yet loaded, otherwise this state is automatically calculated).
  * `type` - __types plugin specific__ - the type of the nodes (should be defined in the types config), if not set `"default"` is assumed.
  * `li_attr` - object of values which will be used to add HTML attributes on the resulting `LI` DOM node.
