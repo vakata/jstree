@@ -22,7 +22,7 @@
 
 	/**
 	 * the settings object.
-	 * key is the attribute name to select the customizer function from map.
+	 * key is the attribute name to select the customizer function from switch.
 	 * switch is a key => function(el, node) map.
 	 * default: function(el, node) will be called if the type could not be mapped
 	 * @name $.jstree.defaults.node_customize
@@ -43,7 +43,7 @@
 				var cfg = this.settings.node_customize;
 				var key = cfg.key;
 				var type =  (node && node.original && node.original[key]);
-				var customizer = (type && cfg.map[type]) || cfg.default;
+				var customizer = (type && cfg.switch[type]) || cfg.default;
 				if(customizer)
 					customizer(el, node);
 			}
