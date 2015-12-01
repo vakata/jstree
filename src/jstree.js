@@ -3472,6 +3472,7 @@
 		 * @param  {mixed} obj the node
 		 * @param  {String} id the new ID
 		 * @return {Boolean}
+		 * @trigger set_id.jstree
 		 */
 		set_id : function (obj, id) {
 			obj = this.get_node(obj);
@@ -3504,6 +3505,14 @@
 			obj.id = id;
 			obj.li_attr.id = id;
 			m[id] = obj;
+			/**
+			 * triggered when a node id value is changed
+			 * @event
+			 * @name set_id.jstree
+			 * @param {Object} obj
+			 * @param {String} id the new id
+			 */
+			this.trigger('set_id',{ "obj" : obj, "id" : id });
 			return true;
 		},
 		/**
