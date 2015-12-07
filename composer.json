@@ -16,8 +16,10 @@
 		}
 	],
 	"require": {
-		"robloach/component-installer": "*",
 		"components/jquery": ">=1.9.1"
+	},
+	"suggest": {
+		"robloach/component-installer": "Allows installation of Components via Composer"
 	},
 	"extra": {
 		"component": {
