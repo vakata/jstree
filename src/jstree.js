@@ -708,7 +708,7 @@
 								this.trigger("loaded");
 							}
 							if(!this._data.core.ready) {
-								setTimeout($.proxy(function() {
+								$.vakata.setImmediate(function() {
 									if(this.element && !this.get_container_ul().find('.jstree-loading').length) {
 										this._data.core.ready = true;
 										if(this._data.core.selected.length) {
@@ -731,7 +731,7 @@
 										 */
 										this.trigger("ready");
 									}
-								}, this), 0);
+								}, this);
 							}
 						}
 					}, this))
@@ -2237,7 +2237,7 @@
 			//if(this._model.redraw_timeout) {
 			//	clearTimeout(this._model.redraw_timeout);
 			//}
-			//this._model.redraw_timeout = setTimeout($.proxy(this._redraw, this),0);
+			//this._model.redraw_timeout = $.vakata.setImmediate(this._redraw, this);
 			this._redraw();
 		},
 		/**
@@ -2479,9 +2479,9 @@
 			}
 			if(obj.state.opened && !obj.state.loaded) {
 				obj.state.opened = false;
-				setTimeout($.proxy(function () {
+				$.vakata.setImmediate(function () {
 					this.open_node(obj.id, false, 0);
-				}, this), 0);
+				}, this);
 			}
 			return node;
 		},
@@ -3046,7 +3046,7 @@
 			 * @param {Object} node
 			 */
 			this.trigger('hover_node', { 'node' : this.get_node(obj) });
-			setTimeout(function () { t.attr('aria-activedescendant', obj[0].id); }, 0);
+			$.vakata.setImmediate(function () { t.attr('aria-activedescendant', obj[0].id); });
 		},
 		/**
 		 * removes the hover state from a nodecalled when a node is no longer hovered by the user. Used internally.
@@ -4338,13 +4338,13 @@
 								this.set_text(obj, t); // move this up? and fix #483
 							}
 							this._data.core.focused = tmp.id;
-							setTimeout($.proxy(function () {
+							$.vakata.setImmediate(function () {
 								var node = this.get_node(tmp.id, true);
 								if(node.length) {
 									this._data.core.focused = tmp.id;
 									node.children('.jstree-anchor').focus();
 								}
-							}, this), 0);
+							}, this);
 							if(callback) {
 								callback.call(this, tmp, nv, cancel);
 							}
@@ -4630,4 +4630,11 @@
 		var tmp = $.inArray(item, array);
 		return tmp !== -1 ? $.vakata.array_remove(array, tmp) : array;
 	};
+
+    // setImmediate is faster then setTimeout (more CPU, less waiting and blocking)
+    // Here is a good implementation https://github.com/YuzuJS/setImmediate
+    $.vakata.setImmediate = function (fn, _this) {
+        var sim = $.jstree.setImmediate || window.setImmediate || setTimeout;
+        return _this ? sim($.proxy(fn , _this)) : sim(fn);
+    };
 }));
