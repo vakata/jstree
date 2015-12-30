@@ -3512,7 +3512,7 @@
 			 * @param {Object} node
 			 * @param {String} old the old id
 			 */
-			this.trigger('set_id',{ "node" : obj, "old" : old });
+			this.trigger('set_id',{ "node" : obj, "new" : obj.id, "old" : old });
 			return true;
 		},
 		/**

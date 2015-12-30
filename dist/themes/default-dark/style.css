@@ -130,7 +130,6 @@
 }
 .vakata-context li {
   list-style: none;
-  display: inline;
 }
 .vakata-context li > a {
   display: block;

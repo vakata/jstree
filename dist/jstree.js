@@ -3472,11 +3472,12 @@
 		 * @param  {mixed} obj the node
 		 * @param  {String} id the new ID
 		 * @return {Boolean}
+		 * @trigger set_id.jstree
 		 */
 		set_id : function (obj, id) {
 			obj = this.get_node(obj);
 			if(!obj || obj.id === $.jstree.root) { return false; }
-			var i, j, m = this._model.data;
+			var i, j, m = this._model.data, old = obj.id;
 			id = id.toString();
 			// update parents (replace current ID with new one in children and children_d)
 			m[obj.parent].children[$.inArray(obj.id, m[obj.parent].children)] = id;
@@ -3504,6 +3505,14 @@
 			obj.id = id;
 			obj.li_attr.id = id;
 			m[id] = obj;
+			/**
+			 * triggered when a node id value is changed
+			 * @event
+			 * @name set_id.jstree
+			 * @param {Object} node
+			 * @param {String} old the old id
+			 */
+			this.trigger('set_id',{ "node" : obj, "new" : obj.id, "old" : old });
 			return true;
 		},
 		/**
@@ -5933,7 +5942,8 @@
 				o = $(o);
 				if(!o.length || !o.children("ul").length) { return; }
 				var e = o.children("ul"),
-					x = o.offset().left + o.outerWidth(),
+					xl = o.offset().left,
+					x = xl + o.outerWidth(),
 					y = o.offset().top,
 					w = e.width(),
 					h = e.height(),
@@ -5944,11 +5954,23 @@
 					o[x - (w + 10 + o.outerWidth()) < 0 ? "addClass" : "removeClass"]("vakata-context-left");
 				}
 				else {
-					o[x + w + 10 > dw ? "addClass" : "removeClass"]("vakata-context-right");
+					o[x + w > dw  && xl > dw - x ? "addClass" : "removeClass"]("vakata-context-right");
 				}
 				if(y + h + 10 > dh) {
 					e.css("bottom","-1px");
 				}
+
+				//if does not fit - stick it to the side
+				if (o.hasClass('vakata-context-right')) {
+					if (xl < w) {
+						e.css("margin-right", xl - w);
+					}
+				} else {
+					if (dw - x < w) {
+						e.css("margin-left", dw - x - w);
+					}
+				}
+
 				e.show();
 			},
 			show : function (reference, position, data) {
