@@ -1218,8 +1218,14 @@
 						break;
 					}
 				}
-				if(obj.state.loaded && !has_children && dom && dom.length && !dom.hasClass('jstree-leaf')) {
-					dom.removeClass('jstree-closed jstree-open').addClass('jstree-leaf');
+				if(obj.state.loaded && dom && dom.length) {
+					dom.removeClass('jstree-closed jstree-open jstree-leaf');
+					if (!has_children) {
+						dom.addClass('jstree-leaf');
+					}
+					else {
+						dom.addClass(obj.state.opened ? 'jstree-open' : 'jstree-closed');
+					}
 				}
 				dom.removeClass("jstree-loading").attr('aria-busy',false);
 				/**
