@@ -3370,7 +3370,7 @@
 						this.set_state(state, callback);
 						return false;
 					}
-					if(state.core.selected) {
+					if(state.core.selected && state.core.selected.length) {
 						_this = this;
 						this.deselect_all();
 						$.each(state.core.selected, function (i, v) {
