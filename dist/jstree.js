@@ -4643,7 +4643,8 @@
 	};
 	// remove item from array
 	$.vakata.array_remove = function(array, from) {
-		return array.splice(from, 1);
+		array.splice(from, 1);
+		return array;
 		//var rest = array.slice((to || from) + 1 || array.length);
 		//array.length = from < 0 ? array.length + from : from;
 		//array.push.apply(array, rest);
