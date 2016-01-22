@@ -67,7 +67,7 @@
   display: none;
 }
 .jstree-hidden,
-jstree-hidden.jstree-hidden {
+.jstree-node.jstree-hidden {
   display: none;
 }
 .jstree-rtl .jstree-anchor {
