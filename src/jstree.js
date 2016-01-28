@@ -2778,6 +2778,16 @@
 			return obj && obj.state && obj.state.disabled;
 		},
 		/**
+		 * checks if a node is hidden
+		 * @name is_hidden(obj)
+		 * @param {mixed} obj
+		 * @return {Boolean}
+		 */
+		is_hidden : function (obj) {
+			obj = this.get_node(obj, true);
+			return obj && obj.hasClass("jstree-hidden");
+		},
+		/**
 		 * enables a node - so that it can be selected
 		 * @name enable_node(obj)
 		 * @param {mixed} obj the node to enable
@@ -3009,11 +3019,14 @@
 						if(p[i] === l) {
 							c = !c;
 						}
-						if(!this.is_disabled(p[i]) && (c || p[i] === o || p[i] === l)) {
-							this.select_node(p[i], true, false, e);
-						}
-						else {
-							this.deselect_node(p[i], true, e);
+						//Skip hidden nodes which excluded by search
+						if(!this.is_hidden(p[i])){
+							if(!this.is_disabled(p[i]) && (c || p[i] === o || p[i] === l)) {
+								this.select_node(p[i], true, false, e);
+							}
+							else {
+								this.deselect_node(p[i], true, e);
+							}
 						}
 					}
 					this.trigger('changed', { 'action' : 'select_node', 'node' : this.get_node(obj), 'selected' : this._data.core.selected, 'event' : e });
