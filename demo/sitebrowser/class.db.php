@@ -567,7 +567,7 @@ namespace vakata\database
 		}
 		public function nextr($result) {
 			if($this->mnd) {
-				return $result->fetch_array(MYSQL_BOTH);
+				return $result->fetch_array(MYSQLI_BOTH);
 			}
 			else {
 				$ref = $result->result_metadata();
