@@ -276,11 +276,21 @@
 			.on('keyup.jstree keydown.jstree', function (e, data) {
 				data = $.vakata.dnd._get();
 				if(data && data.data && data.data.jstree) {
-					data.helper.find('.jstree-copy').first()[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
-					if(lastev) {
-						lastev.metaKey = e.metaKey;
-						lastev.ctrlKey = e.ctrlKey;
-						$.vakata.dnd._trigger('move', lastev);
+					if (e.type === "keyup" && e.which === 27) {
+						if (opento) { clearTimeout(opento); }
+						lastmv = false;
+						laster = false;
+						lastev = false;
+						opento = false;
+						marker.hide().detach();
+						$.vakata.dnd._clean();
+					} else {
+						data.helper.find('.jstree-copy').first()[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (e.metaKey || e.ctrlKey))) ? 'show' : 'hide' ]();
+						if(lastev) {
+							lastev.metaKey = e.metaKey;
+							lastev.ctrlKey = e.ctrlKey;
+							$.vakata.dnd._trigger('move', lastev);
+						}
 					}
 				}
 			});
