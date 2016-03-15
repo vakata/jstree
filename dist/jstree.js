@@ -310,7 +310,8 @@
 		 *					'children' : [ { 'text' : 'Child 1' }, 'Child 2']
 		 *				}
 		 *			]
-		 *		});
+		 *		}
+		 *	});
 		 *
 		 *	// function
 		 *	$('#tree').jstree({
