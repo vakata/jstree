@@ -406,7 +406,11 @@
 				try {
 					e.currentTarget.unselectable = "on";
 					e.currentTarget.onselectstart = function() { return false; };
-					if(e.currentTarget.style) { e.currentTarget.style.MozUserSelect = "none"; }
+					if(e.currentTarget.style) {
+						e.currentTarget.style.touchAction = "none";
+						e.currentTarget.style.msTouchAction = "none";
+						e.currentTarget.style.MozUserSelect = "none";
+					}
 				} catch(ignore) { }
 				vakata_dnd.init_x	= e.pageX;
 				vakata_dnd.init_y	= e.pageY;
