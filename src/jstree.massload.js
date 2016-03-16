@@ -49,22 +49,33 @@
 				nodesString = JSON.stringify(nodes),
 				toLoad = [],
 				m = this._model.data,
-				i, j;
+				i, j, dom;
 			if (!is_callback) {
 				for(i = 0, j = nodes.length; i < j; i++) {
 					if(!m[nodes[i]] || ( (!m[nodes[i]].state.loaded && !m[nodes[i]].state.failed) || force_reload) ) {
 						toLoad.push(nodes[i]);
+						dom = this.get_node(nodes[i], true);
+						if (dom && dom.length) {
+							dom.addClass("jstree-loading").attr('aria-busy',true);
+						}
 					}
 				}
 				this._data.massload = {};
 				if (toLoad.length) {
 					if($.isFunction(s)) {
 						return s.call(this, toLoad, $.proxy(function (data) {
+							var i, j;
 							if(data) {
-								for(var i in data) {
+								for(i in data) {
 									if(data.hasOwnProperty(i)) {
 										this._data.massload[i] = data[i];
 									}
+								}
+							}
+							for(i = 0, j = nodes.length; i < j; i++) {
+								dom = this.get_node(nodes[i], true);
+								if (dom && dom.length) {
+									dom.removeClass("jstree-loading").attr('aria-busy',false);
 								}
 							}
 							parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
@@ -80,11 +91,18 @@
 						}
 						return $.ajax(s)
 							.done($.proxy(function (data,t,x) {
+									var i, j;
 									if(data) {
-										for(var i in data) {
+										for(i in data) {
 											if(data.hasOwnProperty(i)) {
 												this._data.massload[i] = data[i];
 											}
+										}
+									}
+									for(i = 0, j = nodes.length; i < j; i++) {
+										dom = this.get_node(nodes[i], true);
+										if (dom && dom.length) {
+											dom.removeClass("jstree-loading").attr('aria-busy',false);
 										}
 									}
 									parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
@@ -99,13 +117,17 @@
 		};
 		this._load_node = function (obj, callback) {
 			var data = this._data.massload[obj.id],
-				rslt = null;
+				rslt = null, dom;
 			if(data) {
 				rslt = this[typeof data === 'string' ? '_append_html_data' : '_append_json_data'](
 					obj,
 					typeof data === 'string' ? $($.parseHTML(data)).filter(function () { return this.nodeType !== 3; }) : data,
 					function (status) { callback.call(this, status); }
 				);
+				dom = this.get_node(obj.id, true);
+				if (dom && dom.length) {
+					dom.removeClass("jstree-loading").attr('aria-busy',false);
+				}
 				delete this._data.massload[obj.id];
 				return rslt;
 			}
