@@ -41,36 +41,25 @@
 	$.jstree.defaults.massload = null;
 	$.jstree.plugins.massload = function (options, parent) {
 		this.init = function (el, options) {
-			parent.init.call(this, el, options);
 			this._data.massload = {};
+			parent.init.call(this, el, options);
 		};
-		this._load_nodes = function (nodes, callback, is_callback) {
-			var s = this.settings.massload;
-			if(is_callback && !$.isEmptyObject(this._data.massload)) {
-				return parent._load_nodes.call(this, nodes, callback, is_callback);
-			}
-			if($.isFunction(s)) {
-				return s.call(this, nodes, $.proxy(function (data) {
-					if(data) {
-						for(var i in data) {
-							if(data.hasOwnProperty(i)) {
-								this._data.massload[i] = data[i];
-							}
-						}
+		this._load_nodes = function (nodes, callback, is_callback, force_reload) {
+			var s = this.settings.massload,
+				nodesString = JSON.stringify(nodes),
+				toLoad = [],
+				m = this._model.data,
+				i, j;
+			if (!is_callback) {
+				for(i = 0, j = nodes.length; i < j; i++) {
+					if(!m[nodes[i]] || ( (!m[nodes[i]].state.loaded && !m[nodes[i]].state.failed) || force_reload) ) {
+						toLoad.push(nodes[i]);
 					}
-					parent._load_nodes.call(this, nodes, callback, is_callback);
-				}, this));
-			}
-			if(typeof s === 'object' && s && s.url) {
-				s = $.extend(true, {}, s);
-				if($.isFunction(s.url)) {
-					s.url = s.url.call(this, nodes);
 				}
-				if($.isFunction(s.data)) {
-					s.data = s.data.call(this, nodes);
-				}
-				return $.ajax(s)
-					.done($.proxy(function (data,t,x) {
+				this._data.massload = {};
+				if (toLoad.length) {
+					if($.isFunction(s)) {
+						return s.call(this, toLoad, $.proxy(function (data) {
 							if(data) {
 								for(var i in data) {
 									if(data.hasOwnProperty(i)) {
@@ -78,21 +67,47 @@
 									}
 								}
 							}
-							parent._load_nodes.call(this, nodes, callback, is_callback);
-						}, this))
-					.fail($.proxy(function (f) {
-							parent._load_nodes.call(this, nodes, callback, is_callback);
+							parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
 						}, this));
+					}
+					if(typeof s === 'object' && s && s.url) {
+						s = $.extend(true, {}, s);
+						if($.isFunction(s.url)) {
+							s.url = s.url.call(this, toLoad);
+						}
+						if($.isFunction(s.data)) {
+							s.data = s.data.call(this, toLoad);
+						}
+						return $.ajax(s)
+							.done($.proxy(function (data,t,x) {
+									if(data) {
+										for(var i in data) {
+											if(data.hasOwnProperty(i)) {
+												this._data.massload[i] = data[i];
+											}
+										}
+									}
+									parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
+								}, this))
+							.fail($.proxy(function (f) {
+									parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
+								}, this));
+					}
+				}
 			}
-			return parent._load_nodes.call(this, nodes, callback, is_callback);
+			return parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
 		};
 		this._load_node = function (obj, callback) {
-			var d = this._data.massload[obj.id];
-			if(d) {
-				return this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $($.parseHTML(d)).filter(function () { return this.nodeType !== 3; }) : d, function (status) {
-					callback.call(this, status);
-					delete this._data.massload[obj.id];
-				});
+			var data = this._data.massload[obj.id],
+				rslt = null;
+			if(data) {
+				rslt = this[typeof data === 'string' ? '_append_html_data' : '_append_json_data'](
+					obj,
+					typeof data === 'string' ? $($.parseHTML(data)).filter(function () { return this.nodeType !== 3; }) : data,
+					function (status) { callback.call(this, status); }
+				);
+				delete this._data.massload[obj.id];
+				return rslt;
 			}
 			return parent._load_node.call(this, obj, callback);
 		};

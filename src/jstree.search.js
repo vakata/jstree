@@ -159,7 +159,7 @@
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true, show_only_matches, inside, append);
-							}, true);
+							});
 						}, this), inside);
 				}
 				else {
@@ -178,7 +178,7 @@
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true, show_only_matches, inside, append);
-							}, true);
+							});
 						}, this));
 				}
 			}
