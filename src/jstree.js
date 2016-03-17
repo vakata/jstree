@@ -2837,6 +2837,15 @@
 			this.trigger('disable_node', { 'node' : obj });
 		},
 		/**
+		 * determines if a node is hidden
+		 * @name is_hidden(obj)
+		 * @param {mixed} obj the node
+		 */
+		is_hidden : function (obj) {
+			obj = this.get_node(obj);
+			return obj.state.hidden === true;
+		},
+		/**
 		 * hides a node - it is still in the structure but will not be visible
 		 * @name hide_node(obj)
 		 * @param {mixed} obj the node to hide
@@ -3011,7 +3020,9 @@
 							c = !c;
 						}
 						if(!this.is_disabled(p[i]) && (c || p[i] === o || p[i] === l)) {
-							this.select_node(p[i], true, false, e);
+							if (!this.is_hidden(p[i])) {
+								this.select_node(p[i], true, false, e);
+							}
 						}
 						else {
 							this.deselect_node(p[i], true, e);
