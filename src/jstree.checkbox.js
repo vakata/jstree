@@ -180,12 +180,17 @@
 								m = this._model.data,
 								par = this.get_node(obj.parent),
 								dom = this.get_node(obj, true),
-								i, j, c, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection;
+								i, j, c, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection,
+								sel = {}, cur = this._data[ t ? 'core' : 'checkbox' ].selected;
 
+							for (i = 0, j = cur.length; i < j; i++) {
+								sel[cur[i]] = true;
+							}
 							// apply down
 							if(s.indexOf('down') !== -1) {
-								this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected.concat(obj.children_d));
+								//this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected.concat(obj.children_d));
 								for(i = 0, j = obj.children_d.length; i < j; i++) {
+									sel[obj.children_d[i]] = true;
 									tmp = m[obj.children_d[i]];
 									tmp.state[ t ? 'selected' : 'checked' ] = true;
 									if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
@@ -203,7 +208,8 @@
 									}
 									if(c === j) {
 										par.state[ t ? 'selected' : 'checked' ] = true;
-										this._data[ t ? 'core' : 'checkbox' ].selected.push(par.id);
+										sel[par.id] = true;
+										//this._data[ t ? 'core' : 'checkbox' ].selected.push(par.id);
 										tmp = this.get_node(par, true);
 										if(tmp && tmp.length) {
 											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
@@ -215,6 +221,14 @@
 									par = this.get_node(par.parent);
 								}
 							}
+
+							cur = [];
+							for (i in sel) {
+								if (sel.hasOwnProperty(i)) {
+									cur.push(i);
+								}
+							}
+							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
 
 							// apply down (process .children separately?)
 							if(s.indexOf('down') !== -1 && dom.length) {
@@ -235,7 +249,8 @@
 					.on(this.settings.checkbox.tie_selection ? 'deselect_node.jstree' : 'uncheck_node.jstree', $.proxy(function (e, data) {
 							var obj = data.node,
 								dom = this.get_node(obj, true),
-								i, j, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection;
+								i, j, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection,
+								cur = this._data[ t ? 'core' : 'checkbox' ].selected, sel = {};
 							if(obj && obj.original && obj.original.state && obj.original.state.undetermined) {
 								obj.original.state.undetermined = false;
 							}
@@ -265,18 +280,24 @@
 									}
 								}
 							}
-							tmp = [];
-							for(i = 0, j = this._data[ t ? 'core' : 'checkbox' ].selected.length; i < j; i++) {
+							sel = {};
+							for(i = 0, j = cur.length; i < j; i++) {
 								// apply down + apply up
 								if(
-									(s.indexOf('down') === -1 || $.inArray(this._data[ t ? 'core' : 'checkbox' ].selected[i], obj.children_d) === -1) &&
-									(s.indexOf('up') === -1 || $.inArray(this._data[ t ? 'core' : 'checkbox' ].selected[i], obj.parents) === -1)
+									(s.indexOf('down') === -1 || $.inArray(cur[i], obj.children_d) === -1) &&
+									(s.indexOf('up') === -1 || $.inArray(cur[i], obj.parents) === -1)
 								) {
-									tmp.push(this._data[ t ? 'core' : 'checkbox' ].selected[i]);
+									sel[cur[i]] = true;
 								}
 							}
-							this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(tmp);
-
+							cur = [];
+							for (i in sel) {
+								if (sel.hasOwnProperty(i)) {
+									cur.push(i);
+								}
+							}
+							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
+							
 							// apply down (process .children separately?)
 							if(s.indexOf('down') !== -1 && dom.length) {
 								dom.find('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked').parent().attr('aria-selected', false);
@@ -383,7 +404,10 @@
 			for(i = 0, j = s.length; i < j; i++) {
 				if(m[s[i]] && m[s[i]].parents) {
 					for(k = 0, l = m[s[i]].parents.length; k < l; k++) {
-						if(o[m[s[i]].parents[k]] === undefined && m[s[i]].parents[k] !== $.jstree.root) {
+						if(o[m[s[i]].parents[k]] !== undefined) {
+							break;
+						}
+						if(m[s[i]].parents[k] !== $.jstree.root) {
 							o[m[s[i]].parents[k]] = true;
 							p.push(m[s[i]].parents[k]);
 						}
