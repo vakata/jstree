@@ -6316,34 +6316,90 @@
 		 * @name $.jstree.defaults.dnd.large_drag_target
 		 * @plugin dnd
 		 */
-		large_drag_target : false
+		large_drag_target : false,
+		/**
+		 * controls whether use HTML5 dnd api instead of classical. That will allow better integration of dnd events with other HTML5 controls.
+		 * @reference http://caniuse.com/#feat=dragndrop
+		 * @name $.jstree.defaults.dnd.use_html5
+		 * @plugin dnd
+		 */
+		use_html5: false
 	};
+	var drg, elm;
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
 	$.jstree.plugins.dnd = function (options, parent) {
+		this.init = function (el, options) {
+			parent.init.call(this, el, options);
+			this.settings.dnd.use_html5 = this.settings.dnd.use_html5 && ('draggable' in document.createElement('span'));
+		};
 		this.bind = function () {
 			parent.bind.call(this);
 
 			this.element
-				.on('mousedown.jstree touchstart.jstree', this.settings.dnd.large_drag_target ? '.jstree-node' : '.jstree-anchor', $.proxy(function (e) {
-					if(this.settings.dnd.large_drag_target && $(e.target).closest('.jstree-node')[0] !== e.currentTarget) {
-						return true;
+				.on(this.settings.dnd.use_html5 ? 'dragstart.jstree' : 'mousedown.jstree touchstart.jstree', this.settings.dnd.large_drag_target ? '.jstree-node' : '.jstree-anchor', $.proxy(function (e) {
+						if(this.settings.dnd.large_drag_target && $(e.target).closest('.jstree-node')[0] !== e.currentTarget) {
+							return true;
+						}
+						if(e.type === "touchstart" && (!this.settings.dnd.touch || (this.settings.dnd.touch === 'selected' && !$(e.currentTarget).closest('.jstree-node').children('.jstree-anchor').hasClass('jstree-clicked')))) {
+							return true;
+						}
+						var obj = this.get_node(e.target),
+							mlt = this.is_selected(obj) && this.settings.dnd.drag_selection ? this.get_top_selected().length : 1,
+							txt = (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget));
+						if(this.settings.core.force_text) {
+							txt = $.vakata.html.escape(txt);
+						}
+						if(obj && obj.id && obj.id !== $.jstree.root && (e.which === 1 || e.type === "touchstart" || e.type === "dragstart") &&
+							(this.settings.dnd.is_draggable === true || ($.isFunction(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_top_selected(true) : [obj]), e)))
+						) {
+							drg = { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_top_selected() : [obj.id] };
+							elm = e.currentTarget;
+							if (this.settings.dnd.use_html5) {
+								$.vakata.dnd._trigger('start', e, { 'helper': $(), 'element': elm, 'data': drg });
+							} else {
+								this.element.trigger('mousedown.jstree');
+								return $.vakata.dnd.start(e, drg, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + ' jstree-' + this.get_theme() + '-' + this.get_theme_variant() + ' ' + ( this.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ) + '"><i class="jstree-icon jstree-er"></i>' + txt + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
+							}
+						}
+					}, this));
+			if (this.settings.dnd.use_html5) {
+				this.element
+					.on('dragover.jstree', function (e) {
+							e.preventDefault();
+							$.vakata.dnd._trigger('move', e, { 'helper': $(), 'element': elm, 'data': drg });
+							return false;
+						})
+					//.on('dragenter.jstree', this.settings.dnd.large_drop_target ? '.jstree-node' : '.jstree-anchor', $.proxy(function (e) {
+					//		e.preventDefault();
+					//		$.vakata.dnd._trigger('move', e, { 'helper': $(), 'element': elm, 'data': drg });
+					//		return false;
+					//	}, this))
+					.on('drop.jstree', $.proxy(function (e) {
+							e.preventDefault();
+							$.vakata.dnd._trigger('stop', e, { 'helper': $(), 'element': elm, 'data': drg });
+							return false;
+						}, this));
+			}
+		};
+		this.redraw_node = function(obj, deep, callback, force_render) {
+			obj = parent.redraw_node.apply(this, arguments);
+			if (obj && this.settings.dnd.use_html5) {
+				if (this.settings.dnd.large_drag_target) {
+					obj.setAttribute('draggable', true);
+				} else {
+					var i, j, tmp = null;
+					for(i = 0, j = obj.childNodes.length; i < j; i++) {
+						if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {
+							tmp = obj.childNodes[i];
+							break;
+						}
 					}
-					if(e.type === "touchstart" && (!this.settings.dnd.touch || (this.settings.dnd.touch === 'selected' && !$(e.currentTarget).closest('.jstree-node').children('.jstree-anchor').hasClass('jstree-clicked')))) {
-						return true;
+					if(tmp) {
+						tmp.setAttribute('draggable', true);
 					}
-					var obj = this.get_node(e.target),
-						mlt = this.is_selected(obj) && this.settings.dnd.drag_selection ? this.get_top_selected().length : 1,
-						txt = (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget));
-					if(this.settings.core.force_text) {
-						txt = $.vakata.html.escape(txt);
-					}
-					if(obj && obj.id && obj.id !== $.jstree.root && (e.which === 1 || e.type === "touchstart") &&
-						(this.settings.dnd.is_draggable === true || ($.isFunction(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_top_selected(true) : [obj]), e)))
-					) {
-						this.element.trigger('mousedown.jstree');
-						return $.vakata.dnd.start(e, { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_top_selected() : [obj.id] }, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + ' jstree-' + this.get_theme() + '-' + this.get_theme_variant() + ' ' + ( this.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ) + '"><i class="jstree-icon jstree-er"></i>' + txt + '<ins class="jstree-copy" style="display:none;">+</ins></div>');
-					}
-				}, this));
+				}
+			}
+			return obj;
 		};
 	};
 
@@ -6363,7 +6419,11 @@
 				marker.appendTo('body'); //.show();
 			})
 			.on('dnd_move.vakata.jstree', function (e, data) {
-				if(opento) { clearTimeout(opento); }
+				if(opento) {
+					if (!data.event || data.event.type !== 'dragover' || data.event.target !== lastev.target) {
+						clearTimeout(opento);
+					}
+				}
 				if(!data || !data.data || !data.data.jstree) { return; }
 
 				// if we are hovering the marker image do nothing (can happen on "inside" drags)
@@ -6376,16 +6436,17 @@
 					ref = false,
 					off = false,
 					rel = false,
-					tmp, l, t, h, p, i, o, ok, t1, t2, op, ps, pr, ip, tm;
+					tmp, l, t, h, p, i, o, ok, t1, t2, op, ps, pr, ip, tm, is_copy;
 				// if we are over an instance
 				if(ins && ins._data && ins._data.dnd) {
 					marker.attr('class', 'jstree-' + ins.get_theme() + ( ins.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ));
+					is_copy = data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey)));
 					data.helper
 						.children().attr('class', 'jstree-' + ins.get_theme() + ' jstree-' + ins.get_theme() + '-' + ins.get_theme_variant() + ' ' + ( ins.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ))
-						.find('.jstree-copy').first()[ data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey))) ? 'show' : 'hide' ]();
-
+						.find('.jstree-copy').first()[ is_copy ? 'show' : 'hide' ]();
 
 					// if are hovering the container itself add a new root node
+					//console.log(data.event);
 					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && ins.get_container_ul().children().length === 0) {
 						ok = true;
 						for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
@@ -6396,6 +6457,9 @@
 							lastmv = { 'ins' : ins, 'par' : $.jstree.root, 'pos' : 'last' };
 							marker.hide();
 							data.helper.find('.jstree-icon').first().removeClass('jstree-er').addClass('jstree-ok');
+							if (data.event.originalEvent && data.event.originalEvent.dataTransfer) {
+								data.event.originalEvent.dataTransfer.dropEffect = is_copy ? 'copy' : 'move';
+							}
 							return;
 						}
 					}
@@ -6404,7 +6468,7 @@
 						ref = ins.settings.dnd.large_drop_target ? $(data.event.target).closest('.jstree-node').children('.jstree-anchor') : $(data.event.target).closest('.jstree-anchor');
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
 							off = ref.offset();
-							rel = data.event.pageY - off.top;
+							rel = (data.event.pageY !== undefined ? data.event.pageY : data.event.originalEvent.pageY) - off.top;
 							h = ref.outerHeight();
 							if(rel < h / 3) {
 								o = ['b', 'i', 'a'];
@@ -6461,6 +6525,9 @@
 									lastmv = { 'ins' : ins, 'par' : p, 'pos' : v === 'i' && ip === 'last' && i === 0 && !ins.is_loaded(tm) ? 'last' : i };
 									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
 									data.helper.find('.jstree-icon').first().removeClass('jstree-er').addClass('jstree-ok');
+									if (data.event.originalEvent && data.event.originalEvent.dataTransfer) {
+										data.event.originalEvent.dataTransfer.dropEffect = is_copy ? 'copy' : 'move';
+									}
 									laster = {};
 									o = true;
 									return false;
@@ -6472,6 +6539,9 @@
 				}
 				lastmv = false;
 				data.helper.find('.jstree-icon').removeClass('jstree-ok').addClass('jstree-er');
+				if (data.event.originalEvent && data.event.originalEvent.dataTransfer) {
+					data.event.originalEvent.dataTransfer.dropEffect = 'none';
+				}
 				marker.hide();
 			})
 			.on('dnd_scroll.vakata.jstree', function (e, data) {
@@ -6564,8 +6634,10 @@
 				threshold			: 5,
 				threshold_touch		: 50
 			},
-			_trigger : function (event_name, e) {
-				var data = $.vakata.dnd._get();
+			_trigger : function (event_name, e, data) {
+				if (data === undefined) {
+					data = $.vakata.dnd._get();
+				}
 				data.event = e;
 				$(document).triggerHandler("dnd_" + event_name + ".vakata", data);
 			},
