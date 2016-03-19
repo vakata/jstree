@@ -58,9 +58,11 @@
 						this.get_node(data.node, true).children('.jstree-wholerow')[e.type === "hover_node"?"addClass":"removeClass"]('jstree-wholerow-hovered');
 					}, this))
 				.on("contextmenu.jstree", ".jstree-wholerow", $.proxy(function (e) {
-						e.preventDefault();
-						var tmp = $.Event('contextmenu', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey, pageX : e.pageX, pageY : e.pageY });
-						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor").first().trigger(tmp);
+						if (this._data.contextmenu) {
+							e.preventDefault();
+							var tmp = $.Event('contextmenu', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey, pageX : e.pageX, pageY : e.pageY });
+							$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor").first().trigger(tmp);
+						}
 					}, this))
 				/*!
 				.on("mousedown.jstree touchstart.jstree", ".jstree-wholerow", function (e) {
