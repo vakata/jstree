@@ -1232,7 +1232,9 @@
 						dom.addClass('jstree-leaf');
 					}
 					else {
-						dom.addClass(obj.state.opened ? 'jstree-open' : 'jstree-closed');
+						if (obj.id !== '#') {
+							dom.addClass(obj.state.opened ? 'jstree-open' : 'jstree-closed');
+						}
 					}
 				}
 				dom.removeClass("jstree-loading").attr('aria-busy',false);
