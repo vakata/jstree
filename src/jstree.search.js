@@ -103,8 +103,8 @@
 									p.push(data.res[i]);
 									p = p.concat(m[data.res[i]].parents);
 									if(this._data.search.smc) {
-										for (k = 0, l = m[data.res[i]].children_d; k < l; k++) {
-											if (m.data[m[data.res[i]].children_d[k]] && !m.data[m[data.res[i]].children_d[k]].state.hidden) {
+										for (k = 0, l = m[data.res[i]].children_d.length; k < l; k++) {
+											if (m[m[data.res[i]].children_d[k]] && !m[m[data.res[i]].children_d[k]].state.hidden) {
 												p.push(m[data.res[i]].children_d[k]);
 											}
 										}
