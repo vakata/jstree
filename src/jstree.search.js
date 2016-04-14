@@ -97,13 +97,17 @@
 			this.element
 				.on("search.jstree", $.proxy(function (e, data) {
 						if(this._data.search.som && data.res.length) {
-							var m = this._model.data, i, j, p = [];
+							var m = this._model.data, i, j, p = [], k, l;
 							for(i = 0, j = data.res.length; i < j; i++) {
 								if(m[data.res[i]] && !m[data.res[i]].state.hidden) {
 									p.push(data.res[i]);
 									p = p.concat(m[data.res[i]].parents);
 									if(this._data.search.smc) {
-										p = p.concat(m[data.res[i]].children_d);
+										for (k = 0, l = m[data.res[i]].children_d; k < l; k++) {
+											if (m.data[m[data.res[i]].children_d[k]] && !m.data[m[data.res[i]].children_d[k]].state.hidden) {
+												p.push(m[data.res[i]].children_d[k]);
+											}
+										}
 									}
 								}
 							}
