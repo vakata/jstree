@@ -957,6 +957,7 @@
   .jstree-default-responsive.jstree-rtl .jstree-node {
     margin-left: 0;
     margin-right: 40px;
+    background: transparent;
   }
   .jstree-default-responsive.jstree-rtl .jstree-container-ul > .jstree-node {
     margin-right: 0;
@@ -966,7 +967,8 @@
   .jstree-default-responsive .jstree-checkbox {
     background-size: 120px 240px;
   }
-  .jstree-default-responsive .jstree-leaf > .jstree-ocl {
+  .jstree-default-responsive .jstree-leaf > .jstree-ocl,
+  .jstree-default-responsive.jstree-rtl .jstree-leaf > .jstree-ocl {
     background: transparent;
   }
   .jstree-default-responsive .jstree-open > .jstree-ocl {
