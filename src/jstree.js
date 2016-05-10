@@ -1710,7 +1710,6 @@
 									if(e.children_d.length) {
 										tmp.children_d = tmp.children_d.concat(e.children_d);
 									}
-									//console.log('this.settings.core.select_leaf_only: ' + JSON.stringify(this)); //this.settings.core.select_leaf_only);
 									if(enableSettings.select_leaf_only) {
 										if (typeof tmp.state === 'undefined') {
 											tmp.state = {};
