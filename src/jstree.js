@@ -381,9 +381,9 @@
 		multiple		: true,
 		/**
 		 * a boolean indicating if only leaf nodes can be selected
-		 * @name $.jstree.defaults.core.selectleafonly
+		 * @name $.jstree.defaults.core.select_leaf_only
 		 */
-		selectleafonly		: false,
+		select_leaf_only		: false,
 		/**
 		 * theme configuration object
 		 * @name $.jstree.defaults.core.themes
@@ -1511,7 +1511,7 @@
 			}
 			if(!$.isArray(data)) { data = [data]; }
 			var enableSettings = {};
-			enableSettings.selectleafonly = this.settings.core.selectleafonly;
+			enableSettings.select_leaf_only = this.settings.core.select_leaf_only;
 			var w = null,
 
 				args = {
@@ -1710,8 +1710,8 @@
 									if(e.children_d.length) {
 										tmp.children_d = tmp.children_d.concat(e.children_d);
 									}
-									//console.log('this.settings.core.selectleafonly: ' + JSON.stringify(this)); //this.settings.core.selectleafonly);
-									if(enableSettings.selectleafonly) {
+									//console.log('this.settings.core.select_leaf_only: ' + JSON.stringify(this)); //this.settings.core.select_leaf_only);
+									if(enableSettings.select_leaf_only) {
 										if (typeof tmp.state === 'undefined') {
 											tmp.state = {};
 										}
@@ -1749,7 +1749,7 @@
 							m[dat[i].parent.toString()].children.push(dat[i].id.toString());
 							// populate parent.children_d
 							p.children_d.push(dat[i].id.toString());
-							if(enableSettings.selectleafonly) {
+							if(enableSettings.select_leaf_only) {
 								var parentObj = m[dat[i].parent.toString()];
 								if (!parentObj.state) {
 									parentObj.state = {};
@@ -1997,7 +1997,7 @@
 			} while(m[tid]);
 			data.id = data.li_attr.id ? data.li_attr.id.toString() : tid;
 			if(tmp.length) {
-				if (this.settings.core.selectleafonly) {
+				if (this.settings.core.select_leaf_only) {
 					data.state.disabled = true;
 				}
 				tmp.each($.proxy(function (i, v) {
