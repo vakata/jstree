@@ -1,3 +1,17 @@
+/*!
+ * jsTree {{VERSION}}
+ * http://jstree.com/
+ *
+ * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
+ *
+ * Licensed same as jquery - under the terms of the MIT License
+ *   http://www.opensource.org/licenses/mit-license.php
+ */
+/*!
+ * if using jslint please allow for the jQuery global and use following options:
+ * jslint: loopfunc: true, browser: true, ass: true, bitwise: true, continue: true, nomen: true, plusplus: true, regexp: true, unparam: true, todo: true, white: true
+ */
+/*jshint -W083 */
 /*globals jQuery, define, module, exports, require, window, document, postMessage */
 (function (factory) {
 	"use strict";
@@ -12,20 +26,6 @@
 	}
 }(function ($, undefined) {
 	"use strict";
-/*!
- * jsTree 3.3.1
- * http://jstree.com/
- *
- * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
- *
- * Licensed same as jquery - under the terms of the MIT License
- *   http://www.opensource.org/licenses/mit-license.php
- */
-/*!
- * if using jslint please allow for the jQuery global and use following options:
- * jslint: loopfunc: true, browser: true, ass: true, bitwise: true, continue: true, nomen: true, plusplus: true, regexp: true, unparam: true, todo: true, white: true
- */
-/*jshint -W083 */
 
 	// prevent another load? maybe there is a better way?
 	if($.jstree) {
@@ -72,7 +72,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.1',
+		version : '{{VERSION}}',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -379,6 +379,11 @@
 		 * @name $.jstree.defaults.core.multiple
 		 */
 		multiple		: true,
+		/**
+		 * a boolean indicating if only leaf nodes can be selected
+		 * @name $.jstree.defaults.core.select_leaf_only
+		 */
+		select_leaf_only		: false,
 		/**
 		 * theme configuration object
 		 * @name $.jstree.defaults.core.themes
@@ -1505,9 +1510,13 @@
 				}
 			}
 			if(!$.isArray(data)) { data = [data]; }
+			var enableSettings = {};
+			enableSettings.select_leaf_only = this.settings.core.select_leaf_only;
 			var w = null,
+
 				args = {
 					'df'	: this._model.default_state,
+					'enableSettings': enableSettings,
 					'dat'	: data,
 					'par'	: dom.id,
 					'm'		: this._model.data,
@@ -1523,6 +1532,7 @@
 						dpc = [],
 						add = [],
 						df = data.df,
+						enableSettings = data.enableSettings,
 						t_id = data.t_id,
 						t_cnt = data.t_cnt,
 						m = data.m,
@@ -1586,6 +1596,15 @@
 							}
 							if(!tmp.li_attr.id) {
 								tmp.li_attr.id = tid;
+							}
+							if (d.state && d.state.deprecated) {
+								if (typeof tmp.li_attr.class === 'undefined') {
+									tmp.li_attr.class = '';
+								}
+								if (d.state.selected) {
+									tmp.li_attr.class += ' jstree-clicked';
+								}
+								tmp.li_attr.class += ' jstree-deprecated';
 							}
 							if(d && typeof d.a_attr === 'object') {
 								for (i in d.a_attr) {
@@ -1685,6 +1704,15 @@
 							if(!tmp.li_attr.id) {
 								tmp.li_attr.id = tmp.id;
 							}
+							if (d.state && d.state.deprecated) {
+								if (typeof tmp.li_attr.class === 'undefined') {
+									tmp.li_attr.class = '';
+								}
+								if (d.state.selected) {
+									tmp.li_attr.class += ' jstree-clicked';
+								}
+								tmp.li_attr.class += ' jstree-deprecated';
+							}
 							if(d && typeof d.a_attr === 'object') {
 								for (i in d.a_attr) {
 									if(d.a_attr.hasOwnProperty(i)) {
@@ -1699,6 +1727,12 @@
 									tmp.children.push(c);
 									if(e.children_d.length) {
 										tmp.children_d = tmp.children_d.concat(e.children_d);
+									}
+									if(enableSettings.select_leaf_only) {
+										if (typeof tmp.state === 'undefined') {
+											tmp.state = {};
+										}
+										tmp.state.disabled = true;
 									}
 								}
 								tmp.children_d = tmp.children_d.concat(tmp.children);
@@ -1732,6 +1766,13 @@
 							m[dat[i].parent.toString()].children.push(dat[i].id.toString());
 							// populate parent.children_d
 							p.children_d.push(dat[i].id.toString());
+							if(enableSettings.select_leaf_only) {
+								var parentObj = m[dat[i].parent.toString()];
+								if (!parentObj.state) {
+									parentObj.state = {};
+								}
+								parentObj.state.disabled = true;
+							}
 						}
 						// 3) normalize && populate parents and children_d with recursion
 						for(i = 0, j = p.children.length; i < j; i++) {
@@ -1973,6 +2014,9 @@
 			} while(m[tid]);
 			data.id = data.li_attr.id ? data.li_attr.id.toString() : tid;
 			if(tmp.length) {
+				if (this.settings.core.select_leaf_only) {
+					data.state.disabled = true;
+				}
 				tmp.each($.proxy(function (i, v) {
 					c = this._parse_model_from_html($(v), data.id, ps);
 					e = this._model.data[c];
@@ -3137,6 +3181,7 @@
 				}
 				if(dom && dom.length) {
 					dom.attr('aria-selected', true).children('.jstree-anchor').addClass('jstree-clicked');
+					dom.addClass('jstree-clicked');
 				}
 				/**
 				 * triggered when an node is selected
@@ -3187,6 +3232,16 @@
 				this._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, obj.id);
 				if(dom.length) {
 					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass('jstree-clicked');
+					dom.removeClass('jstree-clicked');
+					/* Deprecated nodes show only if already chosen.
+					*  If they are unselected then they cannot be chosen again, so disable the node. */
+					if (dom.hasClass('jstree-deprecated')) {
+						dom.attr('aria-selected', false).children('.jstree-anchor').addClass('jstree-disabled');
+						if (!dom.hasClass('jstree-deprecated-unchosen')) {
+							dom.addClass('jstree-deprecated-unchosen');
+						}
+						obj.state.disabled = true;
+					}
 				}
 				/**
 				 * triggered when an node is deselected
@@ -4692,13 +4747,29 @@
 		}
 		return d;
 	};
-
+}));
 
 /**
  * ### Changed plugin
  *
  * This plugin adds more information to the `changed.jstree` event. The new data is contained in the `changed` event data property, and contains a lists of `selected` and `deselected` nodes.
  */
+/*globals jQuery, define, exports, require, document */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.changed', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.changed) { return; }
 
 	$.jstree.plugins.changed = function (options, parent) {
 		var last = [];
@@ -4746,13 +4817,29 @@
 			return parent.refresh.apply(this, arguments);
 		};
 	};
-
+}));
 /**
  * ### Checkbox plugin
  *
  * This plugin renders checkbox icons in front of each node, making multiple selection much easier.
  * It also supports tri-state behavior, meaning that if a node has a few of its children checked it will be rendered as undetermined, and state will be propagated up.
  */
+/*globals jQuery, define, exports, require, document */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.checkbox', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.checkbox) { return; }
 
 	var _i = document.createElement('I');
 	_i.className = 'jstree-icon jstree-checkbox';
@@ -5601,12 +5688,28 @@
 
 	// include the checkbox plugin by default
 	// $.jstree.defaults.plugins.push("checkbox");
-
+}));
 /**
  * ### Conditionalselect plugin
  *
  * This plugin allows defining a callback to allow or deny node selection by user input (activate node method).
  */
+/*globals jQuery, define, exports, require, document */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.conditionalselect', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.conditionalselect) { return; }
 
 	/**
 	 * a callback (function) which is invoked in the instance's scope and receives two arguments - the node and the event that triggered the `activate_node` call. Returning false prevents working with the node, returning true allows invoking activate_node. Defaults to returning `true`.
@@ -5623,12 +5726,28 @@
 		};
 	};
 
-
+}));
 /**
  * ### Contextmenu plugin
  *
  * Shows a context menu when a node is right-clicked.
  */
+/*globals jQuery, define, exports, require, document */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.contextmenu', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.contextmenu) { return; }
 
 	/**
 	 * stores all defaults for the contextmenu plugin
@@ -6259,13 +6378,29 @@
 		});
 	}($));
 	// $.jstree.defaults.plugins.push("contextmenu");
-
+}));
 
 /**
  * ### Drag'n'drop plugin
  *
  * Enables dragging and dropping of nodes in the tree, resulting in a move or copy operations.
  */
+/*globals jQuery, define, exports, require, document */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.dnd', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.dnd) { return; }
 
 	/**
 	 * stores all defaults for the drag'n'drop plugin
@@ -6886,13 +7021,29 @@
 
 	// include the dnd plugin by default
 	// $.jstree.defaults.plugins.push("dnd");
-
+}));
 
 /**
  * ### Massload plugin
  *
  * Adds massload functionality to jsTree, so that multiple nodes can be loaded in a single request (only useful with lazy loading).
  */
+/*globals jQuery, define, exports, require, document */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.massload', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.massload) { return; }
 
 	/**
 	 * massload configuration
@@ -7008,12 +7159,28 @@
 			return parent._load_node.call(this, obj, callback);
 		};
 	};
-
+}));
 /**
  * ### Search plugin
  *
  * Adds search functionality to jsTree.
  */
+/*globals jQuery, define, exports, require, document */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.search', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.search) { return; }
 
 	/**
 	 * stores all defaults for the search plugin
@@ -7409,13 +7576,29 @@
 
 	// include the search plugin by default
 	// $.jstree.defaults.plugins.push("search");
-
+}));
 
 /**
  * ### Sort plugin
  *
  * Automatically sorts all siblings in the tree according to a sorting function.
  */
+/*globals jQuery, define, exports, require */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.sort', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.sort) { return; }
 
 	/**
 	 * the settings function used to sort the nodes.
@@ -7468,12 +7651,28 @@
 
 	// include the sort plugin by default
 	// $.jstree.defaults.plugins.push("sort");
-
+}));
 /**
  * ### State plugin
  *
  * Saves the state of the tree (selected nodes, opened nodes) on the user's computer using available options (localStorage, cookies, etc)
  */
+/*globals jQuery, define, exports, require */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.state', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.state) { return; }
 
 	var to = false;
 	/**
@@ -7577,12 +7776,28 @@
 
 	// include the state plugin by default
 	// $.jstree.defaults.plugins.push("state");
-
+}));
 /**
  * ### Types plugin
  *
  * Makes it possible to add predefined types for groups of nodes, which make it possible to easily control nesting rules and icon for each group.
  */
+/*globals jQuery, define, exports, require */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.types', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.types) { return; }
 
 	/**
 	 * An object storing all types as key value pairs, where the key is the type name and the value is an object that could contain following keys (all optional).
@@ -7933,13 +8148,29 @@
 	};
 	// include the types plugin by default
 	// $.jstree.defaults.plugins.push("types");
-
+}));
 
 /**
  * ### Unique plugin
  *
  * Enforces that no nodes with the same name can coexist as siblings.
  */
+/*globals jQuery, define, exports, require */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.unique', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.unique) { return; }
 
 	/**
 	 * stores all defaults for the unique plugin
@@ -8039,13 +8270,29 @@
 
 	// include the unique plugin by default
 	// $.jstree.defaults.plugins.push("unique");
-
+}));
 
 /**
  * ### Wholerow plugin
  *
  * Makes each node appear block level. Making selection easier. May cause slow down for large trees in old browsers.
  */
+/*globals jQuery, define, exports, require */
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.wholerow', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.wholerow) { return; }
 
 	var div = document.createElement('DIV');
 	div.setAttribute('unselectable','on');
@@ -8141,6 +8388,21 @@
 	};
 	// include the wholerow plugin by default
 	// $.jstree.defaults.plugins.push("wholerow");
+}));
+
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.checkbox', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery);
+	}
+}(function ($, undefined) {
+	"use strict";
 	if(document.registerElement && Object && Object.create) {
 		var proto = Object.create(HTMLElement.prototype);
 		proto.createdCallback = function () {
@@ -8165,5 +8427,4 @@
 			document.registerElement("vakata-jstree", { prototype: proto });
 		} catch(ignore) { }
 	}
-
 }));

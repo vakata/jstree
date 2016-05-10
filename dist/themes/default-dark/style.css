@@ -891,6 +891,11 @@
 .jstree-default-dark-large.jstree-rtl .jstree-last {
   background: transparent;
 }
+
+.jstree-deprecated {
+  display: none;
+}
+
 @media (max-width: 768px) {
   #jstree-dnd.jstree-dnd-responsive {
     line-height: 40px;
