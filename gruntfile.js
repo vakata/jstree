@@ -136,13 +136,6 @@ module.exports = function(grunt) {
         src: ['desktop'],
         dest: 'desktop',
       },
-      desktopLeafOnly: {
-        options: {
-          width: 1280,
-        },
-        src: ['desktop-leafOnly'],
-        dest: 'desktop-leafOnly',
-      },
       mobile: {
         options: {
           width: 360,
@@ -242,7 +235,6 @@ module.exports = function(grunt) {
   
   // Default task.
   grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy:libs','uglify','less','imagemin','replace','copy:docs','qunit','resemble','dox']);
-  grunt.registerTask('dev', ['concat']);
   grunt.registerTask('js', ['concat','amd','uglify']);
   grunt.registerTask('css', ['copy','less']);
 
