@@ -136,6 +136,13 @@ module.exports = function(grunt) {
         src: ['desktop'],
         dest: 'desktop',
       },
+      desktopLeafOnly: {
+        options: {
+          width: 1280,
+        },
+        src: ['desktop-leafOnly'],
+        dest: 'desktop-leafOnly',
+      },
       mobile: {
         options: {
           width: 360,

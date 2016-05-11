@@ -1597,15 +1597,6 @@
 							if(!tmp.li_attr.id) {
 								tmp.li_attr.id = tid;
 							}
-							if (d.state && d.state.deprecated) {
-								if (typeof tmp.li_attr.class === 'undefined') {
-									tmp.li_attr.class = '';
-								}
-								if (d.state.selected) {
-									tmp.li_attr.class += ' jstree-clicked';
-								}
-								tmp.li_attr.class += ' jstree-deprecated';
-							}
 							if(d && typeof d.a_attr === 'object') {
 								for (i in d.a_attr) {
 									if(d.a_attr.hasOwnProperty(i)) {
@@ -1703,15 +1694,6 @@
 							}
 							if(!tmp.li_attr.id) {
 								tmp.li_attr.id = tmp.id;
-							}
-							if (d.state && d.state.deprecated) {
-								if (typeof tmp.li_attr.class === 'undefined') {
-									tmp.li_attr.class = '';
-								}
-								if (d.state.selected) {
-									tmp.li_attr.class += ' jstree-clicked';
-								}
-								tmp.li_attr.class += ' jstree-deprecated';
 							}
 							if(d && typeof d.a_attr === 'object') {
 								for (i in d.a_attr) {
@@ -3181,7 +3163,6 @@
 				}
 				if(dom && dom.length) {
 					dom.attr('aria-selected', true).children('.jstree-anchor').addClass('jstree-clicked');
-					dom.addClass('jstree-clicked');
 				}
 				/**
 				 * triggered when an node is selected
@@ -3232,16 +3213,6 @@
 				this._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, obj.id);
 				if(dom.length) {
 					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass('jstree-clicked');
-					dom.removeClass('jstree-clicked');
-					/* Deprecated nodes show only if already chosen.
-					*  If they are unselected then they cannot be chosen again, so disable the node. */
-					if (dom.hasClass('jstree-deprecated')) {
-						dom.attr('aria-selected', false).children('.jstree-anchor').addClass('jstree-disabled');
-						if (!dom.hasClass('jstree-deprecated-unchosen')) {
-							dom.addClass('jstree-deprecated-unchosen');
-						}
-						obj.state.disabled = true;
-					}
 				}
 				/**
 				 * triggered when an node is deselected
