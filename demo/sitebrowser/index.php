@@ -1,9 +1,10 @@
 <?php
 require_once(dirname(__FILE__) . '/class.db.php');
 require_once(dirname(__FILE__) . '/class.tree.php');
+require_once(dirname(__FILE__) . '/config.inc');
 
 if(isset($_GET['operation'])) {
-	$fs = new tree(db::get('mysqli://root@127.0.0.1/test'), array('structure_table' => 'tree_struct', 'data_table' => 'tree_data', 'data' => array('nm')));
+	$fs = new tree(db::get('mysqli://$db_user@$db_host/$db_name'), array('structure_table' => 'tree_struct', 'data_table' => 'tree_data', 'data' => array('nm')));
 	try {
 		$rslt = null;
 		switch($_GET['operation']) {
