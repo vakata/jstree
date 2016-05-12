@@ -76,7 +76,7 @@ if(isset($_GET['operation'])) {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<title>Title</title>
 		<meta name="viewport" content="width=device-width" />
-		<link rel="stylesheet" href="./../../dist/themes/default/style.min.css" />
+		<link rel="stylesheet" href="/dist/themes/default/style.min.css" />
 		<style>
 		html, body { background:#ebebeb; font-size:10px; font-family:Verdana; margin:0; padding:0; }
 		#container { min-width:320px; margin:0px auto 0 auto; background:white; border-radius:0px; padding:0px; overflow:hidden; }
@@ -97,8 +97,8 @@ if(isset($_GET['operation'])) {
 			</div>
 		</div>
 
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-		<script src="./../../dist/jstree.min.js"></script>
+		<script src="/dist/jquery.min.js"></script>
+		<script src="/dist/jstree.min.js"></script>
 		<script>
 		$(function () {
 			$(window).resize(function () {
