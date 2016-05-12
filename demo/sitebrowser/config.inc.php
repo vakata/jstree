@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Modeler dbms configuration
+ * sitebrowser dbms configuration
  */
 $i = 0;
 
@@ -33,7 +33,7 @@ $cfg['Servers'][$i]['b'] = 'tbd';
 $cfg['Servers'][$i]['c'] = 'tbd';
 
 /*
- * End of Modeler servers configuration
+ * End of sitebrowser servers configuration
  */
 
 ?>
