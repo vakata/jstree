@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Aravo Enhancements Test</title>
+	<link rel="stylesheet" href="../../../dist/themes/default/style.css">
+	<link rel="stylesheet" href="../../../dist/themes/default-dark/style.css">
+	<style>.tree { border:1px solid black; padding:10px; width:300px; margin:20px; float:left; min-height:200px; }</style>
+
+<script>
+var treeDataFlat = [
+	{id: 1,
+	 parent: "#" ,
+	 text: "Food - Flat"
+	},
+
+	{id: 2,
+	parent: "1" ,
+	text: "Meat"
+	},
+	{id: 3,
+	parent: "1" ,
+	text: "Fruit"
+	},
+
+	{id: 21,
+	parent: "2" ,
+	text: "Chicken"
+	},
+	{id: 22,
+	parent: "2" ,
+	text: "Fish"
+	},
+
+		{id: 211,
+			parent: "21" ,
+			text: "Dark Meat"
+		},
+		{id: 212,
+			parent: "21" ,
+			text: "WhiteMeat"
+		},
+
+
+	{id: 31,
+	parent: "3" ,
+	text: "Banana"
+	},
+	{id: 32,
+		parent: "3" ,
+		state: {deprecated: true},
+		text: "Loquat"
+	},
+	{id: 33,
+	parent: "3" ,
+	text: "Mango",
+	state: {selected: true, deprecated: true}
+	}
+];
+
+
+var treeDataNested = [
+	{id: 1,
+		text: "Food - Nested",
+		children: [
+			{id: 2,
+				text: "Meat",
+				state: {disabled: true},
+				children: [
+					{id: 21,
+						text: "Chicken",
+						children: [
+							{id: 211,
+								text: "Dark Meat"
+							},
+							{id: 212,
+								text: "WhiteMeat"
+							}
+					]},
+					{id: 22,
+						text: "Fish"
+					}
+				]},
+			{id: 3,
+				text: "Fruit",
+				children: [
+					{id: 31,
+						text: "Banana"
+					},
+					{id: 32,
+						state: {deprecated: true},
+						text: "Loquat"
+					},
+					{id: 33,
+						text: "Mango",
+						state: {selected: true, deprecated: true},
+					}
+			]}
+		]
+	}
+];
+
+
+
+</script>
+</head>
+<body style="background:white;">
+	<div class="tree" id="flatTree"></div>
+	<div class="tree" id="nestedTree"></div>
+	<div class="tree" id="htmlTree">
+		<ul>
+			<li>Food - Html
+				<ul>
+					<li>Meat
+						<ul>
+							<li>Chicken
+								<ul>
+									<li>Dark</li>
+									<li>White</li>
+								</ul>
+							</li>
+							<li>Fish</li>
+						</ul>
+					</li>
+					<li>Fruit
+						<ul>
+							<li>Banana</li>
+							<li>Mango</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+	<script src="../../../dist/jstree.js"></script>
+	<script>
+	$('#flatTree').jstree(
+			{
+				core: {data: treeDataFlat,
+					multiple: true,
+					select_leaf_only: true
+				},
+				plugins : ["checkbox","sort","types"],
+				checkbox: {three_state: false},
+				"types" : { "file" : { "icon" : "jstree-file" } }
+			});
+		$('#flatTree').on('ready.jstree', function() {
+		$('#flatTree').jstree().open_all();
+		$('#flatTree').jstree().select_node('31');
+		//$('#flatTree').jstree().select_node('32');
+		//$('#flatTree').jstree().select_all();
+		//$('#flatTree').jstree().deselect_node('32');
+		//$('#flatTree').jstree().select_node('32');
+	});
+
+
+	$('#nestedTree').jstree(
+			{
+				core: {data: treeDataNested,
+					multiple: true,
+					select_leaf_only: true,
+				},
+				plugins : ["checkbox","sort","types"],
+				checkbox: {three_state: false},
+				"types" : { "file" : { "icon" : "jstree-file" } }
+			});
+	$('#nestedTree').on('ready.jstree', function() {
+		$('#nestedTree').jstree().open_all();
+	});
+
+
+	$('#htmlTree').jstree(
+			{
+				core: {
+					multiple: true,
+					select_leaf_only: true
+				}
+			});
+	$('#htmlTree').on('ready.jstree', function() {
+		$('#htmlTree').jstree().open_all();
+	});
+	</script>
+</body>
+</html>

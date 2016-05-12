@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Aravo Enhancements Test</title>
+	<link rel="stylesheet" href="./../../../dist/themes/default/style.min.css">
+	<link rel="stylesheet" href="./../../../dist/themes/default-dark/style.min.css">
+	<style>.tree { border:1px solid black; padding:10px; width:300px; margin:20px; float:left; min-height:200px; }</style>
+
+<script>
+var treeDataFlat = [
+	{id: 1,
+	 parent: "#" ,
+	 text: "Food - Flat"
+	},
+
+	{id: 2,
+	parent: "1" ,
+	text: "Meat"
+	},
+	{id: 3,
+	parent: "1" ,
+	text: "Fruit"
+	},
+
+	{id: 21,
+	parent: "2" ,
+	text: "Chicken"
+	},
+	{id: 22,
+	parent: "2" ,
+	text: "Fish"
+	},
+
+		{id: 211,
+			parent: "21" ,
+			text: "Dark Meat"
+		},
+		{id: 212,
+			parent: "21" ,
+			text: "WhiteMeat"
+		},
+
+
+	{id: 31,
+	parent: "3" ,
+	text: "Banana"
+	},
+	{id: 32,
+		parent: "3" ,
+		text: "Loquat"
+	},
+	{id: 33,
+	parent: "3" ,
+	text: "Mango",
+	state: {selected: true}
+	}
+];
+
+
+var treeDataNested = [
+	{id: 1,
+		text: "Food - Nested",
+		children: [
+			{id: 2,
+				text: "Meat",
+				children: [
+					{id: 21,
+						text: "Chicken",
+						children: [
+							{id: 211,
+								text: "Dark Meat"
+							},
+							{id: 212,
+								text: "WhiteMeat"
+							}
+					]},
+					{id: 22,
+						text: "Fish"
+					}
+				]},
+			{id: 3,
+				text: "Fruit",
+				children: [
+					{id: 31,
+						text: "Banana"
+					},
+					{id: 32,
+						text: "Loquat"
+					},
+					{id: 33,
+						text: "Mango",
+						state: {selected: true},
+					}
+			]}
+		]
+	}
+];
+
+
+
+</script>
+</head>
+<body style="background:white;">
+
+<div>
+<h2>All Nodes Selectable</h2>
+	<div class="tree" id="flatTree-allNodesSelectable"></div>
+	<div class="tree" id="nestedTree-allNodesSelectable"></div>
+	<div class="tree" id="htmlTree-allNodesSelectable">
+		<ul>
+			<li>Food - Html
+				<ul>
+					<li>Fruit
+						<ul>
+							<li>Banana</li>
+							<li>Loquat</li>
+							<li>Mango</li>
+						</ul>
+					</li>
+					<li>Meat
+						<ul>
+							<li>Chicken
+								<ul>
+									<li>Dark Meat</li>
+									<li>White Meat</li>
+								</ul>
+							</li>
+							<li>Fish</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div style="clear: both"></div>
+<div>
+<h2>Only Leaf Nodes Selectable</h2>
+	<div class="tree" id="flatTree-leafOnly"></div>
+	<div class="tree" id="nestedTree-leafOnly"></div>
+	<div class="tree" id="htmlTree-leafOnly">
+		<ul>
+			<li>Food - Html
+				<ul>
+					<li>Fruit
+						<ul>
+							<li>Banana</li>
+							<li>Loquat</li>
+							<li>Mango</li>
+						</ul>
+					</li>
+					<li>Meat
+						<ul>
+							<li>Chicken
+								<ul>
+									<li>Dark Meat</li>
+									<li>White Meat</li>
+								</ul>
+							</li>
+							<li>Fish</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+
+	<script src="./../../../dist/libs/jquery.js"></script>
+	<script src="./../../../dist/jstree.min.js"></script>
+	<script>
+	$('#flatTree-allNodesSelectable').jstree(
+			{
+				core: {data: treeDataFlat,
+					multiple: true
+				},
+				plugins : ["checkbox","sort","types"],
+				checkbox: {three_state: false},
+				"types" : { "file" : { "icon" : "jstree-file" } }
+			});
+		$('#flatTree-allNodesSelectable').on('ready.jstree', function() {
+			$('#flatTree-allNodesSelectable').jstree().open_all();
+			$('#flatTree-allNodesSelectable').jstree().select_node('31');
+			$('#flatTree-allNodesSelectable').jstree().select_node('2');
+	});
+
+	$('#nestedTree-allNodesSelectable').jstree(
+			{
+				core: {data: treeDataNested,
+					multiple: true,
+				},
+				plugins : ["checkbox","sort","types"],
+				checkbox: {three_state: false},
+				"types" : { "file" : { "icon" : "jstree-file" } }
+			});
+	$('#nestedTree-allNodesSelectable').on('ready.jstree', function() {
+		$('#nestedTree-allNodesSelectable').jstree().open_all();
+		$('#nestedTree-allNodesSelectable').jstree().select_node('31');
+		$('#nestedTree-allNodesSelectable').jstree().select_node('2');
+	});
+
+
+	$('#htmlTree-allNodesSelectable').jstree(
+			{
+				core: {
+					multiple: true
+				}
+			});
+	$('#htmlTree-allNodesSelectable').on('ready.jstree', function() {
+		$('#htmlTree-allNodesSelectable').jstree().open_all();
+	});
+
+	$('#flatTree-leafOnly').jstree(
+			{
+				core: {data: treeDataFlat,
+					multiple: true,
+					select_leaf_only: true
+				},
+				plugins : ["checkbox","sort","types"],
+				checkbox: {three_state: false},
+				"types" : { "file" : { "icon" : "jstree-file" } }
+			});
+	$('#flatTree-leafOnly').on('ready.jstree', function() {
+		$('#flatTree-leafOnly').jstree().open_all();
+		$('#flatTree-leafOnly').jstree().select_node('31');
+		$('#flatTree-leafOnly').jstree().select_node('2');
+	});
+
+	$('#nestedTree-leafOnly').jstree(
+			{
+				core: {data: treeDataNested,
+					multiple: true,
+					select_leaf_only: true
+				},
+				plugins : ["checkbox","sort","types"],
+				checkbox: {three_state: false},
+				"types" : { "file" : { "icon" : "jstree-file" } }
+			});
+	$('#nestedTree-leafOnly').on('ready.jstree', function() {
+		$('#nestedTree-leafOnly').jstree().open_all();
+		$('#nestedTree-leafOnly').jstree().select_node('31');
+		$('#nestedTree-leafOnly').jstree().select_node('2');
+	});
+
+
+	$('#htmlTree-leafOnly').jstree(
+			{
+				core: {
+					multiple: true,
+					select_leaf_only: true
+				}
+			});
+	$('#htmlTree-leafOnly').on('ready.jstree', function() {
+		$('#htmlTree-leafOnly').jstree().open_all();
+	});
+	</script>
+</body>
+</html>

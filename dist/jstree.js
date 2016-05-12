@@ -380,6 +380,11 @@
 		 */
 		multiple		: true,
 		/**
+		 * a boolean indicating if only leaf nodes can be selected
+		 * @name $.jstree.defaults.core.select_leaf_only
+		 */
+		select_leaf_only		: false,
+		/**
 		 * theme configuration object
 		 * @name $.jstree.defaults.core.themes
 		 */
@@ -1505,9 +1510,13 @@
 				}
 			}
 			if(!$.isArray(data)) { data = [data]; }
+			var enableSettings = {};
+			enableSettings.select_leaf_only = this.settings.core.select_leaf_only;
 			var w = null,
+
 				args = {
 					'df'	: this._model.default_state,
+					'enableSettings': enableSettings,
 					'dat'	: data,
 					'par'	: dom.id,
 					'm'		: this._model.data,
@@ -1523,6 +1532,7 @@
 						dpc = [],
 						add = [],
 						df = data.df,
+						enableSettings = data.enableSettings,
 						t_id = data.t_id,
 						t_cnt = data.t_cnt,
 						m = data.m,
@@ -1700,6 +1710,12 @@
 									if(e.children_d.length) {
 										tmp.children_d = tmp.children_d.concat(e.children_d);
 									}
+									if(enableSettings.select_leaf_only) {
+										if (typeof tmp.state === 'undefined') {
+											tmp.state = {};
+										}
+										tmp.state.disabled = true;
+									}
 								}
 								tmp.children_d = tmp.children_d.concat(tmp.children);
 							}
@@ -1732,6 +1748,13 @@
 							m[dat[i].parent.toString()].children.push(dat[i].id.toString());
 							// populate parent.children_d
 							p.children_d.push(dat[i].id.toString());
+							if(enableSettings.select_leaf_only) {
+								var parentObj = m[dat[i].parent.toString()];
+								if (!parentObj.state) {
+									parentObj.state = {};
+								}
+								parentObj.state.disabled = true;
+							}
 						}
 						// 3) normalize && populate parents and children_d with recursion
 						for(i = 0, j = p.children.length; i < j; i++) {
@@ -1973,6 +1996,9 @@
 			} while(m[tid]);
 			data.id = data.li_attr.id ? data.li_attr.id.toString() : tid;
 			if(tmp.length) {
+				if (this.settings.core.select_leaf_only) {
+					data.state.disabled = true;
+				}
 				tmp.each($.proxy(function (i, v) {
 					c = this._parse_model_from_html($(v), data.id, ps);
 					e = this._model.data[c];
