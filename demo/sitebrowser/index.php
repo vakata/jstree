@@ -90,9 +90,9 @@ if(isset($_GET['operation'])) {
 		<div id="container" role="main">
 			<div id="tree"></div>
 			<div id="data">
-				<div class="content code" style="display:none;"><textarea id="code" readonly="readonly"></textarea></div>
-				<div class="content folder" style="display:none;"></div>
-				<div class="content image" style="display:none; position:relative;"><img src="" alt="" style="display:block; position:absolute; left:50%; top:50%; padding:0; max-height:90%; max-width:90%;" /></div>
+				<div class="content code"    style="display:none;"><textarea id="code" readonly="readonly"></textarea></div>
+				<div class="content folder"  style="display:none;"></div>
+				<div class="content image"   style="display:none; position:relative;"><img src="" alt="" style="display:block; position:absolute; left:50%; top:50%; padding:0; max-height:90%; max-width:90%;" /></div>
 				<div class="content default" style="text-align:center;">Select a node from the tree.</div>
 			</div>
 		</div>
