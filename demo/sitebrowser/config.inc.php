@@ -17,6 +17,7 @@ $db_user     = modeler;
 $db_password = ;
 
 $cfg['Servers'][$i]['auth_type'] = 'config';
+$cfg['Servers'][$i]['database'] = 'modeler';
 $cfg['Servers'][$i]['user'] = 'modeler';
 $cfg['Servers'][$i]['password'] = '';
 $cfg['Servers'][$i]['extension'] = 'mysqli';
