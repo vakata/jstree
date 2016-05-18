@@ -239,12 +239,19 @@
 							off = ref.offset();
 							rel = (data.event.pageY !== undefined ? data.event.pageY : data.event.originalEvent.pageY) - off.top;
 							h = ref.outerHeight();
+                                                        var refTotalHeight = ref.parent().outerHeight();
 							if(rel < h / 3) {
 								o = ['b', 'i', 'a'];
 							}
-							else if(rel > h - h / 3) {
-								o = ['a', 'i', 'b'];
-							}
+                                                        else if (rel > refTotalHeight - h / 3) {
+                                                                o = ['a', 'n'];
+                                                        }
+                                                        else if (rel > h - h / 3 && ref.parent().is('.jstree-open') && rel < refTotalHeight - h / 3) {
+                                                                // Only allow adding to lowest nested node,
+                                                                // not parent nodes when cursor is at same
+                                                                // vertical height as nested node.
+                                                                o = ['n'];
+                                                        }
 							else {
 								o = rel > h / 2 ? ['i', 'a', 'b'] : ['i', 'b', 'a'];
 							}
@@ -266,10 +273,14 @@
 										break;
 									case 'a':
 										l = off.left - 6;
-										t = off.top + h;
+									        t = off.top + refTotalHeight;
 										p = ins.get_parent(ref);
 										i = ref.parent().index() + 1;
-										break;
+									        break;
+                                                                        case 'n':
+                                                                                // No-op case, leaves the last move untouched.
+                                                                                o = true;
+                                                                                return false;
 								}
 								ok = true;
 								for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
@@ -282,6 +293,13 @@
 										}
 									}
 									ok = ok && ( (ins && ins.settings && ins.settings.dnd && ins.settings.dnd.check_while_dragging === false) || ins.check(op, (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), p, ps, { 'dnd' : true, 'ref' : ins.get_node(ref.parent()), 'pos' : v, 'origin' : data.data.origin, 'is_multi' : (data.data.origin && data.data.origin !== ins), 'is_foreign' : (!data.data.origin) }) );
+                                                                        if (v === 'i' && ref.parent().is('.jstree-open')) {
+                                                                                // If adding node A inside a node B and node B is open, pull marker down
+                                                                                // and to the right to indicate that node A will be added as the first
+                                                                                // child of node B.
+                                                                                l = off.left - 6 + 24; // Hacky hard-coding of indent amount for each tree level.
+                                                                                t = off.top + h * (i + 1);
+                                                                        }
 									if(!ok) {
 										if(ins && ins.last_error) { laster = ins.last_error(); }
 										break;
@@ -291,8 +309,15 @@
 									opento = setTimeout((function (x, z) { return function () { x.open_node(z); }; }(ins, ref)), ins.settings.dnd.open_timeout);
 								}
 								if(ok) {
+                                                                        var parentNode = ins.get_node(p, true);
+                                                                        $('.jstree-dnd-parent').removeClass('jstree-dnd-parent');
+                                                                        parentNode.addClass('jstree-dnd-parent');
 									lastmv = { 'ins' : ins, 'par' : p, 'pos' : v === 'i' && ip === 'last' && i === 0 && !ins.is_loaded(tm) ? 'last' : i };
 									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
+                                                                        if (v === 'i' && (ref.parent().is('.jstree-closed') || ref.parent().is('.jstree-leaf'))) {
+                                                                                // Don't show marker if node is added inside a closed or leaf node.
+                                                                                marker.hide();
+                                                                        }
 									data.helper.find('.jstree-icon').first().removeClass('jstree-er').addClass('jstree-ok');
 									if (data.event.originalEvent && data.event.originalEvent.dataTransfer) {
 										data.event.originalEvent.dataTransfer.dropEffect = is_copy ? 'copy' : 'move';
@@ -321,6 +346,7 @@
 				data.helper.find('.jstree-icon').first().removeClass('jstree-ok').addClass('jstree-er');
 			})
 			.on('dnd_stop.vakata.jstree', function (e, data) {
+                                $('.jstree-dnd-parent').removeClass('jstree-dnd-parent');
 				if(opento) { clearTimeout(opento); }
 				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide().detach();
