@@ -297,8 +297,8 @@
                                                                                 // If adding node A inside a node B and node B is open, pull marker down
                                                                                 // and to the right to indicate that node A will be added as the first
                                                                                 // child of node B.
-                                                                                l = off.left - 6 + 24;
-                                                                                t = off.top + h;
+                                                                                l = off.left - 6 + 24; // Hacky hard-coding of indent amount for each tree level.
+                                                                                t = off.top + h * (i + 1);
                                                                         }
 									if(!ok) {
 										if(ins && ins.last_error) { laster = ins.last_error(); }
