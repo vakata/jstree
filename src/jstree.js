@@ -51,7 +51,7 @@
 	_temp1.className = 'jstree-icon jstree-ocl';
 	_temp1.setAttribute('role', 'presentation');
 	_node.appendChild(_temp1);
-	_temp1 = document.createElement('A');
+	_temp1 = document.createElement('SPAN');
 	_temp1.className = 'jstree-anchor';
 	_temp1.setAttribute('href','#');
 	_temp1.setAttribute('tabindex','-1');
@@ -1940,7 +1940,7 @@
 					}
 				});
 			}
-			tmp = d.children("a").first().length ? d.children("a").first().clone() : d.clone();
+			tmp = d.children("span").first().length ? d.children("span").first().clone() : d.clone();
 			tmp.children("ins, i, ul").remove();
 			tmp = tmp.html();
 			tmp = $('<div />').html(tmp);
@@ -1948,8 +1948,8 @@
 			tmp = d.data();
 			data.data = tmp ? $.extend(true, {}, tmp) : null;
 			data.state.opened = d.hasClass('jstree-open');
-			data.state.selected = d.children('a').hasClass('jstree-clicked');
-			data.state.disabled = d.children('a').hasClass('jstree-disabled');
+			data.state.selected = d.children('span').hasClass('jstree-clicked');
+			data.state.disabled = d.children('span').hasClass('jstree-disabled');
 			if(data.data && data.data.jstree) {
 				for(i in data.data.jstree) {
 					if(data.data.jstree.hasOwnProperty(i)) {
@@ -1957,7 +1957,7 @@
 					}
 				}
 			}
-			tmp = d.children("a").children(".jstree-themeicon");
+			tmp = d.children("span").children(".jstree-themeicon");
 			if(tmp.length) {
 				data.icon = tmp.hasClass('jstree-themeicon-hidden') ? false : tmp.attr('rel');
 			}
