@@ -261,7 +261,7 @@
 	 * @name $(':jstree')
 	 * @return {jQuery}
 	 */
-	$.expr[':'].jstree = $.expr.createPseudo(function(search) {
+	$.expr.pseudos.jstree = $.expr.createPseudo(function(search) {
 		return function(a) {
 			return $(a).hasClass('jstree') &&
 				$(a).data('jstree') !== undefined;
