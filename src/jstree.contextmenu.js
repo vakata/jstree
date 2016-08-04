@@ -234,7 +234,7 @@
 			*/
 			$(document).on("context_hide.vakata.jstree", $.proxy(function (e, data) {
 				this._data.contextmenu.visible = false;
-				data.reference.removeClass('jstree-context');
+				$(data.reference).removeClass('jstree-context');
 			}, this));
 		};
 		this.teardown = function () {

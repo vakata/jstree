@@ -1332,6 +1332,9 @@
 		 */
 		_load_node : function (obj, callback) {
 			var s = this.settings.core.data, t;
+			var notTextOrCommentNode = function notTextOrCommentNode () {
+				return this.nodeType !== 3 && this.nodeType !== 8;
+			};
 			// use original HTML
 			if(!s) {
 				if(obj.id === $.jstree.root) {
@@ -1350,7 +1353,7 @@
 						callback.call(this, false);
 					}
 					else {
-						this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $($.parseHTML(d)).filter(function () { return this.nodeType !== 3; }) : d, function (status) {
+						this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $($.parseHTML(d)).filter(notTextOrCommentNode) : d, function (status) {
 							callback.call(this, status);
 						});
 					}
@@ -1374,7 +1377,7 @@
 									//return callback.call(this, this._append_json_data(obj, d));
 								}
 								if((type && type.indexOf('html') !== -1) || typeof d === "string") {
-									return this._append_html_data(obj, $($.parseHTML(d)).filter(function () { return this.nodeType !== 3; }), function (status) { callback.call(this, status); });
+									return this._append_html_data(obj, $($.parseHTML(d)).filter(notTextOrCommentNode), function (status) { callback.call(this, status); });
 									// return callback.call(this, this._append_html_data(obj, $(d)));
 								}
 								this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'core', 'id' : 'core_04', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id, 'xhr' : x }) };
@@ -1402,7 +1405,7 @@
 			}
 			if(typeof s === 'string') {
 				if(obj.id === $.jstree.root) {
-					return this._append_html_data(obj, $($.parseHTML(s)).filter(function () { return this.nodeType !== 3; }), function (status) {
+					return this._append_html_data(obj, $($.parseHTML(s)).filter(notTextOrCommentNode), function (status) {
 						callback.call(this, status);
 					});
 				}
