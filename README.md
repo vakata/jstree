@@ -143,8 +143,8 @@ There are other available options for each node, only set them if you need them 
 
  * `id` - makes if possible to identify a node later (will also be used as a DOM ID of the `LI` node). _Make sure you do not repeat the same ID in a tree instance (that would defeat its purpose of being a unique identifier and may cause problems for jstree)_.
  * `icon` - a string which will be used for the node's icon - this can either be a path to a file, or a className (or list of classNames), which you can style in your CSS (font icons also work).
- * `data` - this can be anything you want - it is metadata you want attached to the node - you willbe able to access and modify it any time later - it has no effect on the visuals of the node.
- * `state` - and object specifyng a few options about the node:
+ * `data` - this can be anything you want - it is metadata you want attached to the node - you will be able to access and modify it any time later - it has no effect on the visuals of the node.
+ * `state` - an object specifyng a few options about the node:
    - `selected` - if the node should be initially selected
    - `opened` - if the node should be initially opened
    - `disabled` - if the node should be disabled
@@ -218,7 +218,7 @@ The server response is:
 
 [view result](http://jsfiddle.net/vakata/2kwkh2uL/4/)
 
-Instead of a JS array, you can set `core.data` to a [jQuery AJAX config](http://api.jquery.com/jQuery.ajax/)
+Instead of a JS array, you can set `core.data` to a [jQuery AJAX config](http://api.jquery.com/jQuery.ajax/). 
 jsTree will hit that URL, and provided you return properly formatted JSON it will be displayed.
 
 _If you cannot provide proper JSON headers, set `core.data.dataType` to `"json"`._
@@ -231,7 +231,7 @@ __WHEN USING IDS MAKE SURE THEY ARE UNIQUE INSIDE A PARTICULAR TREE__
 
 ### Populating the tree using AJAX and lazy loading nodes
 
-Lazy loading means nodes will be loaded then they are needed. Imagine you have a huge amount of nodes you want to show, but loading them with a single request is way too much traffic. Lazy loading makes it possible to load nodes on the fly - jstree will perform AJAX requests as the user browses the tree.
+Lazy loading means nodes will be loaded when they are needed. Imagine you have a huge amount of nodes you want to show, but loading them with a single request is way too much traffic. Lazy loading makes it possible to load nodes on the fly - jstree will perform AJAX requests as the user browses the tree.
 
 Here we take our previous example, and lazy load the "Child node 1" node.
 
@@ -366,7 +366,7 @@ __All available functions and events are documented in the API docs__
 
 ## Interacting with the tree using the API
 
-We scratcched the surface on interacting with the tree in the previous example. Let's move on to obtaining an instance and calling a method on this instance:
+We scratched the surface on interacting with the tree in the previous example. Let's move on to obtaining an instance and calling a method on this instance:
 
 ```html
 <button>Select node 1</button>
@@ -447,7 +447,7 @@ $("#tree").jstree({
 
 [view result](http://jsfiddle.net/vakata/2kwkh2uL/9/)
 
-`"core.check_callback"` can also be set to a function, that will be invoked every time a modification is about to happen (or when jstree needs to check if a modification is possible). If you return `true` the operation will be allowed, a value of `false` means it will not be allowed. The possible operation you can expect are `create_node`, `rename_node`, `delete_node`, `move_node` and `copy_node`. The `more` parameter will contain various information provided by the plugin that is invoking the check. For example the DND plugin will provide an object containing information about the move ot copy operation that is being checked - is it a multi tree operation, which node is currently hovered, where the insert arrow is pointing - before, after or inside, etc.
+`"core.check_callback"` can also be set to a function, that will be invoked every time a modification is about to happen (or when jstree needs to check if a modification is possible). If you return `true` the operation will be allowed, a value of `false` means it will not be allowed. The possible operation you can expect are `create_node`, `rename_node`, `delete_node`, `move_node` and `copy_node`. The `more` parameter will contain various information provided by the plugin that is invoking the check. For example the DND plugin will provide an object containing information about the move or copy operation that is being checked - is it a multi tree operation, which node is currently hovered, where the insert arrow is pointing - before, after or inside, etc.
 
 ```js
 $("#tree").jstree({
