@@ -291,6 +291,9 @@
 									opento = setTimeout((function (x, z) { return function () { x.open_node(z); }; }(ins, ref)), ins.settings.dnd.open_timeout);
 								}
 								if(ok) {
+                                                                        var parentNode = ins.get_node(p, true);
+                                                                        $('.jstree-dnd-parent').removeClass('jstree-dnd-parent');
+                                                                        parentNode.addClass('jstree-dnd-parent');
 									lastmv = { 'ins' : ins, 'par' : p, 'pos' : v === 'i' && ip === 'last' && i === 0 && !ins.is_loaded(tm) ? 'last' : i };
 									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
 									data.helper.find('.jstree-icon').first().removeClass('jstree-er').addClass('jstree-ok');
@@ -321,6 +324,7 @@
 				data.helper.find('.jstree-icon').first().removeClass('jstree-ok').addClass('jstree-er');
 			})
 			.on('dnd_stop.vakata.jstree', function (e, data) {
+                                $('.jstree-dnd-parent').removeClass('jstree-dnd-parent');
 				if(opento) { clearTimeout(opento); }
 				if(!data || !data.data || !data.data.jstree) { return; }
 				marker.hide().detach();
