@@ -264,12 +264,12 @@
 			old_type = obj.type;
 			old_icon = this.get_icon(obj);
 			obj.type = type;
-			if(old_icon === true || (t[old_type] && t[old_type].icon !== undefined && old_icon === t[old_type].icon)) {
+			if(old_icon === true || !t[old_type] || (t[old_type].icon !== undefined && old_icon === t[old_type].icon)) {
 				this.set_icon(obj, t[type].icon !== undefined ? t[type].icon : true);
 			}
 
 			// remove old type props
-			if(t[old_type].li_attr !== undefined && typeof t[old_type].li_attr === 'object') {
+			if(t[old_type] && t[old_type].li_attr !== undefined && typeof t[old_type].li_attr === 'object') {
 				for (k in t[old_type].li_attr) {
 					if (t[old_type].li_attr.hasOwnProperty(k)) {
 						if (k === 'id') {
@@ -286,7 +286,7 @@
 					}
 				}
 			}
-			if(t[old_type].a_attr !== undefined && typeof t[old_type].a_attr === 'object') {
+			if(t[old_type] && t[old_type].a_attr !== undefined && typeof t[old_type].a_attr === 'object') {
 				for (k in t[old_type].a_attr) {
 					if (t[old_type].a_attr.hasOwnProperty(k)) {
 						if (k === 'id') {
