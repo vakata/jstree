@@ -3471,7 +3471,21 @@
 					return;
 				}
 				if(this.data.search.result.length) { this.clear_search(); }
+				
+				
 				this.data.search.result = this.get_container().find("a" + (this.data.languages ? "." + this.get_lang() : "" ) + ":" + (s.search_method) + "(" + this.data.search.str + ")");
+				
+				var descr_arr = this.get_container().find('li[title*="'+this.data.search.str+'"]');
+				this.data.search.result = $.merge(this.data.search.result,descr_arr);				
+				
+				this.data.search.result.each(function(){	
+					$(this).find('a').each(function(){
+						$(this).addClass('jstree-search').parent().parents(".jstree-closed").each(function () {							
+							t.open_node($(this).parent(), false, true);	
+						});
+					});
+				});
+			
 				this.data.search.result.addClass("jstree-search").parent().parents(".jstree-closed").each(function () {
 					t.open_node(this, false, true);
 				});
