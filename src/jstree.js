@@ -139,7 +139,8 @@
 				themes : {
 					name : false,
 					dots : false,
-					icons : false
+					icons : false,
+					ellipsis : false
 				},
 				selected : [],
 				last_error : {},
@@ -409,6 +410,11 @@
 			 * @name $.jstree.defaults.core.themes.icons
 			 */
 			icons			: true,
+			/**
+			 * a boolean indicating if node ellipsis should be shown - this only works with a fixed with on the container
+			 * @name $.jstree.defaults.core.themes.ellipsis
+			 */
+			ellipsis		: false,
 			/**
 			 * a boolean indicating if the tree background is striped
 			 * @name $.jstree.defaults.core.themes.stripes
@@ -801,6 +807,7 @@
 						this._data.core.themes.dots			= s.dots;
 						this._data.core.themes.stripes		= s.stripes;
 						this._data.core.themes.icons		= s.icons;
+						this._data.core.themes.ellipsis		= s.ellipsis;
 						this.set_theme(s.name || "default", s.url);
 						this.set_theme_variant(s.variant);
 					}, this))
@@ -808,6 +815,7 @@
 						this[ this._data.core.themes.dots ? "show_dots" : "hide_dots" ]();
 						this[ this._data.core.themes.icons ? "show_icons" : "hide_icons" ]();
 						this[ this._data.core.themes.stripes ? "show_stripes" : "hide_stripes" ]();
+						this[ this._data.core.themes.ellipsis ? "show_ellipsis" : "hide_ellipsis" ]();
 					}, this))
 				.on('blur.jstree', '.jstree-anchor', $.proxy(function (e) {
 						this._data.core.focused = null;
@@ -4559,6 +4567,21 @@
 		 * @name toggle_icons()
 		 */
 		toggle_icons : function () { if(this._data.core.themes.icons) { this.hide_icons(); } else { this.show_icons(); } },
+		/**
+		 * show the node ellipsis
+		 * @name show_icons()
+		 */
+		show_ellipsis : function () { this._data.core.themes.ellipsis = true; this.get_container_ul().addClass("jstree-ellipsis"); },
+		/**
+		 * hide the node ellipsis
+		 * @name hide_ellipsis()
+		 */
+		hide_ellipsis : function () { this._data.core.themes.ellipsis = false; this.get_container_ul().removeClass("jstree-ellipsis"); },
+		/**
+		 * toggle the node ellipsis
+		 * @name toggle_icons()
+		 */
+		toggle_ellipsis : function () { if(this._data.core.themes.ellipsis) { this.hide_ellipsis(); } else { this.show_ellipsis(); } },
 		/**
 		 * set the node icon for a node
 		 * @name set_icon(obj, icon)
