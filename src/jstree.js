@@ -43,25 +43,7 @@
 		ccp_inst = false,
 		themes_loaded = [],
 		src = $('script:last').attr('src'),
-		document = window.document, // local variable is always faster to access then a global
-		_node = document.createElement('LI'), _temp1, _temp2;
-
-	_node.setAttribute('role', 'treeitem');
-	_temp1 = document.createElement('I');
-	_temp1.className = 'jstree-icon jstree-ocl';
-	_temp1.setAttribute('role', 'presentation');
-	_node.appendChild(_temp1);
-	_temp1 = document.createElement('A');
-	_temp1.className = 'jstree-anchor';
-	_temp1.setAttribute('href','#');
-	_temp1.setAttribute('tabindex','-1');
-	_temp2 = document.createElement('I');
-	_temp2.className = 'jstree-icon jstree-themeicon';
-	_temp2.setAttribute('role', 'presentation');
-	_temp1.appendChild(_temp2);
-	_node.appendChild(_temp1);
-	_temp1 = _temp2 = null;
-
+		document = window.document; // local variable is always faster to access then a global
 
 	/**
 	 * holds all jstree related functions and variables, including the actual class and methods to create, access and manipulate instances.
@@ -93,6 +75,7 @@
 		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%?`]/g,
 		root : '#'
 	};
+	
 	/**
 	 * creates a jstree instance
 	 * @name $.jstree.create(el [, options])
@@ -557,6 +540,30 @@
 			if(!keep_html) { this.element.empty(); }
 			this.teardown();
 		},
+		/**
+		 * Create prototype node
+		 */
+		_create_prototype_node : function ()
+		{
+			var _node = document.createElement('LI'), _temp1, _temp2
+			_node.setAttribute('role', 'treeitem');
+			_temp1 = document.createElement('I');
+			_temp1.className = 'jstree-icon jstree-ocl';
+			_temp1.setAttribute('role', 'presentation');
+			_node.appendChild(_temp1);
+			_temp1 = document.createElement('A');
+			_temp1.className = 'jstree-anchor';
+			_temp1.setAttribute('href','#');
+			_temp1.setAttribute('tabindex','-1');
+			_temp2 = document.createElement('I');
+			_temp2.className = 'jstree-icon jstree-themeicon';
+			_temp2.setAttribute('role', 'presentation');
+			_temp1.appendChild(_temp2);
+			_node.appendChild(_temp1);
+			_temp1 = _temp2 = null;
+
+			return _node;
+		}
 		/**
 		 * part of the destroying of an instance. Used internally.
 		 * @private
@@ -2366,7 +2373,10 @@
 				//node = d.createElement('LI');
 				//node = node[0];
 			}
-			node = _node.cloneNode(true);
+			if (!this._prototype_node) {
+ 				this._prototype_node = this._create_prototype_node(); // initialization
+ 			}
+ 			node = this._prototype_node.cloneNode(true);
 			// node is DOM, deep is boolean
 
 			c = 'jstree-node ';
