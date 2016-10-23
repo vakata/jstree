@@ -286,6 +286,7 @@
   background-color: transparent;
 }
 .jstree-default-dark .jstree-anchor,
+.jstree-default-dark .jstree-animated,
 .jstree-default-dark .jstree-wholerow {
   transition: background-color 0.15s, box-shadow 0.15s;
 }
