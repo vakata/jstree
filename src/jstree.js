@@ -516,6 +516,7 @@
 			this.element.html("<"+"ul class='jstree-container-ul jstree-children' role='group'><"+"li id='j"+this._id+"_loading' class='jstree-initial-node jstree-loading jstree-leaf jstree-last' role='tree-item'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
 			this.element.attr('aria-activedescendant','j' + this._id + '_loading');
 			this._data.core.li_height = this.get_container_ul().children("li").first().height() || 24;
+			this._data.core.node = this._create_prototype_node();
 			/**
 			 * triggered after the loading text is shown and before loading starts
 			 * @event
@@ -543,9 +544,8 @@
 		/**
 		 * Create prototype node
 		 */
-		_create_prototype_node : function ()
-		{
-			var _node = document.createElement('LI'), _temp1, _temp2
+		_create_prototype_node : function () {
+			var _node = document.createElement('LI'), _temp1, _temp2;
 			_node.setAttribute('role', 'treeitem');
 			_temp1 = document.createElement('I');
 			_temp1.className = 'jstree-icon jstree-ocl';
@@ -563,7 +563,7 @@
 			_temp1 = _temp2 = null;
 
 			return _node;
-		}
+		},
 		/**
 		 * part of the destroying of an instance. Used internally.
 		 * @private
@@ -2373,10 +2373,7 @@
 				//node = d.createElement('LI');
 				//node = node[0];
 			}
-			if (!this._prototype_node) {
- 				this._prototype_node = this._create_prototype_node(); // initialization
- 			}
- 			node = this._prototype_node.cloneNode(true);
+			node = this._data.core.node.cloneNode(true);
 			// node is DOM, deep is boolean
 
 			c = 'jstree-node ';
