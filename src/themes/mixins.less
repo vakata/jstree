@@ -100,6 +100,6 @@
 	// ellipsis
 	.jstree-ellipsis { overflow: hidden; }
 	// base height + PADDINGS!
-	.jstree-ellipsis .jstree-anchor { width: calc(100% - (@base-height + 5px)); text-overflow: ellipsis; overflow: hidden; }
-	.jstree-ellipsis.jstree-no-icons .jstree-anchor { width: calc(100% - 5px); }
+	.jstree-ellipsis .jstree-anchor { width: calc(100% ~"-" (@base-height + 5px)); text-overflow: ellipsis; overflow: hidden; }
+	.jstree-ellipsis.jstree-no-icons .jstree-anchor { width: calc(100% ~"-" 5px); }
 }
