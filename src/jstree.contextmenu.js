@@ -580,7 +580,7 @@
 						switch(e.which) {
 							case 13:
 							case 32:
-								e.type = "mouseup";
+								e.type = "click";
 								e.preventDefault();
 								$(e.currentTarget).trigger(e);
 								break;
