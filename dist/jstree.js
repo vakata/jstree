@@ -2880,7 +2880,7 @@
 		 * hides a node - it is still in the structure but will not be visible
 		 * @name hide_node(obj)
 		 * @param {mixed} obj the node to hide
-		 * @param {Boolean} redraw internal parameter controlling if redraw is called
+		 * @param {Boolean} skip_redraw internal parameter controlling if redraw is called
 		 * @trigger hide_node.jstree
 		 */
 		hide_node : function (obj, skip_redraw) {
@@ -6305,7 +6305,7 @@
 						switch(e.which) {
 							case 13:
 							case 32:
-								e.type = "mouseup";
+								e.type = "click";
 								e.preventDefault();
 								$(e.currentTarget).trigger(e);
 								break;

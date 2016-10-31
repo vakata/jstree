@@ -544,12 +544,12 @@
   overflow: hidden;
 }
 .jstree-default .jstree-ellipsis .jstree-anchor {
-  width: calc(71%);
+  width: calc(100% - 29px);
   text-overflow: ellipsis;
   overflow: hidden;
 }
 .jstree-default .jstree-ellipsis.jstree-no-icons .jstree-anchor {
-  width: calc(95%);
+  width: calc(100% - 5px);
 }
 .jstree-default.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
@@ -728,12 +728,12 @@
   overflow: hidden;
 }
 .jstree-default-small .jstree-ellipsis .jstree-anchor {
-  width: calc(77%);
+  width: calc(100% - 23px);
   text-overflow: ellipsis;
   overflow: hidden;
 }
 .jstree-default-small .jstree-ellipsis.jstree-no-icons .jstree-anchor {
-  width: calc(95%);
+  width: calc(100% - 5px);
 }
 .jstree-default-small.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAACAQMAAABv1h6PAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMHBgAAiABBI4gz9AAAAABJRU5ErkJggg==");
@@ -912,12 +912,12 @@
   overflow: hidden;
 }
 .jstree-default-large .jstree-ellipsis .jstree-anchor {
-  width: calc(63%);
+  width: calc(100% - 37px);
   text-overflow: ellipsis;
   overflow: hidden;
 }
 .jstree-default-large .jstree-ellipsis.jstree-no-icons .jstree-anchor {
-  width: calc(95%);
+  width: calc(100% - 5px);
 }
 .jstree-default-large.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAACAQMAAAAD0EyKAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjgIIGBgABCgCBvVLXcAAAAABJRU5ErkJggg==");
