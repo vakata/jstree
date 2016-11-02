@@ -1662,7 +1662,12 @@
 									tmp.state[i] = df[i];
 								}
 							}
-							if(d && d.id) { tmp.id = d.id.toString(); }
+							if(d && d.id) { 
+								tmp.id = d.id.toString(); 
+								if(d.id == p && ps.length > 1){
+									d.id = ps[1];
+								}
+							}
 							if(d && d.text) { tmp.text = d.text; }
 							if(d && d.data && d.data.jstree && d.data.jstree.icon) {
 								tmp.icon = d.data.jstree.icon;
