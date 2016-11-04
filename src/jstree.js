@@ -60,6 +60,11 @@
 		 * @name $.jstree.defaults
 		 */
 		defaults : {
+      /**
+			 * configure the default element for the anchors. The default is `A`
+			 * @name $.jstree.defaults.plugins
+			 */
+			anchor_element : 'A',
 			/**
 			 * configure which plugins will be active on an instance. Should be an array of strings, where each element is a plugin name. The default is `[]`
 			 * @name $.jstree.defaults.plugins
@@ -551,7 +556,7 @@
 			_temp1.className = 'jstree-icon jstree-ocl';
 			_temp1.setAttribute('role', 'presentation');
 			_node.appendChild(_temp1);
-			_temp1 = document.createElement('A');
+			_temp1 = document.createElement(this.settings.anchor_element);
 			_temp1.className = 'jstree-anchor';
 			_temp1.setAttribute('href','#');
 			_temp1.setAttribute('tabindex','-1');
@@ -1948,7 +1953,7 @@
 					data.id = v.toString();
 				}
 			});
-			tmp = d.children('a').first();
+			tmp = d.children('[class="jstree-anchor"]').first();
 			if(tmp.length) {
 				tmp = $.vakata.attributes(tmp, true);
 				$.each(tmp, function (i, v) {
@@ -1958,7 +1963,7 @@
 					}
 				});
 			}
-			tmp = d.children("a").first().length ? d.children("a").first().clone() : d.clone();
+			tmp = d.children('[class="jstree-anchor"]').first().length ? d.children('[class="jstree-anchor"]').first().clone() : d.clone();
 			tmp.children("ins, i, ul").remove();
 			tmp = tmp.html();
 			tmp = $('<div />').html(tmp);
@@ -1966,8 +1971,8 @@
 			tmp = d.data();
 			data.data = tmp ? $.extend(true, {}, tmp) : null;
 			data.state.opened = d.hasClass('jstree-open');
-			data.state.selected = d.children('a').hasClass('jstree-clicked');
-			data.state.disabled = d.children('a').hasClass('jstree-disabled');
+			data.state.selected = d.children('[class="jstree-anchor"]').hasClass('jstree-clicked');
+			data.state.disabled = d.children('[class="jstree-anchor"]').hasClass('jstree-disabled');
 			if(data.data && data.data.jstree) {
 				for(i in data.data.jstree) {
 					if(data.data.jstree.hasOwnProperty(i)) {
@@ -1975,7 +1980,7 @@
 					}
 				}
 			}
-			tmp = d.children("a").children(".jstree-themeicon");
+			tmp = d.children('[class="jstree-anchor"]').children(".jstree-themeicon");
 			if(tmp.length) {
 				data.icon = tmp.hasClass('jstree-themeicon-hidden') ? false : tmp.attr('rel');
 			}
