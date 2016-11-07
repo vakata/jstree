@@ -3640,7 +3640,7 @@
 				'li_attr' : $.extend(true, {}, obj.li_attr),
 				'a_attr' : $.extend(true, {}, obj.a_attr),
 				'state' : {},
-				'data' : options && options.no_data ? false : (Array.isArray(obj.data) ? obj.data.slice() : $.extend(true, {}, obj.data))
+				'data' : options && options.no_data ? false : ($.isArray(obj.data) ? obj.data.slice() : $.extend(true, {}, obj.data))
 				//( this.get_node(obj, true).length ? this.get_node(obj, true).data() : obj.data ),
 			}, i, j;
 			if(options && options.flat) {
