@@ -3673,6 +3673,12 @@
 					delete tmp.a_attr.id;
 				}
 			}
+			if(options && options.parentsall) {
+                               tmp.parentsall = obj.parents;
+			}      
+			if(options && options.parentmaster) {
+                               tmp.parentmaster = obj.parents[(obj.parents.length)-2] ? obj.parents[(obj.parents.length)-2] : $.jstree.root;                         
+			}  			
 			if(options && options.flat && obj.id !== $.jstree.root) {
 				flat.push(tmp);
 			}
