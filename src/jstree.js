@@ -1405,7 +1405,13 @@
 								this.settings.core.error.call(this, this._data.core.last_error);
 							}, this));
 				}
-				t = ($.isArray(s) || $.isPlainObject(s)) ? JSON.parse(JSON.stringify(s)) : s;
+				if ($.isArray(s)) {
+					t = $.extend(true, [], s);
+				} else if ($.isPlainObject(s)) {
+					t = $.extend(true, {}, s);
+				} else {
+					t = s;
+				}
 				if(obj.id === $.jstree.root) {
 					return this._append_json_data(obj, t, function (status) {
 						callback.call(this, status);
