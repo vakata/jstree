@@ -3714,7 +3714,11 @@
 				return this.load_node(par, function () { this.create_node(par, node, pos, callback, true); });
 			}
 			if(!node) { node = { "text" : this.get_string('New node') }; }
-			if(typeof node === "string") { node = { "text" : node }; }
+			if(typeof node === "string") {
+				node = { "text" : node };
+			} else {
+				node = $.extend(true, {}, node);
+			}
 			if(node.text === undefined) { node.text = this.get_string('New node'); }
 			var tmp, dpc, i, j;
 
