@@ -338,7 +338,7 @@
 		 *	$('#tree').jstree({
 		 *		'core' : {
 		 *			'check_callback' : function (operation, node, node_parent, node_position, more) {
-		 *				// operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
+		 *				// operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
 		 *				// in case of 'rename_node' node_position is filled with the new node name
 		 *				return operation === 'rename_node' ? true : false;
 		 *			}
@@ -4369,8 +4369,7 @@
 			var rtl, w, a, s, t, h1, h2, fn, tmp, cancel = false;
 			obj = this.get_node(obj);
 			if(!obj) { return false; }
-			if(this.settings.core.check_callback === false) {
-				this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_07', 'reason' : 'Could not edit node because of check_callback' };
+			if(!this.check("edit", obj, this.get_parent(obj))) {
 				this.settings.core.error.call(this, this._data.core.last_error);
 				return false;
 			}
