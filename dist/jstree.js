@@ -3766,7 +3766,6 @@
 			par.children = tmp;
 
 			this.redraw_node(par, true);
-			if(callback) { callback.call(this, this.get_node(node)); }
 			/**
 			 * triggered when a node is created
 			 * @event
@@ -3776,6 +3775,7 @@
 			 * @param {Number} position the position of the new node among the parent's children
 			 */
 			this.trigger('create_node', { "node" : this.get_node(node), "parent" : par.id, "position" : pos });
+			if(callback) { callback.call(this, this.get_node(node)); }
 			return node.id;
 		},
 		/**
