@@ -1405,7 +1405,13 @@
 								this.settings.core.error.call(this, this._data.core.last_error);
 							}, this));
 				}
-				t = ($.isArray(s) || $.isPlainObject(s)) ? JSON.parse(JSON.stringify(s)) : s;
+				if ($.isArray(s)) {
+					t = $.extend(true, [], s);
+				} else if ($.isPlainObject(s)) {
+					t = $.extend(true, {}, s);
+				} else {
+					t = s;
+				}
 				if(obj.id === $.jstree.root) {
 					return this._append_json_data(obj, t, function (status) {
 						callback.call(this, status);
@@ -3640,7 +3646,7 @@
 				'li_attr' : $.extend(true, {}, obj.li_attr),
 				'a_attr' : $.extend(true, {}, obj.a_attr),
 				'state' : {},
-				'data' : options && options.no_data ? false : $.extend(true, {}, obj.data)
+				'data' : options && options.no_data ? false : ($.isArray(obj.data) ? obj.data.slice() : $.extend(true, {}, obj.data))
 				//( this.get_node(obj, true).length ? this.get_node(obj, true).data() : obj.data ),
 			}, i, j;
 			if(options && options.flat) {
@@ -3708,7 +3714,11 @@
 				return this.load_node(par, function () { this.create_node(par, node, pos, callback, true); });
 			}
 			if(!node) { node = { "text" : this.get_string('New node') }; }
-			if(typeof node === "string") { node = { "text" : node }; }
+			if(typeof node === "string") {
+				node = { "text" : node };
+			} else {
+				node = $.extend(true, {}, node);
+			}
 			if(node.text === undefined) { node.text = this.get_string('New node'); }
 			var tmp, dpc, i, j;
 
