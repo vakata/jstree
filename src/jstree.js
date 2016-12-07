@@ -64,7 +64,12 @@
 			 * configure which plugins will be active on an instance. Should be an array of strings, where each element is a plugin name. The default is `[]`
 			 * @name $.jstree.defaults.plugins
 			 */
-			plugins : []
+			plugins : [],
+		        transport: function(params, success, error) {
+			  return $.ajax(params)
+			    .then(success)
+			    .catch(error);
+		        }
 		},
 		/**
 		 * stores all loaded jstree plugins (used internally)
@@ -1384,8 +1389,8 @@
 					if($.isFunction(s.data)) {
 						s.data = s.data.call(this, obj);
 					}
-					return $.ajax(s)
-						.done($.proxy(function (d,t,x) {
+					return this.settings.transport(s,
+						$.proxy(function (d,t,x) {
 								var type = x.getResponseHeader('Content-Type');
 								if((type && type.indexOf('json') !== -1) || typeof d === "object") {
 									return this._append_json_data(obj, d, function (status) { callback.call(this, status); });
@@ -1398,8 +1403,8 @@
 								this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'core', 'id' : 'core_04', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id, 'xhr' : x }) };
 								this.settings.core.error.call(this, this._data.core.last_error);
 								return callback.call(this, false);
-							}, this))
-						.fail($.proxy(function (f) {
+							}, this),
+						$.proxy(function (f) {
 								callback.call(this, false);
 								this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'core', 'id' : 'core_04', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id, 'xhr' : f }) };
 								this.settings.core.error.call(this, this._data.core.last_error);
