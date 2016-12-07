@@ -176,16 +176,16 @@
 					if (this._data.search.lastRequest) {
 						this._data.search.lastRequest.abort();
 					}
-					this._data.search.lastRequest = $.ajax(a)
-						.fail($.proxy(function () {
-							this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'search', 'id' : 'search_01', 'reason' : 'Could not load search parents', 'data' : JSON.stringify(a) };
-							this.settings.core.error.call(this, this._data.core.last_error);
-						}, this))
-						.done($.proxy(function (d) {
+					this._data.search.lastRequest = this.settings.transport(a,
+						$.proxy(function (d) {
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true, show_only_matches, inside, append, show_only_matches_children);
 							});
+						}, this),
+						$.proxy(function () {
+							this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'search', 'id' : 'search_01', 'reason' : 'Could not load search parents', 'data' : JSON.stringify(a) };
+							this.settings.core.error.call(this, this._data.core.last_error);
 						}, this));
 					return this._data.search.lastRequest;
 				}
