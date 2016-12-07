@@ -65,6 +65,14 @@
 			 * @name $.jstree.defaults.plugins
 			 */
 			plugins : [],
+			/**
+			 * configure a transport for ajax call. You can use own ajax service (eg. fetch). Default $.ajax
+			 * Success function must have 3 arguments:
+			 * 	* data - the data returned
+			 *	* statusText
+			 *	* raw - the raw response. This object must provide getResponseHeader method who return a headers of response by key (see jquery implementation http://api.jquery.com/jQuery.ajax/#jqXHR)
+			 * @name $.jstree.defaults.transport
+			 */
 		        transport: function(params, success, error) {
 			  return $.ajax(params)
 			    .then(success)
