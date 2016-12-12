@@ -3421,7 +3421,9 @@
 					}
 					if(state.core.selected) {
 						_this = this;
-						this.deselect_all();
+						if(state.core.selected.length){
+							this.deselect_all();
+						}
 						$.each(state.core.selected, function (i, v) {
 							_this.select_node(v, false, true);
 						});
