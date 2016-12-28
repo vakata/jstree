@@ -43,6 +43,7 @@ _Aside from this readme you can find a lot more info on [jstree.com](http://www.
   - [unique](#unique)
   - [wholerow](#wholerow)
   - [More plugins](#more-plugins)
+- [PHP demos moved to new repository](#php-demos-moved-to-new-repository)
 - [License & Contributing](#license--contributing)
 
 <!-- /MarkdownTOC -->
@@ -645,6 +646,9 @@ $("#tree").jstree({
 [view result](http://jsfiddle.net/vakata/2kwkh2uL/4497/)
 
 As seen here when creating a plugin you can define a default config, add your own functions to jstree, or override existing ones while maintaining the ability to call the overridden function.
+
+## PHP demos moved to new repository
+https://github.com/vakata/jstree-php-demos
 
 ## License & Contributing
 
