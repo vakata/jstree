@@ -169,6 +169,9 @@
 
 			var last_ts = 0, cto = null, ex, ey;
 			this.element
+				.on("init.jstree loading.jstree ready.jstree", $.proxy(function () {
+						this.get_container_ul().addClass('jstree-contextmenu');
+					}, this))
 				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e, data) {
 						if (e.target.tagName.toLowerCase() === 'input') {
 							return;
