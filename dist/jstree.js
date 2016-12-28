@@ -3398,6 +3398,9 @@
 		 */
 		set_state : function (state, callback) {
 			if(state) {
+				if(state.core && state.core.selected && state.core.initial_selection === undefined) {
+					state.core.initial_selection = this._data.core.selected.concat([]).sort().join(',');
+				}
 				if(state.core) {
 					var res, n, t, _this, i;
 					if(state.core.open) {
@@ -3427,10 +3430,15 @@
 					}
 					if(state.core.selected) {
 						_this = this;
-						this.deselect_all();
-						$.each(state.core.selected, function (i, v) {
-							_this.select_node(v, false, true);
-						});
+						if (state.core.initial_selection === undefined ||
+							state.core.initial_selection === this._data.core.selected.concat([]).sort().join(',')
+						) {
+							this.deselect_all();
+							$.each(state.core.selected, function (i, v) {
+								_this.select_node(v, false, true);
+							});
+						}
+						delete state.core.initial_selection;
 						delete state.core.selected;
 						this.set_state(state, callback);
 						return false;
