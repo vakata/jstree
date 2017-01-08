@@ -3541,9 +3541,13 @@
 
 			h = $.vakata.context.cnt.height();
 			w = $.vakata.context.cnt.width();
-			if(x + w > $(document).width()) { 
+			if(!rtl && x + w > $(document).width()) { 
 				x = $(document).width() - (w + 5); 
 				$.vakata.context.cnt.find("li > ul").addClass("right"); 
+			}
+			if(rtl && x - w < 0) { 
+				x = w + 5; 
+				$.vakata.context.cnt.find("li > ul").addClass("left"); 
 			}
 			if(y + h > $(document).height()) { 
 				y = y - (h + t[0].offsetHeight); 
@@ -3551,12 +3555,12 @@
 			}
 
 			$.vakata.context.cnt
-				.css({ "left" : x, "top" : y })
+				.css({ "left" : x - (rtl?w:0), "top" : y })
 				.find("li:has(ul)")
 					.bind("mouseenter", function (e) { 
 						var w = $(document).width(),
 							h = $(document).height(),
-							ul = $(this).children("ul").show(); 
+							ul = $(this).children("ul").show();
 						if(w !== $(document).width()) { ul.toggleClass("right"); }
 						if(h !== $(document).height()) { ul.toggleClass("bottom"); }
 					})
@@ -3630,6 +3634,7 @@
 			'#vakata-contextmenu li a:hover, #vakata-contextmenu li.vakata-hover > a { background:gray; color:white; } ' + 
 			'#vakata-contextmenu li ul { display:none; position:absolute; top:-2px; left:100%; background:#ebebeb; border:1px solid gray; } ' + 
 			'#vakata-contextmenu .right { right:100%; left:auto; } ' + 
+			'#vakata-contextmenu .left { left:100%; right:auto; } ' + 
 			'#vakata-contextmenu .bottom { bottom:-1px; top:auto; } ' + 
 			'#vakata-contextmenu li.vakata-separator { min-height:0; height:1px; line-height:1px; font-size:1px; overflow:hidden; margin:0 2px; background:silver; /* border-top:1px solid #fefefe; */ padding:0; } ';
 		$.vakata.css.add_sheet({ str : css_string, title : "vakata" });
@@ -3780,7 +3785,7 @@
 				}
 				if(s.show_at_node || typeof x === "undefined" || typeof y === "undefined") {
 					o = a.offset();
-					x = o.left;
+					x = o.left + (this._get_settings().core.rtl?a.width():0);
 					y = o.top + this.data.core.li_height;
 				}
 				i = obj.data("jstree") && obj.data("jstree").contextmenu ? obj.data("jstree").contextmenu : s.items;
