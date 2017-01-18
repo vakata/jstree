@@ -67,7 +67,13 @@
 		 * @name $.jstree.defaults.checkbox.tie_selection
 		 * @plugin checkbox
 		 */
-		tie_selection		: true
+		tie_selection		: true,
+		/**
+		 * This setting controls if clicking on a node checks it. Defaults to `true`, only set to `false` if you know exactly what you are doing. If set to false, tie_selection will also be set to false.
+		 * @name $.jstree.defaults.checkbox.check_by_selection
+		 * @plugin checkbox
+		 */
+		check_by_selection	: true
 	};
 	$.jstree.plugins.checkbox = function (options, parent) {
 		this.bind = function () {
@@ -76,6 +82,9 @@
 			this._data.checkbox.selected = [];
 			if(this.settings.checkbox.three_state) {
 				this.settings.checkbox.cascade = 'up+down+undetermined';
+			}
+			if(!this.settings.checkbox.check_by_selection) {
+				this.settings.checkbox.tie_selection = false;
 			}
 			this.element
 				.on("init.jstree", $.proxy(function () {
@@ -610,13 +619,16 @@
 			if(this.is_disabled(obj)) {
 				return false;
 			}
-			if(this.is_checked(obj)) {
-				this.uncheck_node(obj, e);
+			
+			if(this.settings.checkbox.check_by_selection || $(e.target).hasClass("jstree-checkbox")) {
+				if(this.is_checked(obj)) {
+					this.uncheck_node(obj, e);
+				}
+				else {
+					this.check_node(obj, e);
+				}
 			}
-			else {
-				this.check_node(obj, e);
-			}
-			this.trigger('activate_node', { 'node' : this.get_node(obj) });
+			this.trigger('activate_node', { 'node' : this.get_node(obj), 'event' : e });
 		};
 
 		/**
