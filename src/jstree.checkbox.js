@@ -19,7 +19,7 @@
 }(function ($, jstree, undefined) {
 	"use strict";
 
-	//if($.jstree.plugins.checkbox) { return; }
+	if($.jstree.plugins.checkbox) { return; }
 
 	var _i = document.createElement('I');
 	_i.className = 'jstree-icon jstree-checkbox';
@@ -690,7 +690,7 @@
 		 * @plugin checkbox
 		 */
 		this.check_node = function (obj, e) {
-			if(this.settings.checkbox.tie_selection) { return this.cascade_node_check(obj, false, true, e); }
+			if(this.settings.checkbox.tie_selection) { return this.select_node(obj, false, true, e); }
 			var dom, t1, t2, th;
 			if($.isArray(obj)) {
 				obj = obj.slice();
@@ -730,7 +730,7 @@
 		 * @plugin checkbox
 		 */
 		this.uncheck_node = function (obj, e) {
-			if(this.settings.checkbox.tie_selection) { return this.cascade_node_uncheck(obj, false, e); }
+			if(this.settings.checkbox.tie_selection) { return this.deselect_node(obj, false, e); }
 			var t1, t2, dom;
 			if($.isArray(obj)) {
 				obj = obj.slice();
