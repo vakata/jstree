@@ -177,32 +177,23 @@
 							this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected);
 						}, this))
 					.on(this.settings.checkbox.tie_selection ? 'select_node.jstree' : 'check_node.jstree', $.proxy(function (e, data) {
-							var obj = data.node,
+							var self = this,
+								obj = data.node,
 								m = this._model.data,
 								par = this.get_node(obj.parent),
-								dom = this.get_node(obj, true),
 								i, j, c, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection,
 								sel = {}, cur = this._data[ t ? 'core' : 'checkbox' ].selected;
 
 							for (i = 0, j = cur.length; i < j; i++) {
 								sel[cur[i]] = true;
 							}
+
 							// apply down
 							if(s.indexOf('down') !== -1) {
 								//this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected.concat(obj.children_d));
-								for(i = 0, j = obj.children_d.length; i < j; i++) {
-									tmp = m[obj.children_d[i]];
-
-									if (tmp.state.disabled || tmp.state.hidden) {
-										continue;
-									}
-
-									sel[obj.children_d[i]] = true;
-									tmp.state[ t ? 'selected' : 'checked' ] = true;
-									if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
-										tmp.original.state.undetermined = false;
-									}
-								}
+								this.select_node(obj.id).forEach(function(id) {
+									sel[id] = true;
+								});
 							}
 
 							// apply up
@@ -237,9 +228,9 @@
 							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
 
 							// apply down (process .children separately?)
-							if(s.indexOf('down') !== -1 && dom.length) {
-								dom.find('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked').parent().attr('aria-selected', true);
-							}
+							//if(s.indexOf('down') !== -1 && dom.length) {
+							//	dom.find('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked').parent().attr('aria-selected', true);
+							//}
 						}, this))
 					.on(this.settings.checkbox.tie_selection ? 'deselect_all.jstree' : 'uncheck_all.jstree', $.proxy(function (e, data) {
 							var obj = this.get_node($.jstree.root),
@@ -253,28 +244,17 @@
 							}
 						}, this))
 					.on(this.settings.checkbox.tie_selection ? 'deselect_node.jstree' : 'uncheck_node.jstree', $.proxy(function (e, data) {
-							var obj = data.node,
+							var self = this,
+								obj = data.node,
 								dom = this.get_node(obj, true),
 								i, j, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection,
 								cur = this._data[ t ? 'core' : 'checkbox' ].selected, sel = {};
-							if(obj && obj.original && obj.original.state && obj.original.state.undetermined) {
-								obj.original.state.undetermined = false;
-							}
 
 							// apply down
 							if(s.indexOf('down') !== -1) {
-								for(i = 0, j = obj.children_d.length; i < j; i++) {
-									tmp = this._model.data[obj.children_d[i]];
-
-									if (tmp.state.disabled || tmp.state.hidden) {
-										continue;
-									}
-
-									tmp.state[ t ? 'selected' : 'checked' ] = false;
-									if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
-										tmp.original.state.undetermined = false;
-									}
-								}
+								this.deselect_node(obj.id).forEach(function(id) {
+									sel[id] = true;
+								});
 							}
 
 							// apply up
@@ -310,9 +290,9 @@
 							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
 							
 							// apply down (process .children separately?)
-							if(s.indexOf('down') !== -1 && dom.length) {
-								dom.find('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked').parent().attr('aria-selected', false);
-							}
+							//if(s.indexOf('down') !== -1 && dom.length) {
+							//	dom.find('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked').parent().attr('aria-selected', false);
+							//}
 						}, this));
 			}
 			if(this.settings.checkbox.cascade.indexOf('up') !== -1) {
@@ -403,6 +383,118 @@
 						}, this));
 			}
 		};
+
+		/**
+		 * Deselects a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
+		 * However if these unaffected nodes are already selected their ids will be included in the returned array.
+		 * @param id
+		 * @returns {Array} Array of all node id's (in this tree branch) that are selected.
+		 */
+		this.deselect_node = function(id) {
+			var self = this;
+			var t = this.settings.checkbox.tie_selection;
+			var node = this._model.data[id];
+			var selectedNodeIds = [];
+
+			if (!node.state.disabled && !node.state.hidden) {
+				node.state[ t ? 'selected' : 'checked' ] = false;
+
+				if (node.children) {
+					selectedNodeIds = node.children.reduce(function (_selectedNodeIds, child) {
+						return _selectedNodeIds.concat(self.deselect_node(child.id));
+					}, selectedNodeIds);
+				}
+
+				var undetermined = selectedNodeIds.length > 0 && selectedNodeIds.length < node.children.length;
+
+				if(node.original && node.original.state && node.original.state.undetermined) {
+					node.original.state.undetermined = undetermined;
+				}
+
+				var dom = self.get_node(node, true);
+
+				if (undetermined) {
+					dom.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-undetermined');
+				}
+				else {
+					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+				}
+			}
+			else {
+				selectedNodeIds = this.get_selected_descendants(id);
+
+				if (node.node.state[ t ? 'selected' : 'checked' ]) {
+					selectedNodeIds.push(node.id);
+				}
+			}
+
+			return selectedNodeIds;
+		};
+
+		/**
+		 * Selects a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
+		 * However if these unaffected nodes are already selected their ids will be included in the returned array.
+		 * @param id
+		 * @returns {Array} Array of all node id's (in this tree branch) that are now selected.
+		 */
+		this.select_node = function(id) {
+			var self = this;
+			var t = this.settings.checkbox.tie_selection;
+			var node = this._model.data[id];
+			var selectedNodeIds = [];
+
+			if (!node.state.disabled && !node.state.hidden) {
+				node.state[ t ? 'selected' : 'checked' ] = true;
+
+				if (node.children) {
+					selectedNodeIds = node.children.reduce(function (_selectedNodeIds, child) {
+						return _selectedNodeIds.concat(self.select_node(child.id));
+					}, selectedNodeIds);
+				}
+
+				var undetermined = selectedNodeIds.length > 0 && selectedNodeIds.length < node.children.length;
+
+				if(node.original && node.original.state && node.original.state.undetermined) {
+					node.original.state.undetermined = undetermined;
+				}
+
+				var dom = self.get_node(node, true);
+
+				if (undetermined) {
+					dom.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-undetermined');
+				}
+				else {
+					dom.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+				}
+
+				selectedNodeIds.push(node.id);
+			}
+			else {
+				selectedNodeIds = this.get_selected_descendants(id);
+
+				if (node.node.state[ t ? 'selected' : 'checked' ]) {
+					selectedNodeIds.push(node.id);
+				}
+			}
+
+			return selectedNodeIds;
+		};
+
+
+		/**
+		 * Gets ids of nodes selected in branch (of tree) specified by id (does not include the node specified by id)
+		 * @param id
+         */
+		this.get_selected_descendants = function(id) {
+			var self = this;
+			var t = self.settings.checkbox.tie_selection;
+			var node = self._model.data[id];
+
+			return node.children_d.map(function(_id) => {
+				return self._model.data(_id)[ t ? 'selected' : 'checked' ];
+			});
+		};
+
 		/**
 		 * set the undetermined state where and if necessary. Used internally.
 		 * @private
