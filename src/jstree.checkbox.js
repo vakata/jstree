@@ -163,7 +163,7 @@
 											this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 											tmp = this.get_node(p, true);
 											if(tmp && tmp.length) {
-												tmp.attr('aria-selected', true).children('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').addClass( t ? 'jstree-clicked' : 'jstree-checked');
+												tmp.attr('aria-selected', true).children('.jstree-anchor').addClass( t ? 'jstree-clicked' : 'jstree-checked');
 											}
 										}
 										else {
@@ -209,7 +209,7 @@
 										//this._data[ t ? 'core' : 'checkbox' ].selected.push(par.id);
 										tmp = this.get_node(par, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', true).children('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
 										}
 									}
 									else {
@@ -226,11 +226,6 @@
 								}
 							}
 							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
-
-							// apply down (process .children separately?)
-							//if(s.indexOf('down') !== -1 && dom.length) {
-							//	dom.find('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked').parent().attr('aria-selected', true);
-							//}
 						}, this))
 					.on(this.settings.checkbox.tie_selection ? 'deselect_all.jstree' : 'uncheck_all.jstree', $.proxy(function (e, data) {
 							var obj = this.get_node($.jstree.root),
@@ -267,7 +262,7 @@
 									}
 									tmp = this.get_node(obj.parents[i], true);
 									if(tmp && tmp.length) {
-										tmp.attr('aria-selected', false).children('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+										tmp.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
 									}
 								}
 							}
@@ -288,11 +283,6 @@
 								}
 							}
 							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
-							
-							// apply down (process .children separately?)
-							//if(s.indexOf('down') !== -1 && dom.length) {
-							//	dom.find('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked').parent().attr('aria-selected', false);
-							//}
 						}, this));
 			}
 			if(this.settings.checkbox.cascade.indexOf('up') !== -1) {
@@ -312,7 +302,7 @@
 									this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 									tmp = this.get_node(p, true);
 									if(tmp && tmp.length) {
-										tmp.attr('aria-selected', true).children('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+										tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
 									}
 								}
 								else {
@@ -340,7 +330,7 @@
 										this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 										tmp = this.get_node(p, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', true).children('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
 										}
 									}
 									else {
@@ -361,7 +351,7 @@
 										this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 										tmp = this.get_node(p, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', true).children('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
 										}
 									}
 								}
@@ -371,7 +361,7 @@
 										this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_remove_item(this._data[ t ? 'core' : 'checkbox' ].selected, p.id);
 										tmp = this.get_node(p, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', false).children('.jstree-node:not(.jstree-hidden):not(.jstree-diabled) .jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
 										}
 									}
 									else {
