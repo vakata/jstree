@@ -191,7 +191,7 @@
 							// apply down
 							if(s.indexOf('down') !== -1) {
 								//this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected.concat(obj.children_d));
-								this.select_node(obj.id).forEach(function(id) {
+								this._cascade_new_checked_state(obj.id, true).forEach(function(id) {
 									sel[id] = true;
 								});
 							}
@@ -252,7 +252,7 @@
 
 							// apply down
 							if(s.indexOf('down') !== -1) {
-								this.deselect_node(obj.id).forEach(function(id) {
+								this._cascade_new_checked_state(obj.id, false).forEach(function(id) {
 									sel[id] = true;
 								});
 							}
@@ -382,117 +382,6 @@
 							}
 						}, this));
 			}
-		};
-
-		/**
-		 * Deselects a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
-		 * However if these unaffected nodes are already selected their ids will be included in the returned array.
-		 * @param id
-		 * @returns {Array} Array of all node id's (in this tree branch) that are selected.
-		 */
-		this.deselect_node = function(id) {
-			var self = this;
-			var t = this.settings.checkbox.tie_selection;
-			var node = this._model.data[id];
-			var selectedNodeIds = [];
-
-			if (!node.state.disabled && !node.state.hidden) {
-				node.state[ t ? 'selected' : 'checked' ] = false;
-
-				if (node.children) {
-					selectedNodeIds = node.children.reduce(function (_selectedNodeIds, child) {
-						return _selectedNodeIds.concat(self.deselect_node(child.id));
-					}, selectedNodeIds);
-				}
-
-				var undetermined = selectedNodeIds.length > 0 && selectedNodeIds.length < node.children.length;
-
-				if(node.original && node.original.state && node.original.state.undetermined) {
-					node.original.state.undetermined = undetermined;
-				}
-
-				var dom = self.get_node(node, true);
-
-				if (undetermined) {
-					dom.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-undetermined');
-				}
-				else {
-					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
-				}
-			}
-			else {
-				selectedNodeIds = this.get_selected_descendants(id);
-
-				if (node.node.state[ t ? 'selected' : 'checked' ]) {
-					selectedNodeIds.push(node.id);
-				}
-			}
-
-			return selectedNodeIds;
-		};
-
-		/**
-		 * Selects a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
-		 * However if these unaffected nodes are already selected their ids will be included in the returned array.
-		 * @param id
-		 * @returns {Array} Array of all node id's (in this tree branch) that are now selected.
-		 */
-		this.select_node = function(id) {
-			var self = this;
-			var t = this.settings.checkbox.tie_selection;
-			var node = this._model.data[id];
-			var selectedNodeIds = [];
-
-			if (!node.state.disabled && !node.state.hidden) {
-				node.state[ t ? 'selected' : 'checked' ] = true;
-
-				if (node.children) {
-					selectedNodeIds = node.children.reduce(function (_selectedNodeIds, child) {
-						return _selectedNodeIds.concat(self.select_node(child.id));
-					}, selectedNodeIds);
-				}
-
-				var undetermined = selectedNodeIds.length > 0 && selectedNodeIds.length < node.children.length;
-
-				if(node.original && node.original.state && node.original.state.undetermined) {
-					node.original.state.undetermined = undetermined;
-				}
-
-				var dom = self.get_node(node, true);
-
-				if (undetermined) {
-					dom.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-undetermined');
-				}
-				else {
-					dom.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
-				}
-
-				selectedNodeIds.push(node.id);
-			}
-			else {
-				selectedNodeIds = this.get_selected_descendants(id);
-
-				if (node.node.state[ t ? 'selected' : 'checked' ]) {
-					selectedNodeIds.push(node.id);
-				}
-			}
-
-			return selectedNodeIds;
-		};
-
-
-		/**
-		 * Gets ids of nodes selected in branch (of tree) specified by id (does not include the node specified by id)
-		 * @param id
-         */
-		this.get_selected_descendants = function(id) {
-			var self = this;
-			var t = self.settings.checkbox.tie_selection;
-			var node = self._model.data[id];
-
-			return node.children_d.map(function(_id) => {
-				return self._model.data(_id)[ t ? 'selected' : 'checked' ];
-			});
 		};
 
 		/**
@@ -723,6 +612,87 @@
 		};
 
 		/**
+		 * Unchecks a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
+		 * However if these unaffected nodes are already selected their ids will be included in the returned array.
+		 * @param id
+		 * @param checkedState
+		 * @returns {Array} Array of all node id's (in this tree branch) that are checked.
+		 */
+		this._cascade_new_checked_state = function(id, checkedState) {
+			var self = this;
+			var t = this.settings.checkbox.tie_selection;
+			var node = this._model.data[id];
+			var selectedNodeIds = [];
+			var selectedChildrenIds = [];
+
+			if (!node.state.disabled && !node.state.hidden) {
+                //First try and check/uncheck the children
+                if (node.children) {
+					node.children.forEach(function(childId) {
+						var selectedChildIds = self._cascade_new_checked_state(childId, checkedState);
+						selectedNodeIds = selectedNodeIds.concat(selectedChildIds);
+						if (selectedChildIds.indexOf(childId) > -1) {
+							selectedChildrenIds.push(childId);
+						}
+					});
+				}
+
+				var dom = self.get_node(node, true);
+
+                //A node's state is undetermined if some but not all of it's children are checked/selected .
+				var undetermined = selectedChildrenIds.length > 0 && selectedChildrenIds.length < node.children.length;
+
+				if(node.original && node.original.state && node.original.state.undetermined) {
+					node.original.state.undetermined = undetermined;
+				}
+
+                //If a node is undetermined then remove selected class
+				if (undetermined) {
+                    node.state[ t ? 'selected' : 'checked' ] = false;
+                    dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+				}
+                //Otherwise, if the checkedState === true (i.e. the node is being checked now) and all of the node's children are checked (if it has any children),
+                //check the node and style it correctly.
+				else if (checkedState && selectedChildrenIds.length === node.children.length) {
+                    node.state[ t ? 'selected' : 'checked' ] = checkedState;
+
+                    if (checkedState) {
+                        selectedNodeIds.push(node.id);
+                    }
+
+					dom.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+				}
+				else {
+                    node.state[ t ? 'selected' : 'checked' ] = false;
+					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+				}
+			}
+			else {
+				selectedNodeIds = this.get_checked_descendants(id);
+
+				if (node.state[ t ? 'selected' : 'checked' ]) {
+					selectedNodeIds.push(node.id);
+				}
+			}
+
+			return selectedNodeIds;
+		};
+
+		/**
+		 * Gets ids of nodes selected in branch (of tree) specified by id (does not include the node specified by id)
+		 * @param id
+		 */
+		this.get_checked_descendants = function(id) {
+			var self = this;
+			var t = self.settings.checkbox.tie_selection;
+			var node = self._model.data[id];
+
+			return node.children_d.map(function(_id) {
+				return self._model.data(_id)[ t ? 'selected' : 'checked' ];
+			});
+		};
+
+		/**
 		 * check a node (only if tie_selection in checkbox settings is false, otherwise select_node will be called internally)
 		 * @name check_node(obj)
 		 * @param {mixed} obj an array can be used to check multiple nodes
@@ -730,7 +700,7 @@
 		 * @plugin checkbox
 		 */
 		this.check_node = function (obj, e) {
-			if(this.settings.checkbox.tie_selection) { return this.select_node(obj, false, true, e); }
+			if(this.settings.checkbox.tie_selection) { return this.cascade_node_check(obj, false, true, e); }
 			var dom, t1, t2, th;
 			if($.isArray(obj)) {
 				obj = obj.slice();
@@ -770,7 +740,7 @@
 		 * @plugin checkbox
 		 */
 		this.uncheck_node = function (obj, e) {
-			if(this.settings.checkbox.tie_selection) { return this.deselect_node(obj, false, e); }
+			if(this.settings.checkbox.tie_selection) { return this.cascade_node_uncheck(obj, false, e); }
 			var t1, t2, dom;
 			if($.isArray(obj)) {
 				obj = obj.slice();
@@ -802,6 +772,7 @@
 				this.trigger('uncheck_node', { 'node' : obj, 'selected' : this._data.checkbox.selected, 'event' : e });
 			}
 		};
+		
 		/**
 		 * checks all nodes in the tree (only if tie_selection in checkbox settings is false, otherwise select_all will be called internally)
 		 * @name check_all()
