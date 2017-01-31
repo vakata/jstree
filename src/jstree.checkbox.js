@@ -191,9 +191,15 @@
 							// apply down
 							if(s.indexOf('down') !== -1) {
 								//this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected.concat(obj.children_d));
-								this._cascade_new_checked_state(obj.id, true).forEach(function(id) {
-									sel[id] = true;
-								});
+								var selectedIds = this._cascade_new_checked_state(obj.id, true);
+                                obj.children_d.concat(obj.id).forEach(function(id) {
+                                    if (selectedIds.indexOf(id) > -1) {
+                                        sel[id] = true;
+                                    }
+                                    else {
+                                        delete sel[id];
+                                    }
+                                });
 							}
 
 							// apply up
@@ -247,9 +253,15 @@
 
 							// apply down
 							if(s.indexOf('down') !== -1) {
-								this._cascade_new_checked_state(obj.id, false).forEach(function(id) {
-									sel[id] = true;
-								});
+								var selectedIds = this._cascade_new_checked_state(obj.id, false);
+                                obj.children_d.concat(obj.id).forEach(function(id) {
+                                    if (selectedIds.indexOf(id) > -1) {
+                                        sel[id] = true;
+                                    }
+                                    else {
+                                        delete sel[id];
+                                    }
+                                });
 							}
 
 							// apply up
@@ -677,7 +689,7 @@
 			var t = self.settings.checkbox.tie_selection;
 			var node = self._model.data[id];
 
-			return node.children_d.map(function(_id) {
+			return node.children_d.filter(function(_id) {
 				return self._model.data(_id)[ t ? 'selected' : 'checked' ];
 			});
 		};
