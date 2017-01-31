@@ -278,11 +278,11 @@
 									}
 								}
 							}
-							sel = {};
+
 							for(i = 0, j = cur.length; i < j; i++) {
 								// apply down + apply up
 								if(
-									(s.indexOf('down') === -1 || $.inArray(cur[i], obj.children_d) === -1) &&
+									(s.indexOf('down') === -1 || sel[cur[i]]) &&
 									(s.indexOf('up') === -1 || $.inArray(cur[i], obj.parents) === -1)
 								) {
 									sel[cur[i]] = true;
