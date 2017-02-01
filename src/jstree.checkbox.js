@@ -19,7 +19,7 @@
 }(function ($, jstree, undefined) {
 	"use strict";
 
-	if($.jstree.plugins.checkbox) { return; }
+	//if($.jstree.plugins.checkbox) { return; }
 
 	var _i = document.createElement('I');
 	_i.className = 'jstree-icon jstree-checkbox';
@@ -67,7 +67,21 @@
 		 * @name $.jstree.defaults.checkbox.tie_selection
 		 * @plugin checkbox
 		 */
-		tie_selection		: true
+		tie_selection		: true,
+
+		/**
+		 * This setting controls if cascading down affects disabled checkboxes
+		 * @name $.jstree.defaults.checkbox.cascade_to_disabled
+		 * @plugin checkbox
+		 */
+		cascade_to_disabled : true,
+
+		/**
+		 * This setting controls if cascading down affects hidden checkboxes
+		 * @name $.jstree.defaults.checkbox.cascade_to_hidden
+		 * @plugin checkbox
+		 */
+		cascade_to_hidden : true
 	};
 	$.jstree.plugins.checkbox = function (options, parent) {
 		this.bind = function () {
@@ -249,23 +263,22 @@
 								obj = data.node,
 								dom = this.get_node(obj, true),
 								i, j, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection,
-								cur = this._data[ t ? 'core' : 'checkbox' ].selected, sel = {};
+								cur = this._data[ t ? 'core' : 'checkbox' ].selected, sel = {},
+								stillSelectedIds = [],
+								allIds = obj.children_d.concat(obj.id);
 
 							// apply down
 							if(s.indexOf('down') !== -1) {
 								var selectedIds = this._cascade_new_checked_state(obj.id, false);
-                                obj.children_d.concat(obj.id).forEach(function(id) {
-                                    if (selectedIds.indexOf(id) > -1) {
-                                        sel[id] = true;
-                                    }
-                                    else {
-                                        delete sel[id];
-                                    }
-                                });
+
+								cur = cur.filter(function(id) {
+									return allIds.indexOf(id) === -1 || selectedIds.indexOf(id) > -1;
+								});
 							}
 
-							// apply up
-							if(s.indexOf('up') !== -1) {
+							// only apply up if cascade up is enabled and if this node is not selected
+							// (if all child nodes are disabled and cascade_to_disabled === false then this node will till be selected).
+							if(s.indexOf('up') !== -1 && cur.indexOf(obj.id) === -1) {
 								for(i = 0, j = obj.parents.length; i < j; i++) {
 									tmp = this._model.data[obj.parents[i]];
 									tmp.state[ t ? 'selected' : 'checked' ] = false;
@@ -277,23 +290,12 @@
 										tmp.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
 									}
 								}
+
+								cur = cur.filter(function(id) {
+									return obj.parents.indexOf(id) === -1;
+								});
 							}
 
-							for(i = 0, j = cur.length; i < j; i++) {
-								// apply down + apply up
-								if(
-									(s.indexOf('down') === -1 || sel[cur[i]]) &&
-									(s.indexOf('up') === -1 || $.inArray(cur[i], obj.parents) === -1)
-								) {
-									sel[cur[i]] = true;
-								}
-							}
-							cur = [];
-							for (i in sel) {
-								if (sel.hasOwnProperty(i)) {
-									cur.push(i);
-								}
-							}
 							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
 						}, this));
 			}
@@ -627,7 +629,10 @@
 			var selectedNodeIds = [];
 			var selectedChildrenIds = [];
 
-			if (!node.state.disabled && !node.state.hidden) {
+			if (
+				(this.settings.checkbox.cascade_to_disabled || !node.state.disabled) &&
+				(this.settings.checkbox.cascade_to_hidden || !node.state.hidden)
+			) {
                 //First try and check/uncheck the children
                 if (node.children) {
 					node.children.forEach(function(childId) {
@@ -657,10 +662,7 @@
                 //check the node and style it correctly.
 				else if (checkedState && selectedChildrenIds.length === node.children.length) {
                     node.state[ t ? 'selected' : 'checked' ] = checkedState;
-
-                    if (checkedState) {
-                        selectedNodeIds.push(node.id);
-                    }
+					selectedNodeIds.push(node.id);
 
 					dom.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
 				}
@@ -670,11 +672,13 @@
 				}
 			}
 			else {
-				selectedNodeIds = this.get_checked_descendants(id);
+				var selectedChildIds = this.get_checked_descendants(id);
 
 				if (node.state[ t ? 'selected' : 'checked' ]) {
-					selectedNodeIds.push(node.id);
+					selectedChildIds.push(node.id);
 				}
+
+				selectedNodeIds = selectedNodeIds.concat(selectedChildIds);
 			}
 
 			return selectedNodeIds;
@@ -690,7 +694,7 @@
 			var node = self._model.data[id];
 
 			return node.children_d.filter(function(_id) {
-				return self._model.data(_id)[ t ? 'selected' : 'checked' ];
+				return self._model.data[_id].state[ t ? 'selected' : 'checked' ];
 			});
 		};
 
