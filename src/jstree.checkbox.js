@@ -19,7 +19,7 @@
 }(function ($, jstree, undefined) {
 	"use strict";
 
-	//if($.jstree.plugins.checkbox) { return; }
+	if($.jstree.plugins.checkbox) { return; }
 
 	var _i = document.createElement('I');
 	_i.className = 'jstree-icon jstree-checkbox';
