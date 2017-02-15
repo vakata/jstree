@@ -1264,6 +1264,7 @@
 		_fn : {
 			_show_input : function (obj, callback) {
 				obj = this._get_node(obj);
+				obj.get(0).scrollIntoView(false);
 				var rtl = this._get_settings().core.rtl,
 					w = this._get_settings().crrm.input_width_limit,
 					w1 = obj.children("ins").width(),
