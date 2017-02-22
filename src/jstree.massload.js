@@ -89,8 +89,8 @@
 						if($.isFunction(s.data)) {
 							s.data = s.data.call(this, toLoad);
 						}
-						return $.ajax(s)
-							.done($.proxy(function (data,t,x) {
+						return this.settings.transport(s,
+							$.proxy(function (data,t,x) {
 									var i, j;
 									if(data) {
 										for(i in data) {
@@ -106,8 +106,8 @@
 										}
 									}
 									parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
-								}, this))
-							.fail($.proxy(function (f) {
+								}, this),
+							$.proxy(function (f) {
 									parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
 								}, this));
 					}
