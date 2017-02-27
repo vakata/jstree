@@ -35,6 +35,10 @@
 }
 
 // base contextmenu
+.jstree-contextmenu .jstree-anchor {
+	-webkit-user-select: none; /* disable selection/Copy of UIWebView */
+	-webkit-touch-callout: none; /* disable the IOS popup when long-press on a link */
+}
 .vakata-context {
 	display:none;
 	&, ul { margin:0; padding:2px; position:absolute; background:#f5f5f5; border:1px solid #979797; box-shadow:2px 2px 2px #999999; }

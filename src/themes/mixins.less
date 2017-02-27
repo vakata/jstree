@@ -96,4 +96,10 @@
 		.jstree-ok { background-position: -(@correction) -(@image-height * 2 + @correction); }
 		.jstree-er { background-position: -(@image-height * 1 + @correction) -(@image-height * 2 + @correction); }
 	}
+
+	// ellipsis
+	.jstree-ellipsis { overflow: hidden; }
+	// base height + PADDINGS!
+	.jstree-ellipsis .jstree-anchor { width: calc(100% ~"-" (@base-height + 5px)); text-overflow: ellipsis; overflow: hidden; }
+	.jstree-ellipsis.jstree-no-icons .jstree-anchor { width: calc(100% ~"-" 5px); }
 }

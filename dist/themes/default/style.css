@@ -105,6 +105,12 @@
   -ms-user-select: none;
   user-select: none;
 }
+.jstree-contextmenu .jstree-anchor {
+  -webkit-user-select: none;
+  /* disable selection/Copy of UIWebView */
+  -webkit-touch-callout: none;
+  /* disable the IOS popup when long-press on a link */
+}
 .vakata-context {
   display: none;
 }
@@ -286,6 +292,7 @@
   background-color: transparent;
 }
 .jstree-default .jstree-anchor,
+.jstree-default .jstree-animated,
 .jstree-default .jstree-wholerow {
   transition: background-color 0.15s, box-shadow 0.15s;
 }
@@ -539,6 +546,17 @@
 #jstree-dnd.jstree-default .jstree-er {
   background-position: -36px -68px;
 }
+.jstree-default .jstree-ellipsis {
+  overflow: hidden;
+}
+.jstree-default .jstree-ellipsis .jstree-anchor {
+  width: calc(100% - 29px);
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.jstree-default .jstree-ellipsis.jstree-no-icons .jstree-anchor {
+  width: calc(100% - 5px);
+}
 .jstree-default.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAACAQMAAAB49I5GAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMOBgAAGAAJMwQHdQAAAABJRU5ErkJggg==");
 }
@@ -712,6 +730,17 @@
 #jstree-dnd.jstree-default-small .jstree-er {
   background-position: -39px -71px;
 }
+.jstree-default-small .jstree-ellipsis {
+  overflow: hidden;
+}
+.jstree-default-small .jstree-ellipsis .jstree-anchor {
+  width: calc(100% - 23px);
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.jstree-default-small .jstree-ellipsis.jstree-no-icons .jstree-anchor {
+  width: calc(100% - 5px);
+}
 .jstree-default-small.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAACAQMAAABv1h6PAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjAAMHBgAAiABBI4gz9AAAAABJRU5ErkJggg==");
 }
@@ -884,6 +913,17 @@
 }
 #jstree-dnd.jstree-default-large .jstree-er {
   background-position: -32px -64px;
+}
+.jstree-default-large .jstree-ellipsis {
+  overflow: hidden;
+}
+.jstree-default-large .jstree-ellipsis .jstree-anchor {
+  width: calc(100% - 37px);
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.jstree-default-large .jstree-ellipsis.jstree-no-icons .jstree-anchor {
+  width: calc(100% - 5px);
 }
 .jstree-default-large.jstree-rtl .jstree-node {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAACAQMAAAAD0EyKAAAABlBMVEUAAAAdHRvEkCwcAAAAAXRSTlMAQObYZgAAAAxJREFUCNdjgIIGBgABCgCBvVLXcAAAAABJRU5ErkJggg==");

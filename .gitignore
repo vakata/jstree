@@ -10,3 +10,5 @@
 /libs
 /docs
 /dist/libs
+/.vscode
+/.idea
