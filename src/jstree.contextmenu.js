@@ -638,7 +638,7 @@
 
 			$(document)
 				.on("mousedown.vakata.jstree", function (e) {
-					if(vakata_context.is_visible && !$.contains(vakata_context.element[0], e.target)) {
+					if(vakata_context.is_visible && vakata_context.element[0] !== e.target  && !$.contains(vakata_context.element[0], e.target)) {
 						$.vakata.context.hide();
 					}
 				})
