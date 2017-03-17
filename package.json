@@ -4,7 +4,7 @@
   "description": "jQuery tree plugin",
   "version": "3.3.3",
   "homepage": "http://jstree.com",
-  "main": "./dist/jstree.js",
+  "main": "./dist/jstree.min.js",
   "author": {
     "name": "Ivan Bozhanov",
     "email": "jstree@jstree.com",
