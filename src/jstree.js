@@ -1755,10 +1755,23 @@
 							if(!dat[i].children) {
 								dat[i].children = [];
 							}
+							if(!dat[i].state) {
+								dat[i].state = {};
+							}
 							m[dat[i].id.toString()] = dat[i];
 						}
 						// 2) populate children (foreach)
 						for(i = 0, j = dat.length; i < j; i++) {
+							if (!m[dat[i].parent.toString()]) {
+								console.log([
+									'jstree.js error: ',
+									'node.id [', dat[i].id.toString(), '] ',
+									'has invalid parent.id [', dat[i].parent.toString(), ']. ',
+									'Please check your data.'
+								].join(''));
+								continue;
+							}
+
 							m[dat[i].parent.toString()].children.push(dat[i].id.toString());
 							// populate parent.children_d
 							p.children_d.push(dat[i].id.toString());
