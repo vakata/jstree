@@ -2495,26 +2495,31 @@
 				node.appendChild(k);
 			}
 			if(old) {
-				k = d.createElement('UL');
-  				k.setAttribute('role', 'group');
-				k.className = 'jstree-children';
-				var cs = old.children;
-				if (!cs) { // IE8 support
-					cs = {};
-					for(i = 0, j = obj.childNodes.length; i < j; i++) {
-						cs[obj.childNodes[i].id] = obj.childNodes[i];
-					}
+				var oldChildren = {};
+				var currentChildren = {};
+				for(i = 0, j = obj.children.length, k = old.childNodes.length; i < j || i < k; i++) {
+					old.childNodes[i] && (oldChildren[old.childNodes[i].id] = old.childNodes[i]);
+					obj.children[i] && (currentChildren[obj.children[i]] = true);
 				}
-                		for(i = 0, j = obj.children.length; i < j; i++) {
+				for(i = 0, j = obj.children.length, k = old.childNodes.length; i < j || i < k; i++) {
 					var cEl = obj.children[i];
-					var oEl = cs[cEl];
-					if (!oEl) { // If the element don't exists, create it
-						k.appendChild(this.redraw_node(cEl, true, true));
-					} else {
-						k.appendChild(oEl);
+					var oEl = old.childNodes[i];
+					if (cEl != (oEl && oEl.id)) {
+						if (oEl && (!cEl || !currentChildren[oEl.id])) {
+							old.removeChild(oEl);
+							i--;
+						} else {
+							var cNext = old.childNodes[i+1];
+							var el = oldChildren[cEl];
+							if (!el) {
+								old.insertBefore(this.redraw_node(cEl, true, true), cNext);
+							} else {
+								old.insertBefore(el, cNext);
+							}
+						}
 					}
 				}
-				node.appendChild(k);
+				node.appendChild(old);
 			}
 			if(!is_callback) {
 				// append back using par / ind
