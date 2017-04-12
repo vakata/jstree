@@ -2498,10 +2498,17 @@
 				k = d.createElement('UL');
   				k.setAttribute('role', 'group');
 				k.className = 'jstree-children';
+				var cs = old.children;
+				if (!cs) { // IE8 support
+					cs = {};
+					for(i = 0, j = obj.childNodes.length; i < j; i++) {
+						cs[obj.childNodes[i].id] = obj.childNodes[i];
+					}
+				}
                 		for(i = 0, j = obj.children.length; i < j; i++) {
 					var cEl = obj.children[i];
-					var oEl = old.children[cEl];
-					if (!oEl) {
+					var oEl = cs[cEl];
+					if (!oEl) { // If the element don't exists, create it
 						k.appendChild(this.redraw_node(cEl, true, true));
 					} else {
 						k.appendChild(oEl);
