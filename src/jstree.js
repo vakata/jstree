@@ -2495,7 +2495,19 @@
 				node.appendChild(k);
 			}
 			if(old) {
-				node.appendChild(old);
+				k = d.createElement('UL');
+  				k.setAttribute('role', 'group');
+				k.className = 'jstree-children';
+                		for(i = 0, j = obj.children.length; i < j; i++) {
+					var cEl = obj.children[i];
+					var oEl = old.children[cEl];
+					if (!oEl) {
+						k.appendChild(this.redraw_node(cEl, true, true));
+					} else {
+						k.appendChild(oEl);
+					}
+				}
+				node.appendChild(k);
 			}
 			if(!is_callback) {
 				// append back using par / ind
@@ -3788,8 +3800,8 @@
 			}
 			tmp[pos] = node.id;
 			par.children = tmp;
-
-			this.redraw_node(par, true);
+			this.sort && this.sort(par, false);
+			this.redraw_node(par, false);
 			/**
 			 * triggered when a node is created
 			 * @event
