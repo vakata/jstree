@@ -87,6 +87,7 @@
 			return true;
 		};
 		this.create_node = function (par, node, pos, callback, is_loaded) {
+			var tmp, n;
 			if(!node || node.text === undefined) {
 				if(par === null) {
 					par = $.jstree.root;
@@ -100,18 +101,20 @@
 					return parent.create_node.call(this, par, node, pos, callback, is_loaded);
 				}
 				if(!node) { node = {}; }
-				var tmp, n, dpc, i, j, m = this._model.data, s = this.settings.unique.case_sensitive, cb = this.settings.unique.duplicate;
 				n = tmp = this.get_string('New node');
-				dpc = [];
-				for(i = 0, j = par.children.length; i < j; i++) {
-					dpc.push(s ? m[par.children[i]].text : m[par.children[i]].text.toLowerCase());
-				}
-				i = 1;
-				while($.inArray(s ? n : n.toLowerCase(), dpc) !== -1) {
-					n = cb.call(this, tmp, (++i)).toString();
-				}
-				node.text = n;
+			} else {
+				n = tmp = node.text;
 			}
+
+			var i, j, dpc = [], m = this._model.data, s = this.settings.unique.case_sensitive, cb = this.settings.unique.duplicate;
+			for(i = 0, j = par.children.length; i < j; i++) {
+				dpc.push(s ? m[par.children[i]].text : m[par.children[i]].text.toLowerCase());
+			}
+			i = 1;
+			while($.inArray(s ? n : n.toLowerCase(), dpc) !== -1) {
+				n = cb.call(this, tmp, (++i)).toString();
+			}
+			node.text = n;
 			return parent.create_node.call(this, par, node, pos, callback, is_loaded);
 		};
 	};
