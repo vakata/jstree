@@ -642,11 +642,9 @@
 							else if(e.which === 39) { e.which = 37; }
 						}
 						switch(e.which) {
-							case 32: // aria defines space only with Ctrl
-								if(e.ctrlKey) {
-									e.type = "click";
-									$(e.currentTarget).trigger(e);
-								}
+							case 32: // space
+								e.type = "click";
+								$(e.currentTarget).trigger(e);
 								break;
 							case 13: // enter
 								e.type = "click";
