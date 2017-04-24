@@ -234,6 +234,7 @@
 			 * @plugin search
 			 */
 			this.trigger('search', { nodes : this._data.search.dom, str : str, res : this._data.search.res, show_only_matches : show_only_matches });
+			return this._data.search.res;
 		};
 		/**
 		 * used to clear the last search (removes classes and shows all nodes if filtering is on)
