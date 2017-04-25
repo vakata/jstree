@@ -3148,7 +3148,12 @@
 		select_node : function (obj, supress_event, prevent_open, e) {
 			var dom, t1, t2, th;
 			if($.isArray(obj)) {
-				obj = obj.slice();
+			    if (obj.length > 99) {
+    				obj = obj.slice(0,99);
+			    }
+			    else {
+    				obj = obj.slice();
+                }
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.select_node(obj[t1], supress_event, prevent_open, e);
 				}
