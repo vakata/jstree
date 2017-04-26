@@ -3657,8 +3657,8 @@
 				'id' : obj.id,
 				'text' : obj.text,
 				'icon' : this.get_icon(obj),
-				'li_attr' : $.extend(true, {}, obj.li_attr),
-				'a_attr' : $.extend(true, {}, obj.a_attr),
+				'li_attr' : $.extend(true, {}, obj.li_attr, obj.original.li_attr),
+				'a_attr' : $.extend(true, {}, obj.a_attr, obj.original.a_attr),
 				'state' : {},
 				'data' : options && options.no_data ? false : $.extend(true, $.isArray(obj.data)?[]:{}, obj.data)
 				//( this.get_node(obj, true).length ? this.get_node(obj, true).data() : obj.data ),
