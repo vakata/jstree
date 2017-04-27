@@ -1,0 +1,22 @@
+/* jsTree default theme */
+$theme-name:				default !default;
+$hovered-bg-color:			#e7f4f9 !default;
+$hovered-shadow-color:		#cccccc !default;
+$disabled-color:			#666666 !default;
+$disabled-bg-color:			#efefef !default;
+$clicked-bg-color:			#beebff !default;
+$clicked-shadow-color:		#999999 !default;
+$clicked-gradient-color-1:	#beebff !default;
+$clicked-gradient-color-2:	#a8e4ff !default;
+$search-result-color:		#8b0000 !default;
+$mobile-wholerow-bg-color:	#ebebeb !default;
+$mobile-wholerow-shadow:	#666666 !default;
+$mobile-wholerow-bordert:	rgba(255,255,255,0.7) !default;
+$mobile-wholerow-borderb:	rgba(64,64,64,0.2) !default;
+$responsive:				true !default;
+$image-path:				"" !default;
+$base-height:				40px !default;
+
+@import "../mixins";
+@import "../base";
+@import "../main";
