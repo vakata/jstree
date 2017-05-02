@@ -54,5 +54,8 @@
         "themes/**/*.min.css"
       ]
     }
-  ]
+  ],
+  "browser": {
+    "jquery" : "jquery/dist/jquery.min.js"
+  }
 }
