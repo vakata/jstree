@@ -77,10 +77,10 @@ Now we are all set to create a tree, inline HTML is the easiest option (suitable
 ```html
 <div id="container">
   <ul>
-    <li>Root node
+    <li><span>Root node</span>
       <ul>
-        <li>Child node 1</li>
-        <li>Child node 2</li>
+        <li><span>Child node 1</span></li>
+        <li><span>Child node 2</span></li>
       </ul>
     </li>
   </ul>
