@@ -1534,6 +1534,11 @@
 					data = JSON.parse(data);
 				}
 			}
+			
+			if(typeof data === "string") {
+				data = JSON.parse(data);
+			}
+			
 			if(!$.isArray(data)) { data = [data]; }
 			var w = null,
 				args = {
