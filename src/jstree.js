@@ -1453,7 +1453,7 @@
 		 */
 		_node_changed : function (obj) {
 			obj = this.get_node(obj);
-			if(obj) {
+      if (obj && $.inArray(obj.id, this._model.changed)===-1) {
 				this._model.changed.push(obj.id);
 			}
 		},
