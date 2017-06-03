@@ -148,6 +148,7 @@
   line-height: 2.4em;
   text-shadow: 1px 1px 0 white;
   border-radius: 1px;
+  text-align: left;
 }
 .vakata-context li > a:hover {
   position: relative;
