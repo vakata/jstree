@@ -506,7 +506,7 @@
 					vakata_context.element
 						.css({ "left" : x, "top" : y })
 						.show()
-						.find('a').first().focus().parent().addClass("vakata-context-hover");
+						.find('[class~="jstree-anchor"]').first().focus().parent().addClass("vakata-context-hover");
 					vakata_context.is_visible = true;
 					/**
 					 * triggered on the document when the contextmenu is shown
@@ -574,15 +574,15 @@
 							}(this)), $.vakata.context.settings.hide_onmouseleave);
 					}
 				})
-				.on("click", "a", function (e) {
+				.on("click", '[class~="jstree-anchor"]', function (e) {
 					e.preventDefault();
 				//})
-				//.on("mouseup", "a", function (e) {
+				//.on("mouseup", '[class~="jstree-anchor"]', function (e) {
 					if(!$(this).blur().parent().hasClass("vakata-context-disabled") && $.vakata.context._execute($(this).attr("rel")) !== false) {
 						$.vakata.context.hide();
 					}
 				})
-				.on('keydown', 'a', function (e) {
+				.on('keydown', '[class~="jstree-anchor"]', function (e) {
 						var o = null;
 						switch(e.which) {
 							case 13:
@@ -593,7 +593,7 @@
 								break;
 							case 37:
 								if(vakata_context.is_visible) {
-									vakata_context.element.find(".vakata-context-hover").last().closest("li").first().find("ul").hide().find(".vakata-context-hover").removeClass("vakata-context-hover").end().end().children('a').focus();
+									vakata_context.element.find(".vakata-context-hover").last().closest("li").first().find("ul").hide().find(".vakata-context-hover").removeClass("vakata-context-hover").end().end().children('[class~="jstree-anchor"]').focus();
 									e.stopImmediatePropagation();
 									e.preventDefault();
 								}
@@ -602,14 +602,14 @@
 								if(vakata_context.is_visible) {
 									o = vakata_context.element.find("ul:visible").addBack().last().children(".vakata-context-hover").removeClass("vakata-context-hover").prevAll("li:not(.vakata-context-separator)").first();
 									if(!o.length) { o = vakata_context.element.find("ul:visible").addBack().last().children("li:not(.vakata-context-separator)").last(); }
-									o.addClass("vakata-context-hover").children('a').focus();
+									o.addClass("vakata-context-hover").children('[class~="jstree-anchor"]').focus();
 									e.stopImmediatePropagation();
 									e.preventDefault();
 								}
 								break;
 							case 39:
 								if(vakata_context.is_visible) {
-									vakata_context.element.find(".vakata-context-hover").last().children("ul").show().children("li:not(.vakata-context-separator)").removeClass("vakata-context-hover").first().addClass("vakata-context-hover").children('a').focus();
+									vakata_context.element.find(".vakata-context-hover").last().children("ul").show().children("li:not(.vakata-context-separator)").removeClass("vakata-context-hover").first().addClass("vakata-context-hover").children('[class~="jstree-anchor"]').focus();
 									e.stopImmediatePropagation();
 									e.preventDefault();
 								}
@@ -618,7 +618,7 @@
 								if(vakata_context.is_visible) {
 									o = vakata_context.element.find("ul:visible").addBack().last().children(".vakata-context-hover").removeClass("vakata-context-hover").nextAll("li:not(.vakata-context-separator)").first();
 									if(!o.length) { o = vakata_context.element.find("ul:visible").addBack().last().children("li:not(.vakata-context-separator)").first(); }
-									o.addClass("vakata-context-hover").children('a').focus();
+									o.addClass("vakata-context-hover").children('[class~="jstree-anchor"]').focus();
 									e.stopImmediatePropagation();
 									e.preventDefault();
 								}
@@ -647,7 +647,7 @@
 					}
 				})
 				.on("context_show.vakata.jstree", function (e, data) {
-					vakata_context.element.find("li:has(ul)").children("a").addClass("vakata-context-parent");
+					vakata_context.element.find("li:has(ul)").children('[class~="jstree-anchor"]').addClass("vakata-context-parent");
 					if(right_to_left) {
 						vakata_context.element.addClass("vakata-context-rtl").css("direction", "rtl");
 					}
