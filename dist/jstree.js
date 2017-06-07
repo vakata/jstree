@@ -6003,7 +6003,7 @@
 		this.bind = function () {
 			parent.bind.call(this);
 
-			var last_ts = 0, cto = null, ex, ey;
+			var last_ts = 0, cto = null, ex, ey, last_timeStamp;
 			this.element
 				.on("init.jstree loading.jstree ready.jstree", $.proxy(function () {
 						this.get_container_ul().addClass('jstree-contextmenu');
@@ -6034,6 +6034,7 @@
 						if(!e.originalEvent || !e.originalEvent.changedTouches || !e.originalEvent.changedTouches[0]) {
 							return;
 						}
+						last_timeStamp = e.originalEvent.timeStamp;
 						ex = e.originalEvent.changedTouches[0].clientX;
 						ey = e.originalEvent.changedTouches[0].clientY;
 						cto = setTimeout(function () {
@@ -6048,6 +6049,9 @@
 				.on('touchend.vakata.jstree', function (e) {
 						if(cto) {
 							clearTimeout(cto);
+							if ((e.originalEvent.timeStamp - last_timeStamp) > 650) {
+							    e.preventDefault();
+							}
 						}
 					});
 
