@@ -2406,6 +2406,12 @@
 			node.setAttribute('aria-selected', !!obj.state.selected);
 			node.setAttribute('aria-level', obj.parents.length);
 			node.setAttribute('aria-labelledby', obj.a_attr.id);
+			if( obj.state.custom_attr){
+				var new_attr = obj.state.custom_attr;
+				for(i in new_attr) {
+					node.setAttribute('data-'+i, new_attr[i]);
+				}
+			}
 			if(obj.state.disabled) {
 				node.setAttribute('aria-disabled', true);
 			}
