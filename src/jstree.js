@@ -3428,7 +3428,7 @@
 						this.set_state(state, callback);
 						return false;
 					}
-					if(state.core.selected) {
+					if(state.core.selected && state.core.selected.length) {
 						_this = this;
 						if (state.core.initial_selection === undefined ||
 							state.core.initial_selection === this._data.core.selected.concat([]).sort().join(',')
