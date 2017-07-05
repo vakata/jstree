@@ -3989,7 +3989,7 @@
 					//obj = obj.slice();
 					for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 						if((tmp = this.move_node(obj[t1], par, pos, callback, is_loaded, false, origin))) {
-							par = tmp;
+							//par = tmp; //Is this what you want in multi-move?
 							pos = "after";
 						}
 					}
