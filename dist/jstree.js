@@ -2444,6 +2444,9 @@
 			if(obj.state.hidden) {
 				c += ' jstree-hidden';
 			}
+			if (obj.state.loading) {
+				c += ' jstree-loading';
+			}
 			if(obj.state.loaded && !has_children) {
 				c += ' jstree-leaf';
 			}
