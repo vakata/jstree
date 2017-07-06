@@ -1763,12 +1763,8 @@
 						// 2) populate children (foreach)
 						for(i = 0, j = dat.length; i < j; i++) {
 							if (!m[dat[i].parent.toString()]) {
-								console.log([
-									'jstree.js error: ',
-									'node.id [', dat[i].id.toString(), '] ',
-									'has invalid parent.id [', dat[i].parent.toString(), ']. ',
-									'Please check your data.'
-								].join(''));
+								this._data.core.last_error = { 'error' : 'parse', 'plugin' : 'core', 'id' : 'core_07', 'reason' : 'Node with invalid parent', 'data' : JSON.stringify({ 'id' : dat[i].id.toString(), 'parent' : dat[i].parent.toString() }) };
+								this.settings.core.error.call(this, this._data.core.last_error);
 								continue;
 							}
 
