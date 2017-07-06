@@ -30,7 +30,7 @@
 		// own function
 		this.activate_node = function (obj, e) {
 			if(this.settings.conditionalselect.call(this, this.get_node(obj), e)) {
-				parent.activate_node.call(this, obj, e);
+				return parent.activate_node.call(this, obj, e);
 			}
 		};
 	};
