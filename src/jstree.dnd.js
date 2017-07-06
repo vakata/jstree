@@ -412,7 +412,7 @@
 				helper_left			: 5,
 				helper_top			: 10,
 				threshold			: 5,
-				threshold_touch		: 50
+				threshold_touch		: 10
 			},
 			_trigger : function (event_name, e, data) {
 				if (data === undefined) {

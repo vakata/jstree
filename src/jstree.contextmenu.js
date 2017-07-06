@@ -209,8 +209,9 @@
 						}, 750);
 					})
 				.on('touchmove.vakata.jstree', function (e) {
-						if(cto && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0] && (Math.abs(ex - e.originalEvent.changedTouches[0].clientX) > 50 || Math.abs(ey - e.originalEvent.changedTouches[0].clientY) > 50)) {
+						if(cto && e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches[0] && (Math.abs(ex - e.originalEvent.changedTouches[0].clientX) > 10 || Math.abs(ey - e.originalEvent.changedTouches[0].clientY) > 10)) {
 							clearTimeout(cto);
+							$.vakata.context.hide();
 						}
 					})
 				.on('touchend.vakata.jstree', function (e) {
