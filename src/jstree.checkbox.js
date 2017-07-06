@@ -206,14 +206,15 @@
 							if(s.indexOf('down') !== -1) {
 								//this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected.concat(obj.children_d));
 								var selectedIds = this._cascade_new_checked_state(obj.id, true);
-                                obj.children_d.concat(obj.id).forEach(function(id) {
-                                    if (selectedIds.indexOf(id) > -1) {
-                                        sel[id] = true;
-                                    }
-                                    else {
-                                        delete sel[id];
-                                    }
-                                });
+								var temp = obj.children_d.concat(obj.id);
+								for (i = 0, j = temp.length; i < j; i++) {
+									if (selectedIds.indexOf(temp[i]) > -1) {
+										sel[temp[i]] = true;
+									}
+									else {
+										delete sel[temp[i]];
+									}
+								}
 							}
 
 							// apply up
@@ -630,52 +631,53 @@
 			var t = this.settings.checkbox.tie_selection;
 			var node = this._model.data[id];
 			var selectedNodeIds = [];
-			var selectedChildrenIds = [];
+			var selectedChildrenIds = [], i, j, selectedChildIds;
 
 			if (
 				(this.settings.checkbox.cascade_to_disabled || !node.state.disabled) &&
 				(this.settings.checkbox.cascade_to_hidden || !node.state.hidden)
 			) {
-                //First try and check/uncheck the children
-                if (node.children) {
-					node.children.forEach(function(childId) {
-						var selectedChildIds = self._cascade_new_checked_state(childId, checkedState);
+				//First try and check/uncheck the children
+				if (node.children) {
+					for (i = 0, j = node.children.length; i < j; i++) {
+						var childId = node.children[i];
+						selectedChildIds = self._cascade_new_checked_state(childId, checkedState);
 						selectedNodeIds = selectedNodeIds.concat(selectedChildIds);
 						if (selectedChildIds.indexOf(childId) > -1) {
 							selectedChildrenIds.push(childId);
 						}
-					});
+					}
 				}
 
 				var dom = self.get_node(node, true);
 
-                //A node's state is undetermined if some but not all of it's children are checked/selected .
+				//A node's state is undetermined if some but not all of it's children are checked/selected .
 				var undetermined = selectedChildrenIds.length > 0 && selectedChildrenIds.length < node.children.length;
 
 				if(node.original && node.original.state && node.original.state.undetermined) {
 					node.original.state.undetermined = undetermined;
 				}
 
-                //If a node is undetermined then remove selected class
+				//If a node is undetermined then remove selected class
 				if (undetermined) {
-                    node.state[ t ? 'selected' : 'checked' ] = false;
-                    dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+					node.state[ t ? 'selected' : 'checked' ] = false;
+					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
 				}
-                //Otherwise, if the checkedState === true (i.e. the node is being checked now) and all of the node's children are checked (if it has any children),
-                //check the node and style it correctly.
+				//Otherwise, if the checkedState === true (i.e. the node is being checked now) and all of the node's children are checked (if it has any children),
+				//check the node and style it correctly.
 				else if (checkedState && selectedChildrenIds.length === node.children.length) {
-                    node.state[ t ? 'selected' : 'checked' ] = checkedState;
+					node.state[ t ? 'selected' : 'checked' ] = checkedState;
 					selectedNodeIds.push(node.id);
 
 					dom.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
 				}
 				else {
-                    node.state[ t ? 'selected' : 'checked' ] = false;
+					node.state[ t ? 'selected' : 'checked' ] = false;
 					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
 				}
 			}
 			else {
-				var selectedChildIds = this.get_checked_descendants(id);
+				selectedChildIds = this.get_checked_descendants(id);
 
 				if (node.state[ t ? 'selected' : 'checked' ]) {
 					selectedChildIds.push(node.id);
