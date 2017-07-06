@@ -2507,6 +2507,30 @@
 				node.appendChild(k);
 			}
 			if(old) {
+				var oldChildren = {};
+				var currentChildren = {};
+				for(i = 0, j = obj.children.length, k = old.childNodes.length; i < j || i < k; i++) {
+					old.childNodes[i] && (oldChildren[old.childNodes[i].id] = old.childNodes[i]);
+					obj.children[i] && (currentChildren[obj.children[i]] = true);
+				}
+				for(i = 0, j = obj.children.length, k = old.childNodes.length; i < j || i < k; i++) {
+					var cEl = obj.children[i];
+					var oEl = old.childNodes[i];
+					if (cEl != (oEl && oEl.id)) {
+						if (oEl && (!cEl || !currentChildren[oEl.id])) {
+							old.removeChild(oEl);
+							i--;
+						} else {
+							var cNext = old.childNodes[i+1];
+							var el = oldChildren[cEl];
+							if (!el) {
+								old.insertBefore(this.redraw_node(cEl, true, true), cNext);
+							} else {
+								old.insertBefore(el, cNext);
+							}
+						}
+					}
+				}
 				node.appendChild(old);
 			}
 			if(!is_callback) {
@@ -3800,8 +3824,8 @@
 			}
 			tmp[pos] = node.id;
 			par.children = tmp;
-
-			this.redraw_node(par, true);
+			this.sort && this.sort(par, false);
+			this.redraw_node(par, false);
 			/**
 			 * triggered when a node is created
 			 * @event

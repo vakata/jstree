@@ -37,13 +37,13 @@
 				.on("model.jstree", $.proxy(function (e, data) {
 						this.sort(data.parent, true);
 					}, this))
-				.on("rename_node.jstree create_node.jstree", $.proxy(function (e, data) {
+				.on("rename_node.jstree", $.proxy(function (e, data) {
 						this.sort(data.parent || data.node.parent, false);
-						this.redraw_node(data.parent || data.node.parent, true);
+						this.redraw_node(data.parent || data.node.parent, false);
 					}, this))
 				.on("move_node.jstree copy_node.jstree", $.proxy(function (e, data) {
 						this.sort(data.parent, false);
-						this.redraw_node(data.parent, true);
+						this.redraw_node(data.parent, false);
 					}, this));
 		};
 		/**
