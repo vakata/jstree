@@ -7,7 +7,7 @@
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
-		define('jstree.massload', ['jquery','jstree'], factory);
+		define('jstree.qload', ['jquery','jstree'], factory);
 	}
 	else if(typeof exports === 'object') {
 		factory(require('jquery'), require('jstree'));
@@ -18,7 +18,7 @@
 }(function ($, jstree, undefined) {
 	"use strict";
 
-	if($.jstree.plugins.massload) { return; }
+	if($.jstree.plugins.qload) { return; }
 
 	/**
 	 * massload configuration
@@ -45,18 +45,30 @@
 	$.jstree.plugins.qload = function (options, parent) {
 
 		this.draw_children = function(node) {
-			parent.draw_children(node, 0, this.settings.qload.limit);
+			var limit = this.settings.qload.limit;
+			var parentEl = parent.draw_children.call(this, node, limit);
+
+			if (parentEl && limit < node.children.length) {
+				parentEl.appendChild(this.draw_load_more_node(node.id, limit));
+			}
 		}
 		this.draw_load_more_node = function(id, lastIndex) {
 			var self = this;
-			var more_node = $('<li><a href="javascript:;" data-id="' + id + '" data-lastindex="' + lastIndex + '"></a ></li>');
+			var more_node = $([
+				'<li class="jstree-node jstree-leaf jstree-last" data-id="', id, '" data-lastindex="', lastIndex, '">',
+					'<i class="jstree-icon jstree-ocl" role="presentation"></i>',
+					'<a class="jstree-anchor" href="javascript:;">',
+						// '<i class="jstree-icon jstree-themeicon" role="presentation"></i>',
+					'</a >',
+				'</li>'
+			].join(''));
 
 			$('a', more_node)
-				.text(this.settings.qload.loadText)
+				.append(this.settings.qload.loadText)
 				.data('id', id)
 				.data('lastindex', lastIndex);
-				
-			more_node.on('click', 'a', function(e) {
+
+			more_node.on('click', function(e) {
 				self.load_more(e);
 			})
 			return more_node[0];
