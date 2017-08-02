@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree {{VERSION}}
+ * jsTree 3.3.4
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -54,7 +54,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '{{VERSION}}',
+		version : '3.3.4',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -7338,6 +7338,7 @@
 
 			more_node.on('click', function(e) {
 				self.load_more(e);
+
 			});
 			return more_node[0];
 		};
@@ -7363,6 +7364,7 @@
 				$target.remove();
 			}
 
+			this.trigger('qload_more', { 'node' : obj });
 		};
 	};
 

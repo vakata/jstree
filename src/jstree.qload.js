@@ -79,6 +79,7 @@
 
 			more_node.on('click', function(e) {
 				self.load_more(e);
+
 			});
 			return more_node[0];
 		};
@@ -104,6 +105,7 @@
 				$target.remove();
 			}
 
+			this.trigger('qload_more', { 'node' : obj });
 		};
 	};
 }));
