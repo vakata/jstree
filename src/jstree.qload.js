@@ -21,37 +21,46 @@
 	if($.jstree.plugins.qload) { return; }
 
 	/**
-	 * massload configuration
-	 *
-	 * It is possible to set this to a standard jQuery-like AJAX config.
-	 * In addition to the standard jQuery ajax options here you can supply functions for `data` and `url`, the functions will be run in the current instance's scope and a param will be passed indicating which node IDs need to be loaded, the return value of those functions will be used.
-	 *
-	 * You can also set this to a function, that function will receive the node IDs being loaded as argument and a second param which is a function (callback) which should be called with the result.
-	 *
-	 * Both the AJAX and the function approach rely on the same return value - an object where the keys are the node IDs, and the value is the children of that node as an array.
-	 *
-	 *	{
-	 *		"id1" : [{ "text" : "Child of ID1", "id" : "c1" }, { "text" : "Another child of ID1", "id" : "c2" }],
-	 *		"id2" : [{ "text" : "Child of ID2", "id" : "c3" }]
-	 *	}
-	 * 
+	 * qload configuration
 	 * @name $.jstree.defaults.qload
 	 * @plugin qload
 	 */
 	$.jstree.defaults.qload = {
-		limit: 50,
-		loadText: 'Load More...'
+		/**
+		 * the number of children will display in the list after opening a node
+		 * @type {Number}
+		 */
+		prevLimit: 50,
+		/**
+		 * the number of children will display after the list when load more nodes
+		 * @type {Number}
+		 */
+		nextLimit: 50,
+		/**
+		 * the text of the "More..." button
+		 * @type {String}
+		 */
+		moreText: 'More...'
 	};
 	$.jstree.plugins.qload = function (options, parent) {
 
+		/**
+		 * rewrite draw_children, append 'More...' button
+		 */
 		this.draw_children = function(node) {
-			var limit = this.settings.qload.limit;
+			var limit = this.settings.qload.prevLimit;
 			var parentEl = parent.draw_children.call(this, node, limit);
 
 			if (parentEl && limit < node.children.length) {
 				parentEl.appendChild(this.draw_load_more_node(node.id, limit));
 			}
-		}
+		};
+		/**
+		 * draw a 'More...' button node in the tree
+		 * @param  {String} id        the parent id
+		 * @param  {Number} lastIndex the last index of the shown node
+		 * @return {Element}          an element of the 'More...' button
+		 */
 		this.draw_load_more_node = function(id, lastIndex) {
 			var self = this;
 			var more_node = $([
@@ -64,15 +73,19 @@
 			].join(''));
 
 			$('a', more_node)
-				.append(this.settings.qload.loadText)
+				.append(this.settings.qload.moreText)
 				.data('id', id)
 				.data('lastindex', lastIndex);
 
 			more_node.on('click', function(e) {
 				self.load_more(e);
-			})
+			});
 			return more_node[0];
-		},
+		};
+		/**
+		 * click handler of the 'More...' button
+		 * @param  {Event} e click event object
+		 */
 		this.load_more = function(e) {
 			var $target = $(e.currentTarget);
 			var listItem = $target.closest('li');
@@ -81,16 +94,16 @@
 			var obj = this.get_node(id);
 			var children = obj.children;
 
-			for (var i = lastIndex, j = children.length; i < lastIndex + options.limit && i < j; ++i) {
+			for (var i = lastIndex, j = children.length; i < lastIndex + options.nextLimit && i < j; ++i) {
 				$(this.redraw_node(children[i], true, true)).insertBefore(listItem);
 			}
 
-			if (lastIndex + options.limit < children.length) {
-				$target.data('lastindex', lastIndex + options.limit);
+			if (lastIndex + options.nextLimit < children.length) {
+				$target.data('lastindex', lastIndex + options.nextLimit);
 			} else {
 				$target.remove();
 			}
 
-		}
-	}
+		};
+	};
 }));

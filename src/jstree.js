@@ -2302,13 +2302,6 @@
 			//this._model.redraw_timeout = setTimeout($.proxy(this._redraw, this),0);
 			this._redraw();
 		},
-
-
-
-		_draw_children_node : function() {
-
-		},
-
 		/**
 		 * redraws a single node's children. Used internally.
 		 * @private
@@ -2333,12 +2326,13 @@
 				k = d.createElement('UL');
 				k.setAttribute('role', 'group');
 				k.className = 'jstree-children';
-				var len = Math.min(limit, obj.children.length);
+				var len = limit ? Math.min(limit, obj.children.length) : obj.children.length;
 				for(i = 0; i < len; i++) {
 					k.appendChild(this.redraw_node(obj.children[i], true, true));
 				}
 				node.appendChild(k);
 			}
+			return k;
 		},
 		/**
 		 * redraws a single node. Used internally.
