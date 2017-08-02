@@ -619,6 +619,20 @@ $("#tree").jstree({
 
 [view result](http://jsfiddle.net/vakata/2kwkh2uL/4496/)
 
+### qload
+A plugin to prevent slowing down opening a node, which has large amount of children.
+
+```js
+$("#tree").jstree({
+  "plugins" : ["qload"],
+  qload: {
+    prevLimit: 50,
+    nextLimit: 30,
+    moreText: 'Load More...'
+  }
+});
+```
+
 ### More plugins
 If you create your own plugin (or download a 3rd party one) you must include its source on the page and list its name in the `"plugins"` config array.
 
