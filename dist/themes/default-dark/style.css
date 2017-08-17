@@ -280,6 +280,10 @@
 #jstree-dnd .jstree-copy {
   margin: 0 2px 0 2px;
 }
+.jstree-node .jstree-anchor .jstree-item-text {
+  display: inline-block;
+  width: 85%;
+}
 .jstree-default-dark .jstree-node,
 .jstree-default-dark .jstree-icon {
   background-repeat: no-repeat;
