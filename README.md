@@ -282,7 +282,7 @@ Proceed and open this node - you will see a next request fire off to:
 `http://www.jstree.com/fiddle?lazy&id=2`
 ID is set to `2` because the node being loaded has an ID of `2`, and we have configured jstree to send the node ID along with the AJAX request (the `data` function).
 
-The server response is:
+The server response is(**Please notice that this response is different from the initial response.This json only contains data about the  children nodes.No need to return data about the parent node which you open.**):
 ```json
 ["Child node 3","Child node 4"]
 ```
