@@ -906,6 +906,28 @@
 			}
 			return full ? $.map(obj, $.proxy(function (i) { return this.get_node(i); }, this)) : obj;
 		};
+		/**
+		 * get an array of all nodes whose state is "undetermined"
+		 * @name get_undetermined([full])
+		 * @param  {boolean} full: if set to `true` the returned array will consist of the full node objects, otherwise - only IDs will be returned
+		 * @return {Array}
+		 * @plugin checkbox
+		 */
+		this.get_undetermined = function(full) {
+			if(this.settings.checkbox.cascade.indexOf('undetermined') === -1) { return []; }    // There are no undetermined states
+			var parents_list = [],
+				tmp = this.get_top_checked(true),
+				i, j, parents;
+			for(i = 0, j = tmp.length; i < j; i++) {
+				parents = this.get_path(tmp[i], false, true);
+				parents.pop();
+				parents_list = parents_list.concat(parents);
+			}
+			var undetermined = $.grep(parents_list, function(item, i) {
+				return $.inArray(item, parents_list) === i;
+			});
+			return full ? $.map(undetermined, $.proxy(function (i) { return this.get_node(i); }, this)) : undetermined;
+		};
 		this.load_node = function (obj, callback) {
 			var k, l, i, j, c, tmp;
 			if(!$.isArray(obj) && !this.settings.checkbox.tie_selection) {
