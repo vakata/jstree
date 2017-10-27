@@ -291,7 +291,7 @@ _You can also set `"url"` to a function and it works exactly as with `"data"` - 
 
 ### Populating the tree using a callback function
 
-Sometimes you may not want jsTree to make AJAX calls for you - you might want to make them yourself, or use some other method of puplating the tree. In that case you can use a callback function.
+Sometimes you may not want jsTree to make AJAX calls for you - you might want to make them yourself, or use some other method of populating the tree. In that case you can use a callback function.
 
 ```html
 <div id="container"></div>
