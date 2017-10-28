@@ -42,6 +42,7 @@ _Aside from this readme you can find a lot more info on [jstree.com](http://www.
   - [types](#types)
   - [unique](#unique)
   - [wholerow](#wholerow)
+  - [qload](#qload)
   - [More plugins](#more-plugins)
 - [PHP demos moved to new repository](#php-demos-moved-to-new-repository)
 - [License & Contributing](#license--contributing)
@@ -618,6 +619,20 @@ $("#tree").jstree({
 ```
 
 [view result](http://jsfiddle.net/vakata/2kwkh2uL/4496/)
+
+### qload
+A plugin to prevent slowing down opening a node, which has large amount of children.
+
+```js
+$("#tree").jstree({
+  "plugins" : ["qload"],
+  "qload": {
+    "prevLimit": 50,
+    "nextLimit": 30,
+    "moreText": 'Load More...'
+  }
+});
+```
 
 ### More plugins
 If you create your own plugin (or download a 3rd party one) you must include its source on the page and list its name in the `"plugins"` config array.

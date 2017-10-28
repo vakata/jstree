@@ -2307,8 +2307,9 @@
 		 * @private
 		 * @name draw_children(node)
 		 * @param {mixed} node the node whose children will be redrawn
+		 * @param {Number} limit number of children will be redrawn
 		 */
-		draw_children : function (node) {
+		draw_children : function (node, limit) {
 			var obj = this.get_node(node),
 				i = false,
 				j = false,
@@ -2325,11 +2326,13 @@
 				k = d.createElement('UL');
 				k.setAttribute('role', 'group');
 				k.className = 'jstree-children';
-				for(i = 0, j = obj.children.length; i < j; i++) {
+				var len = limit ? Math.min(limit, obj.children.length) : obj.children.length;
+				for(i = 0; i < len; i++) {
 					k.appendChild(this.redraw_node(obj.children[i], true, true));
 				}
 				node.appendChild(k);
 			}
+			return k;
 		},
 		/**
 		 * redraws a single node. Used internally.
