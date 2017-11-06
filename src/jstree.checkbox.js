@@ -88,6 +88,7 @@
 			parent.bind.call(this);
 			this._data.checkbox.uto = false;
 			this._data.checkbox.selected = [];
+			this.settings.checkbox.cascade = '';
 			if(this.settings.checkbox.three_state) {
 				this.settings.checkbox.cascade = 'up+down+undetermined';
 			}
