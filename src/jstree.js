@@ -736,9 +736,10 @@
 							if(e.which === 37) { e.which = 39; }
 							else if(e.which === 39) { e.which = 37; }
 						}
-						var keyName = this.get_key_name(e);
-						var f = this.keydown_events[keyName];
-						f.call(this, e);
+						var f = this.keydown_events[this.get_key_name(e)];
+						if ($.isFunction(f)) {
+							f.call(this, e);
+						}
 					}, this))
 				.on("load_node.jstree", $.proxy(function (e, data) {
 						if(data.status) {
