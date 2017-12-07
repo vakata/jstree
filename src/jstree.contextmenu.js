@@ -48,7 +48,7 @@
 		 * * `_disabled` - a boolean indicating if this action should be disabled
 		 * * `label` - a string - the name of the action (could be a function returning a string)
 		 * * `title` - a string - an optional tooltip for the item
-		 * * `action` - a function to be executed if this item is chosen, the function will receive 
+		 * * `action` - a function to be executed if this item is chosen, the function will receive
 		 * * `icon` - a string, can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
 		 * * `shortcut` - keyCode which will trigger the action if the menu is open (for example `113` for rename, which equals F2)
 		 * * `shortcut_label` - shortcut label (like for example `F2` for rename)
@@ -624,22 +624,18 @@
 									e.preventDefault();
 								}
 								break;
-							case 27:
-								$.vakata.context.hide();
-								e.preventDefault();
-								break;
 							default:
 								//console.log(e.which);
 								break;
 						}
-					})
-				.on('keydown', function (e) {
-					e.preventDefault();
-					var a = vakata_context.element.find('.vakata-contextmenu-shortcut-' + e.which).parent();
-					if(a.parent().not('.vakata-context-disabled')) {
-						a.click();
-					}
-				});
+					});
+				// .on('keydown', function (e) {
+				// 	e.preventDefault();
+				// 	var a = vakata_context.element.find('.vakata-contextmenu-shortcut-' + e.which).parent();
+				// 	if(a.parent().not('.vakata-context-disabled')) {
+				// 		a.click();
+				// 	}
+				// });
 
 			$(document)
 				.on("mousedown.vakata.jstree", function (e) {
