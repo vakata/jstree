@@ -548,7 +548,9 @@
 			this.teardown();
 		},
 		/**
-		 * Create prototype node
+		 * Create a prototype node
+		 * @name _create_prototype_node()
+		 * @return {DOMElement}
 		 */
 		_create_prototype_node : function () {
 			var _node = document.createElement('LI'), _temp1, _temp2;
@@ -5504,13 +5506,14 @@
 		};
 
 		/**
-		 * Unchecks a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
+		 * Cascades checked state to a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
 		 * However if these unaffected nodes are already selected their ids will be included in the returned array.
-		 * @param id
-		 * @param checkedState
+		 * @private
+		 * @param {string} id the node ID
+		 * @param {bool} checkedState should the nodes be checked or not
 		 * @returns {Array} Array of all node id's (in this tree branch) that are checked.
 		 */
-		this._cascade_new_checked_state = function(id, checkedState) {
+		this._cascade_new_checked_state = function (id, checkedState) {
 			var self = this;
 			var t = this.settings.checkbox.tie_selection;
 			var node = this._model.data[id];
@@ -5575,9 +5578,12 @@
 
 		/**
 		 * Gets ids of nodes selected in branch (of tree) specified by id (does not include the node specified by id)
-		 * @param id
+		 * @name get_checked_descendants(obj)
+		 * @param {string} id the node ID
+		 * @return {Array} array of IDs
+		 * @plugin checkbox
 		 */
-		this.get_checked_descendants = function(id) {
+		this.get_checked_descendants = function (id) {
 			var self = this;
 			var t = self.settings.checkbox.tie_selection;
 			var node = self._model.data[id];

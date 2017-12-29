@@ -11,8 +11,8 @@
  * if using jslint please allow for the jQuery global and use following options:
  * jslint: loopfunc: true, browser: true, ass: true, bitwise: true, continue: true, nomen: true, plusplus: true, regexp: true, unparam: true, todo: true, white: true
  */
-/*! jshint -W083 */
-/*! globals jQuery, define, module, exports, require, window, document, postMessage */
+/*jshint -W083 */
+/*globals jQuery, define, module, exports, require, window, document, postMessage */
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
