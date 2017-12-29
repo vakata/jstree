@@ -599,3 +599,31 @@
                 }
         };
 }));
+
+// conditional deselect
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.conditionaldeselect', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.conditionaldeselect) { return; }
+	$.jstree.defaults.conditionaldeselect = function () { return true; };
+	$.jstree.plugins.conditionaldeselect = function (options, parent) {
+		// own function
+		this.deselect_node = function (obj, supress_event, e) {
+			if(this.settings.conditionaldeselect.call(this, this.get_node(obj), e)) {
+				return parent.deselect_node.call(this, obj, supress_event, e);
+			}
+		};
+	};
+
+}));
