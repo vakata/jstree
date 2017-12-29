@@ -291,7 +291,7 @@ _You can also set `"url"` to a function and it works exactly as with `"data"` - 
 
 ### Populating the tree using a callback function
 
-Sometimes you may not want jsTree to make AJAX calls for you - you might want to make them yourself, or use some other method of puplating the tree. In that case you can use a callback function.
+Sometimes you may not want jsTree to make AJAX calls for you - you might want to make them yourself, or use some other method of populating the tree. In that case you can use a callback function.
 
 ```html
 <div id="container"></div>
@@ -655,6 +655,7 @@ https://github.com/vakata/jstree-php-demos
 _Please do NOT edit files in the "dist" subdirectory as they are generated via grunt. You'll find source code in the "src" subdirectory!_
 
 If you want to you can always [donate a small amount][paypal] to help the development of jstree.
+
 [paypal]: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=paypal@vakata.com&currency_code=USD&amount=&return=http://jstree.com/donation&item_name=Buy+me+a+coffee+for+jsTree
 
 Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
