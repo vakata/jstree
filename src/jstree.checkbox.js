@@ -388,16 +388,18 @@
 						}, this));
 			}
 		};
-
 		/**
-		 * set the undetermined state where and if necessary. Used internally.
-		 * @private
-		 * @name _undetermined()
+		 * get an array of all nodes whose state is "undetermined"
+		 * @name get_undetermined([full])
+		 * @param  {boolean} full: if set to `true` the returned array will consist of the full node objects, otherwise - only IDs will be returned
+		 * @return {Array}
 		 * @plugin checkbox
 		 */
-		this._undetermined = function () {
-			if(this.element === null) { return; }
-			var i, j, k, l, o = {}, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this;
+		this.get_undetermined = function (full) {
+			if (this.settings.checkbox.cascade.indexOf('undetermined') === -1) {
+				return [];
+			}
+			var i, j, k, l, o = {}, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this, r = [];
 			for(i = 0, j = s.length; i < j; i++) {
 				if(m[s[i]] && m[s[i]].parents) {
 					for(k = 0, l = m[s[i]].parents.length; k < l; k++) {
@@ -450,14 +452,28 @@
 						}
 					}
 				});
+			for (i = 0, j = p.length; i < j; i++) {
+				if(!m[p[i]].state[ t ? 'selected' : 'checked' ]) {
+					r.push(full ? m[p[i]] : p[i]);
+				}
+			}
+			return r;
+		};
+		/**
+		 * set the undetermined state where and if necessary. Used internally.
+		 * @private
+		 * @name _undetermined()
+		 * @plugin checkbox
+		 */
+		this._undetermined = function () {
+			if(this.element === null) { return; }
+			var p = this.get_undetermined(false), i, j, s;
 
 			this.element.find('.jstree-undetermined').removeClass('jstree-undetermined');
-			for(i = 0, j = p.length; i < j; i++) {
-				if(!m[p[i]].state[ t ? 'selected' : 'checked' ]) {
-					s = this.get_node(p[i], true);
-					if(s && s.length) {
-						s.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-undetermined');
-					}
+			for (i = 0, j = p.length; i < j; i++) {
+				s = this.get_node(p[i], true);
+				if(s && s.length) {
+					s.children('.jstree-anchor').children('.jstree-checkbox').addClass('jstree-undetermined');
 				}
 			}
 		};
