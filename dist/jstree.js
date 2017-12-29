@@ -435,6 +435,11 @@
 		 */
 		dblclick_toggle : true,
 		/**
+		 * Should the loaded nodes be part of the state. Defaults to `false`
+		 * @name $.jstree.defaults.core.dblclick_toggle
+		 */
+		loaded_state : false,
+		/**
 		 * Default keyboard shortcuts (an object where each key is the button name or combo - like 'enter', 'ctrl-space', 'p', etc and the value is the function to execute in the instance's scope)
 		 * @name $.jstree.defaults.core.keyboard
 		 */
@@ -3419,6 +3424,7 @@
 			var state	= {
 				'core' : {
 					'open' : [],
+					'loaded' : [],
 					'scroll' : {
 						'left' : this.element.scrollLeft(),
 						'top' : this.element.scrollTop()
@@ -3436,6 +3442,9 @@
 			for(i in this._model.data) {
 				if(this._model.data.hasOwnProperty(i)) {
 					if(i !== $.jstree.root) {
+						if(this._model.data[i].state.loaded && this.settings.core.loaded_state) {
+							state.core.loaded.push(i);
+						}
 						if(this._model.data[i].state.opened) {
 							state.core.open.push(i);
 						}
@@ -3462,6 +3471,19 @@
 				}
 				if(state.core) {
 					var res, n, t, _this, i;
+					if(state.core.loaded) {
+						if(!this.settings.core.loaded_state || !$.isArray(state.core.loaded) || !state.core.loaded.length) {
+							delete state.core.loaded;
+							this.set_state(state, callback);
+						}
+						else {
+							this._load_nodes(state.core.loaded, function (nodes) {
+								delete state.core.loaded;
+								this.set_state(state, callback);
+							});
+						}
+						return false;
+					}
 					if(state.core.open) {
 						if(!$.isArray(state.core.open) || !state.core.open.length) {
 							delete state.core.open;
@@ -7837,7 +7859,13 @@
 		 * @name $.jstree.defaults.state.filter
 		 * @plugin state
 		 */
-		filter	: false
+		filter	: false,
+		/**
+		 * Should loaded nodes be restored (setting this to true means that it is possible that the whole tree will be loaded for some users - use with caution). Defaults to `false`
+		 * @name $.jstree.defaults.state.preserve_loaded
+		 * @plugin state
+		 */
+		preserve_loaded : false
 	};
 	$.jstree.plugins.state = function (options, parent) {
 		this.bind = function () {
@@ -7867,7 +7895,11 @@
 		 * @plugin state
 		 */
 		this.save_state = function () {
-			var st = { 'state' : this.get_state(), 'ttl' : this.settings.state.ttl, 'sec' : +(new Date()) };
+			var tm = this.get_state();
+			if (!this.settings.state.preserve_loaded) {
+				delete tm.core.loaded;
+			}
+			var st = { 'state' : tm, 'ttl' : this.settings.state.ttl, 'sec' : +(new Date()) };
 			$.vakata.storage.set(this.settings.state.key, JSON.stringify(st));
 		};
 		/**
@@ -7882,6 +7914,9 @@
 			if(!!k && k.state) { k = k.state; }
 			if(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }
 			if(!!k) {
+				if (!this.settings.state.preserve_loaded) {
+					delete k.core.loaded;
+				}
 				this.element.one("set_state.jstree", function (e, data) { data.instance.trigger('restore_state', { 'state' : $.extend(true, {}, k) }); });
 				this.set_state(k);
 				return true;

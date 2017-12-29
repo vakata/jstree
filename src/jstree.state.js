@@ -50,7 +50,13 @@
 		 * @name $.jstree.defaults.state.filter
 		 * @plugin state
 		 */
-		filter	: false
+		filter	: false,
+		/**
+		 * Should loaded nodes be restored (setting this to true means that it is possible that the whole tree will be loaded for some users - use with caution). Defaults to `false`
+		 * @name $.jstree.defaults.state.preserve_loaded
+		 * @plugin state
+		 */
+		preserve_loaded : false
 	};
 	$.jstree.plugins.state = function (options, parent) {
 		this.bind = function () {
@@ -80,7 +86,11 @@
 		 * @plugin state
 		 */
 		this.save_state = function () {
-			var st = { 'state' : this.get_state(), 'ttl' : this.settings.state.ttl, 'sec' : +(new Date()) };
+			var tm = this.get_state();
+			if (!this.settings.state.preserve_loaded) {
+				delete tm.core.loaded;
+			}
+			var st = { 'state' : tm, 'ttl' : this.settings.state.ttl, 'sec' : +(new Date()) };
 			$.vakata.storage.set(this.settings.state.key, JSON.stringify(st));
 		};
 		/**
@@ -95,6 +105,9 @@
 			if(!!k && k.state) { k = k.state; }
 			if(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }
 			if(!!k) {
+				if (!this.settings.state.preserve_loaded) {
+					delete k.core.loaded;
+				}
 				this.element.one("set_state.jstree", function (e, data) { data.instance.trigger('restore_state', { 'state' : $.extend(true, {}, k) }); });
 				this.set_state(k);
 				return true;
