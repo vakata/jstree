@@ -436,9 +436,14 @@
 		dblclick_toggle : true,
 		/**
 		 * Should the loaded nodes be part of the state. Defaults to `false`
-		 * @name $.jstree.defaults.core.dblclick_toggle
+		 * @name $.jstree.defaults.core.loaded_state
 		 */
 		loaded_state : false,
+		/**
+		 * Should the last active node be focused when the tree container is blurred and the focused again. This helps working with screen readers. Defaults to `true`
+		 * @name $.jstree.defaults.core.restore_focus
+		 */
+		restore_focus : true,
 		/**
 		 * Default keyboard shortcuts (an object where each key is the button name or combo - like 'enter', 'ctrl-space', 'p', etc and the value is the function to execute in the instance's scope)
 		 * @name $.jstree.defaults.core.keyboard
@@ -897,7 +902,7 @@
 						this.element.attr('tabindex', '-1');
 					}, this))
 				.on('focus.jstree', $.proxy(function () {
-						if(+(new Date()) - was_click > 500 && !this._data.core.focused) {
+						if(+(new Date()) - was_click > 500 && !this._data.core.focused && this.settings.core.restore_focus) {
 							was_click = 0;
 							var act = this.get_node(this.element.attr('aria-activedescendant'), true);
 							if(act) {
