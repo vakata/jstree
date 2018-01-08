@@ -483,7 +483,7 @@
 					vakata_context.element.html(vakata_context.html);
 				}
 				if(vakata_context.items.length) {
-					vakata_context.element.appendTo("body");
+					vakata_context.element.appendTo(document.body);
 					e = vakata_context.element;
 					x = vakata_context.position_x;
 					y = vakata_context.position_y;
@@ -539,7 +539,7 @@
 			}
 		};
 		$(function () {
-			right_to_left = $("body").css("direction") === "rtl";
+			right_to_left = $(document.body).css("direction") === "rtl";
 			var to = false;
 
 			vakata_context.element = $("<ul class='vakata-context'></ul>");
