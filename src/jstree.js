@@ -3111,7 +3111,9 @@
 					this.deselect_node(obj, false, e);
 				}
 				else {
-					this.deselect_all(true);
+					if(this.settings.checkbox.deselect_other_nodes) {
+					   this.deselect_all(true);
+					}
 					this.select_node(obj, false, false, e);
 					this._data.core.last_clicked = this.get_node(obj);
 				}

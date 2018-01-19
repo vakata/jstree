@@ -81,7 +81,14 @@
 		 * @name $.jstree.defaults.checkbox.cascade_to_hidden
 		 * @plugin checkbox
 		 */
-		cascade_to_hidden : true
+		cascade_to_hidden : true,
+		
+		/**
+		 * This setting controls if all nodes other than that was clicked should be deselected when whole_node is set to false
+		 * @name $.jstree.defaults.checkbox.deselect_other_nodes
+		 * @plugin checkbox
+		 */
+		deselect_other_nodes : true
 	};
 	$.jstree.plugins.checkbox = function (options, parent) {
 		this.bind = function () {
