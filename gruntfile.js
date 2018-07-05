@@ -35,7 +35,7 @@ module.exports = function(grunt) {
         //sourceMap: "dist/jstree.min.map",
         //sourceMappingURL: "jstree.min.map",
         report: "min",
-        beautify: {
+        output: {
                 ascii_only: true
         },
         compress: {
