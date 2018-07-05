@@ -30,7 +30,7 @@
     "grunt": "~0.4.0",
     "grunt-contrib-concat": "*",
     "grunt-contrib-copy": "*",
-    "grunt-contrib-imagemin": "~0.4.0",
+    "grunt-contrib-imagemin": "~2.0.1",
     "grunt-contrib-jshint": "*",
     "grunt-contrib-less": "~0.8.2",
     "grunt-contrib-qunit": "~2.0.0",
