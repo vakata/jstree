@@ -33,7 +33,7 @@
     "grunt-contrib-imagemin": "~0.4.0",
     "grunt-contrib-jshint": "*",
     "grunt-contrib-less": "~0.8.2",
-    "grunt-contrib-qunit": "~v0.3.0",
+    "grunt-contrib-qunit": "~2.0.0",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-phantomcss-gitdiff": "0.0.7",
