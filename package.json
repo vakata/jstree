@@ -36,7 +36,6 @@
     "grunt-contrib-qunit": "~2.0.0",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "~1.1.0",
-    "grunt-phantomcss-gitdiff": "0.0.7",
     "grunt-resemble-cli": "0.0.8",
     "grunt-text-replace": "~0.4.0",
     "lodash": "^4.17.10"
