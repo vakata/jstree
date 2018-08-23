@@ -627,3 +627,31 @@
 	};
 
 }));
+
+// conditional close
+(function (factory) {
+	"use strict";
+	if (typeof define === 'function' && define.amd) {
+		define('jstree.conditionalclose', ['jquery','jstree'], factory);
+	}
+	else if(typeof exports === 'object') {
+		factory(require('jquery'), require('jstree'));
+	}
+	else {
+		factory(jQuery, jQuery.jstree);
+	}
+}(function ($, jstree, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.conditionalclose) { return; }
+	$.jstree.defaults.conditionalclose = function () { return true; };
+	$.jstree.plugins.conditionalclose = function (options, parent) {
+		// own function
+		this.close_node = function (obj, animation) {
+			if(this.settings.conditionalclose.close.call(this, this.get_node(obj), e)) {
+				return parent.deselect_node.call(this, obj, animation);
+			}
+		};
+	};
+
+}));
