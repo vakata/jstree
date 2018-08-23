@@ -181,6 +181,18 @@
 			marker = $('<div id="jstree-marker">&#160;</div>').hide(); //.appendTo('body');
 
 		$(document)
+			.on('dragover', function (e) {
+				if (elm) {
+					$.vakata.dnd._trigger('move', e, { 'helper': $(), 'element': elm, 'data': drg });
+				}
+			})
+			.on('drop', function (e) {
+				if (elm) {
+					$.vakata.dnd._trigger('stop', e, { 'helper': $(), 'element': elm, 'data': drg });
+					elm = null;
+					drg = null;
+				}
+			})
 			.on('dnd_start.vakata.jstree', function (e, data) {
 				lastmv = false;
 				lastev = false;
@@ -319,7 +331,7 @@
 				lastmv = false;
 				data.helper.find('.jstree-icon').removeClass('jstree-ok').addClass('jstree-er');
 				if (data.event.originalEvent && data.event.originalEvent.dataTransfer) {
-					data.event.originalEvent.dataTransfer.dropEffect = 'none';
+					//data.event.originalEvent.dataTransfer.dropEffect = 'none';
 				}
 				marker.hide();
 			})
