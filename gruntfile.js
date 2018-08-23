@@ -1,4 +1,5 @@
 /*global module:false, require:false, __dirname:false*/
+var _ = require('lodash');
 
 module.exports = function(grunt) {
   grunt.util.linefeed = "\n";
@@ -29,12 +30,12 @@ module.exports = function(grunt) {
     },
     uglify: {
       options: {
-        banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> - (<%= _.pluck(pkg.licenses, "type").join(", ") %>) */\n',
+        banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> - (<%= _.map(pkg.licenses, "type").join(", ") %>) */\n',
         preserveComments: false,
         //sourceMap: "dist/jstree.min.map",
         //sourceMappingURL: "jstree.min.map",
         report: "min",
-        beautify: {
+        output: {
                 ascii_only: true
         },
         compress: {
@@ -195,7 +196,7 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('amd', 'Clean up AMD', function () {
     var s, d;
     this.files.forEach(function (f) {
-      s = f.src;
+      s = f.src[0];
       d = f.dest;
     });
     grunt.file.copy(s, d, {
@@ -232,7 +233,7 @@ module.exports = function(grunt) {
   });
 
   grunt.util.linefeed = "\n";
-  
+
   // Default task.
   grunt.registerTask('default', ['jshint:beforeconcat','concat','amd','jshint:afterconcat','copy:libs','uglify','less','imagemin','replace','copy:docs','qunit','resemble','dox']);
   grunt.registerTask('js', ['concat','amd','uglify']);
