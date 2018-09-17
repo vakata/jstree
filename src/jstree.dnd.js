@@ -181,12 +181,12 @@
 			marker = $('<div id="jstree-marker">&#160;</div>').hide(); //.appendTo('body');
 
 		$(document)
-			.on('dragover', function (e) {
+			.on('dragover.vakata.jstree', function (e) {
 				if (elm) {
 					$.vakata.dnd._trigger('move', e, { 'helper': $(), 'element': elm, 'data': drg });
 				}
 			})
-			.on('drop', function (e) {
+			.on('drop.vakata.jstree', function (e) {
 				if (elm) {
 					$.vakata.dnd._trigger('stop', e, { 'helper': $(), 'element': elm, 'data': drg });
 					elm = null;
