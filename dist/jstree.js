@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.5
+ * jsTree 3.3.6
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -54,7 +54,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.5',
+		version : '3.3.6',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -5922,7 +5922,7 @@
 			return res;
 		};
 		this.refresh = function (skip_loading, forget_state) {
-			if(!this.settings.checkbox.tie_selection) {
+			if(this.settings.checkbox.tie_selection) {
 				this._data.checkbox.selected = [];
 			}
 			return parent.refresh.apply(this, arguments);
@@ -6768,12 +6768,12 @@
 			marker = $('<div id="jstree-marker">&#160;</div>').hide(); //.appendTo('body');
 
 		$(document)
-			.on('dragover', function (e) {
+			.on('dragover.vakata.jstree', function (e) {
 				if (elm) {
 					$.vakata.dnd._trigger('move', e, { 'helper': $(), 'element': elm, 'data': drg });
 				}
 			})
-			.on('drop', function (e) {
+			.on('drop.vakata.jstree', function (e) {
 				if (elm) {
 					$.vakata.dnd._trigger('stop', e, { 'helper': $(), 'element': elm, 'data': drg });
 					elm = null;
