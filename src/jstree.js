@@ -753,7 +753,9 @@
 						}
 					}, this))
 				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
-						e.preventDefault();
+						if(!(e.ctrlKey && e.which === 1)) { // skip prevent default if ctrl+left click
+					   		e.preventDefault();
+					   	}
 						if(e.currentTarget !== document.activeElement) { $(e.currentTarget).focus(); }
 						this.activate_node(e.currentTarget, e);
 					}, this))
