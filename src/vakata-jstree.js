@@ -32,7 +32,7 @@
 		};
 		// proto.attributeChangedCallback = function (name, previous, value) { };
 		try {
-			document.registerElement("vakata-jstree", { prototype: proto });
+			window.customElements.define("vakata-jstree", function(){}, { prototype: proto });
 		} catch(ignore) { }
 	}
 }));
