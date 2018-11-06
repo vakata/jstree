@@ -11,7 +11,7 @@
 	}
 }(function ($, undefined) {
 	"use strict";
-	if((window.customElements || document.registerElement) && Object && Object.create) {
+	if(window.customElements && Object && Object.create) {
 		var proto = Object.create(HTMLElement.prototype);
 		proto.createdCallback = function () {
 			var c = { core : {}, plugins : [] }, i;
@@ -33,9 +33,6 @@
 		// proto.attributeChangedCallback = function (name, previous, value) { };
 		try {
 			window.customElements.define("vakata-jstree", function() {}, { prototype: proto });
-		} catch (ignore) { }
-		try {
-			document.registerElement("vakata-jstree", { prototype: proto });
 		} catch (ignore) { }
 	}
 }));
