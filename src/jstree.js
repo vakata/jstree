@@ -1605,6 +1605,7 @@
 					't_cnt'	: this._cnt,
 					'sel'	: this._data.core.selected
 				},
+				inst = this,
 				func = function (data, undefined) {
 					if(data.data) { data = data.data; }
 					var dat = data.dat,
@@ -1823,8 +1824,10 @@
 						// 2) populate children (foreach)
 						for(i = 0, j = dat.length; i < j; i++) {
 							if (!m[dat[i].parent.toString()]) {
-								this._data.core.last_error = { 'error' : 'parse', 'plugin' : 'core', 'id' : 'core_07', 'reason' : 'Node with invalid parent', 'data' : JSON.stringify({ 'id' : dat[i].id.toString(), 'parent' : dat[i].parent.toString() }) };
-								this.settings.core.error.call(this, this._data.core.last_error);
+								if (typeof inst !== "undefined") {
+									inst._data.core.last_error = { 'error' : 'parse', 'plugin' : 'core', 'id' : 'core_07', 'reason' : 'Node with invalid parent', 'data' : JSON.stringify({ 'id' : dat[i].id.toString(), 'parent' : dat[i].parent.toString() }) };
+									inst.settings.core.error.call(inst, inst._data.core.last_error);
+								}
 								continue;
 							}
 
