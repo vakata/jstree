@@ -1023,7 +1023,7 @@
 			if(obj && obj.id) {
 				obj = obj.id;
 			}
-			if (obj instanceof jQuery && obj.length && obj[0].id) {
+			if (obj instanceof $ && obj.length && obj[0].id) {
 				obj = obj[0].id;
 			}
 			var dom;
