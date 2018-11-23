@@ -579,7 +579,7 @@
 					e.preventDefault();
 				//})
 				//.on("mouseup", "a", function (e) {
-					if(!$(this).blur().parent().hasClass("vakata-context-disabled") && $.vakata.context._execute($(this).attr("rel")) !== false) {
+					if(e.which === 1 && !$(this).blur().parent().hasClass("vakata-context-disabled") && $.vakata.context._execute($(this).attr("rel")) !== false) {
 						$.vakata.context.hide();
 					}
 				})
