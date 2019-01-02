@@ -5099,24 +5099,24 @@
 								p = m[data.parent],
 								dpc = data.nodes,
 								chd = [],
-								c, i, j, k, l, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection;
+								c, i, j, k, l, tmp, s = this.settings.checkbox.cascade;
 
 							if(s.indexOf('down') !== -1) {
 								// apply down
-								if(p.state[ t ? 'selected' : 'checked' ]) {
+								if(this.get_checked_state(p)) {
 									for(i = 0, j = dpc.length; i < j; i++) {
-										m[dpc[i]].state[ t ? 'selected' : 'checked' ] = true;
+										this.set_checked_state(m[dpc[i]], true);
 									}
 
-									this._data[ t ? 'core' : 'checkbox' ].selected = this._data[ t ? 'core' : 'checkbox' ].selected.concat(dpc);
+									this.set_checked_data(this.get_checked_data().concat(dpc));
 								}
 								else {
 									for(i = 0, j = dpc.length; i < j; i++) {
-										if(m[dpc[i]].state[ t ? 'selected' : 'checked' ]) {
+										if(this.get_checked_state(m[dpc[i]])) {
 											for(k = 0, l = m[dpc[i]].children_d.length; k < l; k++) {
-												m[m[dpc[i]].children_d[k]].state[ t ? 'selected' : 'checked' ] = true;
+												this.set_checked_state(m[m[dpc[i]].children_d[k]], true);
 											}
-											this._data[ t ? 'core' : 'checkbox' ].selected = this._data[ t ? 'core' : 'checkbox' ].selected.concat(m[dpc[i]].children_d);
+											this.set_checked_data(this.get_checked_data().concat(m[dpc[i]].children_d));
 										}
 									}
 								}
@@ -5135,14 +5135,14 @@
 									while(p && p.id !== $.jstree.root) {
 										c = 0;
 										for(i = 0, j = p.children.length; i < j; i++) {
-											c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
+											c += this.get_checked_state(m[p.children[i]]);
 										}
 										if(c === j) {
-											p.state[ t ? 'selected' : 'checked' ] = true;
-											this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
+											this.set_checked_state(p, true);
+											this.get_checked_data().push(p.id);
 											tmp = this.get_node(p, true);
 											if(tmp && tmp.length) {
-												tmp.attr('aria-selected', true).children('.jstree-anchor').addClass( t ? 'jstree-clicked' : 'jstree-checked');
+												tmp.attr('aria-selected', true).children('.jstree-anchor').addClass( this.get_checked_class());
 											}
 										}
 										else {
@@ -5153,15 +5153,15 @@
 								}
 							}
 
-							this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected);
+							this.set_checked_data($.vakata.array_unique(this.get_checked_data()));
 						}, this))
 					.on(this.settings.checkbox.tie_selection ? 'select_node.jstree' : 'check_node.jstree', $.proxy(function (e, data) {
 							var self = this,
 								obj = data.node,
 								m = this._model.data,
 								par = this.get_node(obj.parent),
-								i, j, c, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection,
-								sel = {}, cur = this._data[ t ? 'core' : 'checkbox' ].selected;
+								i, j, c, tmp, s = this.settings.checkbox.cascade,
+								sel = {}, cur = this.get_checked_data();
 
 							for (i = 0, j = cur.length; i < j; i++) {
 								sel[cur[i]] = true;
@@ -5187,15 +5187,15 @@
 								while(par && par.id !== $.jstree.root) {
 									c = 0;
 									for(i = 0, j = par.children.length; i < j; i++) {
-										c += m[par.children[i]].state[ t ? 'selected' : 'checked' ];
+										c += this.get_checked_state(m[par.children[i]]);
 									}
 									if(c === j) {
-										par.state[ t ? 'selected' : 'checked' ] = true;
+										this.set_checked_state(par, true);
 										sel[par.id] = true;
 										//this._data[ t ? 'core' : 'checkbox' ].selected.push(par.id);
 										tmp = this.get_node(par, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(this.get_checked_class());
 										}
 									}
 									else {
@@ -5211,7 +5211,7 @@
 									cur.push(i);
 								}
 							}
-							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
+							this.set_checked_data(cur);
 						}, this))
 					.on(this.settings.checkbox.tie_selection ? 'deselect_all.jstree' : 'uncheck_all.jstree', $.proxy(function (e, data) {
 							var obj = this.get_node($.jstree.root),
@@ -5228,8 +5228,8 @@
 							var self = this,
 								obj = data.node,
 								dom = this.get_node(obj, true),
-								i, j, tmp, s = this.settings.checkbox.cascade, t = this.settings.checkbox.tie_selection,
-								cur = this._data[ t ? 'core' : 'checkbox' ].selected, sel = {},
+								i, j, tmp, s = this.settings.checkbox.cascade,
+								cur = this.get_checked_data(), sel = {},
 								stillSelectedIds = [],
 								allIds = obj.children_d.concat(obj.id);
 
@@ -5247,13 +5247,13 @@
 							if(s.indexOf('up') !== -1 && cur.indexOf(obj.id) === -1) {
 								for(i = 0, j = obj.parents.length; i < j; i++) {
 									tmp = this._model.data[obj.parents[i]];
-									tmp.state[ t ? 'selected' : 'checked' ] = false;
+									this.set_checked_state(tmp, false);
 									if(tmp && tmp.original && tmp.original.state && tmp.original.state.undetermined) {
 										tmp.original.state.undetermined = false;
 									}
 									tmp = this.get_node(obj.parents[i], true);
 									if(tmp && tmp.length) {
-										tmp.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+										tmp.attr('aria-selected', false).children('.jstree-anchor').removeClass(this.get_checked_class());
 									}
 								}
 
@@ -5262,7 +5262,7 @@
 								});
 							}
 
-							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
+							this.set_checked_data(cur);
 						}, this));
 			}
 			if(this.settings.checkbox.cascade.indexOf('up') !== -1) {
@@ -5271,18 +5271,18 @@
 							// apply up (whole handler)
 							var p = this.get_node(data.parent),
 								m = this._model.data,
-								i, j, c, tmp, t = this.settings.checkbox.tie_selection;
-							while(p && p.id !== $.jstree.root && !p.state[ t ? 'selected' : 'checked' ]) {
+								i, j, c, tmp;
+							while(p && p.id !== $.jstree.root && !this.get_checked_state(p)) {
 								c = 0;
 								for(i = 0, j = p.children.length; i < j; i++) {
-									c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
+									c += this.get_checked_state(m[p.children[i]]);
 								}
 								if(j > 0 && c === j) {
-									p.state[ t ? 'selected' : 'checked' ] = true;
-									this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
+									this.set_checked_state(p, true);
+									this.get_checked_data().push(p.id);
 									tmp = this.get_node(p, true);
 									if(tmp && tmp.length) {
-										tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+										tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(this.get_checked_class());
 									}
 								}
 								else {
@@ -5297,20 +5297,20 @@
 								old_par = data.old_parent,
 								new_par = this.get_node(data.parent),
 								m = this._model.data,
-								p, c, i, j, tmp, t = this.settings.checkbox.tie_selection;
+								p, c, i, j, tmp;
 							if(!is_multi) {
 								p = this.get_node(old_par);
-								while(p && p.id !== $.jstree.root && !p.state[ t ? 'selected' : 'checked' ]) {
+								while(p && p.id !== $.jstree.root && !this.get_checked_state(p)) {
 									c = 0;
 									for(i = 0, j = p.children.length; i < j; i++) {
-										c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
+										c += this.get_checked_state(m[p.children[i]]);
 									}
 									if(j > 0 && c === j) {
-										p.state[ t ? 'selected' : 'checked' ] = true;
-										this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
+										this.set_checked_state(p, true);
+										this.get_checked_data().push(p.id);
 										tmp = this.get_node(p, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(this.get_checked_class());
 										}
 									}
 									else {
@@ -5323,25 +5323,25 @@
 							while(p && p.id !== $.jstree.root) {
 								c = 0;
 								for(i = 0, j = p.children.length; i < j; i++) {
-									c += m[p.children[i]].state[ t ? 'selected' : 'checked' ];
+									c += this.get_checked_state(m[p.children[i]]);
 								}
 								if(c === j) {
-									if(!p.state[ t ? 'selected' : 'checked' ]) {
-										p.state[ t ? 'selected' : 'checked' ] = true;
-										this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
+									if(!this.get_checked_state(p)) {
+										this.set_checked_state(p, true);
+										this.get_checked_data().selected.push(p.id);
 										tmp = this.get_node(p, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(this.get_checked_class());
 										}
 									}
 								}
 								else {
-									if(p.state[ t ? 'selected' : 'checked' ]) {
-										p.state[ t ? 'selected' : 'checked' ] = false;
-										this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_remove_item(this._data[ t ? 'core' : 'checkbox' ].selected, p.id);
+									if(this.get_checked_state(p)) {
+										this.set_checked_state(p, false);
+										this.set_checked_data($.vakata.array_remove_item(this.get_checked_data(), p.id));
 										tmp = this.get_node(p, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.attr('aria-selected', false).children('.jstree-anchor').removeClass(this.get_checked_class());
 										}
 									}
 									else {
@@ -5353,6 +5353,27 @@
 						}, this));
 			}
 		};
+
+		this.get_checked_class = function() {
+			return this.settings.checkbox.tie_selection ? 'jstree-clicked' : 'jstree-checked';
+		};
+
+		this.get_checked_data = function() {
+			return this._data[ this.settings.checkbox.tie_selection ? 'core' : 'checkbox' ].selected;
+		};
+
+		this.set_checked_data = function(val) {
+			this._data[ this.settings.checkbox.tie_selection ? 'core' : 'checkbox' ].selected = val;
+		};
+
+		this.get_checked_state = function(obj) {
+			return obj.state[ this.settings.checkbox.tie_selection ? 'selected' : 'checked' ];
+		};
+
+		this.set_checked_state = function(obj, val) {
+			return obj.state[ this.settings.checkbox.tie_selection ? 'selected' : 'checked' ] = val;
+		};
+
 		/**
 		 * get an array of all nodes whose state is "undetermined"
 		 * @name get_undetermined([full])
@@ -5364,7 +5385,7 @@
 			if (this.settings.checkbox.cascade.indexOf('undetermined') === -1) {
 				return [];
 			}
-			var i, j, k, l, o = {}, m = this._model.data, t = this.settings.checkbox.tie_selection, s = this._data[ t ? 'core' : 'checkbox' ].selected, p = [], tt = this, r = [];
+			var i, j, k, l, o = {}, m = this._model.data, s = this.get_checked_data(), p = [], tt = this, r = [];
 			for(i = 0, j = s.length; i < j; i++) {
 				if(m[s[i]] && m[s[i]].parents) {
 					for(k = 0, l = m[s[i]].parents.length; k < l; k++) {
@@ -5382,9 +5403,9 @@
 			this.element.find('.jstree-closed').not(':has(.jstree-children)')
 				.each(function () {
 					var tmp = tt.get_node(this), tmp2;
-					
+
 					if(!tmp) { return; }
-					
+
 					if(!tmp.state.loaded) {
 						if(tmp.original && tmp.original.state && tmp.original.state.undetermined && tmp.original.state.undetermined === true) {
 							if(o[tmp.id] === undefined && tmp.id !== $.jstree.root) {
@@ -5418,7 +5439,7 @@
 					}
 				});
 			for (i = 0, j = p.length; i < j; i++) {
-				if(!m[p[i]].state[ t ? 'selected' : 'checked' ]) {
+				if(!this.get_checked_state(m[p[i]])) {
 					r.push(full ? m[p[i]] : p[i]);
 				}
 			}
@@ -5491,8 +5512,8 @@
 		 */
 		this.is_undetermined = function (obj) {
 			obj = this.get_node(obj);
-			var s = this.settings.checkbox.cascade, i, j, t = this.settings.checkbox.tie_selection, d = this._data[ t ? 'core' : 'checkbox' ].selected, m = this._model.data;
-			if(!obj || obj.state[ t ? 'selected' : 'checked' ] === true || s.indexOf('undetermined') === -1 || (s.indexOf('down') === -1 && s.indexOf('up') === -1)) {
+			var s = this.settings.checkbox.cascade, i, j, d = this.get_checked_data(), m = this._model.data;
+			if(!obj || this.get_checked_state(obj) === true || s.indexOf('undetermined') === -1 || (s.indexOf('down') === -1 && s.indexOf('up') === -1)) {
 				return false;
 			}
 			if(!obj.state.loaded && obj.original.state.undetermined === true) {
@@ -5610,7 +5631,6 @@
 		 */
 		this._cascade_new_checked_state = function (id, checkedState) {
 			var self = this;
-			var t = this.settings.checkbox.tie_selection;
 			var node = this._model.data[id];
 			var selectedNodeIds = [];
 			var selectedChildrenIds = [], i, j, selectedChildIds;
@@ -5642,26 +5662,26 @@
 
 				//If a node is undetermined then remove selected class
 				if (undetermined) {
-					node.state[ t ? 'selected' : 'checked' ] = false;
-					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+					this.set_checked_state(node, false);
+					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(this.get_checked_class());
 				}
 				//Otherwise, if the checkedState === true (i.e. the node is being checked now) and all of the node's children are checked (if it has any children),
 				//check the node and style it correctly.
 				else if (checkedState && selectedChildrenIds.length === node.children.length) {
-					node.state[ t ? 'selected' : 'checked' ] = checkedState;
+					this.set_checked_state(node, checkedState);
 					selectedNodeIds.push(node.id);
 
-					dom.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+					dom.attr('aria-selected', true).children('.jstree-anchor').addClass(this.get_checked_class());
 				}
 				else {
-					node.state[ t ? 'selected' : 'checked' ] = false;
-					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+					this.set_checked_state(node, false);
+					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(this.get_checked_class());
 				}
 			}
 			else {
 				selectedChildIds = this.get_checked_descendants(id);
 
-				if (node.state[ t ? 'selected' : 'checked' ]) {
+				if (this.get_checked_state(node)) {
 					selectedChildIds.push(node.id);
 				}
 
@@ -5680,11 +5700,10 @@
 		 */
 		this.get_checked_descendants = function (id) {
 			var self = this;
-			var t = self.settings.checkbox.tie_selection;
 			var node = self._model.data[id];
 
 			return node.children_d.filter(function(_id) {
-				return self._model.data[_id].state[ t ? 'selected' : 'checked' ];
+				return this.get_checked_state(self._model.data[_id]);
 			});
 		};
 
@@ -5768,7 +5787,7 @@
 				this.trigger('uncheck_node', { 'node' : obj, 'selected' : this._data.checkbox.selected, 'event' : e });
 			}
 		};
-		
+
 		/**
 		 * checks all nodes in the tree (only if tie_selection in checkbox settings is false, otherwise select_all will be called internally)
 		 * @name check_all()
