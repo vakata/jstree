@@ -445,7 +445,7 @@
 		 */
 		restore_focus : true,
 		/**
-		 * Default keyboard shortcuts (an object where each key is the button name or combo - like 'enter', 'ctrl-space', 'p', etc and the value is the function to execute in the instance's scope)
+		 * Default keyboard shortcuts (an object where each key is the button name or combo - like 'return', 'ctrl-space', 'p', etc and the value is the function to execute in the instance's scope)
 		 * @name $.jstree.defaults.core.keyboard
 		 */
 		keyboard : {
@@ -454,7 +454,7 @@
 				e.type = "click";
 				$(e.currentTarget).trigger(e);
 			},
-			'enter': function (e) {
+			'return': function (e) {
 				// enter
 				e.type = "click";
 				$(e.currentTarget).trigger(e);
