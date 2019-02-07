@@ -654,7 +654,7 @@
 		},
 		_kbevent_to_func : function (e) {
 			var keys = {
-				8: "Backspace", 9: "Tab", 13: "Return", 19: "Pause", 27: "Esc",
+				8: "Backspace", 9: "Tab", 13: "Enter", 19: "Pause", 27: "Esc",
 				32: "Space", 33: "PageUp", 34: "PageDown", 35: "End", 36: "Home",
 				37: "Left", 38: "Up", 39: "Right", 40: "Down", 44: "Print", 45: "Insert",
 				46: "Delete", 96: "Numpad0", 97: "Numpad1", 98: "Numpad2", 99 : "Numpad3",
