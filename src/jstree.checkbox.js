@@ -578,7 +578,7 @@
 		};
 		/**
 		 * enable a node's checkbox
-		 * @name disable_checkbox(obj)
+		 * @name enable_checkbox(obj)
 		 * @param {mixed} obj an array can be used too
 		 * @trigger enable_checkbox.jstree
 		 * @plugin checkbox
