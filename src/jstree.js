@@ -2294,7 +2294,7 @@
 						tmp.children_d = tmp.children_d.concat(e.children_d);
 					}
 				}
-				tmp.children_d = tmp.children_d.concat(tmp.children);
+				tmp.children_d = tmp.children.concat(tmp.children_d);
 			}
 			if(d && d.children && d.children === true) {
 				tmp.state.loaded = false;
