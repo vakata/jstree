@@ -436,10 +436,9 @@
 
 	$.jstree.plugins.node_customize = function (options, parent) {
 		this.redraw_node = function (obj, deep, callback, force_draw) {
-			var node_id = obj;
 			var el = parent.redraw_node.apply(this, arguments);
 			if (el) {
-				var node = this._model.data[node_id];
+				var node = this.get_node(obj);
 				var cfg = this.settings.node_customize;
 				var key = cfg.key;
 				var type =  (node && node.original && node.original[key]);

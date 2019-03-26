@@ -654,7 +654,7 @@
 		},
 		_kbevent_to_func : function (e) {
 			var keys = {
-				8: "Backspace", 9: "Tab", 13: "Return", 19: "Pause", 27: "Esc",
+				8: "Backspace", 9: "Tab", 13: "Enter", 19: "Pause", 27: "Esc",
 				32: "Space", 33: "PageUp", 34: "PageDown", 35: "End", 36: "Home",
 				37: "Left", 38: "Up", 39: "Right", 40: "Down", 44: "Print", 45: "Insert",
 				46: "Delete", 96: "Numpad0", 97: "Numpad1", 98: "Numpad2", 99 : "Numpad3",
@@ -889,7 +889,7 @@
 					}, this))
 				.on('blur.jstree', '.jstree-anchor', $.proxy(function (e) {
 						this._data.core.focused = null;
-						$(e.currentTarget).filter('.jstree-hovered').mouseleave();
+						$(e.currentTarget).filter('.jstree-hovered').trigger('mouseleave');
 						this.element.attr('tabindex', '0');
 					}, this))
 				.on('focus.jstree', '.jstree-anchor', $.proxy(function (e) {
@@ -897,8 +897,8 @@
 						if(tmp && tmp.id) {
 							this._data.core.focused = tmp.id;
 						}
-						this.element.find('.jstree-hovered').not(e.currentTarget).mouseleave();
-						$(e.currentTarget).mouseenter();
+						this.element.find('.jstree-hovered').not(e.currentTarget).trigger('mouseleave');
+						$(e.currentTarget).trigger('mouseenter');
 						this.element.attr('tabindex', '-1');
 					}, this))
 				.on('focus.jstree', $.proxy(function () {
@@ -1023,7 +1023,7 @@
 			if(obj && obj.id) {
 				obj = obj.id;
 			}
-			if (obj instanceof jQuery && obj.length && obj[0].id) {
+			if (obj instanceof $ && obj.length && obj[0].id) {
 				obj = obj[0].id;
 			}
 			var dom;
