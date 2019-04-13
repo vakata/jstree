@@ -48,7 +48,7 @@
 		 * * `_disabled` - a boolean indicating if this action should be disabled
 		 * * `label` - a string - the name of the action (could be a function returning a string)
 		 * * `title` - a string - an optional tooltip for the item
-		 * * `action` - a function to be executed if this item is chosen, the function will receive 
+		 * * `action` - a function to be executed if this item is chosen, the function will receive
 		 * * `icon` - a string, can be a path to an icon or a className, if using an image that is in the current directory use a `./` prefix, otherwise it will be detected as a class
 		 * * `shortcut` - keyCode which will trigger the action if the menu is open (for example `113` for rename, which equals F2)
 		 * * `shortcut_label` - shortcut label (like for example `F2` for rename)
@@ -57,113 +57,111 @@
 		 * @name $.jstree.defaults.contextmenu.items
 		 * @plugin contextmenu
 		 */
-		items : function (o, cb) { // Could be an object directly
-			return {
-				"create" : {
-					"separator_before"	: false,
-					"separator_after"	: true,
-					"_disabled"			: false, //(this.check("create_node", data.reference, {}, "last")),
-					"label"				: "Create",
-					"action"			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
-						inst.create_node(obj, {}, "last", function (new_node) {
-							try {
-								inst.edit(new_node);
-							} catch (ex) {
-								setTimeout(function () { inst.edit(new_node); },0);
-							}
-						});
-					}
-				},
-				"rename" : {
-					"separator_before"	: false,
-					"separator_after"	: false,
-					"_disabled"			: false, //(this.check("rename_node", data.reference, this.get_parent(data.reference), "")),
-					"label"				: "Rename",
-					/*!
-					"shortcut"			: 113,
-					"shortcut_label"	: 'F2',
-					"icon"				: "glyphicon glyphicon-leaf",
-					*/
-					"action"			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
-						inst.edit(obj);
-					}
-				},
-				"remove" : {
-					"separator_before"	: false,
-					"icon"				: false,
-					"separator_after"	: false,
-					"_disabled"			: false, //(this.check("delete_node", data.reference, this.get_parent(data.reference), "")),
-					"label"				: "Delete",
-					"action"			: function (data) {
-						var inst = $.jstree.reference(data.reference),
-							obj = inst.get_node(data.reference);
-						if(inst.is_selected(obj)) {
-							inst.delete_node(inst.get_selected());
+		items : {
+			"create" : {
+				"separator_before"	: false,
+				"separator_after"	: true,
+				"_disabled"			: false, //(this.check("create_node", data.reference, {}, "last")),
+				"label"				: "Create",
+				"action"			: function (data) {
+					var inst = $.jstree.reference(data.reference),
+						obj = inst.get_node(data.reference);
+					inst.create_node(obj, {}, "last", function (new_node) {
+						try {
+							inst.edit(new_node);
+						} catch (ex) {
+							setTimeout(function () { inst.edit(new_node); },0);
 						}
-						else {
-							inst.delete_node(obj);
-						}
+					});
+				}
+			},
+			"rename" : {
+				"separator_before"	: false,
+				"separator_after"	: false,
+				"_disabled"			: false, //(this.check("rename_node", data.reference, this.get_parent(data.reference), "")),
+				"label"				: "Rename",
+				/*!
+				"shortcut"			: 113,
+				"shortcut_label"	: 'F2',
+				"icon"				: "glyphicon glyphicon-leaf",
+				*/
+				"action"			: function (data) {
+					var inst = $.jstree.reference(data.reference),
+						obj = inst.get_node(data.reference);
+					inst.edit(obj);
+				}
+			},
+			"remove" : {
+				"separator_before"	: false,
+				"icon"				: false,
+				"separator_after"	: false,
+				"_disabled"			: false, //(this.check("delete_node", data.reference, this.get_parent(data.reference), "")),
+				"label"				: "Delete",
+				"action"			: function (data) {
+					var inst = $.jstree.reference(data.reference),
+						obj = inst.get_node(data.reference);
+					if(inst.is_selected(obj)) {
+						inst.delete_node(inst.get_selected());
 					}
-				},
-				"ccp" : {
-					"separator_before"	: true,
-					"icon"				: false,
-					"separator_after"	: false,
-					"label"				: "Edit",
-					"action"			: false,
-					"submenu" : {
-						"cut" : {
-							"separator_before"	: false,
-							"separator_after"	: false,
-							"label"				: "Cut",
-							"action"			: function (data) {
-								var inst = $.jstree.reference(data.reference),
-									obj = inst.get_node(data.reference);
-								if(inst.is_selected(obj)) {
-									inst.cut(inst.get_top_selected());
-								}
-								else {
-									inst.cut(obj);
-								}
+					else {
+						inst.delete_node(obj);
+					}
+				}
+			},
+			"ccp" : {
+				"separator_before"	: true,
+				"icon"				: false,
+				"separator_after"	: false,
+				"label"				: "Edit",
+				"action"			: false,
+				"submenu" : {
+					"cut" : {
+						"separator_before"	: false,
+						"separator_after"	: false,
+						"label"				: "Cut",
+						"action"			: function (data) {
+							var inst = $.jstree.reference(data.reference),
+								obj = inst.get_node(data.reference);
+							if(inst.is_selected(obj)) {
+								inst.cut(inst.get_top_selected());
 							}
+							else {
+								inst.cut(obj);
+							}
+						}
+					},
+					"copy" : {
+						"separator_before"	: false,
+						"icon"				: false,
+						"separator_after"	: false,
+						"label"				: "Copy",
+						"action"			: function (data) {
+							var inst = $.jstree.reference(data.reference),
+								obj = inst.get_node(data.reference);
+							if(inst.is_selected(obj)) {
+								inst.copy(inst.get_top_selected());
+							}
+							else {
+								inst.copy(obj);
+							}
+						}
+					},
+					"paste" : {
+						"separator_before"	: false,
+						"icon"				: false,
+						"_disabled"			: function (data) {
+							return !$.jstree.reference(data.reference).can_paste();
 						},
-						"copy" : {
-							"separator_before"	: false,
-							"icon"				: false,
-							"separator_after"	: false,
-							"label"				: "Copy",
-							"action"			: function (data) {
-								var inst = $.jstree.reference(data.reference),
-									obj = inst.get_node(data.reference);
-								if(inst.is_selected(obj)) {
-									inst.copy(inst.get_top_selected());
-								}
-								else {
-									inst.copy(obj);
-								}
-							}
-						},
-						"paste" : {
-							"separator_before"	: false,
-							"icon"				: false,
-							"_disabled"			: function (data) {
-								return !$.jstree.reference(data.reference).can_paste();
-							},
-							"separator_after"	: false,
-							"label"				: "Paste",
-							"action"			: function (data) {
-								var inst = $.jstree.reference(data.reference),
-									obj = inst.get_node(data.reference);
-								inst.paste(obj);
-							}
+						"separator_after"	: false,
+						"label"				: "Paste",
+						"action"			: function (data) {
+							var inst = $.jstree.reference(data.reference),
+								obj = inst.get_node(data.reference);
+							inst.paste(obj);
 						}
 					}
 				}
-			};
+			}
 		}
 	};
 
@@ -283,6 +281,12 @@
 			i = s.items;
 			if($.isFunction(i)) {
 				i = i.call(this, obj, $.proxy(function (i) {
+					this._show_contextmenu(obj, x, y, i);
+				}, this));
+			}
+			var f = s.fn;
+			if($.isFunction(f)) {
+				i = f.call(this, obj, $.proxy(function (i) {
 					this._show_contextmenu(obj, x, y, i);
 				}, this));
 			}
