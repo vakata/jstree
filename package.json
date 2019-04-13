@@ -25,9 +25,14 @@
     }
   ],
   "keywords": [],
+  "scripts": {
+    "build": "grunt",
+    "build:js": "grunt js",
+    "build:css": "grunt css"
+  },
   "devDependencies": {
     "dox": "~0.9.0",
-    "grunt": "~1.0.0",
+    "grunt": "^1.0.4",
     "grunt-contrib-concat": "*",
     "grunt-contrib-copy": "*",
     "grunt-contrib-imagemin": "~2.0.1",
