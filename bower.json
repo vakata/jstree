@@ -1,7 +1,7 @@
 {
 	"name": "jstree",
 	"license": "MIT",
-	"version": "3.3.7",
+	"version": "3.3.8",
 	"main" : [
 		"./dist/jstree.js",
 		"./dist/themes/default/style.css"
