@@ -1,10 +1,14 @@
 {
   "name": "jstree",
   "title": "jsTree",
-  "description": "jQuery tree plugin",
-  "version": "3.3.8",
-  "homepage": "http://jstree.com",
+  "description": "javascript tree manipulation and visualization",
+  "version": "4.0.0",
   "main": "./dist/jstree.js",
+  "homepage": "https://www.jstree.com",
+  "scripts": {
+    "build" : "gulp default",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "author": {
     "name": "Ivan Bozhanov",
     "email": "jstree@jstree.com",
@@ -24,35 +28,24 @@
       "url": "https://github.com/vakata/jstree/blob/master/LICENSE-MIT"
     }
   ],
-  "keywords": [],
-  "devDependencies": {
-    "dox": "~0.9.0",
-    "grunt": "~1.0.0",
-    "grunt-contrib-concat": "*",
-    "grunt-contrib-copy": "*",
-    "grunt-contrib-imagemin": "~2.0.1",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-less": "~1.4.1",
-    "grunt-contrib-qunit": "~2.0.0",
-    "grunt-contrib-uglify": "*",
-    "grunt-contrib-watch": "~1.1.0",
-    "grunt-resemble-cli": "0.0.8",
-    "grunt-text-replace": "~0.4.0",
-    "lodash": "^4.17.10"
-  },
-  "dependencies": {
-    "jquery": ">=1.9.1"
-  },
   "npmName": "jstree",
   "npmFileMap": [
     {
       "basePath": "/dist/",
       "files": [
-        "jstree.min.js",
+        "jstree.js",
         "themes/**/*.png",
         "themes/**/*.gif",
-        "themes/**/*.min.css"
+        "themes/**/*.css"
       ]
     }
-  ]
+  ],
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.2",
+    "gulp-concat": "^2.6",
+    "gulp-header": "^2.0.9",
+    "gulp-replace": "^1.0",
+    "gulp-uglify-es": "^2.0"
+  }
 }
