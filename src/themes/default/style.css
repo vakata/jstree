@@ -1100,3 +1100,38 @@
     margin-right: 0;
   }
 }
+
+.separator{
+  border-bottom: 1px solid;
+  border-image-source: linear-gradient(45deg, rgba(0,0,0,0), rgba(0,0,0,0.1), rgba(0,0,0,0));
+  border-image-slice: 1;
+  width:100%;
+  left:0;
+  color:#aaa;
+  font-size:10px;
+  font-weight:normal;
+  float:right;
+  text-align:right;
+  padding-right:20px;
+  position:absolute;
+  z-index:-1
+}
+.treeaction{
+  color:#555;
+  margin-left:3px;
+  padding:2px;
+  font-weight:bold;
+  font-size:10px;
+  border:none;
+  background-color:white;
+  transition: all .2s ease-in-out;
+  text-decoration:none;
+  float:right;
+  right:-12px;
+  top:4px;
+}
+.treeaction:hover{
+  color:green;
+  text-decoration:none;
+ transform: scale(1.5);
+}

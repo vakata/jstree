@@ -2575,7 +2575,22 @@
 			}
 			else {
 				node.childNodes[1].innerHTML += obj.text;
+				if (obj.original.count) {
+					node.childNodes[1].innerHTML += " <span class='badge'>" + obj.original.count + "</span>"
+				}
 			}
+			if (obj.state.separate) {
+                let s = d.createElement('p')
+                s.innerHTML = obj.state.separate.label;
+                s.className = 'separator';
+                if (obj.state.separate.action) {
+                    let act = d.createElement('a')
+                    act.href = obj.state.separate.action;
+                    act.className = 'treeaction glyphicon glyphicon-plus';
+                    node.appendChild(act)
+                }
+                node.prepend(s);
+            }
 
 
 			if(deep && obj.children.length && (obj.state.opened || force_render) && obj.state.loaded) {
@@ -4947,3 +4962,4 @@
 		return d;
 	};
 }));
+
