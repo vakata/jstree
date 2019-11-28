@@ -654,3 +654,28 @@
 	};
 
 }));
+
+// separate items and badges plugin by vdkkia (vahidkiani88@gmail.com)
+// https://github.com/vdkkia/jstree
+//
+//CSS:
+//.separator{border-bottom:1px solid;border-image-source:linear-gradient(45deg,rgba(0,0,0,0),rgba(0,0,0,.1),rgba(0,0,0,0));border-image-slice:1;width:100%;left:0;color:#aaa;font-size:10px;font-weight:400;float:right;text-align:right;padding-right:20px;position:absolute;z-index:-1}.treeaction{color:#555;margin-left:3px;padding:2px;font-weight:700;font-size:10px;border:none;background-color:#fff;transition:all .2s ease-in-out;text-decoration:none;float:right;margin-right:2px;top:4px}.treeaction:hover{color:green;text-decoration:none;transform:scale(1.5)}
+(function (factory) {
+}(function ($, jstree, undefined) {
+	"use strict";
+	$.jstree.plugins.node_customize = function (options, parent) {
+		this.redraw_node = function (obj, deep, callback, force_draw) {
+			var el = parent.redraw_node.apply(this, arguments);
+			if (el) {
+				var node = this.get_node(obj);
+				var cfg = this.settings.node_customize;
+				var key = cfg.key;
+				var type =  (node && node.original && node.original[key]);
+				var customizer = (type && cfg.switch[type]) || cfg.default;
+				if(customizer)
+					customizer(el, node);
+			}
+			return el;
+		};
+	}
+}));
