@@ -1056,8 +1056,8 @@
 					return false;
 				}
 
-				if(as_dom) {
-					obj = obj.id === $.jstree.root ? this.element : $('#' + obj.id.replace($.jstree.idregex,'\\$&'), this.element);
+			        if(as_dom) {
+					obj = obj.id === $.jstree.root ? this.element : $('#'+obj.id.replace($.jstree.idregex,'\\$&'));
 				}
 				return obj;
 			} catch (ex) { return false; }
