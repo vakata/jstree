@@ -1057,7 +1057,7 @@
 				}
 
 			        if(as_dom) {
-					obj = obj.id === $.jstree.root ? this.element : $('#'+obj.id.replace($.jstree.idregex,'\\$&'));
+					obj = obj.id === $.jstree.root ? this.element : $(this.element[0].querySelector('#'+obj.id.replace($.jstree.idregex,'\\$&')));
 				}
 				return obj;
 			} catch (ex) { return false; }
