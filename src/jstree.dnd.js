@@ -459,6 +459,7 @@
 					scroll_i: false,
 					is_touch: false
 				};
+				elm = null;
 				$(document).off("mousemove.vakata.jstree touchmove.vakata.jstree", $.vakata.dnd.drag);
 				$(document).off("mouseup.vakata.jstree touchend.vakata.jstree", $.vakata.dnd.stop);
 			},
