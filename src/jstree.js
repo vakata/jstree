@@ -84,7 +84,7 @@
 		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%?`]/g,
 		root : '#'
 	};
-	
+
 	/**
 	 * creates a jstree instance
 	 * @name $.jstree.create(el [, options])
@@ -326,6 +326,7 @@
 		 *
 		 * __Examples__
 		 *
+		 *
 		 *	$('#tree').jstree({
 		 *		'core' : {
 		 *			'strings' : {
@@ -333,10 +334,24 @@
 		 *			}
 		 *		}
 		 *	});
-		 *
 		 * @name $.jstree.defaults.core.strings
 		 */
 		strings			: false,
+		/**
+		 * configure the various noun forms used throughout the tree
+		 *
+		 * __Examples__
+		 *
+		 *	$('#tree').jstree({
+		 *		'core' : {
+		 *			'noun_forms' : function(num, key){
+		 *				...
+		 *			}
+		 *		}
+		 *	});
+		 * @name $.jstree.defaults.core.noun_forms
+		 */
+		noun_forms	: false,
 		/**
 		 * determines what happens when a user tries to modify the structure of the tree
 		 * If left as `false` all operations like create, rename, delete, move or copy are prevented.
@@ -978,6 +993,20 @@
 			if($.isFunction(a)) { return a.call(this, key); }
 			if(a && a[key]) { return a[key]; }
 			return key;
+		},
+		/**
+		 * gets the correct form of a noun depending on the number that goes before it. Used internally.
+		 * @private
+		 * @name get_noun_form(num, key, titles)
+		 * @param  {String} num
+		 * @param  {String} key
+		 * @param  {Array} titles
+		 * @return {String}
+		 */
+		get_noun_form: function(num, key, titles) {
+			var a = this.settings.core.noun_forms;
+			if($.isFunction(a)) { return a.call(this, num, key); }
+			return titles[+(num > 1)];
 		},
 		/**
 		 * gets the first child of a DOM node. Used internally.

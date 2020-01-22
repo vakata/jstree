@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.8
+ * jsTree {{VERSION}}
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -63,7 +63,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.8',
+		version : '{{VERSION}}',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -84,7 +84,7 @@
 		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%?`]/g,
 		root : '#'
 	};
-	
+
 	/**
 	 * creates a jstree instance
 	 * @name $.jstree.create(el [, options])
@@ -326,6 +326,7 @@
 		 *
 		 * __Examples__
 		 *
+		 *
 		 *	$('#tree').jstree({
 		 *		'core' : {
 		 *			'strings' : {
@@ -333,10 +334,24 @@
 		 *			}
 		 *		}
 		 *	});
-		 *
 		 * @name $.jstree.defaults.core.strings
 		 */
 		strings			: false,
+		/**
+		 * configure the various noun forms used throughout the tree
+		 *
+		 * __Examples__
+		 *
+		 *	$('#tree').jstree({
+		 *		'core' : {
+		 *			'noun_forms' : function(num, key){
+		 *				...
+		 *			}
+		 *		}
+		 *	});
+		 * @name $.jstree.defaults.core.noun_forms
+		 */
+		noun_forms	: false,
 		/**
 		 * determines what happens when a user tries to modify the structure of the tree
 		 * If left as `false` all operations like create, rename, delete, move or copy are prevented.
@@ -978,6 +993,20 @@
 			if($.isFunction(a)) { return a.call(this, key); }
 			if(a && a[key]) { return a[key]; }
 			return key;
+		},
+		/**
+		 * gets the correct form of a noun depending on the number that goes before it. Used internally.
+		 * @private
+		 * @name get_noun_form(num, key, titles)
+		 * @param  {String} num
+		 * @param  {String} key
+		 * @param  {Array} titles
+		 * @return {String}
+		 */
+		get_noun_form: function(num, key, titles) {
+			var a = this.settings.core.noun_forms;
+			if($.isFunction(a)) { return a.call(this, num, key); }
+			return titles[+(num > 1)];
 		},
 		/**
 		 * gets the first child of a DOM node. Used internally.
@@ -6730,7 +6759,7 @@
 						}
 						var obj = this.get_node(e.target),
 							mlt = this.is_selected(obj) && this.settings.dnd.drag_selection ? this.get_top_selected().length : 1,
-							txt = (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget));
+							txt = (mlt > 1 ? this.get_noun_form(mlt, 'node', ['node', 'nodes']) : this.get_text(e.currentTarget));
 						if(this.settings.core.force_text) {
 							txt = $.vakata.html.escape(txt);
 						}
@@ -7075,6 +7104,7 @@
 					scroll_i: false,
 					is_touch: false
 				};
+				elm = null;
 				$(document).off("mousemove.vakata.jstree touchmove.vakata.jstree", $.vakata.dnd.drag);
 				$(document).off("mouseup.vakata.jstree touchend.vakata.jstree", $.vakata.dnd.stop);
 			},
@@ -7315,8 +7345,7 @@
 			parent.init.call(this, el, options);
 		};
 		this._load_nodes = function (nodes, callback, is_callback, force_reload) {
-			var s = this.settings.massload,
-				nodesString = JSON.stringify(nodes),
+			var s = this.settings.massload,				
 				toLoad = [],
 				m = this._model.data,
 				i, j, dom;
@@ -7404,6 +7433,7 @@
 			return parent._load_node.call(this, obj, callback);
 		};
 	};
+
 
 /**
  * ### Search plugin

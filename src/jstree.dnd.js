@@ -114,7 +114,7 @@
 						}
 						var obj = this.get_node(e.target),
 							mlt = this.is_selected(obj) && this.settings.dnd.drag_selection ? this.get_top_selected().length : 1,
-							txt = (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget));
+							txt = (mlt > 1 ? this.get_noun_form(mlt, 'node', ['node', 'nodes']) : this.get_text(e.currentTarget));
 						if(this.settings.core.force_text) {
 							txt = $.vakata.html.escape(txt);
 						}
