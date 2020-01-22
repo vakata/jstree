@@ -1006,7 +1006,7 @@
 		get_noun_form: function(num, key, titles) {
 			var a = this.settings.core.noun_forms;
 			if($.isFunction(a)) { return a.call(this, num, key); }
-			return titles[+(num > 1)];
+			return num + " " + titles[+(num > 1)];
 		},
 		/**
 		 * gets the first child of a DOM node. Used internally.
