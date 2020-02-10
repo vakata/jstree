@@ -602,7 +602,7 @@
 					return this.nodeType === 3 && (!this.nodeValue || /^\s+$/.test(this.nodeValue));
 				})
 				.remove();
-			this.element.html("<"+"ul class='jstree-container-ul jstree-children' role='group'><"+"li id='j"+this._id+"_loading' class='jstree-initial-node jstree-loading jstree-leaf jstree-last' role='tree-item'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
+			this.element.html("<"+"ul class='jstree-container-ul jstree-children' role='group'><"+"li id='j"+this._id+"_loading' class='jstree-initial-node jstree-loading jstree-leaf jstree-last' role='treeitem'><i class='jstree-icon jstree-ocl'></i><"+"a class='jstree-anchor' href='#'><i class='jstree-icon jstree-themeicon-hidden'></i>" + this.get_string("Loading ...") + "</a></li></ul>");
 			this.element.attr('aria-activedescendant','j' + this._id + '_loading');
 			this._data.core.li_height = this.get_container_ul().children("li").first().outerHeight() || 24;
 			this._data.core.node = this._create_prototype_node();
@@ -7075,6 +7075,7 @@
 					scroll_i: false,
 					is_touch: false
 				};
+				elm = null;
 				$(document).off("mousemove.vakata.jstree touchmove.vakata.jstree", $.vakata.dnd.drag);
 				$(document).off("mouseup.vakata.jstree touchend.vakata.jstree", $.vakata.dnd.stop);
 			},
@@ -7315,8 +7316,7 @@
 			parent.init.call(this, el, options);
 		};
 		this._load_nodes = function (nodes, callback, is_callback, force_reload) {
-			var s = this.settings.massload,
-				nodesString = JSON.stringify(nodes),
+			var s = this.settings.massload,				
 				toLoad = [],
 				m = this._model.data,
 				i, j, dom;
@@ -7404,6 +7404,7 @@
 			return parent._load_node.call(this, obj, callback);
 		};
 	};
+
 
 /**
  * ### Search plugin
