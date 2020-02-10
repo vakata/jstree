@@ -45,6 +45,15 @@
 		src = $('script:last').attr('src'),
 		document = window.document; // local variable is always faster to access then a global
 
+	var setImmediate = window.setImmediate;
+	var Promise = window.Promise;
+	if (!setImmediate && Promise) {
+		// Good enough approximation of setImmediate
+		setImmediate = function (cb, arg) {
+			Promise.resolve(arg).then(cb);
+		};
+	}
+
 	/**
 	 * holds all jstree related functions and variables, including the actual class and methods to create, access and manipulate instances.
 	 * @name $.jstree
@@ -1935,7 +1944,16 @@
 					if(rslt.add.length) {
 						this.trigger('changed', { 'action' : 'model', 'selected' : this._data.core.selected });
 					}
-					cb.call(this, true);
+
+					// If no worker, try to mimic worker behavioour, by invoking cb asynchronously
+					if (!worker && setImmediate) {
+						setImmediate(function(){
+							cb.call(inst, true);
+						});
+					}
+					else {
+						cb.call(inst, true);
+					}
 				};
 			if(this.settings.core.worker && window.Blob && window.URL && window.Worker) {
 				try {
