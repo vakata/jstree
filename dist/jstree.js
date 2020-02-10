@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.8
+ * jsTree 3.3.9
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -63,7 +63,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.8',
+		version : '3.3.9',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
