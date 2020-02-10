@@ -6837,7 +6837,7 @@
 					ref = false,
 					off = false,
 					rel = false,
-					tmp, l, t, h, p, i, o, ok, t1, t2, op, ps, pr, ip, tm, is_copy, pn;
+					tmp, l, t, h, p, i, o, ok, t1, t2, op, ps, pr, ip, tm, is_copy, pn, c;
 				// if we are over an instance
 				if(ins && ins._data && ins._data.dnd) {
 					marker.attr('class', 'jstree-' + ins.get_theme() + ( ins.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ));
@@ -6887,6 +6887,7 @@
 										t = off.top;
 										p = ins.get_parent(ref);
 										i = ref.parent().index();
+										c = 'jstree-below';
 										break;
 									case 'i':
 										ip = ins.settings.dnd.inside_pos;
@@ -6895,12 +6896,14 @@
 										t = off.top + h / 2 + 1;
 										p = tm.id;
 										i = ip === 'first' ? 0 : (ip === 'last' ? tm.children.length : Math.min(ip, tm.children.length));
+										c = 'jstree-inside';
 										break;
 									case 'a':
 										l = off.left - 6;
 										t = off.top + h;
 										p = ins.get_parent(ref);
 										i = ref.parent().index() + 1;
+										c = 'jstree-above';
 										break;
 								}
 								ok = true;
@@ -6933,6 +6936,7 @@
 									}
 									lastmv = { 'ins' : ins, 'par' : p, 'pos' : v === 'i' && ip === 'last' && i === 0 && !ins.is_loaded(tm) ? 'last' : i };
 									marker.css({ 'left' : l + 'px', 'top' : t + 'px' }).show();
+									marker.removeClass('jstree-above jstree-inside jstree-below').addClass(c);
 									data.helper.find('.jstree-icon').first().removeClass('jstree-er').addClass('jstree-ok');
 									if (data.event.originalEvent && data.event.originalEvent.dataTransfer) {
 										data.event.originalEvent.dataTransfer.dropEffect = is_copy ? 'copy' : 'move';
