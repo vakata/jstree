@@ -2066,7 +2066,7 @@
 			tmp = d.children("a").first().length ? d.children("a").first().clone() : d.clone();
 			tmp.children("ins, i, ul").remove();
 			tmp = tmp.html();
-			tmp = $('<div />').html(tmp);
+			tmp = $('<div></div>').html(tmp);
 			data.text = this.settings.core.force_text ? tmp.text() : tmp.html();
 			tmp = d.data();
 			data.data = tmp ? $.extend(true, {}, tmp) : null;
@@ -4514,7 +4514,7 @@
 			w  = this.element.width();
 			this._data.core.focused = tmp.id;
 			a  = obj.children('.jstree-anchor').focus();
-			s  = $('<span>');
+			s  = $('<span></span>');
 			/*!
 			oi = obj.children("i:visible"),
 			ai = a.children("i:visible"),
@@ -4522,7 +4522,7 @@
 			w2 = ai.width() * ai.length,
 			*/
 			t  = default_text;
-			h1 = $("<"+"div />", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo(document.body);
+			h1 = $("<"+"div></div>", { css : { "position" : "absolute", "top" : "-200px", "left" : (rtl ? "0px" : "-1000px"), "visibility" : "hidden" } }).appendTo(document.body);
 			h2 = $("<"+"input />", {
 						"value" : t,
 						"class" : "jstree-rename-input",

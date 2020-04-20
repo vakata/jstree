@@ -396,7 +396,7 @@
 	// helpers
 	(function ($) {
 		$.vakata.html = {
-			div : $('<div />'),
+			div : $('<div></div>'),
 			escape : function (str) {
 				return $.vakata.html.div.text(str).html();
 			},
