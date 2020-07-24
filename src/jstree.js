@@ -81,7 +81,6 @@
 		 */
 		plugins : {},
 		path : src && src.indexOf('/') !== -1 ? src.replace(/\/[^\/]+$/,'') : '',
-		idregex : /[\\:&!^|()\[\]<>@*'+~#";.,=\- \/${}%?`]/g,
 		root : '#'
 	};
 	
@@ -171,7 +170,7 @@
 			try { obj = $(needle); } catch (ignore) { }
 		}
 		if(!obj || !obj.length) {
-			try { obj = $('#' + needle.replace($.jstree.idregex,'\\$&')); } catch (ignore) { }
+			try { obj = $('#' + $.escapeSelector(needle)); } catch (ignore) { }
 		}
 		if(obj && obj.length && (obj = obj.closest('.jstree')).length && (obj = obj.data('jstree'))) {
 			tmp = obj;
@@ -1047,7 +1046,7 @@
 				else if(typeof obj === "string" && this._model.data[obj.replace(/^#/, '')]) {
 					obj = this._model.data[obj.replace(/^#/, '')];
 				}
-				else if(typeof obj === "string" && (dom = $('#' + obj.replace($.jstree.idregex,'\\$&'), this.element)).length && this._model.data[dom.closest('.jstree-node').attr('id')]) {
+				else if(typeof obj === "string" && (dom = $('#' + $.escapeSelector(obj), this.element)).length && this._model.data[dom.closest('.jstree-node').attr('id')]) {
 					obj = this._model.data[dom.closest('.jstree-node').attr('id')];
 				}
 				else if((dom = this.element.find(obj)).length && this._model.data[dom.closest('.jstree-node').attr('id')]) {
@@ -1061,7 +1060,7 @@
 				}
 
 				if(as_dom) {
-					obj = obj.id === $.jstree.root ? this.element : $('#' + obj.id.replace($.jstree.idregex,'\\$&'), this.element);
+					obj = obj.id === $.jstree.root ? this.element : $('#' + $.escapeSelector(obj.id), this.element);
 				}
 				return obj;
 			} catch (ex) { return false; }
@@ -2446,12 +2445,12 @@
 			if(!obj) { return false; }
 			if(obj.id === $.jstree.root) {  return this.redraw(true); }
 			deep = deep || obj.children.length === 0;
-			node = !document.querySelector ? document.getElementById(obj.id) : this.element[0].querySelector('#' + ("0123456789".indexOf(obj.id[0]) !== -1 ? '\\3' + obj.id[0] + ' ' + obj.id.substr(1).replace($.jstree.idregex,'\\$&') : obj.id.replace($.jstree.idregex,'\\$&')) ); //, this.element);
+			node = !document.querySelector ? document.getElementById(obj.id) : this.element[0].querySelector('#' + ("0123456789".indexOf(obj.id[0]) !== -1 ? '\\3' + obj.id[0] + ' ' + CSS.escape(obj.id.substr(1)) : CSS.escape(obj.id))); //, this.element);
 			if(!node) {
 				deep = true;
 				//node = d.createElement('LI');
 				if(!is_callback) {
-					par = obj.parent !== $.jstree.root ? $('#' + obj.parent.replace($.jstree.idregex,'\\$&'), this.element)[0] : null;
+					par = obj.parent !== $.jstree.root ? $('#' + $.escapeSelector(obj.parent), this.element)[0] : null;
 					if(par !== null && (!par || !m[obj.parent].state.opened)) {
 						return false;
 					}
@@ -2758,7 +2757,7 @@
 					this.open_node(p[i], false, 0);
 				}
 			}
-			return $('#' + obj.id.replace($.jstree.idregex,'\\$&'), this.element);
+			return $('#' + $.escapeSelector(obj.id), this.element);
 		},
 		/**
 		 * closes a node, hiding its children
