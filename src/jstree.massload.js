@@ -61,7 +61,7 @@
 				}
 				this._data.massload = {};
 				if (toLoad.length) {
-					if($.isFunction(s)) {
+					if(typeof s === "function") {
 						return s.call(this, toLoad, $.proxy(function (data) {
 							var i, j;
 							if(data) {
@@ -82,10 +82,10 @@
 					}
 					if(typeof s === 'object' && s && s.url) {
 						s = $.extend(true, {}, s);
-						if($.isFunction(s.url)) {
+						if(typeof s.url === "function") {
 							s.url = s.url.call(this, toLoad);
 						}
-						if($.isFunction(s.data)) {
+						if(typeof s.data === "function") {
 							s.data = s.data.call(this, toLoad);
 						}
 						return $.ajax(s)

@@ -281,7 +281,7 @@
 			}
 
 			i = s.items;
-			if($.isFunction(i)) {
+			if(typeof i === "function") {
 				i = i.call(this, obj, $.proxy(function (i) {
 					this._show_contextmenu(obj, x, y, i);
 				}, this));
@@ -354,7 +354,7 @@
 			},
 			_execute : function (i) {
 				i = vakata_context.items[i];
-				return i && (!i._disabled || ($.isFunction(i._disabled) && !i._disabled({ "item" : i, "reference" : vakata_context.reference, "element" : vakata_context.element }))) && i.action ? i.action.call(null, {
+				return i && (!i._disabled || (typeof i._disabled === "function" && !i._disabled({ "item" : i, "reference" : vakata_context.reference, "element" : vakata_context.element }))) && i.action ? i.action.call(null, {
 							"item"		: i,
 							"reference"	: vakata_context.reference,
 							"element"	: vakata_context.element,
@@ -382,7 +382,7 @@
 						str += "<"+"li class='vakata-context-separator'><"+"a href='#' " + ($.vakata.context.settings.icons ? '' : 'style="margin-left:0px;"') + ">&#160;<"+"/a><"+"/li>";
 					}
 					sep = false;
-					str += "<"+"li class='" + (val._class || "") + (val._disabled === true || ($.isFunction(val._disabled) && val._disabled({ "item" : val, "reference" : vakata_context.reference, "element" : vakata_context.element })) ? " vakata-contextmenu-disabled " : "") + "' "+(val.shortcut?" data-shortcut='"+val.shortcut+"' ":'')+">";
+					str += "<"+"li class='" + (val._class || "") + (val._disabled === true || (typeof val._disabled === "function" && val._disabled({ "item" : val, "reference" : vakata_context.reference, "element" : vakata_context.element })) ? " vakata-contextmenu-disabled " : "") + "' "+(val.shortcut?" data-shortcut='"+val.shortcut+"' ":'')+">";
 					str += "<"+"a href='#' rel='" + (vakata_context.items.length - 1) + "' " + (val.title ? "title='" + val.title + "'" : "") + ">";
 					if($.vakata.context.settings.icons) {
 						str += "<"+"i ";
@@ -392,7 +392,7 @@
 						}
 						str += "><"+"/i><"+"span class='vakata-contextmenu-sep'>&#160;<"+"/span>";
 					}
-					str += ($.isFunction(val.label) ? val.label({ "item" : i, "reference" : vakata_context.reference, "element" : vakata_context.element }) : val.label) + (val.shortcut?' <span class="vakata-contextmenu-shortcut vakata-contextmenu-shortcut-'+val.shortcut+'">'+ (val.shortcut_label || '') +'</span>':'') + "<"+"/a>";
+					str += ((typeof val.label === "function") ? val.label({ "item" : i, "reference" : vakata_context.reference, "element" : vakata_context.element }) : val.label) + (val.shortcut?' <span class="vakata-contextmenu-shortcut vakata-contextmenu-shortcut-'+val.shortcut+'">'+ (val.shortcut_label || '') +'</span>':'') + "<"+"/a>";
 					if(val.submenu) {
 						tmp = $.vakata.context._parse(val.submenu, true);
 						if(tmp) { str += tmp; }

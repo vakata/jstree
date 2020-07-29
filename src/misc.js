@@ -302,7 +302,7 @@
 			var nd = obj.id === "#" ? this.settings.core.data : this._data.datamodel[obj.id].getChildren($.proxy(function (nodes) {
 				this._datamodel(id, nodes, callback);
 			}, this));
-			if($.isArray(nd)) {
+			if(Array.isArray(nd)) {
 				this._datamodel(id, nd, callback);
 			}
 		};
@@ -356,7 +356,7 @@
 		};
 		this.close_node = function (obj, animation) {
 			var t1, t2, t, d;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.close_node(obj[t1], animation);
@@ -534,13 +534,13 @@
                                 if (property) {
                                         jsTreeDataSettings[propertyName] = function(node) {
                                                 if (this.get_node(node).parentsload_required) {
-                                                        if ($.isFunction(property)) {
+                                                        if (typeof property === "function") {
                                                                 return property.call(this, node)
                                                         } else {// (typeof property === 'string')
                                                                 return property
                                                         }
                                                 } else {
-                                                        if ($.isFunction(coreProperty)) {
+                                                        if (typeof coreProperty === "function") {
                                                                 return coreProperty.call(this, node)
                                                         } else { // (typeof coreProperty === 'string')
                                                                 return coreProperty
@@ -552,7 +552,7 @@
                                 }*/
                         }
 
-                        if($.isFunction(parentsloadSettings)) {
+                        if(typeof parentsloadSettings === "function") {
                                 this.settings.data = parentsloadSettings
                         } else if (typeof parentsloadSettings === 'object') {
                                 if (! (parentsloadSettings.url || parentsloadSettings.data)) {
@@ -568,7 +568,7 @@
                 }
 
                 this.load_node = function (obj, callback) {
-                        if($.isArray(obj)) {
+                        if(Array.isArray(obj)) {
                                 // FIXME: _load_nodes will not load nodes not presented in the tree
                                 this._load_nodes(obj.slice(), callback);
                                 return true;

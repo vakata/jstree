@@ -136,7 +136,7 @@
 		 * @trigger search.jstree
 		 */
 		this.search = function (str, skip_async, show_only_matches, inside, append, show_only_matches_children) {
-			if(str === false || $.trim(str.toString()) === "") {
+			if(str === false || str.toString().trim() === "") {
 				return this.clear_search();
 			}
 			inside = this.get_node(inside);
@@ -158,10 +158,10 @@
 				show_only_matches_children = s.show_only_matches_children;
 			}
 			if(!skip_async && a !== false) {
-				if($.isFunction(a)) {
+				if(typeof a === "function") {
 					return a.call(this, str, $.proxy(function (d) {
 							if(d && d.d) { d = d.d; }
-							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
+							this._load_nodes(!Array.isArray(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true, show_only_matches, inside, append, show_only_matches_children);
 							});
 						}, this), inside);
@@ -183,7 +183,7 @@
 						}, this))
 						.done($.proxy(function (d) {
 							if(d && d.d) { d = d.d; }
-							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
+							this._load_nodes(!Array.isArray(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true, show_only_matches, inside, append, show_only_matches_children);
 							});
 						}, this));

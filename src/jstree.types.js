@@ -127,7 +127,7 @@
 				opt = options ? $.extend(true, {}, options, {no_id:false}) : {},
 				tmp = parent.get_json.call(this, obj, opt, flat);
 			if(tmp === false) { return false; }
-			if($.isArray(tmp)) {
+			if(Array.isArray(tmp)) {
 				for(i = 0, j = tmp.length; i < j; i++) {
 					tmp[i].type = tmp[i].id && m[tmp[i].id] && m[tmp[i].id].type ? m[tmp[i].id].type : "default";
 					if(options && options.no_id) {
@@ -150,7 +150,7 @@
 			return tmp;
 		};
 		this._delete_ids = function (tmp) {
-			if($.isArray(tmp)) {
+			if(Array.isArray(tmp)) {
 				for(var i = 0, j = tmp.length; i < j; i++) {
 					tmp[i] = this._delete_ids(tmp[i]);
 				}
@@ -163,7 +163,7 @@
 			if(tmp.a_attr && tmp.a_attr.id) {
 				delete tmp.a_attr.id;
 			}
-			if(tmp.children && $.isArray(tmp.children)) {
+			if(tmp.children && Array.isArray(tmp.children)) {
 				tmp.children = this._delete_ids(tmp.children);
 			}
 			return tmp;
@@ -247,7 +247,7 @@
 		 */
 		this.set_type = function (obj, type) {
 			var m = this._model.data, t, t1, t2, old_type, old_icon, k, d, a;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.set_type(obj[t1], type);

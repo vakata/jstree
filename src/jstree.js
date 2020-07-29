@@ -979,7 +979,7 @@
 		 */
 		get_string : function (key) {
 			var a = this.settings.core.strings;
-			if($.isFunction(a)) { return a.call(this, key); }
+			if(typeof a === "function") { return a.call(this, key); }
 			if(a && a[key]) { return a[key]; }
 			return key;
 		},
@@ -1271,7 +1271,7 @@
 		 */
 		load_node : function (obj, callback) {
 			var k, l, i, j, c;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				this._load_nodes(obj.slice(), callback);
 				return true;
 			}
@@ -1441,7 +1441,7 @@
 				}
 				// return callback.call(this, obj.id === $.jstree.root ? this._append_html_data(obj, this._data.core.original_container_html.clone(true)) : false);
 			}
-			if($.isFunction(s)) {
+			if(typeof s === "function") {
 				return s.call(this, obj, $.proxy(function (d) {
 					if(d === false) {
 						callback.call(this, false);
@@ -1457,10 +1457,10 @@
 			if(typeof s === 'object') {
 				if(s.url) {
 					s = $.extend(true, {}, s);
-					if($.isFunction(s.url)) {
+					if(typeof s.url === "function") {
 						s.url = s.url.call(this, obj);
 					}
-					if($.isFunction(s.data)) {
+					if(typeof s.data === "function") {
 						s.data = s.data.call(this, obj);
 					}
 					return $.ajax(s)
@@ -1484,7 +1484,7 @@
 								this.settings.core.error.call(this, this._data.core.last_error);
 							}, this));
 				}
-				if ($.isArray(s)) {
+				if (Array.isArray(s)) {
 					t = $.extend(true, [], s);
 				} else if ($.isPlainObject(s)) {
 					t = $.extend(true, {}, s);
@@ -1607,7 +1607,7 @@
 					data = JSON.parse(data);
 				}
 			}
-			if(!$.isArray(data)) { data = [data]; }
+			if(!Array.isArray(data)) { data = [data]; }
 			var w = null,
 				args = {
 					'df'	: this._model.default_state,
@@ -2047,18 +2047,18 @@
 			}
 			tmp = $.vakata.attributes(d, true);
 			$.each(tmp, function (i, v) {
-				v = $.trim(v);
+				v = v.toString().trim();
 				if(!v.length) { return true; }
 				data.li_attr[i] = v;
 				if(i === 'id') {
-					data.id = v.toString();
+					data.id = v;
 				}
 			});
 			tmp = d.children('a').first();
 			if(tmp.length) {
 				tmp = $.vakata.attributes(tmp, true);
 				$.each(tmp, function (i, v) {
-					v = $.trim(v);
+					v = v.toString().trim();
 					if(v.length) {
 						data.a_attr[i] = v;
 					}
@@ -2649,7 +2649,7 @@
 		 */
 		open_node : function (obj, callback, animation) {
 			var t1, t2, d, t;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.open_node(obj[t1], callback, animation);
@@ -2769,7 +2769,7 @@
 		 */
 		close_node : function (obj, animation) {
 			var t1, t2, t, d;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.close_node(obj[t1], animation);
@@ -2833,7 +2833,7 @@
 		 */
 		toggle_node : function (obj) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.toggle_node(obj[t1]);
@@ -2934,7 +2934,7 @@
 		 */
 		enable_node : function (obj) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.enable_node(obj[t1]);
@@ -2963,7 +2963,7 @@
 		 */
 		disable_node : function (obj) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.disable_node(obj[t1]);
@@ -3002,7 +3002,7 @@
 		 */
 		hide_node : function (obj, skip_redraw) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.hide_node(obj[t1], true);
@@ -3040,7 +3040,7 @@
 		 */
 		show_node : function (obj, skip_redraw) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.show_node(obj[t1], true);
@@ -3252,7 +3252,7 @@
 		 */
 		select_node : function (obj, supress_event, prevent_open, e) {
 			var dom, t1, t2, th;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.select_node(obj[t1], supress_event, prevent_open, e);
@@ -3305,7 +3305,7 @@
 		 */
 		deselect_node : function (obj, supress_event, e) {
 			var t1, t2, dom;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.deselect_node(obj[t1], supress_event, e);
@@ -3513,7 +3513,7 @@
 				if(state.core) {
 					var res, n, t, _this, i;
 					if(state.core.loaded) {
-						if(!this.settings.core.loaded_state || !$.isArray(state.core.loaded) || !state.core.loaded.length) {
+						if(!this.settings.core.loaded_state || !Array.isArray(state.core.loaded) || !state.core.loaded.length) {
 							delete state.core.loaded;
 							this.set_state(state, callback);
 						}
@@ -3526,7 +3526,7 @@
 						return false;
 					}
 					if(state.core.open) {
-						if(!$.isArray(state.core.open) || !state.core.open.length) {
+						if(!Array.isArray(state.core.open) || !state.core.open.length) {
 							delete state.core.open;
 							this.set_state(state, callback);
 						}
@@ -3600,7 +3600,7 @@
 		 */
 		refresh : function (skip_loading, forget_state) {
 			this._data.core.state = forget_state === true ? {} : this.get_state();
-			if(forget_state && $.isFunction(forget_state)) { this._data.core.state = forget_state.call(this, this._data.core.state); }
+			if(forget_state && typeof forget_state === "function") { this._data.core.state = forget_state.call(this, this._data.core.state); }
 			this._cnt = 0;
 			this._model.data = {};
 			this._model.data[$.jstree.root] = {
@@ -3734,7 +3734,7 @@
 		 */
 		set_text : function (obj, val) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.set_text(obj[t1], val);
@@ -3782,7 +3782,7 @@
 				'li_attr' : $.extend(true, {}, obj.li_attr),
 				'a_attr' : $.extend(true, {}, obj.a_attr),
 				'state' : {},
-				'data' : options && options.no_data ? false : $.extend(true, $.isArray(obj.data)?[]:{}, obj.data)
+				'data' : options && options.no_data ? false : $.extend(true, Array.isArray(obj.data)?[]:{}, obj.data)
 				//( this.get_node(obj, true).length ? this.get_node(obj, true).data() : obj.data ),
 			}, i, j;
 			if(options && options.flat) {
@@ -3934,7 +3934,7 @@
 		 */
 		rename_node : function (obj, val) {
 			var t1, t2, old;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.rename_node(obj[t1], val);
@@ -3969,7 +3969,7 @@
 		 */
 		delete_node : function (obj) {
 			var t1, t2, par, pos, tmp, i, j, k, l, c, top, lft;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.delete_node(obj[t1]);
@@ -4071,7 +4071,7 @@
 				}
 				return tmp.functions[chk];
 			}
-			if(chc === false || ($.isFunction(chc) && chc.call(this, chk, obj, par, pos, more) === false) || (chc && chc[chk] === false)) {
+			if(chc === false || (typeof chc === "function" && chc.call(this, chk, obj, par, pos, more) === false) || (chc && chc[chk] === false)) {
 				this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_03', 'reason' : 'User config for core.check_callback prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 				return false;
 			}
@@ -4107,7 +4107,7 @@
 				return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true, false, origin); });
 			}
 
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				if(obj.length === 1) {
 					obj = obj[0];
 				}
@@ -4280,7 +4280,7 @@
 				return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true, false, origin); });
 			}
 
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				if(obj.length === 1) {
 					obj = obj[0];
 				}
@@ -4395,7 +4395,7 @@
 		 */
 		cut : function (obj) {
 			if(!obj) { obj = this._data.core.selected.concat(); }
-			if(!$.isArray(obj)) { obj = [obj]; }
+			if(!Array.isArray(obj)) { obj = [obj]; }
 			if(!obj.length) { return false; }
 			var tmp = [], o, t1, t2;
 			for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -4422,7 +4422,7 @@
 		 */
 		copy : function (obj) {
 			if(!obj) { obj = this._data.core.selected.concat(); }
-			if(!$.isArray(obj)) { obj = [obj]; }
+			if(!Array.isArray(obj)) { obj = [obj]; }
 			if(!obj.length) { return false; }
 			var tmp = [], o, t1, t2;
 			for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -4819,7 +4819,7 @@
 		 */
 		set_icon : function (obj, icon) {
 			var t1, t2, dom, old;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.set_icon(obj[t1], icon);
@@ -4868,7 +4868,7 @@
 		 */
 		hide_icon : function (obj) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.hide_icon(obj[t1]);
@@ -4888,7 +4888,7 @@
 		 */
 		show_icon : function (obj) {
 			var t1, t2, dom;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.show_icon(obj[t1]);
@@ -4914,7 +4914,7 @@
 		if(node && node.attributes) {
 			$.each(node.attributes, function (i, v) {
 				if($.inArray(v.name.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }
-				if(v.value !== null && $.trim(v.value) !== '') {
+				if(v.value !== null && (typeof v !== "string" || v.value.trim() !== '')) {
 					if(with_values) { attr[v.name] = v.value; }
 					else { attr.push(v.name); }
 				}

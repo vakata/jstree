@@ -549,7 +549,7 @@
 		 */
 		this.disable_checkbox = function (obj) {
 			var t1, t2, dom;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.disable_checkbox(obj[t1]);
@@ -585,7 +585,7 @@
 		 */
 		this.enable_checkbox = function (obj) {
 			var t1, t2, dom;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.enable_checkbox(obj[t1]);
@@ -733,7 +733,7 @@
 		this.check_node = function (obj, e) {
 			if(this.settings.checkbox.tie_selection) { return this.select_node(obj, false, true, e); }
 			var dom, t1, t2, th;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.check_node(obj[t1], e);
@@ -773,7 +773,7 @@
 		this.uncheck_node = function (obj, e) {
 			if(this.settings.checkbox.tie_selection) { return this.deselect_node(obj, false, e); }
 			var t1, t2, dom;
-			if($.isArray(obj)) {
+			if(Array.isArray(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.uncheck_node(obj[t1], e);
@@ -928,7 +928,7 @@
 		};
 		this.load_node = function (obj, callback) {
 			var k, l, i, j, c, tmp;
-			if(!$.isArray(obj) && !this.settings.checkbox.tie_selection) {
+			if(!Array.isArray(obj) && !this.settings.checkbox.tie_selection) {
 				tmp = this.get_node(obj);
 				if(tmp && tmp.state.loaded) {
 					for(k = 0, l = tmp.children_d.length; k < l; k++) {
