@@ -679,3 +679,44 @@
 		};
 	}
 }));
+
+// Use material icons
+// Plugin by KSD-France (https://github.com/KSD-France/, dev@ksd.fr)
+(function ($, undefined) {
+	"use strict";
+
+	$.jstree.plugins.material = function (options, parent) {
+		this.teardown = function () {
+			this.element.find(".material-icons").remove();
+			parent.teardown.call(this);
+		};
+
+		this.redraw_node = function (obj, deep, is_callback, force_render) {
+			obj = parent.redraw_node.apply(this, arguments);
+
+			if (obj) {
+				var i,
+				    j,
+				    tmp = null,
+				    icon = null,
+				    temp = null;
+				    
+				for(i = 0, j = obj.childNodes.length; i < j; i++) {
+					if(obj.childNodes[i] && obj.childNodes[i].className && obj.childNodes[i].className.indexOf("jstree-anchor") !== -1) {
+						tmp = obj.childNodes[i];
+						break;
+					}
+				}
+
+				if (tmp) {
+					if (this._model.data[obj.id].icon && this._model.data[obj.id].icon.length) {
+						tmp.childNodes[0].className += " material-icons";
+						tmp.childNodes[0].innerHTML = this._model.data[obj.id].icon;
+					}
+				}
+			}
+
+			return obj;
+		}
+	}
+})(jQuery);
