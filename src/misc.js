@@ -407,10 +407,10 @@
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
-		define('jstree.node_customize', ['jquery','jstree'], factory);
+		define('jstree.node_customize', ['jquery','./jstree.js'], factory);
 	}
 	else if(typeof exports === 'object') {
-		factory(require('jquery'), require('jstree'));
+		factory(require('jquery'), require('./jstree.js'));
 	}
 	else {
 		factory(jQuery, jQuery.jstree);
@@ -465,10 +465,10 @@
 (function (factory) {
         "use strict";
         if (typeof define === 'function' && define.amd) {
-                define('jstree.parentsload', ['jquery','jstree'], factory);
+                define('jstree.parentsload', ['jquery','./jstree.js'], factory);
         }
         else if(typeof exports === 'object') {
-                factory(require('jquery'), require('jstree'));
+                factory(require('jquery'), require('./jstree.js'));
         }
         else {
                 factory(jQuery, jQuery.jstree);
@@ -603,10 +603,10 @@
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
-		define('jstree.conditionaldeselect', ['jquery','jstree'], factory);
+		define('jstree.conditionaldeselect', ['jquery','./jstree.js'], factory);
 	}
 	else if(typeof exports === 'object') {
-		factory(require('jquery'), require('jstree'));
+		factory(require('jquery'), require('./jstree.js'));
 	}
 	else {
 		factory(jQuery, jQuery.jstree);
@@ -631,10 +631,10 @@
 (function (factory) {
 	"use strict";
 	if (typeof define === 'function' && define.amd) {
-		define('jstree.conditionalclose', ['jquery','jstree'], factory);
+		define('jstree.conditionalclose', ['jquery','./jstree.js'], factory);
 	}
 	else if(typeof exports === 'object') {
-		factory(require('jquery'), require('jstree'));
+		factory(require('jquery'), require('./jstree.js'));
 	}
 	else {
 		factory(jQuery, jQuery.jstree);
