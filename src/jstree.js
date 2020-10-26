@@ -454,6 +454,12 @@
 		 */
 		restore_focus : true,
 		/**
+		 * Force to compute and set "aria-setsize" and "aria-posinset" explicitly for each treeitem. 
+		 * Some browsers may compute incorrect elements position and produce wrong announcements for screen readers. Defaults to `false`
+		 * @name $.jstree.defaults.core.compute_elements_positions
+		 */
+		compute_elements_positions : true,
+		/**
 		 * Default keyboard shortcuts (an object where each key is the button name or combo - like 'enter', 'ctrl-space', 'p', etc and the value is the function to execute in the instance's scope)
 		 * @name $.jstree.defaults.core.keyboard
 		 */
@@ -2499,6 +2505,10 @@
 			}
 			node.childNodes[1].setAttribute('aria-selected', !!obj.state.selected);
 			node.childNodes[1].setAttribute('aria-level', obj.parents.length);
+			if(this.settings.core.compute_elements_positions) {
+				node.childNodes[1].setAttribute('aria-setsize', m[obj.parent].children.length);
+				node.childNodes[1].setAttribute('aria-posinset', m[obj.parent].children.indexOf(obj.id) + 1);
+			}			
 			node.setAttribute('aria-labelledby', obj.a_attr.id);
 			if(obj.state.disabled) {
 				node.childNodes[1].setAttribute('aria-disabled', true);
