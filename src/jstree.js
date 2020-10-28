@@ -458,7 +458,7 @@
 		 * Some browsers may compute incorrect elements position and produce wrong announcements for screen readers. Defaults to `false`
 		 * @name $.jstree.defaults.core.compute_elements_positions
 		 */
-		compute_elements_positions : true,
+		compute_elements_positions : false,
 		/**
 		 * Default keyboard shortcuts (an object where each key is the button name or combo - like 'enter', 'ctrl-space', 'p', etc and the value is the function to execute in the instance's scope)
 		 * @name $.jstree.defaults.core.keyboard
