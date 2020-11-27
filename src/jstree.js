@@ -2508,8 +2508,7 @@
 			if(this.settings.core.compute_elements_positions) {
 				node.childNodes[1].setAttribute('aria-setsize', m[obj.parent].children.length);
 				node.childNodes[1].setAttribute('aria-posinset', m[obj.parent].children.indexOf(obj.id) + 1);
-			}			
-			node.setAttribute('aria-labelledby', obj.a_attr.id);
+			}
 			if(obj.state.disabled) {
 				node.childNodes[1].setAttribute('aria-disabled', true);
 			}
