@@ -43,11 +43,8 @@
 		ccp_inst = false,
 		themes_loaded = [],
 		src = $('script:last').attr('src'),
+		rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
 		document = window.document; // local variable is always faster to access then a global
-		trim_opts = {
-			trim_left: (/\S/).test("\xA0") ? /^[\s\xA0]+/ : /^\s+/,
-			trim_right: (/\S/).test("\xA0") ? /[\s\xA0]+$/ : /\s+$/
-		};
 
 	var setImmediate = window.setImmediate;
 	var Promise = window.Promise;
@@ -4971,7 +4968,7 @@
 		return text == null ? "" : String.prototype.trim.call(text);
 	} :
 	function (text) {
-		return text == null ? "" : text.toString().replace(trim_opts.trim_left, "").replace(trim_opts.trim_right, "");
+		return text == null ? "" : (text + "").replace(rtrim, "");
 	});
 }
 }));
