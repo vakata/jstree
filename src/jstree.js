@@ -44,6 +44,10 @@
 		themes_loaded = [],
 		src = $('script:last').attr('src'),
 		document = window.document; // local variable is always faster to access then a global
+		trim_opts = {
+			trim_left: (/\S/).test("\xA0") ? /^[\s\xA0]+/ : /^\s+/,
+			trim_right: (/\S/).test("\xA0") ? /[\s\xA0]+$/ : /\s+$/
+		};
 
 	var setImmediate = window.setImmediate;
 	var Promise = window.Promise;
@@ -2053,7 +2057,7 @@
 			}
 			tmp = $.vakata.attributes(d, true);
 			$.each(tmp, function (i, v) {
-				v = $.trim(v);
+				v = $.vakata.trim(v);
 				if(!v.length) { return true; }
 				data.li_attr[i] = v;
 				if(i === 'id') {
@@ -2064,7 +2068,7 @@
 			if(tmp.length) {
 				tmp = $.vakata.attributes(tmp, true);
 				$.each(tmp, function (i, v) {
-					v = $.trim(v);
+					v = $.vakata.trim(v);
 					if(v.length) {
 						data.a_attr[i] = v;
 					}
@@ -4919,7 +4923,7 @@
 		if(node && node.attributes) {
 			$.each(node.attributes, function (i, v) {
 				if($.inArray(v.name.toLowerCase(),['style','contenteditable','hasfocus','tabindex']) !== -1) { return; }
-				if(v.value !== null && $.trim(v.value) !== '') {
+				if(v.value !== null && $.vakata.trim(v.value) !== '') {
 					if(with_values) { attr[v.name] = v.value; }
 					else { attr.push(v.name); }
 				}
@@ -4963,4 +4967,11 @@
 		}
 		return d;
 	};
+	$.vakata.trim = (String.prototype.trim ? function(text) {
+		return text == null ? "" : String.prototype.trim.call(text);
+	} :
+	function (text) {
+		return text == null ? "" : text.toString().replace(trim_opts.trim_left, "").replace(trim_opts.trim_right, "");
+	});
+}
 }));
