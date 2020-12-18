@@ -1,0 +1,4 @@
+# These are supported funding model platforms
+
+github: [vakata]
+custom: ['https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=paypal@vakata.com&currency_code=USD&amount=&return=http://jstree.com/donation&item_name=Buy+me+a+coffee+for+jsTree']
