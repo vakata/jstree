@@ -21,6 +21,7 @@
         for (i = 0; i < nodes; i++) {
             c ++;
             data.push({
+                'id' : levels + '_' + i,
                 'text' : 'node ' + i + ' ' + (i === 1 ? 'lipsum lipsum lipsum lipsum lipsum lipsum lipsum lipsum ' : ''),
                 'children' : levels > 1 ? dummy(levels - 1, nodes) : []
             });

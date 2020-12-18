@@ -535,7 +535,7 @@ class Tree
             criteria = { id : criteria };
         }
         return function (node) {
-            for (let key of criteria.keys()) {
+            for (let key of Object.keys(criteria)) {
                 if (node.data[key] !== criteria[key]) {
                     return false;
                 }
@@ -1218,6 +1218,7 @@ class jsTree
 }
 jsTree.defaults = {
     data : (node, done) => done([]), // include fail option in docs
+    idProperty : "id",
     massload : false,
     format   : {
         flat       : false,
