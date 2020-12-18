@@ -43,7 +43,6 @@
 		ccp_inst = false,
 		themes_loaded = [],
 		src = $('script:last').attr('src'),
-		rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
 		document = window.document; // local variable is always faster to access then a global
 
 	var setImmediate = window.setImmediate;
@@ -4963,11 +4962,9 @@
 		}
 		return d;
 	};
-	$.vakata.trim = (String.prototype.trim ? function(text) {
-		return text == null ? "" : String.prototype.trim.call(text);
-	} :
-	function (text) {
-		return text == null ? "" : (text + "").replace(rtrim, "");
-	});
-}
+	$.vakata.trim = function (text) {
+		return String.prototype.trim ? 
+			String.prototype.trim.call(text.toString()) :
+			text.toString().replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+	};
 }));
