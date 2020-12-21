@@ -534,13 +534,13 @@
                                 if (property) {
                                         jsTreeDataSettings[propertyName] = function(node) {
                                                 if (this.get_node(node).parentsload_required) {
-                                                        if ($.isFunction(property)) {
+                                                        if ($.vakata.isFunction(property)) {
                                                                 return property.call(this, node)
                                                         } else {// (typeof property === 'string')
                                                                 return property
                                                         }
                                                 } else {
-                                                        if ($.isFunction(coreProperty)) {
+                                                        if ($.vakata.isFunction(coreProperty)) {
                                                                 return coreProperty.call(this, node)
                                                         } else { // (typeof coreProperty === 'string')
                                                                 return coreProperty
@@ -552,7 +552,7 @@
                                 }*/
                         }
 
-                        if($.isFunction(parentsloadSettings)) {
+                        if($.vakata.isFunction(parentsloadSettings)) {
                                 this.settings.data = parentsloadSettings
                         } else if (typeof parentsloadSettings === 'object') {
                                 if (! (parentsloadSettings.url || parentsloadSettings.data)) {

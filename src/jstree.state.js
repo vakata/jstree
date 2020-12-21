@@ -103,7 +103,7 @@
 			if(!!k) { try { k = JSON.parse(k); } catch(ex) { return false; } }
 			if(!!k && k.ttl && k.sec && +(new Date()) - k.sec > k.ttl) { return false; }
 			if(!!k && k.state) { k = k.state; }
-			if(!!k && $.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }
+			if(!!k && $.vakata.isFunction(this.settings.state.filter)) { k = this.settings.state.filter.call(this, k); }
 			if(!!k) {
 				if (!this.settings.state.preserve_loaded) {
 					delete k.core.loaded;

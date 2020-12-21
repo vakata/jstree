@@ -985,7 +985,7 @@
 		 */
 		get_string : function (key) {
 			var a = this.settings.core.strings;
-			if($.isFunction(a)) { return a.call(this, key); }
+			if($.vakata.isFunction(a)) { return a.call(this, key); }
 			if(a && a[key]) { return a[key]; }
 			return key;
 		},
@@ -1447,7 +1447,7 @@
 				}
 				// return callback.call(this, obj.id === $.jstree.root ? this._append_html_data(obj, this._data.core.original_container_html.clone(true)) : false);
 			}
-			if($.isFunction(s)) {
+			if($.vakata.isFunction(s)) {
 				return s.call(this, obj, $.proxy(function (d) {
 					if(d === false) {
 						callback.call(this, false);
@@ -1463,10 +1463,10 @@
 			if(typeof s === 'object') {
 				if(s.url) {
 					s = $.extend(true, {}, s);
-					if($.isFunction(s.url)) {
+					if($.vakata.isFunction(s.url)) {
 						s.url = s.url.call(this, obj);
 					}
-					if($.isFunction(s.data)) {
+					if($.vakata.isFunction(s.data)) {
 						s.data = s.data.call(this, obj);
 					}
 					return $.ajax(s)
@@ -3604,7 +3604,7 @@
 		 */
 		refresh : function (skip_loading, forget_state) {
 			this._data.core.state = forget_state === true ? {} : this.get_state();
-			if(forget_state && $.isFunction(forget_state)) { this._data.core.state = forget_state.call(this, this._data.core.state); }
+			if(forget_state && $.vakata.isFunction(forget_state)) { this._data.core.state = forget_state.call(this, this._data.core.state); }
 			this._cnt = 0;
 			this._model.data = {};
 			this._model.data[$.jstree.root] = {
@@ -4075,7 +4075,7 @@
 				}
 				return tmp.functions[chk];
 			}
-			if(chc === false || ($.isFunction(chc) && chc.call(this, chk, obj, par, pos, more) === false) || (chc && chc[chk] === false)) {
+			if(chc === false || ($.vakata.isFunction(chc) && chc.call(this, chk, obj, par, pos, more) === false) || (chc && chc[chk] === false)) {
 				this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_03', 'reason' : 'User config for core.check_callback prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 				return false;
 			}
@@ -4967,4 +4967,7 @@
 			String.prototype.trim.call(text.toString()) :
 			text.toString().replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
 	};
+	$.vakata.isFunction = function(obj) {
+		return typeof obj === "function" && typeof obj.nodeType !== "number";
+	}
 }));

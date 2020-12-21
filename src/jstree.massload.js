@@ -61,7 +61,7 @@
 				}
 				this._data.massload = {};
 				if (toLoad.length) {
-					if($.isFunction(s)) {
+					if($.vakata.isFunction(s)) {
 						return s.call(this, toLoad, $.proxy(function (data) {
 							var i, j;
 							if(data) {
@@ -82,10 +82,10 @@
 					}
 					if(typeof s === 'object' && s && s.url) {
 						s = $.extend(true, {}, s);
-						if($.isFunction(s.url)) {
+						if($.vakata.isFunction(s.url)) {
 							s.url = s.url.call(this, toLoad);
 						}
-						if($.isFunction(s.data)) {
+						if($.vakata.isFunction(s.data)) {
 							s.data = s.data.call(this, toLoad);
 						}
 						return $.ajax(s)

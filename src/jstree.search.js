@@ -158,7 +158,7 @@
 				show_only_matches_children = s.show_only_matches_children;
 			}
 			if(!skip_async && a !== false) {
-				if($.isFunction(a)) {
+				if($.vakata.isFunction(a)) {
 					return a.call(this, str, $.proxy(function (d) {
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.isArray(d) ? [] : $.vakata.array_unique(d), function () {
