@@ -61,7 +61,7 @@
 				}
 				this._data.massload = {};
 				if (toLoad.length) {
-					if($.vakata.isFunction(s)) {
+					if($.vakata.is_function(s)) {
 						return s.call(this, toLoad, $.proxy(function (data) {
 							var i, j;
 							if(data) {
@@ -82,10 +82,10 @@
 					}
 					if(typeof s === 'object' && s && s.url) {
 						s = $.extend(true, {}, s);
-						if($.vakata.isFunction(s.url)) {
+						if($.vakata.is_function(s.url)) {
 							s.url = s.url.call(this, toLoad);
 						}
-						if($.vakata.isFunction(s.data)) {
+						if($.vakata.is_function(s.data)) {
 							s.data = s.data.call(this, toLoad);
 						}
 						return $.ajax(s)
