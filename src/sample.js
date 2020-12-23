@@ -70,7 +70,7 @@
 		this.get_json = function (obj, options, flat) {
 			// get the node from the parent
 			var tmp = parent.get_json.call(this, obj, options, flat), i, j;
-			if($.isArray(tmp)) {
+			if($.vakata.is_array(tmp)) {
 				for(i = 0, j = tmp.length; i < j; i++) {
 					tmp[i].sample = 'value';
 				}

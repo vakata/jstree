@@ -1277,7 +1277,7 @@
 		 */
 		load_node : function (obj, callback) {
 			var k, l, i, j, c;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				this._load_nodes(obj.slice(), callback);
 				return true;
 			}
@@ -1490,7 +1490,7 @@
 								this.settings.core.error.call(this, this._data.core.last_error);
 							}, this));
 				}
-				if ($.isArray(s)) {
+				if ($.vakata.is_array(s)) {
 					t = $.extend(true, [], s);
 				} else if ($.isPlainObject(s)) {
 					t = $.extend(true, {}, s);
@@ -1613,7 +1613,7 @@
 					data = JSON.parse(data);
 				}
 			}
-			if(!$.isArray(data)) { data = [data]; }
+			if(!$.vakata.is_array(data)) { data = [data]; }
 			var w = null,
 				args = {
 					'df'	: this._model.default_state,
@@ -2654,7 +2654,7 @@
 		 */
 		open_node : function (obj, callback, animation) {
 			var t1, t2, d, t;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.open_node(obj[t1], callback, animation);
@@ -2773,7 +2773,7 @@
 		 */
 		close_node : function (obj, animation) {
 			var t1, t2, t, d;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.close_node(obj[t1], animation);
@@ -2837,7 +2837,7 @@
 		 */
 		toggle_node : function (obj) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.toggle_node(obj[t1]);
@@ -2938,7 +2938,7 @@
 		 */
 		enable_node : function (obj) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.enable_node(obj[t1]);
@@ -2967,7 +2967,7 @@
 		 */
 		disable_node : function (obj) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.disable_node(obj[t1]);
@@ -3006,7 +3006,7 @@
 		 */
 		hide_node : function (obj, skip_redraw) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.hide_node(obj[t1], true);
@@ -3044,7 +3044,7 @@
 		 */
 		show_node : function (obj, skip_redraw) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.show_node(obj[t1], true);
@@ -3256,7 +3256,7 @@
 		 */
 		select_node : function (obj, supress_event, prevent_open, e) {
 			var dom, t1, t2, th;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.select_node(obj[t1], supress_event, prevent_open, e);
@@ -3309,7 +3309,7 @@
 		 */
 		deselect_node : function (obj, supress_event, e) {
 			var t1, t2, dom;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.deselect_node(obj[t1], supress_event, e);
@@ -3517,7 +3517,7 @@
 				if(state.core) {
 					var res, n, t, _this, i;
 					if(state.core.loaded) {
-						if(!this.settings.core.loaded_state || !$.isArray(state.core.loaded) || !state.core.loaded.length) {
+						if(!this.settings.core.loaded_state || !$.vakata.is_array(state.core.loaded) || !state.core.loaded.length) {
 							delete state.core.loaded;
 							this.set_state(state, callback);
 						}
@@ -3530,7 +3530,7 @@
 						return false;
 					}
 					if(state.core.open) {
-						if(!$.isArray(state.core.open) || !state.core.open.length) {
+						if(!$.vakata.is_array(state.core.open) || !state.core.open.length) {
 							delete state.core.open;
 							this.set_state(state, callback);
 						}
@@ -3738,7 +3738,7 @@
 		 */
 		set_text : function (obj, val) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.set_text(obj[t1], val);
@@ -3786,7 +3786,7 @@
 				'li_attr' : $.extend(true, {}, obj.li_attr),
 				'a_attr' : $.extend(true, {}, obj.a_attr),
 				'state' : {},
-				'data' : options && options.no_data ? false : $.extend(true, $.isArray(obj.data)?[]:{}, obj.data)
+				'data' : options && options.no_data ? false : $.extend(true, $.vakata.is_array(obj.data)?[]:{}, obj.data)
 				//( this.get_node(obj, true).length ? this.get_node(obj, true).data() : obj.data ),
 			}, i, j;
 			if(options && options.flat) {
@@ -3938,7 +3938,7 @@
 		 */
 		rename_node : function (obj, val) {
 			var t1, t2, old;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.rename_node(obj[t1], val);
@@ -3973,7 +3973,7 @@
 		 */
 		delete_node : function (obj) {
 			var t1, t2, par, pos, tmp, i, j, k, l, c, top, lft;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.delete_node(obj[t1]);
@@ -4111,7 +4111,7 @@
 				return this.load_node(par, function () { this.move_node(obj, par, pos, callback, true, false, origin); });
 			}
 
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				if(obj.length === 1) {
 					obj = obj[0];
 				}
@@ -4284,7 +4284,7 @@
 				return this.load_node(par, function () { this.copy_node(obj, par, pos, callback, true, false, origin); });
 			}
 
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				if(obj.length === 1) {
 					obj = obj[0];
 				}
@@ -4399,7 +4399,7 @@
 		 */
 		cut : function (obj) {
 			if(!obj) { obj = this._data.core.selected.concat(); }
-			if(!$.isArray(obj)) { obj = [obj]; }
+			if(!$.vakata.is_array(obj)) { obj = [obj]; }
 			if(!obj.length) { return false; }
 			var tmp = [], o, t1, t2;
 			for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -4426,7 +4426,7 @@
 		 */
 		copy : function (obj) {
 			if(!obj) { obj = this._data.core.selected.concat(); }
-			if(!$.isArray(obj)) { obj = [obj]; }
+			if(!$.vakata.is_array(obj)) { obj = [obj]; }
 			if(!obj.length) { return false; }
 			var tmp = [], o, t1, t2;
 			for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
@@ -4823,7 +4823,7 @@
 		 */
 		set_icon : function (obj, icon) {
 			var t1, t2, dom, old;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.set_icon(obj[t1], icon);
@@ -4872,7 +4872,7 @@
 		 */
 		hide_icon : function (obj) {
 			var t1, t2;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.hide_icon(obj[t1]);
@@ -4892,7 +4892,7 @@
 		 */
 		show_icon : function (obj) {
 			var t1, t2, dom;
-			if($.isArray(obj)) {
+			if($.vakata.is_array(obj)) {
 				obj = obj.slice();
 				for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 					this.show_icon(obj[t1]);
@@ -4970,4 +4970,7 @@
 	$.vakata.is_function = function(obj) {
 		return typeof obj === "function" && typeof obj.nodeType !== "number";
 	}
+	$.vakata.is_array = Array.isArray || function (obj) {
+		return Object.prototype.toString.call(obj) === "[object Array]";
+	};
 }));
