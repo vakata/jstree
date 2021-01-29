@@ -1469,6 +1469,9 @@
 					if($.vakata.is_function(s.data)) {
 						s.data = s.data.call(this, obj);
 					}
+					if($.vakata.is_function(s.headers)) {
+						s.headers = s.headers.call(this, obj);
+					}
 					return $.ajax(s)
 						.done($.proxy(function (d,t,x) {
 								var type = x.getResponseHeader('Content-Type');
