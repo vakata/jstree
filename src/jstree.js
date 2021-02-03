@@ -585,7 +585,10 @@
 			this._data.core.loaded = false;
 			this._data.core.rtl = (this.element.css("direction") === "rtl");
 			this.element[this._data.core.rtl ? 'addClass' : 'removeClass']("jstree-rtl");
-			this.element.attr('role','tree');
+			// Dont add role 'tree' to main div. The change here is to move the role tree to the first UL element
+			// The reason for this chage is that if we have a role tree on div and role group on the UL, there are no treeitems under the div with a role tree
+			// which causes the acessibility rule violation WCAG 1.3.1 aria-required-children
+			//this.element.attr('role','tree');
 			if(this.settings.core.multiple) {
 				this.element.attr('aria-multiselectable', true);
 			}
@@ -2355,7 +2358,7 @@
 			}
 			if(this._model.force_full_redraw) {
 				f.className = this.get_container_ul()[0].className;
-				f.setAttribute('role','group');
+				f.setAttribute('role','tree');  // The container UL gets tree role
 				this.element.empty().append(f);
 				//this.get_container_ul()[0].appendChild(f);
 			}
@@ -2503,7 +2506,7 @@
 			if(!obj.a_attr.id) {
 				obj.a_attr.id = obj.id + '_anchor';
 			}
-			node.childNodes[1].setAttribute('aria-selected', !!obj.state.selected);
+			node.childNodes[1].setAttribute('data-selected', !!obj.state.selected);
 			node.childNodes[1].setAttribute('aria-level', obj.parents.length);
 			if(this.settings.core.compute_elements_positions) {
 				node.childNodes[1].setAttribute('aria-setsize', m[obj.parent].children.length);
@@ -3275,7 +3278,7 @@
 					dom = this._open_to(obj);
 				}
 				if(dom && dom.length) {
-					dom.children('.jstree-anchor').addClass('jstree-clicked').attr('aria-selected', true);
+					dom.children('.jstree-anchor').addClass('jstree-clicked').attr('data-selected', true);
 				}
 				/**
 				 * triggered when an node is selected
@@ -3325,7 +3328,7 @@
 				obj.state.selected = false;
 				this._data.core.selected = $.vakata.array_remove_item(this._data.core.selected, obj.id);
 				if(dom.length) {
-					dom.children('.jstree-anchor').removeClass('jstree-clicked').attr('aria-selected', false);
+					dom.children('.jstree-anchor').removeClass('jstree-clicked').attr('data-selected', false);
 				}
 				/**
 				 * triggered when an node is deselected
@@ -3381,7 +3384,7 @@
 				}
 			}
 			this._data.core.selected = [];
-			this.element.find('.jstree-clicked').removeClass('jstree-clicked').attr('aria-selected', false);
+			this.element.find('.jstree-clicked').removeClass('jstree-clicked').attr('data-selected', false);
 			/**
 			 * triggered when all nodes are deselected
 			 * @event
@@ -4969,7 +4972,7 @@
 	};
 	$.vakata.is_function = function(obj) {
 		return typeof obj === "function" && typeof obj.nodeType !== "number";
-	}
+	};
 	$.vakata.is_array = Array.isArray || function (obj) {
 		return Object.prototype.toString.call(obj) === "[object Array]";
 	};
