@@ -4969,7 +4969,7 @@
 	};
 	$.vakata.is_function = function(obj) {
 		return typeof obj === "function" && typeof obj.nodeType !== "number";
-	}
+	};
 	$.vakata.is_array = Array.isArray || function (obj) {
 		return Object.prototype.toString.call(obj) === "[object Array]";
 	};

@@ -639,6 +639,7 @@
 		 * Cascades checked state to a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
 		 * However if these unaffected nodes are already selected their ids will be included in the returned array.
 		 * @private
+		 * @name _cascade_new_checked_state(id, checkedState)
 		 * @param {string} id the node ID
 		 * @param {bool} checkedState should the nodes be checked or not
 		 * @returns {Array} Array of all node id's (in this tree branch) that are checked.
