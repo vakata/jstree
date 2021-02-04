@@ -61,11 +61,11 @@
 	$.jstree.plugins.state = function (options, parent) {
 		this.bind = function () {
 			parent.bind.call(this);
-			var bind = $.proxy(function () {
-				this.element.on(this.settings.state.events, $.proxy(function () {
+			var bind = function () {
+				this.element.on(this.settings.state.events, function () {
 					if(to) { clearTimeout(to); }
-					to = setTimeout($.proxy(function () { this.save_state(); }, this), 100);
-				}, this));
+					to = setTimeout(function () { this.save_state(); }.bind(this), 100);
+				}.bind(this));
 				/**
 				 * triggered when the state plugin is finished restoring the state (and immediately after ready if there is no state to restore).
 				 * @event
@@ -73,12 +73,12 @@
 				 * @plugin state
 				 */
 				this.trigger('state_ready');
-			}, this);
+			}.bind(this);
 			this.element
-				.on("ready.jstree", $.proxy(function (e, data) {
+				.on("ready.jstree", function (e, data) {
 						this.element.one("restore_state.jstree", bind);
 						if(!this.restore_state()) { bind(); }
-					}, this));
+					}.bind(this));
 		};
 		/**
 		 * save the state

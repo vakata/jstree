@@ -62,7 +62,7 @@
 				this._data.massload = {};
 				if (toLoad.length) {
 					if($.vakata.is_function(s)) {
-						return s.call(this, toLoad, $.proxy(function (data) {
+						return s.call(this, toLoad, function (data) {
 							var i, j;
 							if(data) {
 								for(i in data) {
@@ -78,7 +78,7 @@
 								}
 							}
 							parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
-						}, this));
+						}.bind(this));
 					}
 					if(typeof s === 'object' && s && s.url) {
 						s = $.extend(true, {}, s);
@@ -89,7 +89,7 @@
 							s.data = s.data.call(this, toLoad);
 						}
 						return $.ajax(s)
-							.done($.proxy(function (data,t,x) {
+							.done(function (data,t,x) {
 									var i, j;
 									if(data) {
 										for(i in data) {
@@ -105,10 +105,10 @@
 										}
 									}
 									parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
-								}, this))
-							.fail($.proxy(function (f) {
+								}.bind(this))
+							.fail(function (f) {
 									parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
-								}, this));
+								}.bind(this));
 					}
 				}
 			}

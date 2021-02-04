@@ -77,11 +77,11 @@
 			parent.bind.call(this);
 			this._data.realcheckboxes.uto = false;
 			this.element
-				.on('changed.jstree uncheck_node.jstree check_node.jstree uncheck_all.jstree check_all.jstree move_node.jstree copy_node.jstree redraw.jstree open_node.jstree ready.jstree loaded.jstree', $.proxy(function () {
+				.on('changed.jstree uncheck_node.jstree check_node.jstree uncheck_all.jstree check_all.jstree move_node.jstree copy_node.jstree redraw.jstree open_node.jstree ready.jstree loaded.jstree', function () {
 						// only if undetermined is in setting
 						if(this._data.realcheckboxes.uto) { clearTimeout(this._data.realcheckboxes.uto); }
-						this._data.realcheckboxes.uto = setTimeout($.proxy(this._realcheckboxes, this), 50);
-					}, this));
+						this._data.realcheckboxes.uto = setTimeout(this._realcheckboxes.bind(this), 50);
+					}.bind(this));
 		};
 		this.redraw_node = function(obj, deep, callback, force_draw) {
 			obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
@@ -156,10 +156,10 @@
 		this.bind = function () {
 			parent.bind.call(this);
 			this.element
-				.on("click.jstree", ".jstree-questionmark", $.proxy(function (e) {
+				.on("click.jstree", ".jstree-questionmark", function (e) {
 						e.stopImmediatePropagation();
 						this.settings.questionmark.call(this, this.get_node(e.target));
-					}, this));
+					}.bind(this));
 		};
 		this.teardown = function () {
 			if(this.settings.questionmark) {
@@ -293,15 +293,15 @@
 				}
 				tmp.push(obj);
 			}
-			return this._append_json_data(id, tmp, $.proxy(function (status) {
+			return this._append_json_data(id, tmp, function (status) {
 				callback.call(this, status);
-			}, this));
+			}.bind(this));
 		};
 		this._load_node = function (obj, callback) {
 			var id = obj.id;
-			var nd = obj.id === "#" ? this.settings.core.data : this._data.datamodel[obj.id].getChildren($.proxy(function (nodes) {
+			var nd = obj.id === "#" ? this.settings.core.data : this._data.datamodel[obj.id].getChildren(function (nodes) {
 				this._datamodel(id, nodes, callback);
-			}, this));
+			}.bind(this));
 			if($.vakata.is_array(nd)) {
 				this._datamodel(id, nd, callback);
 			}
