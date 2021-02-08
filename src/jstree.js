@@ -2355,7 +2355,7 @@
 			}
 			if(this._model.force_full_redraw) {
 				f.className = this.get_container_ul()[0].className;
-				f.setAttribute('role','group');
+				f.setAttribute('role','presentation');
 				this.element.empty().append(f);
 				//this.get_container_ul()[0].appendChild(f);
 			}
