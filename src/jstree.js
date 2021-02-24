@@ -4985,9 +4985,9 @@
 				throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
 			}
 			return function(){
-				var funcArgs = args.concat(Array.prototype.slice.call(arguments))
+				var funcArgs = args.concat(Array.prototype.slice.call(arguments));
 				return thatFunc.apply(thatArg, funcArgs);
 			};
 		};
-	};
+	}
 }));
