@@ -954,6 +954,14 @@
     margin-top: -10px;
   }
 }
+@media (forced-colors: active) {
+  .jstree-hovered {
+    border: 2px dashed;
+  }
+  .jstree-clicked {
+    border: 2px solid aqua;
+  }
+}
 @media (max-width: 768px) {
   .jstree-default-dark-responsive {
     /*
