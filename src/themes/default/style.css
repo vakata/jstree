@@ -959,7 +959,7 @@
     border: 2px dashed;
   }
   .jstree-clicked {
-    border: 2px solid aqua;
+    border: 2px solid;
   }
 }
 @media (max-width: 768px) {
