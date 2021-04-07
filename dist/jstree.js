@@ -535,7 +535,7 @@ class Tree
             criteria = { id : criteria };
         }
         return function (node) {
-            for (let key of Object.keys(criteria)) {
+            for (let key of criteria.keys()) {
                 if (node.data[key] !== criteria[key]) {
                     return false;
                 }
@@ -589,7 +589,7 @@ class Tree
 
 class jsTree
 {
-    _extend(out) {
+    static _extend (out) {
         out = out || {};
         for (let i = 1; i < arguments.length; i++) {
             let obj = arguments[i];
@@ -599,7 +599,7 @@ class jsTree
             for (let key in obj) {
                 if (obj.hasOwnProperty(key)) {
                     if (typeof obj[key] === "object" && obj[key] !== null) {
-                        out[key] = this._extend(out[key], obj[key]);
+                        out[key] = jsTree._extend(out[key], obj[key]);
                     } else {
                         out[key] = obj[key];
                     }
@@ -609,7 +609,7 @@ class jsTree
         return out;
     }
     constructor(options = {}, dom = null) {
-        this.options = this._extend({}, jsTree.defaults, options);
+        this.options = jsTree._extend({}, jsTree.defaults, options);
         this.tree = new Tree();
         this.events = {};
         this.handlers = {
@@ -617,16 +617,14 @@ class jsTree
             render : []
         };
 
-        // TODO: not loaded & incomplete ("more" link as last child if incomplete)
-        // TODO: massload
-        // TODO: async loading
+        // TODO: aria
+        // TODO: incomplete ("more" link as last child if incomplete)
 
         this._nodeList = [];
         this._renderer = null;
         // redraw with no change to visible structure
         this.on(
             `select deselect selectAll deselectAll
-             check uncheck checkAll uncheckAll
              enable disable enableAll disableAll
              rename`,
             () => this.redraw()
@@ -642,6 +640,8 @@ class jsTree
         if (dom) {
             this.render(dom);
         }
+        Object.entries(this.options.plugins).forEach(v => jsTree.plugin[v[0]].call(this, v[1] || {}));
+
         // TODO: render (or indicate) loading
         if (this.options.data instanceof Function) {
             let tree = this;
@@ -762,14 +762,48 @@ class jsTree
     }
 
     // open / close (changes visible node count (container height))
+    load(node, done, fail) {
+        if (Array.isArray(node)) {
+            node.forEach(x => this.load(x, done, fail));
+            return this;
+        }
+        node = this.node(node);
+        if (!this.getState(node, 'loading') &&
+            !this.getState(node, 'loaded', true) &&
+            this.options.data instanceof Function
+        ) {
+            let tree = this;
+            tree.setState(node, 'loading', true);
+            this.options.data(
+                node,
+                function (data) {
+                    tree.setState(node, 'loading', false);
+                    tree.setState(node, 'loaded', true);
+                    tree.create(data, node);
+                    if (done) {
+                        done.call(tree);
+                    }
+                },
+                function () {
+                    tree.setState(node, 'loading', false);
+                    if (fail) {
+                        fail.call(tree);
+                    }
+                }
+            );
+        }
+        return this;
+    }
     open(node) {
         if (Array.isArray(node)) {
             node.forEach(x => this.open(x));
             return this;
         }
         node = this.node(node);
-        // TODO: if not loaded - load the node and then open again
-        // TODO: maybe add a load() method with a callback
+        if (!this.getState(node, 'loaded', true)) {
+            this.load(node, () => this.open(node));
+            return this;
+        }
         if (node) {
             this.setState(node, "opened", true);
             this.trigger('open', { node : node });
@@ -885,83 +919,6 @@ class jsTree
     getSelected() {
         return this.tree.find(function (node) {
             return node.data && node.data.state && node.data.state.selected;
-        });
-    }
-
-    // checkboxes (just visual indication - redraw involved nodes or loop and apply minor changes)
-    check(node) {
-        if (Array.isArray(node)) {
-            node.forEach(x => this.check(x));
-            return this;
-        }
-        node = this.node(node);
-        if (node) {
-            this.setState(node, "checked", true);
-            this.setState(node, "indeterminate", false);
-            // TODO: three state! disabled! hidden!
-            this.trigger("check", { node : node });
-        }
-        return this;
-    }
-    uncheck(node) {
-        if (Array.isArray(node)) {
-            node.forEach(x => this.uncheck(x));
-            return this;
-        }
-        node = this.node(node);
-        if (node) {
-            this.setState(node, "checked", false);
-            this.setState(node, "indeterminate", false);
-            this.trigger("uncheck", { node : node });
-        }
-        return this;
-    }
-    checkAll() {
-        for (let node of this.tree) {
-            this.setState(node, "checked", true);
-            this.setState(node, "indeterminate", false);
-        }
-        this.trigger("checkAll");
-        return this;
-    }
-    uncheckAll() {
-        for (let node of this.tree) {
-            this.setState(node, "checked", false);
-            this.setState(node, "indeterminate", false);
-        }
-        this.trigger("uncheckAll");
-        return this;
-    }
-    getChecked() {
-        return this.tree.find(function (node) {
-            return node.data && node.data.state && node.data.state.checked;
-        });
-    }
-    getTopChecked() {
-        let recurse = function * (node) {
-            for (let child of node.children) {
-                if (node.data.state && node.data.state.checked) {
-                    yield child;
-                }
-                yield * recurse(child);
-            }
-        };
-        return Array.from(recurse(this.root));
-    }
-    getBottomChecked() {
-        let recurse = function * (node) {
-            for (let child of node.children) {
-                if (node.data.state && node.data.state.checked && !child.children.length) {
-                    yield child;
-                }
-                yield * recurse(child);
-            }
-        };
-        return Array.from(recurse(this.root));
-    }
-    getIndeterminate() {
-        return this.tree.find(function (node) {
-            return node.data && node.data.state && node.data.state.indeterminate;
         });
     }
 
@@ -1081,7 +1038,6 @@ class jsTree
 
     * visible() {
         let recurse = function * (node) {
-            // TODO: sort should be here
             for (let child of node.children) {
                 if (!child.data.state || !child.data.state.hidden) {
                     yield child;
@@ -1133,61 +1089,119 @@ class jsTree
             }
         });
 
-        // renderer
         this._nodeList = Array.from(this.visible());
-        this._renderer = new Flat(
-            target,
-            {
-                create : (function () {
-                    let node = document.createElement("div");
-                    node.classList.add("jstree-node");
-                    this.handlers.create.forEach(v => v.call(this, node));
-                    return node;
-                }).bind(this),
-                update : (function (index, dom, onlyDirty = true) {
-                    let node = this._nodeList[index];
-                    if (!node) {
-                        dom.style.display = 'none';
-                        return;
+        switch (this.options.renderer) {
+            case 'scroller':
+                this._renderer = new InfiniteScroller(
+                    target,
+                    {
+                        create : (function () {
+                            let node = document.createElement("div");
+                            node.classList.add("jstree-node");
+                            this.handlers.create.forEach(v => v.call(this, node));
+                            return node;
+                        }).bind(this),
+                        update : (function (index, dom, onlyDirty = true) {
+                            let node = this._nodeList[index];
+                            if (!node) {
+                                dom.style.display = 'none';
+                                return;
+                            }
+                            if (onlyDirty && !node._dirty) {
+                                return;
+                            }
+                            dom.style.display = 'block';
+                            let html = "";
+                            node.getAncestors().reverse().forEach(function (parent) {
+                                if (parent.isLast()) {
+                                    html += `<i class="jstree-icon">&nbsp;</i>`;
+                                } else {
+                                    html += `<i class="jstree-icon jstree-icon-v">&nbsp;</i>`;
+                                }
+                            });
+                            let clss = 'leaf';
+                            if (!this.getState(node, "loaded", true)) {
+                                clss = 'closed';
+                            } else {
+                                if (node.hasChildren()) {
+                                    clss = this.getState(node, "opened") ? "opened" : "closed";
+                                }
+                            }
+                            if (node.isLast()) {
+                                html += `<i class="jstree-icon jstree-icon-v2 jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
+                            } else {
+                                html += `<i class="jstree-icon jstree-icon-v jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
+                            }
+                            clss = this.getState(node, "selected", false) ? 'jstree-selected' : '';
+                            html += `<a class="jstree-node-text ${clss}" href="#"><i class="jstree-icon jstree-node-icon">&nbsp;</i> ${node.data.text}</a>`;
+        
+                            // TODO: do not redraw the whole DIV! update classes and texts
+                            // TODO: add "dots" DIVs, prepare a style to render them "invisible" (opacity: 0)
+                            dom.setAttribute('data-index', index);
+                            dom.innerHTML = html;
+                            this.handlers.render.forEach(v => v.call(this, dom, node));
+                            node._dirty = false;
+                        }).bind(this),
+                        count : () => this._nodeList.length
                     }
-                    if (onlyDirty && !node._dirty) {
-                        return;
+                );
+                break;
+            default:
+                this._renderer = new Flat(
+                    target,
+                    {
+                        create : (function () {
+                            let node = document.createElement("div");
+                            node.classList.add("jstree-node");
+                            this.handlers.create.forEach(v => v.call(this, node));
+                            return node;
+                        }).bind(this),
+                        update : (function (index, dom, onlyDirty = true) {
+                            let node = this._nodeList[index];
+                            if (!node) {
+                                dom.style.display = 'none';
+                                return;
+                            }
+                            if (onlyDirty && !node._dirty) {
+                                return;
+                            }
+                            dom.style.display = 'block';
+                            let html = "";
+                            node.getAncestors().reverse().forEach(function (parent) {
+                                if (parent.isLast()) {
+                                    html += `<i class="jstree-icon">&nbsp;</i>`;
+                                } else {
+                                    html += `<i class="jstree-icon jstree-icon-v">&nbsp;</i>`;
+                                }
+                            });
+                            let clss = 'leaf';
+                            if (!this.getState(node, "loaded", true)) {
+                                clss = 'closed';
+                            } else {
+                                if (node.hasChildren()) {
+                                    clss = this.getState(node, "opened") ? "opened" : "closed";
+                                }
+                            }
+                            if (node.isLast()) {
+                                html += `<i class="jstree-icon jstree-icon-v2 jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
+                            } else {
+                                html += `<i class="jstree-icon jstree-icon-v jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
+                            }
+                            clss = this.getState(node, "selected", false) ? 'jstree-selected' : '';
+                            html += `<a class="jstree-node-text ${clss}" href="#"><i class="jstree-icon jstree-node-icon">&nbsp;</i> ${node.data.text}</a>`;
+        
+                            // TODO: do not redraw the whole DIV! update classes and texts
+                            // TODO: add "dots" DIVs, prepare a style to render them "invisible" (opacity: 0)
+                            dom.setAttribute('data-index', index);
+                            dom.innerHTML = html;
+                            this.handlers.render.forEach(v => v.call(this, dom, node));
+                            node._dirty = false;
+                        }).bind(this),
+                        count : () => this._nodeList.length
                     }
-                    dom.style.display = 'block';
-                    let html = "";
-                    node.getAncestors().reverse().forEach(function (parent) {
-                        if (parent.isLast()) {
-                            html += `<i class="jstree-icon">&nbsp;</i>`;
-                        } else {
-                            html += `<i class="jstree-icon jstree-icon-v">&nbsp;</i>`;
-                        }
-                    });
-                    let clss = 'leaf';
-                    if (!this.getState(node, "loaded", true)) {
-                        clss = 'closed';
-                    } else {
-                        if (node.hasChildren()) {
-                            clss = this.getState(node, "opened") ? "opened" : "closed";
-                        }
-                    }
-                    if (node.isLast()) {
-                        html += `<i class="jstree-icon jstree-icon-v2 jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
-                    } else {
-                        html += `<i class="jstree-icon jstree-icon-v jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
-                    }
-                    clss = this.getState(node, "selected", false) ? 'jstree-selected' : '';
-                    html += `<a class="jstree-node-text ${clss}" href="#"><i class="jstree-icon jstree-node-icon">&nbsp;</i> ${node.data.text}</a>`;
-
-                    // TODO: do not redraw the whole DIV! update classes and texts
-                    // TODO: add "dots" DIVs, prepare a style to render them "invisible" (opacity: 0)
-                    dom.setAttribute('data-index', index);
-                    dom.innerHTML = html;
-                    this.handlers.render.forEach(v => v.call(this, dom, node));
-                    node._dirty = false;
-                }).bind(this),
-                count : () => this._nodeList.length
-            }
-        );
+                );
+                break;
+        }
     }
 
     static instance (node) {
@@ -1202,24 +1216,12 @@ class jsTree
         }
         return null;
     }
-    
-    // TODO: types - bind with create node / supply defaults - maybe inside TreeNode?
-    // check API
-
-    /*
-        OK selected : [],
-        OK checked : [],
-        indeterminate : [],
-        OK opened : [],
-        editing : [],
-        OK disabled : [],
-        OK hidden : []
-    */
 }
+
 jsTree.defaults = {
     data : (node, done) => done([]), // include fail option in docs
-    idProperty : "id",
-    massload : false,
+    renderer : 'flat', // 'scroller'
+    plugins : {},
     format   : {
         flat       : false,
         id         : "id",
@@ -1230,11 +1232,6 @@ jsTree.defaults = {
         title      : "text",
         html       : false
     },
-    theme : {
-        dots     : true,
-        icons    : true,
-        stripes  : true
-    },
     strings : {
         loading : "Loading ...",
         newNode : "New node"
@@ -1244,34 +1241,7 @@ jsTree.defaults = {
         reveal   : true,
     },
     check : () => true,
-    error : err => err,
-    checkbox : {
-        visible   : false,
-        cascade   : { up : true, down : true, indeterminate : true, includeHidden : true, includeDisabled : true },
-        selection : true,
-        wholeNode : false
-    },
-    dragndrop : {
-        isDraggable         : () => false,
-        dragSelection       : true,
-        forceCopy           : false,
-        mobileSelectionOnly : true
-    },
-    search : {
-        beforeSearch    : (q, callback) => callback(),
-        match           : (q, node) => node.data.text.indexOf(q) !== -1,
-        showOnlyMatches : true,
-        closeOnClear    : true
-    },
-    sort : null, // (a, b) => 1/-1/0
-    state : {
-        key    : "jstree",
-        ttl    : 0,
-        filter : (state) => state
-    },
-    types : {
-        "*" : { }
-    }
+    error : err => err
 };
 
 
