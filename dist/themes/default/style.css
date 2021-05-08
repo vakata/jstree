@@ -955,11 +955,11 @@
   }
 }
 @media (forced-colors: active) {
-  .jstree-hovered {
-    border: 2px dashed;
-  }
   .jstree-clicked {
     border: 2px solid;
+  }
+  .jstree-hovered:not(.jstree-clicked):not(.jstree-disabled) {
+    border: 2px dashed;
   }
 }
 @media (max-width: 768px) {
