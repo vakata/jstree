@@ -6,7 +6,7 @@
  </defs>
  <g>
   <title>Layer 1</title>
-  <rect rx="4" id="svg_1" height="24" width="24" y="4.26816" x="4.04469" stroke="#000" fill="none"/>
-  <rect rx="4" filter="url(#svg_2_blur)" id="svg_2" height="18" width="18" y="7" x="7" stroke="#000" fill="#729C62"/>
+  <rect rx="4" id="svg_1" height="22" width="22" y="5" x="5" stroke="#000" fill="none"/>
+  <rect rx="4" filter="url(#svg_2_blur)" id="svg_2" height="16" width="16" y="8" x="8" stroke="#000" fill="#729C62"/>
  </g>
 </svg>
