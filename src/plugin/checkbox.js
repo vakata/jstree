@@ -1,19 +1,35 @@
 import jsTree from "../jstree";
 
-jsTree.plugin.checkbox = function (options) {
+if (!jsTree.plugin)
+    jsTree.plugin = {}
+
+jsTree.plugin.checkbox = function (optionsIn) {
     const defaults = {
         visible   : false,
         cascade   : { up : true, down : true, indeterminate : true, includeHidden : true, includeDisabled : true },
         selection : true,
         wholeNode : false
     };
-    let options = jsTree._extend({}, defaults, options);
+    let options = jsTree._extend({}, defaults, optionsIn);
     this.on(
         `check uncheck checkAll uncheckAll`,
         () => this.redraw()
     );
     this.addRenderHandler(function (dom, node) {
         // TODO: add icon
+        if (this.getState(node, "checked", false)) {
+            console.log(dom);
+            const a = document.evaluate("a[contains(@class,'jstree-node-text')]",dom,null,XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue
+            const elementBefore = a.previousSibling;
+            let e = elementBefore;
+            if (!elementBefore.classList.contains("jstree-icon-checkbox")) {
+                console.log("need to add element");
+            } else {
+                console.log("need to switch class only");
+                // e = 
+            }
+
+        } else console.log("N/A")
     });
     // TODO: all other plugin stuff (cascade, etc)
 

@@ -28,7 +28,7 @@
         }
         return data;
     }
-    var instance = new jsTree({}, document.getElementById('tree'));
+    var instance = new jsTree({plugins:{checkbox:jsTree.plugin.checkbox}}, document.getElementById('tree'));
     instance
         .empty()
         .create(dummy(2, 10))

@@ -1,0 +1,17 @@
+.jstree-icon-checkbox {    
+    text-align : center;
+    display    : inline-block;
+    width      : var(--jstree-size);
+    height     : var(--jstree-size);
+    line-height: var(--jstree-size);
+    position   : relative;
+}
+.jstree-icon-checkbox-checked {
+    background : url("../src/icon/checkbox-checked.svg") center bottom repeat-y;
+}
+.jstree-icon-checkbox-unchecked {
+    background : url("../src/icon/checkbox-unchecked.svg") center bottom repeat-y;
+}
+.jstree-icon-checkbox-indeterminate {
+    background : url("../src/icon/checkbox-indeterminate.svg") center bottom repeat-y;
+}
