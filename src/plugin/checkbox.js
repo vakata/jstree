@@ -16,20 +16,37 @@ jsTree.plugin.checkbox = function (optionsIn) {
         () => this.redraw()
     );
     this.addRenderHandler(function (dom, node) {
-        // TODO: add icon
-        if (this.getState(node, "checked", false)) {
-            console.log(dom);
-            const a = document.evaluate("a[contains(@class,'jstree-node-text')]",dom,null,XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue
-            const elementBefore = a.previousSibling;
-            let e = elementBefore;
-            if (!elementBefore.classList.contains("jstree-icon-checkbox")) {
-                console.log("need to add element");
-            } else {
-                console.log("need to switch class only");
-                // e = 
-            }
-
-        } else console.log("N/A")
+        // text (node content including icon)
+        const a = document.evaluate("a[contains(@class,'jstree-node-text')]",dom,null,XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue
+        // checkbox in front...
+        let checkBoxDomElement = a.previousSibling;
+        if (!checkBoxDomElement.classList.contains("jstree-icon-checkbox")) {
+            // checkbox element needs to be created...
+            checkBoxDomElement = document.createElement("i")
+            if (this.getState(node, "checked", false)) 
+                checkBoxDomElement.className = "jstree-icon-checkbox jstree-icon-checkbox-checked"
+            else if (this.getState(node, "indeterminate", false)) 
+                checkBoxDomElement.className = "jstree-icon-checkbox jstree-icon-checkbox-indeterminate"
+            else       
+                checkBoxDomElement.className = "jstree-icon-checkbox jstree-icon-checkbox-unchecked"
+            // ... and added first.
+            a.parentElement.insertBefore(checkBoxDomElement,a);            
+            
+            // register event listner to trigger check change ...
+            checkBoxDomElement.addEventListener('click', (e) => {
+                if (this.getState(node,"checked",false))
+                    this.uncheck(node);
+                else
+                    this.check(node);
+            });
+        } else {
+            if (this.getState(node, "checked", false)) 
+                checkBoxDomElement.classList.replace(/jstree-icon-checkbox-.+/,"jstree-icon-checkbox-checked")
+            else if (this.getState(node, "indeterminate", false)) 
+                checkBoxDomElement.classList.replace(/jstree-icon-checkbox-.+/,"jstree-icon-checkbox-indeterminate")
+            else       
+                checkBoxDomElement.classList.replace(/jstree-icon-checkbox-.+/,"jstree-icon-checkbox-unchecked")
+        }
     });
     // TODO: all other plugin stuff (cascade, etc)
 
