@@ -1,0 +1,12 @@
+<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <filter id="svg_3_blur">
+   <feGaussianBlur stdDeviation="0.5" in="SourceGraphic"/>
+  </filter>
+ </defs>
+ <g>
+  <rect rx="4" id="svg_1" height="22" width="22" y="5" x="5" stroke="#000" fill="none"/>
+  <path stroke-width="3" id="svg_3" d="m8.9609,13.93296c4.35754,8.49162 5.13966,9.83241 5.11731,9.75419c0.02235,0.07822 8.9609,-15.56424 8.93855,-15.64246" opacity="NaN" stroke="#000" fill="none"/>
+  <path filter="url(#svg_3_blur)" stroke-width="3" id="svg_3" d="m8.9609,13.93296c4.35754,8.49162 5.13966,9.83241 5.11731,9.75419c0.02235,0.07822 8.9609,-15.56424 8.93855,-15.64246" opacity="NaN" stroke="#628C52" fill="none"/>
+ </g>
+</svg>

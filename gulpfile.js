@@ -2,7 +2,7 @@
 var gulp = require("gulp");
 var replace = require("gulp-replace");
 var concat = require("gulp-concat");
-var uglify = require("gulp-uglify-es").default;
+// var uglify = require("gulp-uglify-es").default;
 var minifycss = require("gulp-clean-css");
 var header = require("gulp-header");
 var pkg = require("./package.json");
@@ -17,7 +17,7 @@ var banner = [
 ].join("\n");
 
 gulp.task("js", function () {
-    return gulp.src(["src/render/**/*.js","src/model/TreeNode.js","src/model/Tree.js","src/jstree.js","src/jstree.*.js"])
+    return gulp.src(["src/render/**/*.js","src/model/TreeNode.js","src/model/Tree.js","src/jstree.js","src/jstree.*.js","src/plugin/checkbox.js"])
         .pipe(concat("jstree.js"))
         .pipe(replace(/(import|export) [^;]*;/g, ""))
         //.pipe(uglify())
@@ -25,14 +25,14 @@ gulp.task("js", function () {
         .pipe(gulp.dest("dist"));
 });
 gulp.task("css", function () {
-    return gulp.src("src/*.css")
+    return gulp.src(["src/*.css","src/plugin/*.css"])
         .pipe(concat("jstree.css"))
         .pipe(gulp.dest("dist"));
 });
 gulp.task("minifyjs", gulp.series('js', function () {
     return gulp.src(["dist/jstree.js"])
         .pipe(concat("jstree.min.js"))
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(header(banner, { pkg : pkg } ))
         .pipe(gulp.dest("dist"));
 }));
