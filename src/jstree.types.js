@@ -66,7 +66,7 @@
 		};
 		this.bind = function () {
 			this.element
-				.on('model.jstree', $.proxy(function (e, data) {
+				.on('model.jstree', function (e, data) {
 						var m = this._model.data,
 							dpc = data.nodes,
 							t = this.settings.types,
@@ -118,7 +118,7 @@
 							}
 						}
 						m[$.jstree.root].type = $.jstree.root;
-					}, this));
+					}.bind(this));
 			parent.bind.call(this);
 		};
 		this.get_json = function (obj, options, flat) {

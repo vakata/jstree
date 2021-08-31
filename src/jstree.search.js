@@ -95,7 +95,7 @@
 			this._data.search.hdn = [];
 
 			this.element
-				.on("search.jstree", $.proxy(function (e, data) {
+				.on("search.jstree", function (e, data) {
 						if(this._data.search.som && data.res.length) {
 							var m = this._model.data, i, j, p = [], k, l;
 							for(i = 0, j = data.res.length; i < j; i++) {
@@ -116,13 +116,13 @@
 							this.show_node(p, true);
 							this.redraw(true);
 						}
-					}, this))
-				.on("clear_search.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("clear_search.jstree", function (e, data) {
 						if(this._data.search.som && data.res.length) {
 							this.show_node(this._data.search.hdn, true);
 							this.redraw(true);
 						}
-					}, this));
+					}.bind(this));
 		};
 		/**
 		 * used to search the tree nodes for a given string
@@ -159,12 +159,12 @@
 			}
 			if(!skip_async && a !== false) {
 				if($.vakata.is_function(a)) {
-					return a.call(this, str, $.proxy(function (d) {
+					return a.call(this, str, function (d) {
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.vakata.is_array(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true, show_only_matches, inside, append, show_only_matches_children);
 							});
-						}, this), inside);
+						}.bind(this), inside);
 				}
 				else {
 					a = $.extend({}, a);
@@ -177,16 +177,16 @@
 						this._data.search.lastRequest.abort();
 					}
 					this._data.search.lastRequest = $.ajax(a)
-						.fail($.proxy(function () {
+						.fail(function () {
 							this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'search', 'id' : 'search_01', 'reason' : 'Could not load search parents', 'data' : JSON.stringify(a) };
 							this.settings.core.error.call(this, this._data.core.last_error);
-						}, this))
-						.done($.proxy(function (d) {
+						}.bind(this))
+						.done(function (d) {
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.vakata.is_array(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true, show_only_matches, inside, append, show_only_matches_children);
 							});
-						}, this));
+						}.bind(this));
 					return this._data.search.lastRequest;
 				}
 			}
