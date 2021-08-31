@@ -274,7 +274,7 @@
 		 * You can also pass in a HTML string or a JSON array here.
 		 *
 		 * It is possible to pass in a standard jQuery-like AJAX config and jstree will automatically determine if the response is JSON or HTML and use that to populate the tree.
-		 * In addition to the standard jQuery ajax options here you can suppy functions for `data` and `url`, the functions will be run in the current instance's scope and a param will be passed indicating which node is being loaded, the return value of those functions will be used.
+		 * In addition to the standard jQuery ajax options here you can supply functions for `data` and `url`, the functions will be run in the current instance's scope and a param will be passed indicating which node is being loaded, the return value of those functions will be used.
 		 *
 		 * The last option is to specify a function, that function will receive the node being loaded as argument and a second param which is a function which should be called with the result.
 		 *
@@ -753,30 +753,30 @@
 							}
 						}
 					})
-				.on("mousedown.jstree", $.proxy(function (e) {
+				.on("mousedown.jstree", function (e) {
 						if(e.target === this.element[0]) {
 							e.preventDefault(); // prevent losing focus when clicking scroll arrows (FF, Chrome)
 							was_click = +(new Date()); // ie does not allow to prevent losing focus
 						}
-					}, this))
+					}.bind(this))
 				.on("mousedown.jstree", ".jstree-ocl", function (e) {
 						e.preventDefault(); // prevent any node inside from losing focus when clicking the open/close icon
 					})
-				.on("click.jstree", ".jstree-ocl", $.proxy(function (e) {
+				.on("click.jstree", ".jstree-ocl", function (e) {
 						this.toggle_node(e.target);
-					}, this))
-				.on("dblclick.jstree", ".jstree-anchor", $.proxy(function (e) {
+					}.bind(this))
+				.on("dblclick.jstree", ".jstree-anchor", function (e) {
 						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
 						if(this.settings.core.dblclick_toggle) {
 							this.toggle_node(e.target);
 						}
-					}, this))
-				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
+					}.bind(this))
+				.on("click.jstree", ".jstree-anchor", function (e) {
 						e.preventDefault();
 						if(e.currentTarget !== document.activeElement) { $(e.currentTarget).trigger('focus'); }
 						this.activate_node(e.currentTarget, e);
-					}, this))
-				.on('keydown.jstree', '.jstree-anchor', $.proxy(function (e) {
+					}.bind(this))
+				.on('keydown.jstree', '.jstree-anchor', function (e) {
 						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
 						if(this._data.core.rtl) {
 							if(e.which === 37) { e.which = 39; }
@@ -789,8 +789,8 @@
 								return r;
 							}
 						}
-					}, this))
-				.on("load_node.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("load_node.jstree", function (e, data) {
 						if(data.status) {
 							if(data.node.id === $.jstree.root && !this._data.core.loaded) {
 								this._data.core.loaded = true;
@@ -805,7 +805,7 @@
 								this.trigger("loaded");
 							}
 							if(!this._data.core.ready) {
-								setTimeout($.proxy(function() {
+								setTimeout(function() {
 									if(this.element && !this.get_container_ul().find('.jstree-loading').length) {
 										this._data.core.ready = true;
 										if(this._data.core.selected.length) {
@@ -828,12 +828,12 @@
 										 */
 										this.trigger("ready");
 									}
-								}, this), 0);
+								}.bind(this), 0);
 							}
 						}
-					}, this))
+					}.bind(this))
 				// quick searching when the tree is focused
-				.on('keypress.jstree', $.proxy(function (e) {
+				.on('keypress.jstree', function (e) {
 						if(e.target.tagName && e.target.tagName.toLowerCase() === "input") { return true; }
 						if(tout) { clearTimeout(tout); }
 						tout = setTimeout(function () {
@@ -848,50 +848,50 @@
 
 						// match for whole word from current node down (including the current node)
 						if(word.length > 1) {
-							col.slice(ind).each($.proxy(function (i, v) {
+							col.slice(ind).each(function (i, v) {
 								if($(v).text().toLowerCase().indexOf(word) === 0) {
 									$(v).trigger('focus');
 									end = true;
 									return false;
 								}
-							}, this));
+							}.bind(this));
 							if(end) { return; }
 
 							// match for whole word from the beginning of the tree
-							col.slice(0, ind).each($.proxy(function (i, v) {
+							col.slice(0, ind).each(function (i, v) {
 								if($(v).text().toLowerCase().indexOf(word) === 0) {
 									$(v).trigger('focus');
 									end = true;
 									return false;
 								}
-							}, this));
+							}.bind(this));
 							if(end) { return; }
 						}
 						// list nodes that start with that letter (only if word consists of a single char)
 						if(new RegExp('^' + chr.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '+$').test(word)) {
 							// search for the next node starting with that letter
-							col.slice(ind + 1).each($.proxy(function (i, v) {
+							col.slice(ind + 1).each(function (i, v) {
 								if($(v).text().toLowerCase().charAt(0) === chr) {
 									$(v).trigger('focus');
 									end = true;
 									return false;
 								}
-							}, this));
+							}.bind(this));
 							if(end) { return; }
 
 							// search from the beginning
-							col.slice(0, ind + 1).each($.proxy(function (i, v) {
+							col.slice(0, ind + 1).each(function (i, v) {
 								if($(v).text().toLowerCase().charAt(0) === chr) {
 									$(v).trigger('focus');
 									end = true;
 									return false;
 								}
-							}, this));
+							}.bind(this));
 							if(end) { return; }
 						}
-					}, this))
+					}.bind(this))
 				// THEME RELATED
-				.on("init.jstree", $.proxy(function () {
+				.on("init.jstree", function () {
 						var s = this.settings.core.themes;
 						this._data.core.themes.dots			= s.dots;
 						this._data.core.themes.stripes		= s.stripes;
@@ -899,19 +899,19 @@
 						this._data.core.themes.ellipsis		= s.ellipsis;
 						this.set_theme(s.name || "default", s.url);
 						this.set_theme_variant(s.variant);
-					}, this))
-				.on("loading.jstree", $.proxy(function () {
+					}.bind(this))
+				.on("loading.jstree", function () {
 						this[ this._data.core.themes.dots ? "show_dots" : "hide_dots" ]();
 						this[ this._data.core.themes.icons ? "show_icons" : "hide_icons" ]();
 						this[ this._data.core.themes.stripes ? "show_stripes" : "hide_stripes" ]();
 						this[ this._data.core.themes.ellipsis ? "show_ellipsis" : "hide_ellipsis" ]();
-					}, this))
-				.on('blur.jstree', '.jstree-anchor', $.proxy(function (e) {
+					}.bind(this))
+				.on('blur.jstree', '.jstree-anchor', function (e) {
 						this._data.core.focused = null;
 						$(e.currentTarget).filter('.jstree-hovered').trigger('mouseleave');
 						this.element.attr('tabindex', '0');
-					}, this))
-				.on('focus.jstree', '.jstree-anchor', $.proxy(function (e) {
+					}.bind(this))
+				.on('focus.jstree', '.jstree-anchor', function (e) {
 						var tmp = this.get_node(e.currentTarget);
 						if(tmp && tmp.id) {
 							this._data.core.focused = tmp.id;
@@ -919,8 +919,8 @@
 						this.element.find('.jstree-hovered').not(e.currentTarget).trigger('mouseleave');
 						$(e.currentTarget).trigger('mouseenter');
 						this.element.attr('tabindex', '-1');
-					}, this))
-				.on('focus.jstree', $.proxy(function () {
+					}.bind(this))
+				.on('focus.jstree', function () {
 						if(+(new Date()) - was_click > 500 && !this._data.core.focused && this.settings.core.restore_focus) {
 							was_click = 0;
 							var act = this.get_node(this.element.attr('aria-activedescendant'), true);
@@ -928,13 +928,13 @@
 								act.find('> .jstree-anchor').trigger('focus');
 							}
 						}
-					}, this))
-				.on('mouseenter.jstree', '.jstree-anchor', $.proxy(function (e) {
+					}.bind(this))
+				.on('mouseenter.jstree', '.jstree-anchor', function (e) {
 						this.hover_node(e.currentTarget);
-					}, this))
-				.on('mouseleave.jstree', '.jstree-anchor', $.proxy(function (e) {
+					}.bind(this))
+				.on('mouseleave.jstree', '.jstree-anchor', function (e) {
 						this.dehover_node(e.currentTarget);
-					}, this));
+					}.bind(this));
 		},
 		/**
 		 * part of the destroying of an instance. Used internally.
@@ -1314,7 +1314,7 @@
 			obj.state.failed = false;
 			obj.state.loading = true;
 			this.get_node(obj, true).addClass("jstree-loading").attr('aria-busy',true);
-			this._load_node(obj, $.proxy(function (status) {
+			this._load_node(obj, function (status) {
 				obj = this._model.data[obj.id];
 				obj.state.loading = false;
 				obj.state.loaded = status;
@@ -1349,7 +1349,7 @@
 				if(callback) {
 					callback.call(this, obj, status);
 				}
-			}, this));
+			}.bind(this));
 			return true;
 		},
 		/**
@@ -1448,7 +1448,7 @@
 				// return callback.call(this, obj.id === $.jstree.root ? this._append_html_data(obj, this._data.core.original_container_html.clone(true)) : false);
 			}
 			if($.vakata.is_function(s)) {
-				return s.call(this, obj, $.proxy(function (d) {
+				return s.call(this, obj, function (d) {
 					if(d === false) {
 						callback.call(this, false);
 					}
@@ -1458,7 +1458,7 @@
 						});
 					}
 					// return d === false ? callback.call(this, false) : callback.call(this, this[typeof d === 'string' ? '_append_html_data' : '_append_json_data'](obj, typeof d === 'string' ? $(d) : d));
-				}, this));
+				}.bind(this));
 			}
 			if(typeof s === 'object') {
 				if(s.url) {
@@ -1470,7 +1470,7 @@
 						s.data = s.data.call(this, obj);
 					}
 					return $.ajax(s)
-						.done($.proxy(function (d,t,x) {
+						.done(function (d,t,x) {
 								var type = x.getResponseHeader('Content-Type');
 								if((type && type.indexOf('json') !== -1) || typeof d === "object") {
 									return this._append_json_data(obj, d, function (status) { callback.call(this, status); });
@@ -1483,12 +1483,12 @@
 								this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'core', 'id' : 'core_04', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id, 'xhr' : x }) };
 								this.settings.core.error.call(this, this._data.core.last_error);
 								return callback.call(this, false);
-							}, this))
-						.fail($.proxy(function (f) {
+							}.bind(this))
+						.fail(function (f) {
 								this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'core', 'id' : 'core_04', 'reason' : 'Could not load node', 'data' : JSON.stringify({ 'id' : obj.id, 'xhr' : f }) };
 								callback.call(this, false);
 								this.settings.core.error.call(this, this._data.core.last_error);
-							}, this));
+							}.bind(this));
 				}
 				if ($.vakata.is_array(s)) {
 					t = $.extend(true, [], s);
@@ -1556,7 +1556,7 @@
 				p = m[par],
 				s = this._data.core.selected.length,
 				tmp, i, j;
-			dat.each($.proxy(function (i, v) {
+			dat.each(function (i, v) {
 				tmp = this._parse_model_from_html($(v), par, p.parents.concat());
 				if(tmp) {
 					chd.push(tmp);
@@ -1565,7 +1565,7 @@
 						dpc = dpc.concat(m[tmp].children_d);
 					}
 				}
-			}, this));
+			}.bind(this));
 			p.children = chd;
 			p.children_d = dpc;
 			for(i = 0, j = p.parents.length; i < j; i++) {
@@ -1978,7 +1978,7 @@
 					if(!this._data.core.working || force_processing) {
 						this._data.core.working = true;
 						w = new window.Worker(this._wrk);
-						w.onmessage = $.proxy(function (e) {
+						w.onmessage = function (e) {
 							rslt.call(this, e.data, true);
 							try { w.terminate(); w = null; } catch(ignore) { }
 							if(this._data.core.worker_queue.length) {
@@ -1987,7 +1987,7 @@
 							else {
 								this._data.core.working = false;
 							}
-						}, this);
+						}.bind(this);
 						if(!args.par) {
 							if(this._data.core.worker_queue.length) {
 								this._append_json_data.apply(this, this._data.core.worker_queue.shift());
@@ -2103,14 +2103,14 @@
 			} while(m[tid]);
 			data.id = data.li_attr.id ? data.li_attr.id.toString() : tid;
 			if(tmp.length) {
-				tmp.each($.proxy(function (i, v) {
+				tmp.each(function (i, v) {
 					c = this._parse_model_from_html($(v), data.id, ps);
 					e = this._model.data[c];
 					data.children.push(c);
 					if(e.children_d.length) {
 						data.children_d = data.children_d.concat(e.children_d);
 					}
-				}, this));
+				}.bind(this));
 				data.children_d = data.children_d.concat(data.children);
 			}
 			else {
@@ -2638,9 +2638,9 @@
 			}
 			if(obj.state.opened && !obj.state.loaded) {
 				obj.state.opened = false;
-				setTimeout($.proxy(function () {
+				setTimeout(function () {
 					this.open_node(obj.id, false, 0);
-				}, this), 0);
+				}.bind(this), 0);
 			}
 			return node;
 		},
@@ -2674,9 +2674,9 @@
 			}
 			if(!this.is_loaded(obj)) {
 				if(this.is_loading(obj)) {
-					return setTimeout($.proxy(function () {
+					return setTimeout(function () {
 						this.open_node(obj, callback, animation);
-					}, this), 500);
+					}.bind(this), 500);
 				}
 				this.load_node(obj, function (o, ok) {
 					return ok ? this.open_node(o, callback, animation) : (callback ? callback.call(this, o, false) : false);
@@ -3414,7 +3414,7 @@
 		 * @return {Array}
 		 */
 		get_selected : function (full) {
-			return full ? $.map(this._data.core.selected, $.proxy(function (i) { return this.get_node(i); }, this)) : this._data.core.selected.slice();
+			return full ? $.map(this._data.core.selected, function (i) { return this.get_node(i); }.bind(this)) : this._data.core.selected.slice();
 		},
 		/**
 		 * get an array of all top level selected nodes (ignoring children of selected nodes)
@@ -3441,7 +3441,7 @@
 					tmp.push(i);
 				}
 			}
-			return full ? $.map(tmp, $.proxy(function (i) { return this.get_node(i); }, this)) : tmp;
+			return full ? $.map(tmp, function (i) { return this.get_node(i); }.bind(this)) : tmp;
 		},
 		/**
 		 * get an array of all bottom level selected nodes (ignoring selected parents)
@@ -3457,7 +3457,7 @@
 					obj.push(tmp[i].id);
 				}
 			}
-			return full ? $.map(obj, $.proxy(function (i) { return this.get_node(i); }, this)) : obj;
+			return full ? $.map(obj, function (i) { return this.get_node(i); }.bind(this)) : obj;
 		},
 		/**
 		 * gets the current state of the tree so that it can be restored later with `set_state(state)`. Used internally.
@@ -3655,7 +3655,7 @@
 			to_load.push(obj.id);
 			if(obj.state.opened === true) { opened.push(obj.id); }
 			this.get_node(obj, true).find('.jstree-open').each(function() { to_load.push(this.id); opened.push(this.id); });
-			this._load_nodes(to_load, $.proxy(function (nodes) {
+			this._load_nodes(to_load, function (nodes) {
 				this.open_node(opened, false, 0);
 				this.select_node(s);
 				/**
@@ -3666,7 +3666,7 @@
 				 * @param {Array} nodes - an array of the IDs of the nodes that were reloaded
 				 */
 				this.trigger('refresh_node', { 'node' : obj, 'nodes' : nodes });
-			}, this), false, true);
+			}.bind(this), false, true);
 		},
 		/**
 		 * set (change) the ID of a node
@@ -4549,7 +4549,7 @@
 							"lineHeight" : (this._data.core.li_height) + "px",
 							"width" : "150px" // will be set a bit further down
 						},
-						"blur" : $.proxy(function (e) {
+						"blur" : function (e) {
 							e.stopImmediatePropagation();
 							e.preventDefault();
 							var i = s.children(".jstree-rename-input"),
@@ -4568,18 +4568,18 @@
 								this.set_text(obj, t); // move this up? and fix #483
 							}
 							this._data.core.focused = tmp.id;
-							setTimeout($.proxy(function () {
+							setTimeout(function () {
 								var node = this.get_node(tmp.id, true);
 								if(node.length) {
 									this._data.core.focused = tmp.id;
 									node.children('.jstree-anchor').trigger('focus');
 								}
-							}, this), 0);
+							}.bind(this), 0);
 							if(callback) {
 								callback.call(this, tmp, nv, cancel, v);
 							}
 							h2 = null;
-						}, this),
+						}.bind(this),
 						"keydown" : function (e) {
 							var key = e.which;
 							if(key === 27) {
@@ -4974,6 +4974,23 @@
 		return Object.prototype.toString.call(obj) === "[object Array]";
 	};
 
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Function/bind#polyfill
+	if (!Function.prototype.bind) {
+		Function.prototype.bind = function () {
+			var thatFunc = this, thatArg = arguments[0];
+			var args = Array.prototype.slice.call(arguments, 1);
+			if (typeof thatFunc !== 'function') {
+				// closest thing possible to the ECMAScript 5
+				// internal IsCallable function
+				throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+			}
+			return function(){
+				var funcArgs = args.concat(Array.prototype.slice.call(arguments));
+				return thatFunc.apply(thatArg, funcArgs);
+			};
+		};
+	}
+
 
 /**
  * ### Changed plugin
@@ -5106,7 +5123,7 @@
 				this.settings.checkbox.cascade = 'up+down+undetermined';
 			}
 			this.element
-				.on("init.jstree", $.proxy(function () {
+				.on("init.jstree", function () {
 						this._data.checkbox.visible = this.settings.checkbox.visible;
 						if(!this.settings.checkbox.keep_selected_style) {
 							this.element.addClass('jstree-checkbox-no-clicked');
@@ -5114,21 +5131,21 @@
 						if(this.settings.checkbox.tie_selection) {
 							this.element.addClass('jstree-checkbox-selection');
 						}
-					}, this))
-				.on("loading.jstree", $.proxy(function () {
+					}.bind(this))
+				.on("loading.jstree", function () {
 						this[ this._data.checkbox.visible ? 'show_checkboxes' : 'hide_checkboxes' ]();
-					}, this));
+					}.bind(this));
 			if(this.settings.checkbox.cascade.indexOf('undetermined') !== -1) {
 				this.element
-					.on('changed.jstree uncheck_node.jstree check_node.jstree uncheck_all.jstree check_all.jstree move_node.jstree copy_node.jstree redraw.jstree open_node.jstree', $.proxy(function () {
+					.on('changed.jstree uncheck_node.jstree check_node.jstree uncheck_all.jstree check_all.jstree move_node.jstree copy_node.jstree redraw.jstree open_node.jstree', function () {
 							// only if undetermined is in setting
 							if(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }
-							this._data.checkbox.uto = setTimeout($.proxy(this._undetermined, this), 50);
-						}, this));
+							this._data.checkbox.uto = setTimeout(this._undetermined.bind(this), 50);
+						}.bind(this));
 			}
 			if(!this.settings.checkbox.tie_selection) {
 				this.element
-					.on('model.jstree', $.proxy(function (e, data) {
+					.on('model.jstree', function (e, data) {
 						var m = this._model.data,
 							p = m[data.parent],
 							dpc = data.nodes,
@@ -5139,11 +5156,11 @@
 								this._data.checkbox.selected.push(dpc[i]);
 							}
 						}
-					}, this));
+					}.bind(this));
 			}
 			if(this.settings.checkbox.cascade.indexOf('up') !== -1 || this.settings.checkbox.cascade.indexOf('down') !== -1) {
 				this.element
-					.on('model.jstree', $.proxy(function (e, data) {
+					.on('model.jstree', function (e, data) {
 							var m = this._model.data,
 								p = m[data.parent],
 								dpc = data.nodes,
@@ -5203,8 +5220,8 @@
 							}
 
 							this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_unique(this._data[ t ? 'core' : 'checkbox' ].selected);
-						}, this))
-					.on(this.settings.checkbox.tie_selection ? 'select_node.jstree' : 'check_node.jstree', $.proxy(function (e, data) {
+						}.bind(this))
+					.on(this.settings.checkbox.tie_selection ? 'select_node.jstree' : 'check_node.jstree', function (e, data) {
 							var self = this,
 								obj = data.node,
 								m = this._model.data,
@@ -5261,8 +5278,8 @@
 								}
 							}
 							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
-						}, this))
-					.on(this.settings.checkbox.tie_selection ? 'deselect_all.jstree' : 'uncheck_all.jstree', $.proxy(function (e, data) {
+						}.bind(this))
+					.on(this.settings.checkbox.tie_selection ? 'deselect_all.jstree' : 'uncheck_all.jstree', function (e, data) {
 							var obj = this.get_node($.jstree.root),
 								m = this._model.data,
 								i, j, tmp;
@@ -5272,8 +5289,8 @@
 									tmp.original.state.undetermined = false;
 								}
 							}
-						}, this))
-					.on(this.settings.checkbox.tie_selection ? 'deselect_node.jstree' : 'uncheck_node.jstree', $.proxy(function (e, data) {
+						}.bind(this))
+					.on(this.settings.checkbox.tie_selection ? 'deselect_node.jstree' : 'uncheck_node.jstree', function (e, data) {
 							var self = this,
 								obj = data.node,
 								dom = this.get_node(obj, true),
@@ -5312,11 +5329,11 @@
 							}
 
 							this._data[ t ? 'core' : 'checkbox' ].selected = cur;
-						}, this));
+						}.bind(this));
 			}
 			if(this.settings.checkbox.cascade.indexOf('up') !== -1) {
 				this.element
-					.on('delete_node.jstree', $.proxy(function (e, data) {
+					.on('delete_node.jstree', function (e, data) {
 							// apply up (whole handler)
 							var p = this.get_node(data.parent),
 								m = this._model.data,
@@ -5339,8 +5356,8 @@
 								}
 								p = this.get_node(p.parent);
 							}
-						}, this))
-					.on('move_node.jstree', $.proxy(function (e, data) {
+						}.bind(this))
+					.on('move_node.jstree', function (e, data) {
 							// apply up (whole handler)
 							var is_multi = data.is_multi,
 								old_par = data.old_parent,
@@ -5399,7 +5416,7 @@
 								}
 								p = this.get_node(p.parent);
 							}
-						}, this));
+						}.bind(this));
 			}
 		};
 		/**
@@ -5510,7 +5527,7 @@
 			}
 			if(!is_callback && this.settings.checkbox.cascade.indexOf('undetermined') !== -1) {
 				if(this._data.checkbox.uto) { clearTimeout(this._data.checkbox.uto); }
-				this._data.checkbox.uto = setTimeout($.proxy(this._undetermined, this), 50);
+				this._data.checkbox.uto = setTimeout(this._undetermined.bind(this), 50);
 			}
 			return obj;
 		};
@@ -5892,7 +5909,7 @@
 		 */
 		this.get_checked = function (full) {
 			if(this.settings.checkbox.tie_selection) { return this.get_selected(full); }
-			return full ? $.map(this._data.checkbox.selected, $.proxy(function (i) { return this.get_node(i); }, this)) : this._data.checkbox.selected.slice();
+			return full ? $.map(this._data.checkbox.selected, function (i) { return this.get_node(i); }.bind(this)) : this._data.checkbox.selected.slice();
 		};
 		/**
 		 * get an array of all top level checked nodes (ignoring children of checked nodes) (if tie_selection is on in the settings this function will return the same as get_top_selected)
@@ -5921,7 +5938,7 @@
 					tmp.push(i);
 				}
 			}
-			return full ? $.map(tmp, $.proxy(function (i) { return this.get_node(i); }, this)) : tmp;
+			return full ? $.map(tmp, function (i) { return this.get_node(i); }.bind(this)) : tmp;
 		};
 		/**
 		 * get an array of all bottom level checked nodes (ignoring selected parents) (if tie_selection is on in the settings this function will return the same as get_bottom_selected)
@@ -5939,7 +5956,7 @@
 					obj.push(tmp[i].id);
 				}
 			}
-			return full ? $.map(obj, $.proxy(function (i) { return this.get_node(i); }, this)) : obj;
+			return full ? $.map(obj, function (i) { return this.get_node(i); }.bind(this)) : obj;
 		};
 		this.load_node = function (obj, callback) {
 			var k, l, i, j, c, tmp;
@@ -6171,10 +6188,10 @@
 
 			var last_ts = 0, cto = null, ex, ey;
 			this.element
-				.on("init.jstree loading.jstree ready.jstree", $.proxy(function () {
+				.on("init.jstree loading.jstree ready.jstree", function () {
 						this.get_container_ul().addClass('jstree-contextmenu');
-					}, this))
-				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("contextmenu.jstree", ".jstree-anchor", function (e, data) {
 						if (e.target.tagName.toLowerCase() === 'input') {
 							return;
 						}
@@ -6189,13 +6206,13 @@
 						if(!this.is_loading(e.currentTarget)) {
 							this.show_contextmenu(e.currentTarget, e.pageX, e.pageY, e);
 						}
-					}, this))
-				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
+					}.bind(this))
+				.on("click.jstree", ".jstree-anchor", function (e) {
 						if(this._data.contextmenu.visible && (!last_ts || (+new Date()) - last_ts > 250)) { // work around safari & macOS ctrl+click
 							$.vakata.context.hide();
 						}
 						last_ts = 0;
-					}, this))
+					}.bind(this))
 				.on("touchstart.jstree", ".jstree-anchor", function (e) {
 						if(!e.originalEvent || !e.originalEvent.changedTouches || !e.originalEvent.changedTouches[0]) {
 							return;
@@ -6239,10 +6256,10 @@
 					});
 			}
 			*/
-			$(document).on("context_hide.vakata.jstree", $.proxy(function (e, data) {
+			$(document).on("context_hide.vakata.jstree", function (e, data) {
 				this._data.contextmenu.visible = false;
 				$(data.reference).removeClass('jstree-context');
-			}, this));
+			}.bind(this));
 		};
 		this.teardown = function () {
 			if(this._data.contextmenu.visible) {
@@ -6280,9 +6297,9 @@
 
 			i = s.items;
 			if($.vakata.is_function(i)) {
-				i = i.call(this, obj, $.proxy(function (i) {
+				i = i.call(this, obj, function (i) {
 					this._show_contextmenu(obj, x, y, i);
-				}, this));
+				}.bind(this));
 			}
 			if($.isPlainObject(i)) {
 				this._show_contextmenu(obj, x, y, i);
@@ -6302,11 +6319,11 @@
 		this._show_contextmenu = function (obj, x, y, i) {
 			var d = this.get_node(obj, true),
 				a = d.children(".jstree-anchor");
-			$(document).one("context_show.vakata.jstree", $.proxy(function (e, data) {
+			$(document).one("context_show.vakata.jstree", function (e, data) {
 				var cls = 'jstree-contextmenu jstree-' + this.get_theme() + '-contextmenu';
 				$(data.element).addClass(cls);
 				a.addClass('jstree-context');
-			}, this));
+			}.bind(this));
 			this._data.contextmenu.visible = true;
 			$.vakata.context.show(a, { 'x' : x, 'y' : y }, i);
 			/**
@@ -6749,7 +6766,7 @@
 			parent.bind.call(this);
 
 			this.element
-				.on(this.settings.dnd.use_html5 ? 'dragstart.jstree' : 'mousedown.jstree touchstart.jstree', this.settings.dnd.large_drag_target ? '.jstree-node' : '.jstree-anchor', $.proxy(function (e) {
+				.on(this.settings.dnd.use_html5 ? 'dragstart.jstree' : 'mousedown.jstree touchstart.jstree', this.settings.dnd.large_drag_target ? '.jstree-node' : '.jstree-anchor', function (e) {
 						if(this.settings.dnd.large_drag_target && $(e.target).closest('.jstree-node')[0] !== e.currentTarget) {
 							return true;
 						}
@@ -6774,7 +6791,7 @@
 								return $.vakata.dnd.start(e, drg, '<div id="jstree-dnd" class="jstree-' + this.get_theme() + ' jstree-' + this.get_theme() + '-' + this.get_theme_variant() + ' ' + ( this.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ) + '"><i class="jstree-icon jstree-er"></i>' + txt + '<ins class="jstree-copy">+</ins></div>');
 							}
 						}
-					}, this));
+					}.bind(this));
 			if (this.settings.dnd.use_html5) {
 				this.element
 					.on('dragover.jstree', function (e) {
@@ -6787,11 +6804,11 @@
 					//		$.vakata.dnd._trigger('move', e, { 'helper': $(), 'element': elm, 'data': drg });
 					//		return false;
 					//	}, this))
-					.on('drop.jstree', $.proxy(function (e) {
+					.on('drop.jstree', function (e) {
 							e.preventDefault();
 							$.vakata.dnd._trigger('stop', e, { 'helper': $(), 'element': elm, 'data': drg });
 							return false;
-						}, this));
+						}.bind(this));
 			}
 		};
 		this.redraw_node = function(obj, deep, callback, force_render) {
@@ -7365,7 +7382,7 @@
 				this._data.massload = {};
 				if (toLoad.length) {
 					if($.vakata.is_function(s)) {
-						return s.call(this, toLoad, $.proxy(function (data) {
+						return s.call(this, toLoad, function (data) {
 							var i, j;
 							if(data) {
 								for(i in data) {
@@ -7381,7 +7398,7 @@
 								}
 							}
 							parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
-						}, this));
+						}.bind(this));
 					}
 					if(typeof s === 'object' && s && s.url) {
 						s = $.extend(true, {}, s);
@@ -7392,7 +7409,7 @@
 							s.data = s.data.call(this, toLoad);
 						}
 						return $.ajax(s)
-							.done($.proxy(function (data,t,x) {
+							.done(function (data,t,x) {
 									var i, j;
 									if(data) {
 										for(i in data) {
@@ -7408,10 +7425,10 @@
 										}
 									}
 									parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
-								}, this))
-							.fail($.proxy(function (f) {
+								}.bind(this))
+							.fail(function (f) {
 									parent._load_nodes.call(this, nodes, callback, is_callback, force_reload);
-								}, this));
+								}.bind(this));
 					}
 				}
 			}
@@ -7519,7 +7536,7 @@
 			this._data.search.hdn = [];
 
 			this.element
-				.on("search.jstree", $.proxy(function (e, data) {
+				.on("search.jstree", function (e, data) {
 						if(this._data.search.som && data.res.length) {
 							var m = this._model.data, i, j, p = [], k, l;
 							for(i = 0, j = data.res.length; i < j; i++) {
@@ -7540,13 +7557,13 @@
 							this.show_node(p, true);
 							this.redraw(true);
 						}
-					}, this))
-				.on("clear_search.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("clear_search.jstree", function (e, data) {
 						if(this._data.search.som && data.res.length) {
 							this.show_node(this._data.search.hdn, true);
 							this.redraw(true);
 						}
-					}, this));
+					}.bind(this));
 		};
 		/**
 		 * used to search the tree nodes for a given string
@@ -7583,12 +7600,12 @@
 			}
 			if(!skip_async && a !== false) {
 				if($.vakata.is_function(a)) {
-					return a.call(this, str, $.proxy(function (d) {
+					return a.call(this, str, function (d) {
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.vakata.is_array(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true, show_only_matches, inside, append, show_only_matches_children);
 							});
-						}, this), inside);
+						}.bind(this), inside);
 				}
 				else {
 					a = $.extend({}, a);
@@ -7601,16 +7618,16 @@
 						this._data.search.lastRequest.abort();
 					}
 					this._data.search.lastRequest = $.ajax(a)
-						.fail($.proxy(function () {
+						.fail(function () {
 							this._data.core.last_error = { 'error' : 'ajax', 'plugin' : 'search', 'id' : 'search_01', 'reason' : 'Could not load search parents', 'data' : JSON.stringify(a) };
 							this.settings.core.error.call(this, this._data.core.last_error);
-						}, this))
-						.done($.proxy(function (d) {
+						}.bind(this))
+						.done(function (d) {
 							if(d && d.d) { d = d.d; }
 							this._load_nodes(!$.vakata.is_array(d) ? [] : $.vakata.array_unique(d), function () {
 								this.search(str, true, show_only_matches, inside, append, show_only_matches_children);
 							});
-						}, this));
+						}.bind(this));
 					return this._data.search.lastRequest;
 				}
 			}
@@ -7864,17 +7881,17 @@
 		this.bind = function () {
 			parent.bind.call(this);
 			this.element
-				.on("model.jstree", $.proxy(function (e, data) {
+				.on("model.jstree", function (e, data) {
 						this.sort(data.parent, true);
-					}, this))
-				.on("rename_node.jstree create_node.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("rename_node.jstree create_node.jstree", function (e, data) {
 						this.sort(data.parent || data.node.parent, false);
 						this.redraw_node(data.parent || data.node.parent, true);
-					}, this))
-				.on("move_node.jstree copy_node.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("move_node.jstree copy_node.jstree", function (e, data) {
 						this.sort(data.parent, false);
 						this.redraw_node(data.parent, true);
-					}, this));
+					}.bind(this));
 		};
 		/**
 		 * used to sort a node's children
@@ -7889,7 +7906,7 @@
 			var i, j;
 			obj = this.get_node(obj);
 			if(obj && obj.children && obj.children.length) {
-				obj.children.sort($.proxy(this.settings.sort, this));
+				obj.children.sort(this.settings.sort.bind(this));
 				if(deep) {
 					for(i = 0, j = obj.children_d.length; i < j; i++) {
 						this.sort(obj.children_d[i], false);
@@ -7949,11 +7966,11 @@
 	$.jstree.plugins.state = function (options, parent) {
 		this.bind = function () {
 			parent.bind.call(this);
-			var bind = $.proxy(function () {
-				this.element.on(this.settings.state.events, $.proxy(function () {
+			var bind = function () {
+				this.element.on(this.settings.state.events, function () {
 					if(to) { clearTimeout(to); }
-					to = setTimeout($.proxy(function () { this.save_state(); }, this), 100);
-				}, this));
+					to = setTimeout(function () { this.save_state(); }.bind(this), 100);
+				}.bind(this));
 				/**
 				 * triggered when the state plugin is finished restoring the state (and immediately after ready if there is no state to restore).
 				 * @event
@@ -7961,12 +7978,12 @@
 				 * @plugin state
 				 */
 				this.trigger('state_ready');
-			}, this);
+			}.bind(this);
 			this.element
-				.on("ready.jstree", $.proxy(function (e, data) {
+				.on("ready.jstree", function (e, data) {
 						this.element.one("restore_state.jstree", bind);
 						if(!this.restore_state()) { bind(); }
-					}, this));
+					}.bind(this));
 		};
 		/**
 		 * save the state
@@ -8076,7 +8093,7 @@
 		};
 		this.bind = function () {
 			this.element
-				.on('model.jstree', $.proxy(function (e, data) {
+				.on('model.jstree', function (e, data) {
 						var m = this._model.data,
 							dpc = data.nodes,
 							t = this.settings.types,
@@ -8128,7 +8145,7 @@
 							}
 						}
 						m[$.jstree.root].type = $.jstree.root;
-					}, this));
+					}.bind(this));
 			parent.bind.call(this);
 		};
 		this.get_json = function (obj, options, flat) {
@@ -8546,17 +8563,17 @@
 			parent.bind.call(this);
 
 			this.element
-				.on('ready.jstree set_state.jstree', $.proxy(function () {
+				.on('ready.jstree set_state.jstree', function () {
 						this.hide_dots();
-					}, this))
-				.on("init.jstree loading.jstree ready.jstree", $.proxy(function () {
+					}.bind(this))
+				.on("init.jstree loading.jstree ready.jstree", function () {
 						//div.style.height = this._data.core.li_height + 'px';
 						this.get_container_ul().addClass('jstree-wholerow-ul');
-					}, this))
-				.on("deselect_all.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("deselect_all.jstree", function (e, data) {
 						this.element.find('.jstree-wholerow-clicked').removeClass('jstree-wholerow-clicked');
-					}, this))
-				.on("changed.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("changed.jstree", function (e, data) {
 						this.element.find('.jstree-wholerow-clicked').removeClass('jstree-wholerow-clicked');
 						var tmp = false, i, j;
 						for(i = 0, j = data.selected.length; i < j; i++) {
@@ -8565,21 +8582,21 @@
 								tmp.children('.jstree-wholerow').addClass('jstree-wholerow-clicked');
 							}
 						}
-					}, this))
-				.on("open_node.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("open_node.jstree", function (e, data) {
 						this.get_node(data.node, true).find('.jstree-clicked').parent().children('.jstree-wholerow').addClass('jstree-wholerow-clicked');
-					}, this))
-				.on("hover_node.jstree dehover_node.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("hover_node.jstree dehover_node.jstree", function (e, data) {
 						if(e.type === "hover_node" && this.is_disabled(data.node)) { return; }
 						this.get_node(data.node, true).children('.jstree-wholerow')[e.type === "hover_node"?"addClass":"removeClass"]('jstree-wholerow-hovered');
-					}, this))
-				.on("contextmenu.jstree", ".jstree-wholerow", $.proxy(function (e) {
+					}.bind(this))
+				.on("contextmenu.jstree", ".jstree-wholerow", function (e) {
 						if (this._data.contextmenu) {
 							e.preventDefault();
 							var tmp = $.Event('contextmenu', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey, pageX : e.pageX, pageY : e.pageY });
 							$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor").first().trigger(tmp);
 						}
-					}, this))
+					}.bind(this))
 				/*!
 				.on("mousedown.jstree touchstart.jstree", ".jstree-wholerow", function (e) {
 						if(e.target === e.currentTarget) {
@@ -8599,21 +8616,21 @@
 						var tmp = $.Event('dblclick', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey });
 						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor").first().trigger(tmp).trigger('focus');
 					})
-				.on("click.jstree", ".jstree-leaf > .jstree-ocl", $.proxy(function (e) {
+				.on("click.jstree", ".jstree-leaf > .jstree-ocl", function (e) {
 						e.stopImmediatePropagation();
 						var tmp = $.Event('click', { metaKey : e.metaKey, ctrlKey : e.ctrlKey, altKey : e.altKey, shiftKey : e.shiftKey });
 						$(e.currentTarget).closest(".jstree-node").children(".jstree-anchor").first().trigger(tmp).trigger('focus');
-					}, this))
-				.on("mouseover.jstree", ".jstree-wholerow, .jstree-icon", $.proxy(function (e) {
+					}.bind(this))
+				.on("mouseover.jstree", ".jstree-wholerow, .jstree-icon", function (e) {
 						e.stopImmediatePropagation();
 						if(!this.is_disabled(e.currentTarget)) {
 							this.hover_node(e.currentTarget);
 						}
 						return false;
-					}, this))
-				.on("mouseleave.jstree", ".jstree-node", $.proxy(function (e) {
+					}.bind(this))
+				.on("mouseleave.jstree", ".jstree-node", function (e) {
 						this.dehover_node(e.currentTarget);
-					}, this));
+					}.bind(this));
 		};
 		this.teardown = function () {
 			if(this.settings.wholerow) {
