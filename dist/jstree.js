@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.11
+ * jsTree 3.3.12
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -63,7 +63,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.11',
+		version : '3.3.12',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -6265,6 +6265,7 @@
 			if(this._data.contextmenu.visible) {
 				$.vakata.context.hide();
 			}
+			$(document).off("context_hide.vakata.jstree");
 			parent.teardown.call(this);
 		};
 
