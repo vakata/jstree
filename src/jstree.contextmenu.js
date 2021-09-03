@@ -250,6 +250,7 @@
 			if(this._data.contextmenu.visible) {
 				$.vakata.context.hide();
 			}
+			$(document).off("context_hide.vakata.jstree");
 			parent.teardown.call(this);
 		};
 
