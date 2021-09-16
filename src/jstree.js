@@ -1276,7 +1276,7 @@
 		 * @trigger load_node.jstree
 		 */
 		load_node : function (obj, callback) {
-			var k, l, i, j, c;
+			var dom = this.get_node(obj, true), k, l, i, j, c;
 			if($.vakata.is_array(obj)) {
 				this._load_nodes(obj.slice(), callback);
 				return true;
@@ -1313,7 +1313,12 @@
 			}
 			obj.state.failed = false;
 			obj.state.loading = true;
-			this.get_node(obj, true).addClass("jstree-loading").attr('aria-busy',true);
+			if (obj.a_attr) {
+				dom.children(".jstree-anchor").attr('aria-busy', true);
+			} else {
+				dom.attr('aria-busy', true);
+			}
+			dom.addClass("jstree-loading");
 			this._load_node(obj, function (status) {
 				obj = this._model.data[obj.id];
 				obj.state.loading = false;
@@ -1337,7 +1342,12 @@
 						}
 					}
 				}
-				dom.removeClass("jstree-loading").attr('aria-busy',false);
+				if (obj.a_attr) {
+					dom.children(".jstree-anchor").attr('aria-busy', false);
+				} else {
+					dom.attr('aria-busy', false);
+				}
+				dom.removeClass("jstree-loading");
 				/**
 				 * triggered after a node is loaded
 				 * @event
