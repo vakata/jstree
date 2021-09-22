@@ -910,6 +910,7 @@
 						this._data.core.focused = null;
 						$(e.currentTarget).filter('.jstree-hovered').trigger('mouseleave');
 						this.element.attr('tabindex', '0');
+						$(e.currentTarget).attr('tabindex', '-1');
 					}.bind(this))
 				.on('focus.jstree', '.jstree-anchor', function (e) {
 						var tmp = this.get_node(e.currentTarget);
@@ -919,6 +920,7 @@
 						this.element.find('.jstree-hovered').not(e.currentTarget).trigger('mouseleave');
 						$(e.currentTarget).trigger('mouseenter');
 						this.element.attr('tabindex', '-1');
+						$(e.currentTarget).attr('tabindex', '0');
 					}.bind(this))
 				.on('focus.jstree', function () {
 						if(+(new Date()) - was_click > 500 && !this._data.core.focused && this.settings.core.restore_focus) {
