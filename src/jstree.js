@@ -4030,7 +4030,7 @@
 				lft = this.element[0].scrollLeft;
 				if(par.id === $.jstree.root) {
 					if (this._model.data[$.jstree.root].children[0]) {
-						this.get_node(this._model.data[$.jstree.root].children[0], true).children('.jstree-anchor').triger('focus');
+						this.get_node(this._model.data[$.jstree.root].children[0], true).children('.jstree-anchor').trigger('focus');
 					}
 				}
 				else {
