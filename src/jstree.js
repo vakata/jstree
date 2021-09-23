@@ -1,7 +1,7 @@
-import TreeNode from "model/TreeNode";
-import Tree from "model/Tree";
-import InfiniteScroller from "render/InfiniteScroller";
-import Flat from "render/Flat";
+import TreeNode from "./model/TreeNode";
+import Tree from "./model/Tree";
+import InfiniteScroller from "./render/InfiniteScroller";
+import Flat from "./render/Flat";
 
 class jsTree
 {
