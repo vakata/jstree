@@ -6,7 +6,7 @@
   "main": "./dist/jstree.js",
   "homepage": "https://www.jstree.com",
   "scripts": {
-    "build" : "gulp default",
+    "build": "gulp default",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": {
@@ -42,10 +42,10 @@
   ],
   "devDependencies": {
     "gulp": "^4.0.2",
-    "gulp-clean-css": "^4.2",
+    "gulp-clean-css": "^4.3",
     "gulp-concat": "^2.6",
     "gulp-header": "^2.0.9",
     "gulp-replace": "^1.0",
-    "gulp-uglify-es": "^2.0"
+    "gulp-uglify-es": "^3.0"
   }
 }
