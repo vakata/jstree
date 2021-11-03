@@ -535,7 +535,7 @@ class Tree
             criteria = { id : criteria };
         }
         return function (node) {
-            for (let key of criteria.keys()) {
+            for (let key of Object.keys(criteria)) {
                 if (node.data[key] !== criteria[key]) {
                     return false;
                 }
