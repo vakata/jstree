@@ -37,6 +37,40 @@
 	.jstree-wholerow { -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box; }
 	.jstree-wholerow-hovered { background:@hovered-bg-color; }
 	.jstree-wholerow-clicked { .gradient(@clicked-gradient-color-1, @clicked-gradient-color-2); }
+
+	//sidebutton
+	.jstree-sidebutton { 
+		&.align-right{float: right;	}
+		&.hide{display: none;}
+
+		& > .jstree-side-item {
+			&.btn{
+				padding: 0px 9px;
+				margin:1px 1px 0px 5px;
+				cursor: pointer;
+				border: 1px solid #dedede;
+				border-radius: 3px;
+				text-decoration: none;
+
+				&:hover {
+					background: @hovered-bg-color;
+				}
+			}	
+			
+		}
+	}
+	.jstree-node.show-button > .jstree-sidebutton{
+		display: inline;
+	}
+}
+
+// sidebutton
+.jstree-sidebutton-plugin{
+	.jstree-node .jstree-anchor {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
 
 // theme variants

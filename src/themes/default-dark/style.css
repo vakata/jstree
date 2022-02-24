@@ -386,6 +386,31 @@
   background: -webkit-linear-gradient(top, #5fa2db 0%, #5fa2db 100%);
   background: linear-gradient(to bottom, #5fa2db 0%, #5fa2db 100%);
 }
+.jstree-default-dark .jstree-sidebutton.align-right {
+  float: right;
+}
+.jstree-default-dark .jstree-sidebutton.hide {
+  display: none;
+}
+.jstree-default-dark .jstree-sidebutton > .jstree-side-item.btn {
+  padding: 0px 9px;
+  margin: 1px 1px 0px 5px;
+  cursor: pointer;
+  border: 1px solid #dedede;
+  border-radius: 3px;
+  text-decoration: none;
+}
+.jstree-default-dark .jstree-sidebutton > .jstree-side-item.btn:hover {
+  background: #555;
+}
+.jstree-default-dark .jstree-node.show-button > .jstree-sidebutton {
+  display: inline;
+}
+.jstree-sidebutton-plugin .jstree-node .jstree-anchor {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .jstree-default-dark .jstree-node {
   min-height: 24px;
   line-height: 24px;
