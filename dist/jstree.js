@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.12
+ * jsTree {{VERSION}}
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -63,7 +63,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.12',
+		version : '{{VERSION}}',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -1981,6 +1981,15 @@
 						w.onmessage = function (e) {
 							rslt.call(this, e.data, true);
 							try { w.terminate(); w = null; } catch(ignore) { }
+							if(this._data.core.worker_queue.length) {
+								this._append_json_data.apply(this, this._data.core.worker_queue.shift());
+							}
+							else {
+								this._data.core.working = false;
+							}
+						}.bind(this);
+						w.onerror = function (e) {
+							rslt.call(this, func(args), false);
 							if(this._data.core.worker_queue.length) {
 								this._append_json_data.apply(this, this._data.core.worker_queue.shift());
 							}
@@ -4030,7 +4039,7 @@
 				lft = this.element[0].scrollLeft;
 				if(par.id === $.jstree.root) {
 					if (this._model.data[$.jstree.root].children[0]) {
-						this.get_node(this._model.data[$.jstree.root].children[0], true).children('.jstree-anchor').triger('focus');
+						this.get_node(this._model.data[$.jstree.root].children[0], true).children('.jstree-anchor').trigger('focus');
 					}
 				}
 				else {
