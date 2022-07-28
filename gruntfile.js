@@ -124,27 +124,6 @@ module.exports = function(grunt) {
         }
       },
     },
-    resemble: {
-      options: {
-        screenshotRoot: 'test/visual/screenshots/',
-        url: 'http://127.0.0.1/jstree/test/visual/',
-        gm: false
-      },
-      desktop: {
-        options: {
-          width: 1280,
-        },
-        src: ['desktop'],
-        dest: 'desktop',
-      },
-      mobile: {
-        options: {
-          width: 360,
-        },
-        src: ['mobile'],
-        dest: 'mobile'
-      }
-    },
     imagemin: {
       dynamic: {
         options: {                       // Target options
@@ -188,7 +167,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-qunit');
-  grunt.loadNpmTasks('grunt-resemble-cli');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
   grunt.loadNpmTasks('grunt-text-replace');

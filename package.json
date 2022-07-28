@@ -26,22 +26,21 @@
   ],
   "keywords": [],
   "devDependencies": {
-    "dox": "~0.9.0",
+    "dox": "^0.9.0",
     "grunt": "~1.4.1",
     "grunt-contrib-concat": "*",
     "grunt-contrib-copy": "*",
-    "grunt-contrib-imagemin": "~2.0.1",
+    "grunt-contrib-imagemin": "^4.0.0",
     "grunt-contrib-jshint": "*",
-    "grunt-contrib-less": "~1.4.1",
-    "grunt-contrib-qunit": "~2.0.0",
-    "grunt-contrib-uglify": "*",
+    "grunt-contrib-less": "^3.0.0",
+    "grunt-contrib-qunit": "^5.1.1",
+    "grunt-contrib-uglify": "^5.0.1",
     "grunt-contrib-watch": "~1.1.0",
-    "grunt-resemble-cli": "0.0.8",
     "grunt-text-replace": "~0.4.0",
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.21"
   },
   "dependencies": {
-    "jquery": ">=1.9.1"
+    "jquery": "^3.6.0"
   },
   "npmName": "jstree",
   "npmFileMap": [
