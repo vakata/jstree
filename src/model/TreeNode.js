@@ -86,7 +86,8 @@ class TreeNode
     }
     // only if data is an object
     get(prop, defaultValue = null) {
-        return this.data[prop] || defaultValue;
+        let res = this.data[prop] || defaultValue;
+        return (res instanceof Function) ? res(prop, defaultValue) : res;
     }
     // only if data is an object
     set(prop, value) {

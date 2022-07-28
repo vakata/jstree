@@ -382,7 +382,8 @@ class TreeNode
     }
     // only if data is an object
     get(prop, defaultValue = null) {
-        return this.data[prop] || defaultValue;
+        let res = this.data[prop] || defaultValue;
+        return (res instanceof Function) ? res(prop, defaultValue) : res;
     }
     // only if data is an object
     set(prop, value) {
@@ -1133,7 +1134,7 @@ class jsTree
                                 html += `<i class="jstree-icon jstree-icon-v jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
                             }
                             clss = this.getState(node, "selected", false) ? 'jstree-selected' : '';
-                            html += `<a class="jstree-node-text ${clss}" href="#"><i class="jstree-icon jstree-node-icon">&nbsp;</i> ${node.data.text}</a>`;
+                            html += `<a class="jstree-node-text ${clss}" href="#"><i class="jstree-icon jstree-node-icon">&nbsp;</i> ${node.get('text')}</a>`;
         
                             // TODO: do not redraw the whole DIV! update classes and texts
                             // TODO: add "dots" DIVs, prepare a style to render them "invisible" (opacity: 0)
@@ -1188,7 +1189,7 @@ class jsTree
                                 html += `<i class="jstree-icon jstree-icon-v jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
                             }
                             clss = this.getState(node, "selected", false) ? 'jstree-selected' : '';
-                            html += `<a class="jstree-node-text ${clss}" href="#"><i class="jstree-icon jstree-node-icon">&nbsp;</i> ${node.data.text}</a>`;
+                            html += `<a class="jstree-node-text ${clss}" href="#"><i class="jstree-icon jstree-node-icon">&nbsp;</i> ${node.get('text')}</a>`;
         
                             // TODO: do not redraw the whole DIV! update classes and texts
                             // TODO: add "dots" DIVs, prepare a style to render them "invisible" (opacity: 0)

@@ -22,7 +22,8 @@
             c ++;
             data.push({
                 'id' : levels + '_' + i,
-                'text' : 'node ' + i + ' ' + (i === 1 ? 'lipsum lipsum lipsum lipsum lipsum lipsum lipsum lipsum ' : ''),
+                //'text' : 'node ' + i + ' ' + (i === 1 ? 'lipsum lipsum lipsum lipsum lipsum lipsum lipsum lipsum ' : ''),
+                'text' : function () { return 'asdf'; },
                 'children' : levels > 1 ? dummy(levels - 1, nodes) : []
             });
         }
