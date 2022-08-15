@@ -692,7 +692,7 @@
 			if (e.ctrlKey) { parts.push('ctrl'); }
 			if (e.altKey) { parts.push('alt'); }
             if (e.shiftKey) { parts.push('shift'); }
-			parts.push(keys[e.which] || e.which);
+			parts.push(keys[e.which] ? keys[e.which].toLowerCase() : e.which);
             parts = parts.sort().join('-').toLowerCase();
             if (parts === 'shift-shift' || parts === 'ctrl-ctrl' || parts === 'alt-alt') {
                 return null;
