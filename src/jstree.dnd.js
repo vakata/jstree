@@ -92,7 +92,13 @@
 		 * @name $.jstree.defaults.dnd.use_html5
 		 * @plugin dnd
 		 */
-		use_html5: false
+		use_html5: false,
+		/**
+		 * controls whether items can be dropped anywhere on the tree, not just on the node or anchor, by default only the node/anchor is a valid drop target. Works best with the wholerow plugin.
+		 * @name $.jstree.defaults.dnd.blank_space_drop
+		 * @plugin dnd
+		 */
+		blank_space_drop: false
 	};
 	var drg, elm;
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
@@ -248,6 +254,11 @@
 					else {
 						// if we are hovering a tree node
 						ref = ins.settings.dnd.large_drop_target ? $(data.event.target).closest('.jstree-node').children('.jstree-anchor') : $(data.event.target).closest('.jstree-anchor');
+						if (ins.settings.dnd.blank_space_drop && ref.length === 0) {
+							// if we are not hovering a tree node, but an empty space in tree, get last node
+							ref = ins.settings.customdnd.large_drop_target ? $(data.event.target).find('.jstree-node').children('.jstree-anchor').last() : $(data.event.target).find('.jstree-anchor').last();
+						}
+						
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
 							off = ref.offset();
 							rel = (data.event.pageY !== undefined ? data.event.pageY : data.event.originalEvent.pageY) - off.top;
