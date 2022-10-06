@@ -256,7 +256,7 @@
 						ref = ins.settings.dnd.large_drop_target ? $(data.event.target).closest('.jstree-node').children('.jstree-anchor') : $(data.event.target).closest('.jstree-anchor');
 						if (ins.settings.dnd.blank_space_drop && ref.length === 0) {
 							// if we are not hovering a tree node, but an empty space in tree, get last node
-							ref = ins.settings.customdnd.large_drop_target ? $(data.event.target).find('.jstree-node').children('.jstree-anchor').last() : $(data.event.target).find('.jstree-anchor').last();
+							ref = ins.settings.dnd.large_drop_target ? $(data.event.target).find('.jstree-node').children('.jstree-anchor').last() : $(data.event.target).find('.jstree-anchor').last();
 						}
 						
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
