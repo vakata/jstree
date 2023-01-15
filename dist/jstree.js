@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree {{VERSION}}
+ * jsTree 3.3.12
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -63,7 +63,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '{{VERSION}}',
+		version : '3.3.12',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -3160,8 +3160,10 @@
 					this.deselect_node(obj, false, e);
 				}
 				else {
-					this.deselect_all(true);
-					this.select_node(obj, false, false, e);
+					if (!this.is_selected(obj) || this._data.core.selected.length !== 1) {
+						this.deselect_all(true);
+						this.select_node(obj, false, false, e);
+					}
 					this._data.core.last_clicked = this.get_node(obj);
 				}
 			}
@@ -3186,13 +3188,18 @@
 							}
 						}
 						else {
-							this.deselect_node(p[i], true, e);
+							if (!e.ctrlKey) {
+								this.deselect_node(p[i], true, e);
+							}
 						}
 					}
 					this.trigger('changed', { 'action' : 'select_node', 'node' : this.get_node(obj), 'selected' : this._data.core.selected, 'event' : e });
 				}
 				else {
 					if(!this.is_selected(obj)) {
+						if (e.ctrlKey) {
+							this._data.core.last_clicked = this.get_node(obj);
+						}
 						this.select_node(obj, false, false, e);
 					}
 					else {
@@ -4065,7 +4072,7 @@
 		check : function (chk, obj, par, pos, more) {
 			obj = obj && obj.id ? obj : this.get_node(obj);
 			par = par && par.id ? par : this.get_node(par);
-			var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj,
+			var tmp = chk.match(/^(move_node|copy_node|create_node)$/i) ? par : obj,
 				chc = this.settings.core.check_callback;
 			if(chk === "move_node" || chk === "copy_node") {
 				if((!more || !more.is_multi) && (chk === "move_node" && $.inArray(obj.id, par.children) === pos)) {
@@ -5673,6 +5680,28 @@
 				this.check_node(obj, e);
 			}
 			this.trigger('activate_node', { 'node' : this.get_node(obj) });
+		};
+		this.delete_node = function (obj) {
+			if(this.settings.checkbox.tie_selection || $.vakata.is_array(obj)) {
+				return parent.delete_node(obj);
+			}
+			var tmp, k, l, c = false;
+			obj = this.get_node(obj);
+			if(!obj || obj.id === $.jstree.root) { return false; }
+			tmp = obj.children_d.concat([]);
+			tmp.push(obj.id);
+			for(k = 0, l = tmp.length; k < l; k++) {
+				if(this._model.data[tmp[k]].state.checked) {
+					c = true;
+					break;
+				}
+			}
+			if (c) {
+				this._data.checkbox.selected = $.vakata.array_filter(this._data.checkbox.selected, function (v) {
+					return $.inArray(v, tmp) === -1;
+				});
+			}
+			return parent.delete_node.call(this, obj);
 		};
 
 		/**
@@ -8433,7 +8462,7 @@
 		 */
 		trim_whitespace : false,
 		/**
-		 * A callback executed in the instance's scope when a new node is created and the name is already taken, the two arguments are the conflicting name and the counter. The default will produce results like `New node (2)`.
+		 * A callback executed in the instance's scope when a new node is created with no name and a node with the default name already exists, the two arguments are the conflicting name and the counter. The default will produce results like `New node (2)`.
 		 * @name $.jstree.defaults.unique.duplicate
 		 * @plugin unique
 		 */
@@ -8503,7 +8532,7 @@
 			return true;
 		};
 		this.create_node = function (par, node, pos, callback, is_loaded) {
-			if(!node || node.text === undefined) {
+			if(!node || (typeof node === 'object' && node.text === undefined)) {
 				if(par === null) {
 					par = $.jstree.root;
 				}

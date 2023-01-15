@@ -3160,7 +3160,7 @@
 					this.deselect_node(obj, false, e);
 				}
 				else {
-					if (!this.is_selected(obj) || this._data.core.selected.length != 1) {
+					if (!this.is_selected(obj) || this._data.core.selected.length !== 1) {
 						this.deselect_all(true);
 						this.select_node(obj, false, false, e);
 					}

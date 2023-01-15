@@ -655,7 +655,7 @@
 				});
 			}
 			return parent.delete_node.call(this, obj);
-		}
+		};
 
 		/**
 		 * Cascades checked state to a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
