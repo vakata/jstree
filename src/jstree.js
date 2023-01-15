@@ -3187,7 +3187,8 @@
 						}
 						else {
 							if (!e.ctrlKey) {
-							this.deselect_node(p[i], true, e);
+								this.deselect_node(p[i], true, e);
+							}
 						}
 					}
 					this.trigger('changed', { 'action' : 'select_node', 'node' : this.get_node(obj), 'selected' : this._data.core.selected, 'event' : e });
