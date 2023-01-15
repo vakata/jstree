@@ -3186,6 +3186,7 @@
 							}
 						}
 						else {
+							if (!e.ctrlKey) {
 							this.deselect_node(p[i], true, e);
 						}
 					}
@@ -3193,6 +3194,9 @@
 				}
 				else {
 					if(!this.is_selected(obj)) {
+						if (e.ctrlKey) {
+							this._data.core.last_clicked = this.get_node(obj);
+						}
 						this.select_node(obj, false, false, e);
 					}
 					else {
