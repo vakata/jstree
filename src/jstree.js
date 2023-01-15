@@ -3160,8 +3160,10 @@
 					this.deselect_node(obj, false, e);
 				}
 				else {
-					this.deselect_all(true);
-					this.select_node(obj, false, false, e);
+					if (!this.is_selected(obj) || this._data.core.selected.length != 1) {
+						this.deselect_all(true);
+						this.select_node(obj, false, false, e);
+					}
 					this._data.core.last_clicked = this.get_node(obj);
 				}
 			}
