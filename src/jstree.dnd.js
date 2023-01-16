@@ -94,7 +94,7 @@
 		 */
 		use_html5: false,
 		/**
-		 * controls whether items can be dropped anywhere on the tree, not just on the node or anchor, by default only the node/anchor is a valid drop target. Works best with the wholerow plugin.
+		 * controls whether items can be dropped anywhere on the tree.
 		 * @name $.jstree.defaults.dnd.blank_space_drop
 		 * @plugin dnd
 		 */
@@ -235,7 +235,7 @@
 
 					// if are hovering the container itself add a new root node
 					//console.log(data.event);
-					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && (ins.get_container_ul().children().length === 0 || ins.settings.dnd.blank_space_drop === 'root')) {
+					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && (ins.get_container_ul().children().length === 0 || ins.settings.dnd.blank_space_drop)) {
 						ok = true;
 						for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
 							ok = ok && ins.check( (data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey)) ) ? "copy_node" : "move_node"), (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), $.jstree.root, 'last', { 'dnd' : true, 'ref' : ins.get_node($.jstree.root), 'pos' : 'i', 'origin' : data.data.origin, 'is_multi' : (data.data.origin && data.data.origin !== ins), 'is_foreign' : (!data.data.origin) });
@@ -254,10 +254,6 @@
 					else {
 						// if we are hovering a tree node
 						ref = ins.settings.dnd.large_drop_target ? $(data.event.target).closest('.jstree-node').children('.jstree-anchor') : $(data.event.target).closest('.jstree-anchor');
-						if (ins.settings.dnd.blank_space_drop === true && ref.length === 0) {
-							// if we are not hovering a tree node, but an empty space in tree, get last node
-							ref = ins.settings.dnd.large_drop_target ? $(data.event.target).find('.jstree-node').children('.jstree-anchor').last() : $(data.event.target).find('.jstree-anchor').last();
-						}
 						
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
 							off = ref.offset();
