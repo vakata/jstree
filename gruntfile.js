@@ -92,7 +92,8 @@ module.exports = function(grunt) {
       production: {
         options : {
           cleancss : true,
-          compress : true
+          compress : true,
+          math : 'always'
         },
         files: {
           "dist/themes/default/style.min.css" : "src/themes/default/style.less",
@@ -100,6 +101,9 @@ module.exports = function(grunt) {
         }
       },
       development: {
+        options : {
+          math : 'always'
+        },
         files: {
           "src/themes/default/style.css" : "src/themes/default/style.less",
           "dist/themes/default/style.css" : "src/themes/default/style.less",

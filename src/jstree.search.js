@@ -328,7 +328,7 @@
 				};
 			}
 			search = function (text) {
-				text = options.caseSensitive ? text : text.toLowerCase();
+				text = options.caseSensitive ? text.toString() : text.toString().toLowerCase();
 				if(pattern === text || text.indexOf(pattern) !== -1) {
 					return {
 						isMatch: true,

@@ -720,3 +720,47 @@
 		}
 	}
 })(jQuery);
+
+// overwrite select_all
+(function ($, undefined) {
+	"use strict";
+
+	if($.jstree.plugins.select_all) { return; }
+	$.jstree.defaults.select_all = {
+		hidden : true,
+		disabled : true
+	};
+
+	$.jstree.plugins.select_all = function (options, parent) {
+		this._select_all = function (id) {
+			var obj = this.get_node(id), i, j, c, s = this.settings.select_all;
+			if (!obj || !obj.children || !obj.children.length) {
+				return;
+			}
+			for (i = 0, j = obj.children.length; i < j; i++) {
+				c = this.get_node(obj.children[i]);
+				if (c && !c.state.selected && (s.disabled || !c.state.disabled) && (s.hidden || !c.state.hidden)) {
+					this._data.core.selected.push(c.id);
+					if (c.children && c.children.length) {
+						this._select_all(c.id);
+					}
+				}
+			}
+		};
+		this.select_all = function (supress_event) {
+			var tmp = this._data.core.selected.concat([]), i, j;
+			this._select_all('#');
+			this.redraw(true);
+			/**
+			 * triggered when all nodes are selected
+			 * @event
+			 * @name select_all.jstree
+			 * @param {Array} selected the current selection
+			 */
+			this.trigger('select_all', { 'selected' : this._data.core.selected });
+			if(!supress_event) {
+				this.trigger('changed', { 'action' : 'select_all', 'selected' : this._data.core.selected, 'old_selection' : tmp });
+			}
+		};
+	}
+})(jQuery);

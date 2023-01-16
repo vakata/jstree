@@ -692,7 +692,7 @@
 			if (e.ctrlKey) { parts.push('ctrl'); }
 			if (e.altKey) { parts.push('alt'); }
             if (e.shiftKey) { parts.push('shift'); }
-			parts.push(keys[e.which] || e.which);
+			parts.push(keys[e.which] ? keys[e.which].toLowerCase() : e.which);
             parts = parts.sort().join('-').toLowerCase();
             if (parts === 'shift-shift' || parts === 'ctrl-ctrl' || parts === 'alt-alt') {
                 return null;
@@ -910,6 +910,7 @@
 						this._data.core.focused = null;
 						$(e.currentTarget).filter('.jstree-hovered').trigger('mouseleave');
 						this.element.attr('tabindex', '0');
+						$(e.currentTarget).attr('tabindex', '-1');
 					}.bind(this))
 				.on('focus.jstree', '.jstree-anchor', function (e) {
 						var tmp = this.get_node(e.currentTarget);
@@ -919,6 +920,7 @@
 						this.element.find('.jstree-hovered').not(e.currentTarget).trigger('mouseleave');
 						$(e.currentTarget).trigger('mouseenter');
 						this.element.attr('tabindex', '-1');
+						$(e.currentTarget).attr('tabindex', '0');
 					}.bind(this))
 				.on('focus.jstree', function () {
 						if(+(new Date()) - was_click > 500 && !this._data.core.focused && this.settings.core.restore_focus) {
@@ -1276,7 +1278,7 @@
 		 * @trigger load_node.jstree
 		 */
 		load_node : function (obj, callback) {
-			var k, l, i, j, c;
+			var dom = this.get_node(obj, true), k, l, i, j, c;
 			if($.vakata.is_array(obj)) {
 				this._load_nodes(obj.slice(), callback);
 				return true;
@@ -1313,7 +1315,12 @@
 			}
 			obj.state.failed = false;
 			obj.state.loading = true;
-			this.get_node(obj, true).addClass("jstree-loading").attr('aria-busy',true);
+			if (obj.id !== '#') {
+				dom.children(".jstree-anchor").attr('aria-busy', true);
+			} else {
+				dom.attr('aria-busy', true);
+			}
+			dom.addClass("jstree-loading");
 			this._load_node(obj, function (status) {
 				obj = this._model.data[obj.id];
 				obj.state.loading = false;
@@ -1337,7 +1344,12 @@
 						}
 					}
 				}
-				dom.removeClass("jstree-loading").attr('aria-busy',false);
+				if (obj.id !== '#') {
+					dom.children(".jstree-anchor").attr('aria-busy', false);
+				} else {
+					dom.attr('aria-busy', false);
+				}
+				dom.removeClass("jstree-loading");
 				/**
 				 * triggered after a node is loaded
 				 * @event
@@ -2364,7 +2376,7 @@
 			}
 			if(this._model.force_full_redraw) {
 				f.className = this.get_container_ul()[0].className;
-				f.setAttribute('role','group');
+				f.setAttribute('role','presentation');
 				this.element.empty().append(f);
 				//this.get_container_ul()[0].appendChild(f);
 			}
@@ -3160,8 +3172,10 @@
 					this.deselect_node(obj, false, e);
 				}
 				else {
-					this.deselect_all(true);
-					this.select_node(obj, false, false, e);
+					if (!this.is_selected(obj) || this._data.core.selected.length !== 1) {
+						this.deselect_all(true);
+						this.select_node(obj, false, false, e);
+					}
 					this._data.core.last_clicked = this.get_node(obj);
 				}
 			}
@@ -3186,13 +3200,18 @@
 							}
 						}
 						else {
-							this.deselect_node(p[i], true, e);
+							if (!e.ctrlKey) {
+								this.deselect_node(p[i], true, e);
+							}
 						}
 					}
 					this.trigger('changed', { 'action' : 'select_node', 'node' : this.get_node(obj), 'selected' : this._data.core.selected, 'event' : e });
 				}
 				else {
 					if(!this.is_selected(obj)) {
+						if (e.ctrlKey) {
+							this._data.core.last_clicked = this.get_node(obj);
+						}
 						this.select_node(obj, false, false, e);
 					}
 					else {
@@ -4065,7 +4084,7 @@
 		check : function (chk, obj, par, pos, more) {
 			obj = obj && obj.id ? obj : this.get_node(obj);
 			par = par && par.id ? par : this.get_node(par);
-			var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj,
+			var tmp = chk.match(/^(move_node|copy_node|create_node)$/i) ? par : obj,
 				chc = this.settings.core.check_callback;
 			if(chk === "move_node" || chk === "copy_node") {
 				if((!more || !more.is_multi) && (chk === "move_node" && $.inArray(obj.id, par.children) === pos)) {

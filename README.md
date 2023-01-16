@@ -1,6 +1,3 @@
-### I had a bad cycling crash in August and I am still recovering after the surgery. I have a second surgery planned for October and should be back working on jstree in the second half of October. I am sorry for the delays and trouble this may cause.
-
-
 # jstree
 
 [jsTree](http://www.jstree.com/) is jquery plugin, that provides interactive trees. It is absolutely free, [open source](https://github.com/vakata/jstree) and distributed under the MIT license.

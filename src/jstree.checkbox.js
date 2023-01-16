@@ -177,7 +177,7 @@
 											this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 											tmp = this.get_node(p, true);
 											if(tmp && tmp.length) {
-												tmp.attr('aria-selected', true).children('.jstree-anchor').addClass( t ? 'jstree-clicked' : 'jstree-checked');
+												tmp.children('.jstree-anchor').attr('aria-selected', true).addClass( t ? 'jstree-clicked' : 'jstree-checked');
 											}
 										}
 										else {
@@ -230,7 +230,7 @@
 										//this._data[ t ? 'core' : 'checkbox' ].selected.push(par.id);
 										tmp = this.get_node(par, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.children('.jstree-anchor').attr('aria-selected', true).addClass(t ? 'jstree-clicked' : 'jstree-checked');
 										}
 									}
 									else {
@@ -288,7 +288,7 @@
 									}
 									tmp = this.get_node(obj.parents[i], true);
 									if(tmp && tmp.length) {
-										tmp.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+										tmp.children('.jstree-anchor').attr('aria-selected', false).removeClass(t ? 'jstree-clicked' : 'jstree-checked');
 									}
 								}
 
@@ -317,7 +317,7 @@
 									this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 									tmp = this.get_node(p, true);
 									if(tmp && tmp.length) {
-										tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+										tmp.children('.jstree-anchor').attr('aria-selected', true).addClass(t ? 'jstree-clicked' : 'jstree-checked');
 									}
 								}
 								else {
@@ -345,7 +345,7 @@
 										this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 										tmp = this.get_node(p, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.children('.jstree-anchor').attr('aria-selected', true).addClass(t ? 'jstree-clicked' : 'jstree-checked');
 										}
 									}
 									else {
@@ -366,7 +366,7 @@
 										this._data[ t ? 'core' : 'checkbox' ].selected.push(p.id);
 										tmp = this.get_node(p, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.children('.jstree-anchor').attr('aria-selected', true).addClass(t ? 'jstree-clicked' : 'jstree-checked');
 										}
 									}
 								}
@@ -376,7 +376,7 @@
 										this._data[ t ? 'core' : 'checkbox' ].selected = $.vakata.array_remove_item(this._data[ t ? 'core' : 'checkbox' ].selected, p.id);
 										tmp = this.get_node(p, true);
 										if(tmp && tmp.length) {
-											tmp.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+											tmp.children('.jstree-anchor').attr('aria-selected', false).removeClass(t ? 'jstree-clicked' : 'jstree-checked');
 										}
 									}
 									else {
@@ -634,6 +634,28 @@
 			}
 			this.trigger('activate_node', { 'node' : this.get_node(obj) });
 		};
+		this.delete_node = function (obj) {
+			if(this.settings.checkbox.tie_selection || $.vakata.is_array(obj)) {
+				return parent.delete_node(obj);
+			}
+			var tmp, k, l, c = false;
+			obj = this.get_node(obj);
+			if(!obj || obj.id === $.jstree.root) { return false; }
+			tmp = obj.children_d.concat([]);
+			tmp.push(obj.id);
+			for(k = 0, l = tmp.length; k < l; k++) {
+				if(this._model.data[tmp[k]].state.checked) {
+					c = true;
+					break;
+				}
+			}
+			if (c) {
+				this._data.checkbox.selected = $.vakata.array_filter(this._data.checkbox.selected, function (v) {
+					return $.inArray(v, tmp) === -1;
+				});
+			}
+			return parent.delete_node.call(this, obj);
+		};
 
 		/**
 		 * Cascades checked state to a node and all its descendants. This function does NOT affect hidden and disabled nodes (or their descendants).
@@ -679,7 +701,7 @@
 				//If a node is undetermined then remove selected class
 				if (undetermined) {
 					node.state[ t ? 'selected' : 'checked' ] = false;
-					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+					dom.children('.jstree-anchor').attr('aria-selected', false).removeClass(t ? 'jstree-clicked' : 'jstree-checked');
 				}
 				//Otherwise, if the checkedState === true (i.e. the node is being checked now) and all of the node's children are checked (if it has any children),
 				//check the node and style it correctly.
@@ -687,11 +709,11 @@
 					node.state[ t ? 'selected' : 'checked' ] = checkedState;
 					selectedNodeIds.push(node.id);
 
-					dom.attr('aria-selected', true).children('.jstree-anchor').addClass(t ? 'jstree-clicked' : 'jstree-checked');
+					dom.children('.jstree-anchor').attr('aria-selected', true).addClass(t ? 'jstree-clicked' : 'jstree-checked');
 				}
 				else {
 					node.state[ t ? 'selected' : 'checked' ] = false;
-					dom.attr('aria-selected', false).children('.jstree-anchor').removeClass(t ? 'jstree-clicked' : 'jstree-checked');
+					dom.children('.jstree-anchor').attr('aria-selected', false).removeClass(t ? 'jstree-clicked' : 'jstree-checked');
 				}
 			}
 			else {
