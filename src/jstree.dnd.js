@@ -578,7 +578,7 @@
 				vakata_dnd.scroll_e = false;
 				$($(e.target).parentsUntil("body").addBack().get().reverse())
 					.filter(function () {
-						return	(/^auto|scroll$/).test($(this).css("overflow")) &&
+						return	this.ownerDocument && (/^auto|scroll$/).test($(this).css("overflow")) &&
 								(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);
 					})
 					.each(function () {
