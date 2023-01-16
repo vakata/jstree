@@ -129,7 +129,7 @@
 			if(tmp === false) { return false; }
 			if($.vakata.is_array(tmp)) {
 				for(i = 0, j = tmp.length; i < j; i++) {
-					tmp[i].type = tmp[i].id && m[tmp[i].id] && m[tmp[i].id].type ? m[tmp[i].id].type : "default";
+					tmp[i].type = (tmp[i].id || tmp[i].id === 0) && m[tmp[i].id] && m[tmp[i].id].type ? m[tmp[i].id].type : "default";
 					if(options && options.no_id) {
 						delete tmp[i].id;
 						if(tmp[i].li_attr && tmp[i].li_attr.id) {
@@ -142,7 +142,7 @@
 				}
 			}
 			else {
-				tmp.type = tmp.id && m[tmp.id] && m[tmp.id].type ? m[tmp.id].type : "default";
+				tmp.type = (tmp.id || tmp.id === 0) && m[tmp.id] && m[tmp.id].type ? m[tmp.id].type : "default";
 				if(options && options.no_id) {
 					tmp = this._delete_ids(tmp);
 				}
@@ -170,9 +170,9 @@
 		};
 		this.check = function (chk, obj, par, pos, more) {
 			if(parent.check.call(this, chk, obj, par, pos, more) === false) { return false; }
-			obj = obj && obj.id ? obj : this.get_node(obj);
-			par = par && par.id ? par : this.get_node(par);
-			var m = obj && obj.id ? (more && more.origin ? more.origin : $.jstree.reference(obj.id)) : null, tmp, d, i, j;
+			obj = obj && (obj.id || obj.id === 0) ? obj : this.get_node(obj);
+			par = par && (par.id || par.id === 0) ? par : this.get_node(par);
+			var m = obj && (obj.id || obj.id === 0) ? (more && more.origin ? more.origin : $.jstree.reference(obj.id)) : null, tmp, d, i, j;
 			m = m && m._model && m._model.data ? m._model.data : null;
 			switch(chk) {
 				case "create_node":
@@ -181,11 +181,11 @@
 					if(chk !== 'move_node' || $.inArray(obj.id, par.children) === -1) {
 						tmp = this.get_rules(par);
 						if(tmp.max_children !== undefined && tmp.max_children !== -1 && tmp.max_children === par.children.length) {
-							this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_01', 'reason' : 'max_children prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
+							this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_01', 'reason' : 'max_children prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id || obj.id === 0) ? obj.id : false, 'par' : par && (par.id || par.id === 0) ? par.id : false }) };
 							return false;
 						}
 						if(tmp.valid_children !== undefined && tmp.valid_children !== -1 && $.inArray((obj.type || 'default'), tmp.valid_children) === -1) {
-							this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_02', 'reason' : 'valid_children prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
+							this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_02', 'reason' : 'valid_children prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id || obj.id === 0) ? obj.id : false, 'par' : par && (par.id || par.id === 0) ? par.id : false }) };
 							return false;
 						}
 						if(m && obj.children_d && obj.parents) {
@@ -198,7 +198,7 @@
 						if(d <= 0 || d === undefined) { d = 1; }
 						do {
 							if(tmp.max_depth !== undefined && tmp.max_depth !== -1 && tmp.max_depth < d) {
-								this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_03', 'reason' : 'max_depth prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
+								this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_03', 'reason' : 'max_depth prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id || obj.id === 0) ? obj.id : false, 'par' : par && (par.id || par.id === 0) ? par.id : false }) };
 								return false;
 							}
 							par = this.get_node(par.parent);
