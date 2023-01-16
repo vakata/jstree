@@ -1798,10 +1798,10 @@
 									}
 								}
 							}
-							if(tmp.li_attr.id && !(tmp.id !== undefined)) {
+							if(tmp.li_attr.id && tmp.id === undefined) {
 								tmp.id = tmp.li_attr.id.toString();
 							}
-							if(!(tmp.id !== undefined)) {
+							if(tmp.id === undefined) {
 								tmp.id = tid;
 							}
 							if(!tmp.li_attr.id) {
@@ -2318,10 +2318,10 @@
 					}
 				}
 			}
-			if(tmp.li_attr.id && !(tmp.id !== undefined)) {
+			if(tmp.li_attr.id && tmp.id === undefined) {
 				tmp.id = tmp.li_attr.id.toString();
 			}
-			if(!(tmp.id !== undefined)) {
+			if(tmp.id === undefined) {
 				tmp.id = tid;
 			}
 			if(!tmp.li_attr.id) {
@@ -3917,7 +3917,7 @@
 					break;
 			}
 			if(pos > par.children.length) { pos = par.children.length; }
-			if(!(node.id !== undefined)) { node.id = true; }
+			if(node.id === undefined) { node.id = true; }
 			if(!this.check("create_node", node, par, pos)) {
 				this.settings.core.error.call(this, this._data.core.last_error);
 				return false;
