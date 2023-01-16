@@ -34,17 +34,17 @@
 		this.bind = function () {
 			parent.bind.call(this);
 			this.element
-				.on("model.jstree", $.proxy(function (e, data) {
+				.on("model.jstree", function (e, data) {
 						this.sort(data.parent, true);
-					}, this))
-				.on("rename_node.jstree create_node.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("rename_node.jstree create_node.jstree", function (e, data) {
 						this.sort(data.parent || data.node.parent, false);
 						this.redraw_node(data.parent || data.node.parent, true);
-					}, this))
-				.on("move_node.jstree copy_node.jstree", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("move_node.jstree copy_node.jstree", function (e, data) {
 						this.sort(data.parent, false);
 						this.redraw_node(data.parent, true);
-					}, this));
+					}.bind(this));
 		};
 		/**
 		 * used to sort a node's children
@@ -59,7 +59,7 @@
 			var i, j;
 			obj = this.get_node(obj);
 			if(obj && obj.children && obj.children.length) {
-				obj.children.sort($.proxy(this.settings.sort, this));
+				obj.children.sort(this.settings.sort.bind(this));
 				if(deep) {
 					for(i = 0, j = obj.children_d.length; i < j; i++) {
 						this.sort(obj.children_d[i], false);

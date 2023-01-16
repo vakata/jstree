@@ -92,7 +92,8 @@ module.exports = function(grunt) {
       production: {
         options : {
           cleancss : true,
-          compress : true
+          compress : true,
+          math : 'always'
         },
         files: {
           "dist/themes/default/style.min.css" : "src/themes/default/style.less",
@@ -100,6 +101,9 @@ module.exports = function(grunt) {
         }
       },
       development: {
+        options : {
+          math : 'always'
+        },
         files: {
           "src/themes/default/style.css" : "src/themes/default/style.less",
           "dist/themes/default/style.css" : "src/themes/default/style.less",
@@ -123,27 +127,6 @@ module.exports = function(grunt) {
           atBegin : true
         }
       },
-    },
-    resemble: {
-      options: {
-        screenshotRoot: 'test/visual/screenshots/',
-        url: 'http://127.0.0.1/jstree/test/visual/',
-        gm: false
-      },
-      desktop: {
-        options: {
-          width: 1280,
-        },
-        src: ['desktop'],
-        dest: 'desktop',
-      },
-      mobile: {
-        options: {
-          width: 360,
-        },
-        src: ['mobile'],
-        dest: 'mobile'
-      }
     },
     imagemin: {
       dynamic: {
@@ -188,7 +171,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-qunit');
-  grunt.loadNpmTasks('grunt-resemble-cli');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
   grunt.loadNpmTasks('grunt-text-replace');

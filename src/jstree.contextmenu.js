@@ -173,10 +173,10 @@
 
 			var last_ts = 0, cto = null, ex, ey;
 			this.element
-				.on("init.jstree loading.jstree ready.jstree", $.proxy(function () {
+				.on("init.jstree loading.jstree ready.jstree", function () {
 						this.get_container_ul().addClass('jstree-contextmenu');
-					}, this))
-				.on("contextmenu.jstree", ".jstree-anchor", $.proxy(function (e, data) {
+					}.bind(this))
+				.on("contextmenu.jstree", ".jstree-anchor", function (e, data) {
 						if (e.target.tagName.toLowerCase() === 'input') {
 							return;
 						}
@@ -191,13 +191,13 @@
 						if(!this.is_loading(e.currentTarget)) {
 							this.show_contextmenu(e.currentTarget, e.pageX, e.pageY, e);
 						}
-					}, this))
-				.on("click.jstree", ".jstree-anchor", $.proxy(function (e) {
+					}.bind(this))
+				.on("click.jstree", ".jstree-anchor", function (e) {
 						if(this._data.contextmenu.visible && (!last_ts || (+new Date()) - last_ts > 250)) { // work around safari & macOS ctrl+click
 							$.vakata.context.hide();
 						}
 						last_ts = 0;
-					}, this))
+					}.bind(this))
 				.on("touchstart.jstree", ".jstree-anchor", function (e) {
 						if(!e.originalEvent || !e.originalEvent.changedTouches || !e.originalEvent.changedTouches[0]) {
 							return;
@@ -241,15 +241,16 @@
 					});
 			}
 			*/
-			$(document).on("context_hide.vakata.jstree", $.proxy(function (e, data) {
+			$(document).on("context_hide.vakata.jstree", function (e, data) {
 				this._data.contextmenu.visible = false;
 				$(data.reference).removeClass('jstree-context');
-			}, this));
+			}.bind(this));
 		};
 		this.teardown = function () {
 			if(this._data.contextmenu.visible) {
 				$.vakata.context.hide();
 			}
+			$(document).off("context_hide.vakata.jstree");
 			parent.teardown.call(this);
 		};
 
@@ -282,9 +283,9 @@
 
 			i = s.items;
 			if($.vakata.is_function(i)) {
-				i = i.call(this, obj, $.proxy(function (i) {
+				i = i.call(this, obj, function (i) {
 					this._show_contextmenu(obj, x, y, i);
-				}, this));
+				}.bind(this));
 			}
 			if($.isPlainObject(i)) {
 				this._show_contextmenu(obj, x, y, i);
@@ -304,11 +305,11 @@
 		this._show_contextmenu = function (obj, x, y, i) {
 			var d = this.get_node(obj, true),
 				a = d.children(".jstree-anchor");
-			$(document).one("context_show.vakata.jstree", $.proxy(function (e, data) {
+			$(document).one("context_show.vakata.jstree", function (e, data) {
 				var cls = 'jstree-contextmenu jstree-' + this.get_theme() + '-contextmenu';
 				$(data.element).addClass(cls);
 				a.addClass('jstree-context');
-			}, this));
+			}.bind(this));
 			this._data.contextmenu.visible = true;
 			$.vakata.context.show(a, { 'x' : x, 'y' : y }, i);
 			/**
@@ -379,7 +380,7 @@
 					if(!val) { return true; }
 					vakata_context.items.push(val);
 					if(!sep && val.separator_before) {
-						str += "<"+"li class='vakata-context-separator'><"+"a href='#' " + ($.vakata.context.settings.icons ? '' : 'style="margin-left:0px;"') + ">&#160;<"+"/a><"+"/li>";
+						str += "<"+"li class='vakata-context-separator'><"+"a href='#' " + ($.vakata.context.settings.icons ? '' : 'class="vakata-context-no-icons"') + ">&#160;<"+"/a><"+"/li>";
 					}
 					sep = false;
 					str += "<"+"li class='" + (val._class || "") + (val._disabled === true || ($.vakata.is_function(val._disabled) && val._disabled({ "item" : val, "reference" : vakata_context.reference, "element" : vakata_context.element })) ? " vakata-contextmenu-disabled " : "") + "' "+(val.shortcut?" data-shortcut='"+val.shortcut+"' ":'')+">";
@@ -399,7 +400,7 @@
 					}
 					str += "<"+"/li>";
 					if(val.separator_after) {
-						str += "<"+"li class='vakata-context-separator'><"+"a href='#' " + ($.vakata.context.settings.icons ? '' : 'style="margin-left:0px;"') + ">&#160;<"+"/a><"+"/li>";
+						str += "<"+"li class='vakata-context-separator'><"+"a href='#' " + ($.vakata.context.settings.icons ? '' : 'class="vakata-context-no-icons"') + ">&#160;<"+"/a><"+"/li>";
 						sep = true;
 					}
 				});
