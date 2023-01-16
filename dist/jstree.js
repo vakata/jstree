@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.12
+ * jsTree 3.3.13
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -63,7 +63,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.12',
+		version : '3.3.13',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -6804,7 +6804,13 @@
 		 * @name $.jstree.defaults.dnd.use_html5
 		 * @plugin dnd
 		 */
-		use_html5: false
+		use_html5: false,
+		/**
+		 * controls whether items can be dropped anywhere on the tree.
+		 * @name $.jstree.defaults.dnd.blank_space_drop
+		 * @plugin dnd
+		 */
+		blank_space_drop: false
 	};
 	var drg, elm;
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
@@ -6941,7 +6947,7 @@
 
 					// if are hovering the container itself add a new root node
 					//console.log(data.event);
-					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && ins.get_container_ul().children().length === 0) {
+					if( (data.event.target === ins.element[0] || data.event.target === ins.get_container_ul()[0]) && (ins.get_container_ul().children().length === 0 || ins.settings.dnd.blank_space_drop)) {
 						ok = true;
 						for(t1 = 0, t2 = data.data.nodes.length; t1 < t2; t1++) {
 							ok = ok && ins.check( (data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey)) ) ? "copy_node" : "move_node"), (data.data.origin && data.data.origin !== ins ? data.data.origin.get_node(data.data.nodes[t1]) : data.data.nodes[t1]), $.jstree.root, 'last', { 'dnd' : true, 'ref' : ins.get_node($.jstree.root), 'pos' : 'i', 'origin' : data.data.origin, 'is_multi' : (data.data.origin && data.data.origin !== ins), 'is_foreign' : (!data.data.origin) });
@@ -6960,6 +6966,7 @@
 					else {
 						// if we are hovering a tree node
 						ref = ins.settings.dnd.large_drop_target ? $(data.event.target).closest('.jstree-node').children('.jstree-anchor') : $(data.event.target).closest('.jstree-anchor');
+						
 						if(ref && ref.length && ref.parent().is('.jstree-closed, .jstree-open, .jstree-leaf')) {
 							off = ref.offset();
 							rel = (data.event.pageY !== undefined ? data.event.pageY : data.event.originalEvent.pageY) - off.top;
@@ -7290,7 +7297,7 @@
 				vakata_dnd.scroll_e = false;
 				$($(e.target).parentsUntil("body").addBack().get().reverse())
 					.filter(function () {
-						return	(/^auto|scroll$/).test($(this).css("overflow")) &&
+						return	this.ownerDocument && (/^auto|scroll$/).test($(this).css("overflow")) &&
 								(this.scrollHeight > this.offsetHeight || this.scrollWidth > this.offsetWidth);
 					})
 					.each(function () {
