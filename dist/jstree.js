@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.13
+ * jsTree 3.3.14
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -63,7 +63,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.13',
+		version : '3.3.14',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -1315,7 +1315,7 @@
 			}
 			obj.state.failed = false;
 			obj.state.loading = true;
-			if (obj.id !== '#') {
+			if (obj.id !== $.jstree.root) {
 				dom.children(".jstree-anchor").attr('aria-busy', true);
 			} else {
 				dom.attr('aria-busy', true);
@@ -1344,7 +1344,7 @@
 						}
 					}
 				}
-				if (obj.id !== '#') {
+				if (obj.id !== $.jstree.root) {
 					dom.children(".jstree-anchor").attr('aria-busy', false);
 				} else {
 					dom.attr('aria-busy', false);
