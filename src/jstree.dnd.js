@@ -98,7 +98,25 @@
 		 * @name $.jstree.defaults.dnd.blank_space_drop
 		 * @plugin dnd
 		 */
-		blank_space_drop: false
+		blank_space_drop: false,
+		/**
+		 * controls whether all nodes are dragged or only top level selected nodes (ignoring children of selected nodes). Defaults to `false`.
+		 * @name $.jstree.defaults.dnd.drag_all_nodes
+		 * @plugin dnd
+		 */
+		drag_all_nodes: false,
+		/**
+		 * controls whether nodes that are dragged should be kept in the original order from origin tree (when true) or in order of selecting (when false). Defaults to `false`.
+		 * @name $.jstree.defaults.dnd.preserve_nodes_order
+		 * @plugin dnd
+		 */
+		preserve_nodes_order: false,
+		/**
+		 * a boolean indicating if dnd should be enabled or not. Useful if you want to dynamically disable editing of the tree. Defaults to `false`.
+		 * @name $.jstree.defaults.dnd.disabled
+		 * @plugin dnd
+		 */
+		disabled: false
 	};
 	var drg, elm;
 	// TODO: now check works by checking for each node individually, how about max_children, unique, etc?
@@ -112,6 +130,10 @@
 
 			this.element
 				.on(this.settings.dnd.use_html5 ? 'dragstart.jstree' : 'mousedown.jstree touchstart.jstree', this.settings.dnd.large_drag_target ? '.jstree-node' : '.jstree-anchor', function (e) {
+						if (this.settings.dnd.disabled) {
+							return false;
+						}
+					
 						if(this.settings.dnd.large_drag_target && $(e.target).closest('.jstree-node')[0] !== e.currentTarget) {
 							return true;
 						}
@@ -119,7 +141,7 @@
 							return true;
 						}
 						var obj = this.get_node(e.target),
-							mlt = this.is_selected(obj) && this.settings.dnd.drag_selection ? this.get_top_selected().length : 1,
+							mlt = this.is_selected(obj) && this.settings.dnd.drag_selection ? (this.settings.dnd.drag_all_nodes ? this.get_selected() : this.get_top_selected()).length : 1,
 							txt = (mlt > 1 ? mlt + ' ' + this.get_string('nodes') : this.get_text(e.currentTarget));
 						if(this.settings.core.force_text) {
 							txt = $.vakata.html.escape(txt);
@@ -127,7 +149,11 @@
 						if(obj && (obj.id !== undefined) && obj.id !== $.jstree.root && (e.which === 1 || e.type === "touchstart" || e.type === "dragstart") &&
 							(this.settings.dnd.is_draggable === true || ($.vakata.is_function(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_top_selected(true) : [obj]), e)))
 						) {
-							drg = { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_top_selected() : [obj.id] };
+							drg = { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? (this.settings.dnd.drag_all_nodes ? this.get_selected() : this.get_top_selected()) : [obj.id] };
+							if (this.settings.dnd.preserve_nodes_order) {
+								var ord = this.get_node($.jstree.root).children_d;
+								drg.nodes.sort(function (a, b) { return ord.indexOf(b) - ord.indexOf(a); });
+							}
 							elm = e.currentTarget;
 							if (this.settings.dnd.use_html5) {
 								$.vakata.dnd._trigger('start', e, { 'helper': $(), 'element': elm, 'data': drg });
@@ -226,7 +252,7 @@
 					rel = false,
 					tmp, l, t, h, p, i, o, ok, t1, t2, op, ps, pr, ip, tm, is_copy, pn, c;
 				// if we are over an instance
-				if(ins && ins._data && ins._data.dnd) {
+				if(ins && ins._data && ins._data.dnd && !ins.settings.dnd.disabled) {
 					marker.attr('class', 'jstree-' + ins.get_theme() + ( ins.settings.core.themes.responsive ? ' jstree-dnd-responsive' : '' ));
 					is_copy = data.data.origin && (data.data.origin.settings.dnd.always_copy || (data.data.origin.settings.dnd.copy && (data.event.metaKey || data.event.ctrlKey)));
 					data.helper
