@@ -1313,7 +1313,7 @@
 			}
 			obj.state.failed = false;
 			obj.state.loading = true;
-			if (obj.a_attr) {
+			if (obj.id !== '#') {
 				dom.children(".jstree-anchor").attr('aria-busy', true);
 			} else {
 				dom.attr('aria-busy', true);
@@ -1342,7 +1342,7 @@
 						}
 					}
 				}
-				if (obj.a_attr) {
+				if (obj.id !== '#') {
 					dom.children(".jstree-anchor").attr('aria-busy', false);
 				} else {
 					dom.attr('aria-busy', false);
