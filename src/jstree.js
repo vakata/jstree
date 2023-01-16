@@ -530,9 +530,9 @@ class jsTree
                             let html = "";
                             node.getAncestors().reverse().forEach(function (parent) {
                                 if (parent.isLast()) {
-                                    html += `<i class="jstree-icon">&nbsp;</i>`;
+                                    html += `<span class="jstree-icon">&nbsp;</span>`;
                                 } else {
-                                    html += `<i class="jstree-icon jstree-icon-v">&nbsp;</i>`;
+                                    html += `<span class="jstree-icon jstree-icon-v">&nbsp;</span>`;
                                 }
                             });
                             let clss = 'leaf';
@@ -544,12 +544,12 @@ class jsTree
                                 }
                             }
                             if (node.isLast()) {
-                                html += `<i class="jstree-icon jstree-icon-v2 jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
+                                html += `<span class="jstree-icon jstree-icon-v2 jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></span>`;
                             } else {
-                                html += `<i class="jstree-icon jstree-icon-v jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
+                                html += `<span class="jstree-icon jstree-icon-v jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></span>`;
                             }
                             clss = this.getState(node, "selected", false) ? 'jstree-selected' : '';
-                            html += `<a class="jstree-node-text ${clss}" href="#"><i class="jstree-icon jstree-node-icon">&nbsp;</i> ${node.get('text')}</a>`;
+                            html += `<a class="jstree-node-text ${clss}" href="#"><span class="jstree-icon jstree-node-icon">&nbsp;</span> ${node.get('text')}</a>`;
         
                             // TODO: do not redraw the whole DIV! update classes and texts
                             // TODO: add "dots" DIVs, prepare a style to render them "invisible" (opacity: 0)
@@ -585,9 +585,9 @@ class jsTree
                             let html = "";
                             node.getAncestors().reverse().forEach(function (parent) {
                                 if (parent.isLast()) {
-                                    html += `<i class="jstree-icon">&nbsp;</i>`;
+                                    html += `<span class="jstree-icon">&nbsp;</span>`;
                                 } else {
-                                    html += `<i class="jstree-icon jstree-icon-v">&nbsp;</i>`;
+                                    html += `<span class="jstree-icon jstree-icon-v">&nbsp;</span>`;
                                 }
                             });
                             let clss = 'leaf';
@@ -599,12 +599,12 @@ class jsTree
                                 }
                             }
                             if (node.isLast()) {
-                                html += `<i class="jstree-icon jstree-icon-v2 jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
+                                html += `<span class="jstree-icon jstree-icon-v2 jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></span>`;
                             } else {
-                                html += `<i class="jstree-icon jstree-icon-v jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></i>`;
+                                html += `<span class="jstree-icon jstree-icon-v jstree-icon-h"><span class="jstree-${clss}">&nbsp;</span></span>`;
                             }
                             clss = this.getState(node, "selected", false) ? 'jstree-selected' : '';
-                            html += `<a class="jstree-node-text ${clss}" href="#"><i class="jstree-icon jstree-node-icon">&nbsp;</i> ${node.get('text')}</a>`;
+                            html += `<a class="jstree-node-text ${clss}" href="#"><span class="jstree-icon jstree-node-icon">&nbsp;</span> ${node.get('text')}</a>`;
         
                             // TODO: do not redraw the whole DIV! update classes and texts
                             // TODO: add "dots" DIVs, prepare a style to render them "invisible" (opacity: 0)
