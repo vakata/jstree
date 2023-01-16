@@ -910,6 +910,7 @@
 						this._data.core.focused = null;
 						$(e.currentTarget).filter('.jstree-hovered').trigger('mouseleave');
 						this.element.attr('tabindex', '0');
+						$(e.currentTarget).attr('tabindex', '-1');
 					}.bind(this))
 				.on('focus.jstree', '.jstree-anchor', function (e) {
 						var tmp = this.get_node(e.currentTarget);
@@ -919,6 +920,7 @@
 						this.element.find('.jstree-hovered').not(e.currentTarget).trigger('mouseleave');
 						$(e.currentTarget).trigger('mouseenter');
 						this.element.attr('tabindex', '-1');
+						$(e.currentTarget).attr('tabindex', '0');
 					}.bind(this))
 				.on('focus.jstree', function () {
 						if(+(new Date()) - was_click > 500 && !this._data.core.focused && this.settings.core.restore_focus) {
@@ -1276,7 +1278,7 @@
 		 * @trigger load_node.jstree
 		 */
 		load_node : function (obj, callback) {
-			var k, l, i, j, c;
+			var dom = this.get_node(obj, true), k, l, i, j, c;
 			if($.vakata.is_array(obj)) {
 				this._load_nodes(obj.slice(), callback);
 				return true;
@@ -1313,7 +1315,12 @@
 			}
 			obj.state.failed = false;
 			obj.state.loading = true;
-			this.get_node(obj, true).addClass("jstree-loading").attr('aria-busy',true);
+			if (obj.id !== '#') {
+				dom.children(".jstree-anchor").attr('aria-busy', true);
+			} else {
+				dom.attr('aria-busy', true);
+			}
+			dom.addClass("jstree-loading");
 			this._load_node(obj, function (status) {
 				obj = this._model.data[obj.id];
 				obj.state.loading = false;
@@ -1337,7 +1344,12 @@
 						}
 					}
 				}
-				dom.removeClass("jstree-loading").attr('aria-busy',false);
+				if (obj.id !== '#') {
+					dom.children(".jstree-anchor").attr('aria-busy', false);
+				} else {
+					dom.attr('aria-busy', false);
+				}
+				dom.removeClass("jstree-loading");
 				/**
 				 * triggered after a node is loaded
 				 * @event
