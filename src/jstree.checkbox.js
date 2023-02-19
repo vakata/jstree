@@ -636,7 +636,7 @@
 		};
 		this.delete_node = function (obj) {
 			if(this.settings.checkbox.tie_selection || $.vakata.is_array(obj)) {
-				return parent.delete_node(obj);
+				return parent.delete_node.call(this, obj);
 			}
 			var tmp, k, l, c = false;
 			obj = this.get_node(obj);
