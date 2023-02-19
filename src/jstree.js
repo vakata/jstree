@@ -914,7 +914,7 @@
 					}.bind(this))
 				.on('focus.jstree', '.jstree-anchor', function (e) {
 						var tmp = this.get_node(e.currentTarget);
-						if(tmp && (tmp.id !== undefined)) {
+						if(tmp && (tmp.id || tmp.id === 0)) {
 							this._data.core.focused = tmp.id;
 						}
 						this.element.find('.jstree-hovered').not(e.currentTarget).trigger('mouseleave');
@@ -1041,7 +1041,7 @@
 		 * @return {Object|jQuery}
 		 */
 		get_node : function (obj, as_dom) {
-			if(obj && (obj.id !== undefined)) {
+			if(obj && (obj.id || obj.id === 0)) {
 				obj = obj.id;
 			}
 			if (obj instanceof $ && obj.length && obj[0].id) {
@@ -1766,7 +1766,7 @@
 									tmp.state[i] = df[i];
 								}
 							}
-							if(d && (d.id !== undefined)) { tmp.id = d.id.toString(); }
+							if(d && (d.id || d.id === 0)) { tmp.id = d.id.toString(); }
 							if(d && d.text) { tmp.text = d.text; }
 							if(d && d.data && d.data.jstree && d.data.jstree.icon) {
 								tmp.icon = d.data.jstree.icon;
@@ -1798,10 +1798,10 @@
 									}
 								}
 							}
-							if(tmp.li_attr.id && tmp.id === undefined) {
+							if(tmp.li_attr.id && !(tmp.id || tmp.id === 0)) {
 								tmp.id = tmp.li_attr.id.toString();
 							}
-							if(tmp.id === undefined) {
+							if(!(tmp.id || tmp.id === 0)) {
 								tmp.id = tid;
 							}
 							if(!tmp.li_attr.id) {
@@ -2286,7 +2286,7 @@
 					tmp.state[i] = df[i];
 				}
 			}
-			if(d && (d.id !== undefined)) { tmp.id = d.id.toString(); }
+			if(d && (d.id || d.id === 0)) { tmp.id = d.id.toString(); }
 			if(d && d.text) { tmp.text = d.text; }
 			if(d && d.data && d.data.jstree && d.data.jstree.icon) {
 				tmp.icon = d.data.jstree.icon;
@@ -2318,10 +2318,10 @@
 					}
 				}
 			}
-			if(tmp.li_attr.id && tmp.id === undefined) {
+			if(tmp.li_attr.id && !(tmp.id || tmp.id === 0)) {
 				tmp.id = tmp.li_attr.id.toString();
 			}
-			if(tmp.id === undefined) {
+			if(!(tmp.id || tmp.id === 0)) {
 				tmp.id = tid;
 			}
 			if(!tmp.li_attr.id) {
@@ -4432,7 +4432,7 @@
 			var tmp = [], o, t1, t2;
 			for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 				o = this.get_node(obj[t1]);
-				if(o && (o.id !== undefined) && o.id !== $.jstree.root) { tmp.push(o); }
+				if(o && (o.id || o.id === 0) && o.id !== $.jstree.root) { tmp.push(o); }
 			}
 			if(!tmp.length) { return false; }
 			ccp_node = tmp;
