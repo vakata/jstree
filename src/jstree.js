@@ -528,7 +528,12 @@
 				e.preventDefault();
 				this.edit(e.currentTarget);
 			}
-		}
+		},
+        /**
+		 * Should reselecting an already selected node trigger the select and changed callbacks
+		 * @name $.jstree.defaults.core.allow_reselect
+		 */
+        allow_reselect : false
 	};
 	$.jstree.core.prototype = {
 		/**
@@ -3172,7 +3177,7 @@
 					this.deselect_node(obj, false, e);
 				}
 				else {
-					if (!this.is_selected(obj) || this._data.core.selected.length !== 1) {
+					if (this.settings.core.allow_reselect || !this.is_selected(obj) || this._data.core.selected.length !== 1) {
 						this.deselect_all(true);
 						this.select_node(obj, false, false, e);
 					}
