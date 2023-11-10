@@ -2722,7 +2722,7 @@
 					if(!animation) {
 						this.trigger('before_open', { "node" : obj });
 						d[0].className = d[0].className.replace('jstree-closed', 'jstree-open');
-						d[0].childNodes[1].setAttribute("aria-expanded", true);
+						d.children('.jstree-anchor').attr("aria-expanded", true);
 					}
 					else {
 						this.trigger('before_open', { "node" : obj });
