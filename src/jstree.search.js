@@ -140,7 +140,7 @@
 				return this.clear_search();
 			}
 			inside = this.get_node(inside);
-			inside = inside && (inside.id !== undefined) ? inside.id : null;
+			inside = inside && (inside.id || inside.id === 0) ? inside.id : null;
 			str = str.toString();
 			var s = this.settings.search,
 				a = s.ajax ? s.ajax : false,

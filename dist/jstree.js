@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.14
+ * jsTree 3.3.16
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -63,7 +63,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.14',
+		version : '3.3.16',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -528,7 +528,12 @@
 				e.preventDefault();
 				this.edit(e.currentTarget);
 			}
-		}
+		},
+        /**
+		 * Should reselecting an already selected node trigger the select and changed callbacks
+		 * @name $.jstree.defaults.core.allow_reselect
+		 */
+        allow_reselect : false
 	};
 	$.jstree.core.prototype = {
 		/**
@@ -914,7 +919,7 @@
 					}.bind(this))
 				.on('focus.jstree', '.jstree-anchor', function (e) {
 						var tmp = this.get_node(e.currentTarget);
-						if(tmp && (tmp.id !== undefined)) {
+						if(tmp && (tmp.id || tmp.id === 0)) {
 							this._data.core.focused = tmp.id;
 						}
 						this.element.find('.jstree-hovered').not(e.currentTarget).trigger('mouseleave');
@@ -1041,7 +1046,7 @@
 		 * @return {Object|jQuery}
 		 */
 		get_node : function (obj, as_dom) {
-			if(obj && (obj.id !== undefined)) {
+			if(obj && (obj.id || obj.id === 0)) {
 				obj = obj.id;
 			}
 			if (obj instanceof $ && obj.length && obj[0].id) {
@@ -1766,7 +1771,7 @@
 									tmp.state[i] = df[i];
 								}
 							}
-							if(d && (d.id !== undefined)) { tmp.id = d.id.toString(); }
+							if(d && (d.id || d.id === 0)) { tmp.id = d.id.toString(); }
 							if(d && d.text) { tmp.text = d.text; }
 							if(d && d.data && d.data.jstree && d.data.jstree.icon) {
 								tmp.icon = d.data.jstree.icon;
@@ -1798,10 +1803,10 @@
 									}
 								}
 							}
-							if(tmp.li_attr.id && tmp.id === undefined) {
+							if(tmp.li_attr.id && !(tmp.id || tmp.id === 0)) {
 								tmp.id = tmp.li_attr.id.toString();
 							}
-							if(tmp.id === undefined) {
+							if(!(tmp.id || tmp.id === 0)) {
 								tmp.id = tid;
 							}
 							if(!tmp.li_attr.id) {
@@ -2286,7 +2291,7 @@
 					tmp.state[i] = df[i];
 				}
 			}
-			if(d && (d.id !== undefined)) { tmp.id = d.id.toString(); }
+			if(d && (d.id || d.id === 0)) { tmp.id = d.id.toString(); }
 			if(d && d.text) { tmp.text = d.text; }
 			if(d && d.data && d.data.jstree && d.data.jstree.icon) {
 				tmp.icon = d.data.jstree.icon;
@@ -2318,10 +2323,10 @@
 					}
 				}
 			}
-			if(tmp.li_attr.id && tmp.id === undefined) {
+			if(tmp.li_attr.id && !(tmp.id || tmp.id === 0)) {
 				tmp.id = tmp.li_attr.id.toString();
 			}
-			if(tmp.id === undefined) {
+			if(!(tmp.id || tmp.id === 0)) {
 				tmp.id = tid;
 			}
 			if(!tmp.li_attr.id) {
@@ -3172,7 +3177,7 @@
 					this.deselect_node(obj, false, e);
 				}
 				else {
-					if (!this.is_selected(obj) || this._data.core.selected.length !== 1) {
+					if (this.settings.core.allow_reselect || !this.is_selected(obj) || this._data.core.selected.length !== 1) {
 						this.deselect_all(true);
 						this.select_node(obj, false, false, e);
 					}
@@ -4432,7 +4437,7 @@
 			var tmp = [], o, t1, t2;
 			for(t1 = 0, t2 = obj.length; t1 < t2; t1++) {
 				o = this.get_node(obj[t1]);
-				if(o && (o.id !== undefined) && o.id !== $.jstree.root) { tmp.push(o); }
+				if(o && (o.id || o.id === 0) && o.id !== $.jstree.root) { tmp.push(o); }
 			}
 			if(!tmp.length) { return false; }
 			ccp_node = tmp;
@@ -5695,7 +5700,7 @@
 		};
 		this.delete_node = function (obj) {
 			if(this.settings.checkbox.tie_selection || $.vakata.is_array(obj)) {
-				return parent.delete_node(obj);
+				return parent.delete_node.call(this, obj);
 			}
 			var tmp, k, l, c = false;
 			obj = this.get_node(obj);
@@ -6836,7 +6841,7 @@
 						if(this.settings.core.force_text) {
 							txt = $.vakata.html.escape(txt);
 						}
-						if(obj && (obj.id !== undefined) && obj.id !== $.jstree.root && (e.which === 1 || e.type === "touchstart" || e.type === "dragstart") &&
+						if(obj && (obj.id || obj.id === 0) && obj.id !== $.jstree.root && (e.which === 1 || e.type === "touchstart" || e.type === "dragstart") &&
 							(this.settings.dnd.is_draggable === true || ($.vakata.is_function(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_top_selected(true) : [obj]), e)))
 						) {
 							drg = { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? this.get_top_selected() : [obj.id] };
@@ -7639,7 +7644,7 @@
 				return this.clear_search();
 			}
 			inside = this.get_node(inside);
-			inside = inside && (inside.id !== undefined) ? inside.id : null;
+			inside = inside && (inside.id || inside.id === 0) ? inside.id : null;
 			str = str.toString();
 			var s = this.settings.search,
 				a = s.ajax ? s.ajax : false,
@@ -8214,7 +8219,7 @@
 			if(tmp === false) { return false; }
 			if($.vakata.is_array(tmp)) {
 				for(i = 0, j = tmp.length; i < j; i++) {
-					tmp[i].type = (tmp[i].id !== undefined) && m[tmp[i].id] && m[tmp[i].id].type ? m[tmp[i].id].type : "default";
+					tmp[i].type = (tmp[i].id || tmp[i].id === 0) && m[tmp[i].id] && m[tmp[i].id].type ? m[tmp[i].id].type : "default";
 					if(options && options.no_id) {
 						delete tmp[i].id;
 						if(tmp[i].li_attr && tmp[i].li_attr.id) {
@@ -8227,7 +8232,7 @@
 				}
 			}
 			else {
-				tmp.type = (tmp.id !== undefined) && m[tmp.id] && m[tmp.id].type ? m[tmp.id].type : "default";
+				tmp.type = (tmp.id || tmp.id === 0) && m[tmp.id] && m[tmp.id].type ? m[tmp.id].type : "default";
 				if(options && options.no_id) {
 					tmp = this._delete_ids(tmp);
 				}
@@ -8255,9 +8260,9 @@
 		};
 		this.check = function (chk, obj, par, pos, more) {
 			if(parent.check.call(this, chk, obj, par, pos, more) === false) { return false; }
-			obj = obj && (obj.id !== undefined) ? obj : this.get_node(obj);
-			par = par && (par.id !== undefined) ? par : this.get_node(par);
-			var m = obj && (obj.id !== undefined) ? (more && more.origin ? more.origin : $.jstree.reference(obj.id)) : null, tmp, d, i, j;
+			obj = obj && (obj.id || obj.id === 0) ? obj : this.get_node(obj);
+			par = par && (par.id || par.id === 0) ? par : this.get_node(par);
+			var m = obj && (obj.id || obj.id === 0) ? (more && more.origin ? more.origin : $.jstree.reference(obj.id)) : null, tmp, d, i, j;
 			m = m && m._model && m._model.data ? m._model.data : null;
 			switch(chk) {
 				case "create_node":
@@ -8266,11 +8271,11 @@
 					if(chk !== 'move_node' || $.inArray(obj.id, par.children) === -1) {
 						tmp = this.get_rules(par);
 						if(tmp.max_children !== undefined && tmp.max_children !== -1 && tmp.max_children === par.children.length) {
-							this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_01', 'reason' : 'max_children prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id !== undefined) ? obj.id : false, 'par' : par && (par.id !== undefined) ? par.id : false }) };
+							this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_01', 'reason' : 'max_children prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id || obj.id === 0) ? obj.id : false, 'par' : par && (par.id || par.id === 0) ? par.id : false }) };
 							return false;
 						}
 						if(tmp.valid_children !== undefined && tmp.valid_children !== -1 && $.inArray((obj.type || 'default'), tmp.valid_children) === -1) {
-							this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_02', 'reason' : 'valid_children prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id !== undefined) ? obj.id : false, 'par' : par && (par.id !== undefined) ? par.id : false }) };
+							this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_02', 'reason' : 'valid_children prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id || obj.id === 0) ? obj.id : false, 'par' : par && (par.id || par.id === 0) ? par.id : false }) };
 							return false;
 						}
 						if(m && obj.children_d && obj.parents) {
@@ -8283,7 +8288,7 @@
 						if(d <= 0 || d === undefined) { d = 1; }
 						do {
 							if(tmp.max_depth !== undefined && tmp.max_depth !== -1 && tmp.max_depth < d) {
-								this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_03', 'reason' : 'max_depth prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id !== undefined) ? obj.id : false, 'par' : par && (par.id !== undefined) ? par.id : false }) };
+								this._data.core.last_error = { 'error' : 'check', 'plugin' : 'types', 'id' : 'types_03', 'reason' : 'max_depth prevents function: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id || obj.id === 0) ? obj.id : false, 'par' : par && (par.id || par.id === 0) ? par.id : false }) };
 								return false;
 							}
 							par = this.get_node(par.parent);
@@ -8493,8 +8498,8 @@
 	$.jstree.plugins.unique = function (options, parent) {
 		this.check = function (chk, obj, par, pos, more) {
 			if(parent.check.call(this, chk, obj, par, pos, more) === false) { return false; }
-			obj = obj && (obj.id !== undefined) ? obj : this.get_node(obj);
-			par = par && (par.id !== undefined) ? par : this.get_node(par);
+			obj = obj && (obj.id || obj.id === 0) ? obj : this.get_node(obj);
+			par = par && (par.id || par.id === 0) ? par : this.get_node(par);
 			if(!par || !par.children) { return true; }
 			var n = chk === "rename_node" ? pos : obj.text,
 				c = [],
@@ -8526,25 +8531,25 @@
 					}
 					i = ($.inArray(n, c) === -1 || (obj.text && t === n));
 					if(!i) {
-						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id !== undefined) ? obj.id : false, 'par' : par && (par.id !== undefined) ? par.id : false }) };
+						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_01', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id || obj.id === 0) ? obj.id : false, 'par' : par && (par.id || par.id === 0) ? par.id : false }) };
 					}
 					return i;
 				case "create_node":
 					i = ($.inArray(n, c) === -1);
 					if(!i) {
-						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_04', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id !== undefined) ? obj.id : false, 'par' : par && (par.id !== undefined) ? par.id : false }) };
+						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_04', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id || obj.id === 0) ? obj.id : false, 'par' : par && (par.id || par.id === 0) ? par.id : false }) };
 					}
 					return i;
 				case "copy_node":
 					i = ($.inArray(n, c) === -1);
 					if(!i) {
-						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_02', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id !== undefined) ? obj.id : false, 'par' : par && (par.id !== undefined) ? par.id : false }) };
+						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_02', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id || obj.id === 0) ? obj.id : false, 'par' : par && (par.id || par.id === 0) ? par.id : false }) };
 					}
 					return i;
 				case "move_node":
 					i = ( (obj.parent === par.id && (!more || !more.is_multi)) || $.inArray(n, c) === -1);
 					if(!i) {
-						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_03', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id !== undefined) ? obj.id : false, 'par' : par && (par.id !== undefined) ? par.id : false }) };
+						this._data.core.last_error = { 'error' : 'check', 'plugin' : 'unique', 'id' : 'unique_03', 'reason' : 'Child with name ' + n + ' already exists. Preventing: ' + chk, 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && (obj.id || obj.id === 0) ? obj.id : false, 'par' : par && (par.id || par.id === 0) ? par.id : false }) };
 					}
 					return i;
 			}

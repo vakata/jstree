@@ -2,7 +2,7 @@
   "name": "jstree",
   "title": "jsTree",
   "description": "jQuery tree plugin",
-  "version": "3.3.14",
+  "version": "3.3.16",
   "homepage": "http://jstree.com",
   "main": "./dist/jstree.js",
   "author": {
@@ -40,7 +40,7 @@
     "lodash": "^4.17.21"
   },
   "dependencies": {
-    "jquery": "^3.6.0"
+    "jquery": "^3.5.0"
   },
   "npmName": "jstree",
   "npmFileMap": [

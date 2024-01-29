@@ -578,7 +578,7 @@
                                 return parent.load_node.apply(this, arguments)
                         } else {
                                 // node hasn't been loaded
-                                var id = (obj.id !== undefined) ? obj.id : obj;
+                                var id = (obj.id || obj.id === 0) ? obj.id : obj;
                                 this._model.data[id] = {
                                         id : id,
                                         parent : '#',

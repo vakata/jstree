@@ -146,7 +146,7 @@
 						if(this.settings.core.force_text) {
 							txt = $.vakata.html.escape(txt);
 						}
-						if(obj && (obj.id !== undefined) && obj.id !== $.jstree.root && (e.which === 1 || e.type === "touchstart" || e.type === "dragstart") &&
+						if(obj && (obj.id || obj.id === 0) && obj.id !== $.jstree.root && (e.which === 1 || e.type === "touchstart" || e.type === "dragstart") &&
 							(this.settings.dnd.is_draggable === true || ($.vakata.is_function(this.settings.dnd.is_draggable) && this.settings.dnd.is_draggable.call(this, (mlt > 1 ? this.get_top_selected(true) : [obj]), e)))
 						) {
 							drg = { 'jstree' : true, 'origin' : this, 'obj' : this.get_node(obj,true), 'nodes' : mlt > 1 ? (this.settings.dnd.drag_all_nodes ? this.get_selected() : this.get_top_selected()) : [obj.id] };
