@@ -1,0 +1,24 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@section styles {
+    <link rel="stylesheet" href="~/lib/jstree/themes/default/style.css" asp-append-version="true" />
+}
+@section scripts {
+    <script src="~/lib/jstree/jstree.js"></script>
+    <script src="~/js/index.js"></script>
+}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="jsTree" style="margin-top:1em; min-height:200px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
