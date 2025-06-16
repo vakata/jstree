@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.16
+ * jsTree 3.3.17
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -63,7 +63,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.16',
+		version : '3.3.17',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -4582,58 +4582,60 @@
 							"lineHeight" : (this._data.core.li_height) + "px",
 							"width" : "150px" // will be set a bit further down
 						},
-						"blur" : function (e) {
-							e.stopImmediatePropagation();
-							e.preventDefault();
-							var i = s.children(".jstree-rename-input"),
-								v = i.val(),
-								f = this.settings.core.force_text,
-								nv;
-							if(v === "") { v = t; }
-							h1.remove();
-							s.replaceWith(a);
-							s.remove();
-							t = f ? t : $('<div></div>').append($.parseHTML(t)).html();
-							obj = this.get_node(obj);
-							this.set_text(obj, t);
-							nv = !!this.rename_node(obj, f ? $('<div></div>').text(v).text() : $('<div></div>').append($.parseHTML(v)).html());
-							if(!nv) {
-								this.set_text(obj, t); // move this up? and fix #483
-							}
-							this._data.core.focused = tmp.id;
-							setTimeout(function () {
-								var node = this.get_node(tmp.id, true);
-								if(node.length) {
-									this._data.core.focused = tmp.id;
-									node.children('.jstree-anchor').trigger('focus');
-								}
-							}.bind(this), 0);
-							if(callback) {
-								callback.call(this, tmp, nv, cancel, v);
-							}
-							h2 = null;
-						}.bind(this),
-						"keydown" : function (e) {
-							var key = e.which;
-							if(key === 27) {
-								cancel = true;
-								this.value = t;
-							}
-							if(key === 27 || key === 13 || key === 37 || key === 38 || key === 39 || key === 40 || key === 32) {
+						"on" : {
+							"blur" : function (e) {
 								e.stopImmediatePropagation();
-							}
-							if(key === 27 || key === 13) {
 								e.preventDefault();
-								this.blur();
+								var i = s.children(".jstree-rename-input"),
+									v = i.val(),
+									f = this.settings.core.force_text,
+									nv;
+								if(v === "") { v = t; }
+								h1.remove();
+								s.replaceWith(a);
+								s.remove();
+								t = f ? t : $('<div></div>').append($.parseHTML(t)).html();
+								obj = this.get_node(obj);
+								this.set_text(obj, t);
+								nv = !!this.rename_node(obj, f ? $('<div></div>').text(v).text() : $('<div></div>').append($.parseHTML(v)).html());
+								if(!nv) {
+									this.set_text(obj, t); // move this up? and fix #483
+								}
+								this._data.core.focused = tmp.id;
+								setTimeout(function () {
+									var node = this.get_node(tmp.id, true);
+									if(node.length) {
+										this._data.core.focused = tmp.id;
+										node.children('.jstree-anchor').trigger('focus');
+									}
+								}.bind(this), 0);
+								if(callback) {
+									callback.call(this, tmp, nv, cancel, v);
+								}
+								h2 = null;
+							}.bind(this),
+							"keydown" : function (e) {
+								var key = e.which;
+								if(key === 27) {
+									cancel = true;
+									this.value = t;
+								}
+								if(key === 27 || key === 13 || key === 37 || key === 38 || key === 39 || key === 40 || key === 32) {
+									e.stopImmediatePropagation();
+								}
+								if(key === 27 || key === 13) {
+									e.preventDefault();
+									this.blur();
+								}
+							},
+							"click" : function (e) { e.stopImmediatePropagation(); },
+							"mousedown" : function (e) { e.stopImmediatePropagation(); },
+							"keyup" : function (e) {
+								h2.width(Math.min(h1.text("pW" + this.value).width(),w));
+							},
+							"keypress" : function(e) {
+								if(e.which === 13) { return false; }
 							}
-						},
-						"click" : function (e) { e.stopImmediatePropagation(); },
-						"mousedown" : function (e) { e.stopImmediatePropagation(); },
-						"keyup" : function (e) {
-							h2.width(Math.min(h1.text("pW" + this.value).width(),w));
-						},
-						"keypress" : function(e) {
-							if(e.which === 13) { return false; }
 						}
 					});
 				fn = {
