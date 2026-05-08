@@ -427,8 +427,16 @@
 					y = o.offset().top,
 					w = e.width(),
 					h = e.height(),
+					scroll_top = $(window).scrollTop(),
 					dw = $(window).width() + $(window).scrollLeft(),
-					dh = $(window).height() + $(window).scrollTop();
+					dh = $(window).height() + $(window).scrollTop(),
+					overflow = y + h + 10 - dh;
+				e.css({
+					"bottom" : "",
+					"margin-left" : "",
+					"margin-right" : "",
+					"margin-top" : ""
+				});
 				// може да се спести е една проверка - дали няма някой от класовете вече нагоре
 				if(right_to_left) {
 					o[x - (w + 10 + o.outerWidth()) < 0 ? "addClass" : "removeClass"]("vakata-context-left");
@@ -436,10 +444,6 @@
 				else {
 					o[x + w > dw  && xl > dw - x ? "addClass" : "removeClass"]("vakata-context-right");
 				}
-				if(y + h + 10 > dh) {
-					e.css("bottom","-1px");
-				}
-
 				//if does not fit - stick it to the side
 				if (o.hasClass('vakata-context-right')) {
 					if (xl < w) {
@@ -451,6 +455,12 @@
 					}
 				}
 
+				if(overflow > 0) {
+					e.css("margin-top", (parseInt(e.css("margin-top"), 10) || 0) - overflow);
+					if(y - overflow < scroll_top) {
+						e.css("margin-top", (parseInt(e.css("margin-top"), 10) || 0) + (scroll_top - (y - overflow)));
+					}
+				}
 				e.show();
 			},
 			show : function (reference, position, data) {
