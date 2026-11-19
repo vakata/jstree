@@ -39,7 +39,7 @@
     "lodash": "^4.17.21"
   },
   "dependencies": {
-    "jquery": "^3.5.0"
+    "jquery": "^3.5.0 || ^4.0.0"
   },
   "npmName": "jstree",
   "npmFileMap": [
